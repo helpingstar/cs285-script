@@ -1,5 +1,5 @@
 1.  All right, in the next portion of this lecture, I'm going to introduce the notion of value functions, which are a very useful mathematical object, both for designing reinforcement learning algorithms and for conceptually thinking about the reinforcement learning objective.
-2. So, as I mentioned earlier, the reinforcement learning objective can be defined as an expectation.
+2.  So, as I mentioned earlier, the reinforcement learning objective can be defined as an expectation.
 3. It's an expectation of a sum of rewards with respect to the trajectory distribution, or equivalently, a sum over time of the expected reward for every state action marginal.
 4. Now, one of the things we could do with this expectation is we can actually write it out recursively.
 5. So, you know how we can apply the chain rule of probability to factorize the trajectory distribution as a product of many distributions.
