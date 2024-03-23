@@ -12,8 +12,8 @@
 12. The trajectory distribution is a probability distribution over a sequence of states and actions.
 13. So it's a distribution over s_1, a_1, s_2, a_2, s_3, a_4, a_3, s_4, etc., etc., etc.
 14. And I'm going to use the subscript θ when I write a trajectory distribution to emphasize that the trajectory distribution depends on the policy parameters θ.
-15. We can write it via the chain rule of probability, as the product of the initial state distribution, p(s_1) , and then a product over all time steps of the policy probability, π_θ(a_t|s_T), times the transition probability, p(s_{t+1}).
-16. And I will use τ(tau) as a notational shorthand.
+15. We can write it via the chain rule of probability, as the product of the initial state distribution, p(s_1) , and then a product over all time steps of the policy probability, π_θ(a_t|s_T), times the transition probability, p(s_{t+1}|s_t, a_t).
+16. And I will use τ as a notational shorthand.
 17. Whenever you see me write τ, that just means s_1, a_1, s_2, a_2, s_3, etc, etc., etc., all the way out to s_T, a_T.
 18. Now, crucially when we develop model free reinforcement learning algorithms of the sort that we'll cover in today's lecture and the subsequent few lectures we typically do not assume that we know the transition probabilities p(s_{t+1}|s_t, a_t) nor the initial state probability p(s_1).
 19. We just assume that we can interact with the real world which effectively samples from those distributions.
@@ -69,24 +69,24 @@
 69. Let's bring up again our equation for the trajectory distribution.
 70. So p(τ), which is just another way of writing p(s_1,a_1,s_2,...) is equal to this product that we saw before.
 71. If we take the logarithm of both sides, the logarithm of a product is the sum of logarithms, which means that we can write log p(τ) as the sum log p(s_1) plus a summation from t equals 1 to T of the log probabilities under the policy plus the log transition probabilities.
-73. And now we'll substitute this whole thing in for ∇log p.
-74. And we're taking the derivative of this with respect to θ.
-75. Now the derivative with respect to θ of log p(s_1) is just 0, because p(s_1) does not depend on θ.
-76. And the derivative with respect to θ of log p(s_{t+1}|s_t,a_t) is also 0.
-77. Because the transition probabilities also do not depend on θ.
-78. So that means that after this simplification, the only terms that are left are the log π_θ(a_t|s_t) terms, which are actually the only terms that we can evaluate, because we know the form of the policy and we can evaluate the policy's own log probabilities.
-79. So collecting all the terms that remain and expanding out our notation, we're left with this equation for the policy gradient.
-80. The gradient with respect to the θ J(θ) is equal to the expectation under p_θ(τ) of the sum from t=1 to T of ∇_θ log π_θ(a_t|s_t) times the sum of the rewards.
-81. And now everything inside this expectation is known, because we have access to the policy π, and we can evaluate the reward for all of our samples.
-82. All of the unknown terms, the initial state distribution, and the transition probabilities, occur only in the distribution under which the expectation is taken.
-83. So that means that if we want to evaluate the policy gradient, we can use the same trick that we used to evaluate the objective value.
-84. We can simply run our policy, which will generate samples from p_θ(τ), sum up their rewards to determine which trajectory is good or bad, and then multiply those by the sum of ∇log π's.
-85. And then once we've estimated the gradient in this way, we can improve our policy simply by taking a step of gradient descent, taking the old policy parameters and adding to them the policy gradient multiplied by a learning rate α.
-86. If we think back to the anatomy of a reinforcement learning algorithm that we covered before, the orange box here corresponds to the process of generating those samples, which are the ones that we're summing over.
-87. The green box refers to summing up the rewards along each sample trajectory, then we can calculate the policy gradient, and the blue box corresponds to taking one step of gradient descent.
-88. Now this procedure gives us the basic policy gradient algorithm, also known as the REINFORCE algorithm.
-89. REINFORCE is the acronym that was given by Williams in the 1990s to the first policy gradient method, which consists of three steps.
-90. Sample trajectories according to π_θ(a|s), by running the policy in the real world N times evaluate the policy gradient as for this equation, and then take a stpe of gradient descent.
-91. So that's the basic policy gradient algorithm.
-92. What I've covered so far in this lecture basically gives you all the mathematical tools that you need to understand the basics of policy gradients, but if you try to actually implement the policy gradient, as I've described so far, it probably won't work very well.
-93. So in the remainder of the lecture, we'll discuss some of the intuition behind what policy gradients are doing, and then discuss how to actually implement them so that they work well in practice, which you will need to do for homework too.
+72. And now we'll substitute this whole thing in for ∇log p.
+73. And we're taking the derivative of this with respect to θ.
+74. Now the derivative with respect to θ of log p(s_1) is just 0, because p(s_1) does not depend on θ.
+75. And the derivative with respect to θ of log p(s_{t+1}|s_t,a_t) is also 0.
+76. Because the transition probabilities also do not depend on θ.
+77. So that means that after this simplification, the only terms that are left are the log π_θ(a_t|s_t) terms, which are actually the only terms that we can evaluate, because we know the form of the policy and we can evaluate the policy's own log probabilities.
+78. So collecting all the terms that remain and expanding out our notation, we're left with this equation for the policy gradient.
+79. The gradient with respect to the θ J(θ) is equal to the expectation under p_θ(τ) of the sum from t=1 to T of ∇_θ log π_θ(a_t|s_t) times the sum of the rewards.
+80. And now everything inside this expectation is known, because we have access to the policy π, and we can evaluate the reward for all of our samples.
+81. All of the unknown terms, the initial state distribution, and the transition probabilities, occur only in the distribution under which the expectation is taken.
+82. So that means that if we want to evaluate the policy gradient, we can use the same trick that we used to evaluate the objective value.
+83. We can simply run our policy, which will generate samples from p_θ(τ), sum up their rewards to determine which trajectory is good or bad, and then multiply those by the sum of ∇log π's.
+84. And then once we've estimated the gradient in this way, we can improve our policy simply by taking a step of gradient descent, taking the old policy parameters and adding to them the policy gradient multiplied by a learning rate α.
+85. If we think back to the anatomy of a reinforcement learning algorithm that we covered before, the orange box here corresponds to the process of generating those samples, which are the ones that we're summing over.
+86. The green box refers to summing up the rewards along each sample trajectory, then we can calculate the policy gradient, and the blue box corresponds to taking one step of gradient descent.
+87. Now this procedure gives us the basic policy gradient algorithm, also known as the REINFORCE algorithm.
+88. REINFORCE is the acronym that was given by Williams in the 1990s to the first policy gradient method, which consists of three steps.
+89. Sample trajectories according to π_θ(a|s), by running the policy in the real world N times evaluate the policy gradient as for this equation, and then take a stpe of gradient descent.
+90. So that's the basic policy gradient algorithm.
+91. What I've covered so far in this lecture basically gives you all the mathematical tools that you need to understand the basics of policy gradients, but if you try to actually implement the policy gradient, as I've described so far, it probably won't work very well.
+92. So in the remainder of the lecture, we'll discuss some of the intuition behind what policy gradients are doing, and then discuss how to actually implement them so that they work well in practice, which you will need to do for homework too.

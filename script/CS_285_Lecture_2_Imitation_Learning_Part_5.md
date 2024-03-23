@@ -4,22 +4,22 @@
 4. So as a reminder, the problem with distributional shift intuitively is that your policy makes at least small mistakes, even close to the training data.
 5. And when it makes small mistakes, it finds itself in states that are more unfamiliar.
 6. And there it makes bigger mistakes, and the mistakes compound.
-7. More precisely, the problem can be described as a problem of distributional shift, meaning the distribution of states under which the policy is trained, pdata, is systematically different from the distribution of states under which it's tested, which is ppi theta.
-8. And so far, a lot of what we talked about are methods that try to change the policy so that ppi theta will stay closer to pdata by making fewer mistakes.
+7. More precisely, the problem can be described as a problem of distributional shift, meaning the distribution of states under which the policy is trained, pdata, is systematically different from the distribution of states under which it's tested, which is ppi θ.
+8. And so far, a lot of what we talked about are methods that try to change the policy so that ppi θ will stay closer to pdata by making fewer mistakes.
 9. But can we go the other way around?
 10. Can we instead change pdata?
 11. So that pdata better covers the states that the policy actually visits?
 12. Okay.
-13. How can we make pdata be equal to ppi theta?
+13. How can we make pdata be equal to ppi θ?
 14. Well, of course, if we're changing our data set, we're introducing some additional assumptions.
 15. So we're going to be actually collecting more data than just the initial demonstrations.
 16. And the question then is which data to collect.
 17. And that's what Dagger tries to answer.
-18. So instead of being clever about ppi theta or about how we train our policy, let's be clever about our data collection strategy.
+18. So instead of being clever about ppi θ or about how we train our policy, let's be clever about our data collection strategy.
 19. So the idea in Dagger...
 20. is to actually run the policy in the real world, see which states it visits, and ask humans to label those states.
-21. So the goal is to collect data in such a way that ppi theta...
-22. that the trained data comes from ppi theta instead of pdata.
+21. So the goal is to collect data in such a way that ppi θ...
+22. that the trained data comes from ppi θ instead of pdata.
 23. And we're going to do that by actually running our policy.
 24. So here's the algorithm.
 25. Now, we're going to need labels for all those states.
@@ -37,7 +37,7 @@
 37. The intuition for why that's true, of course, is that eventually, is that each time the policy runs, you collect its observations, but then you might label them with actions that are different from the actions it took.
 38. But that distribution is closer than the initial one.
 39. So as long as you get closer each step, eventually you'll get to a distribution where the policy can actually learn and then you'll stay there forever.
-40. So then as you collect from it more and more, eventually your data set becomes dominated by samples from the correct p pi theta distribution.
+40. So then as you collect from it more and more, eventually your data set becomes dominated by samples from the correct p pi θ distribution.
 41. So that's the algorithm.
 42. It's a very simple algorithm to implement if you can get those labels.
 43. Here's a video of this algorithm in action.

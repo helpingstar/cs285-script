@@ -76,8 +76,8 @@
 76. So using the convenient identity in the blue box over there I know this is equal to the integral of ∇p(τ) times b.
 77. Now by linearity of the gradient operator I can take both the gradient operator and b outside of the integral.
 78. So this is equal to b times the gradient of the integral over τ of p(τ).
-79. But p(τ) is a probability distribution and we know that probability distributions integrate to 1 which means that this is equal to b times the gradient with respect to theta of 1.
-80. But the gradient with respect to theta of 1 is 0 because 1 doesn't depend on theta.
+79. But p(τ) is a probability distribution and we know that probability distributions integrate to 1 which means that this is equal to b times the gradient with respect to θ of 1.
+80. But the gradient with respect to θ of 1 is 0 because 1 doesn't depend on θ.
 81. Therefore we know that this expected value comes out equal to 0 in expectation.
 82. But for a finite number of samples it's not equal to 0.
 83. So what this means is that subtracting b will keep our policy gradient unbiased but it will actually alter its variance.

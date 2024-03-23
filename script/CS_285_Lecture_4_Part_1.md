@@ -3,7 +3,7 @@
 3. So let's start with some definitions.
 4. First, let's go over some of the terminology that we covered in the previous lecture.
 5. When we talked about imitation learning, we learned that we can represent a policy as a distribution over actions AT, conditional observations OT.
-6. We call this policy pi, and we often use a subscript theta to denote that the policy depends on a vector of parameters that we're going to denote theta.
+6. We call this policy pi, and we often use a subscript θ to denote that the policy depends on a vector of parameters that we're going to denote θ.
 7. When we're doing deep reinforcement learning, oftentimes we will represent the policy with a deep neural network, although, as we will learn in the next two lectures in the course, depending on the type of reinforcement, learning algorithm, we might choose to represent the policy directly or implicitly through some other object, such as a value function.
 8. Important definitions to know are the state, which we denote ST, the observation OT, and the action AT.
 9. As we learned in the imitation learning lecture, the observation and state can be related to one another by the following graphical model, where the edge between observations and actions is the policy, the edge between current states and actions and future states is the transition probability, or the dynamics, and the state satisfies the Markov property, which means that the state at time t plus 1 is independent of the state at time t minus 1, when conditioned on the current state ST.
@@ -79,9 +79,9 @@
 79. Alright, now that we've defined the mathematical objects of the Markov chain, the Markov decision process, and the partially observed Markov decision process, let's define an objective for reinforcement learning.
 80. So in reinforcement learning, we're going to be learning some object that defines a policy.
 81. So for now let's just assume that we learn the policy directly, and we'll see later on how there are some other methods that might represent a policy implicitly.
-82. But for now we'll be explicitly learning pi theta, a given s.
-83. We'll come back to the partially observed case later, for now let's just say that our policy is conditional on s, and theta corresponds to the parameters of the policy.
-84. So if the policy is a deep neural net, then theta denotes the parameters of that deep neural net.
+82. But for now we'll be explicitly learning pi θ, a given s.
+83. We'll come back to the partially observed case later, for now let's just say that our policy is conditional on s, and θ corresponds to the parameters of the policy.
+84. So if the policy is a deep neural net, then θ denotes the parameters of that deep neural net.
 85. The state goes into the policy, the action comes out, and then the state and action go into the transition probability, basically the physics that govern the world, which produces the next state.
 86. Right?
 87. So that's the process that we are controlling.
@@ -89,22 +89,22 @@
 89. So trajectories are sequences of states and actions, s1, a1, s2, a2, etc, etc, until you get to s_t, a_t.
 90.  For now we will assume that our control problem is finite horizon, which means that the decision-making task lasts for a fixed number of time steps capital T, and then ends.
 91.  We will extend this to the infinite horizon setting shortly, but for now we'll write down the finite horizon version because it's quite a bit easier to start with.
-92.  So if we write down the joint distribution of our states and actions, and here I'm putting the subscript theta on this joint distribution to indicate that it depends on the policy pi theta, we can factorize it by using the chain rule in terms of probability distributions that we've already defined.
+92.  So if we write down the joint distribution of our states and actions, and here I'm putting the subscript θ on this joint distribution to indicate that it depends on the policy pi θ, we can factorize it by using the chain rule in terms of probability distributions that we've already defined.
 93.  So we have an initial state distribution P of s 1.
 94.  I sort of brush this under the rug when I define the Markov chain, the MDP and the POMDP, but all of these also have an initial state distribution P of s_1.
 95.  And then we have a product over all time steps of the probability of an action, a_t, given s_t, and the probability of the transition to the next time step, s_t plus 1, given s_t, a_t.
 96.  Now I said that this is derived from the chain rule of probability, but of course in the chain rule of probability you need to condition on all past variables, but here we are exploiting the Markov property to drop the dependence on s_t minus 1, s_t minus 2, etc., etc., because we know that s_t plus 1 is conditionally independent of s_t minus 1, given s_t.
 97.  So this is how we can define the trajectory distribution.
-98.  And for notational brevity I will sometimes write P of tau to denote P of s1.
-99.  So tau is just a shorthand for trajectory, and all it means is a sequence of states and actions.
+98.  And for notational brevity I will sometimes write P of τ to denote P of s1.
+99.  So τ is just a shorthand for trajectory, and all it means is a sequence of states and actions.
 100. Okay, so having defined the trajectory distribution, we can actually define an objective for reinforcement learning, and we can define that objective as an expected value under the trajectory distribution.
-101. So the goal in reinforcement learning is to find the parameters theta that define our policy so as to maximize the expected value of the sum of rewards over the trajectory.
+101. So the goal in reinforcement learning is to find the parameters θ that define our policy so as to maximize the expected value of the sum of rewards over the trajectory.
 102. So we would like a policy that produces trajectories that have the highest possible rewards in expectation.
 103. And the expectation, of course, accounts for the stochasticity of the policy, the transition probabilities, and the initial state distribution.
 104. So this is the definition of the reinforcement learning objective that we're going to work with.
 105. There are, of course, a few variants on this, and we will derive them over the course of the next few lectures, but this is the most basic version.
 106. So at this point I would like all of you to pause and look carefully at the subjective and really make sure that you understand what this means.
-107. That you understand what it means to have a sum over rewards, what it means to take their expectation under a trajectory distribution, what a trajectory distribution is, and how it is influenced by our choice of policy parameters theta, which in turn influence the policy pi theta.
+107. That you understand what it means to have a sum over rewards, what it means to take their expectation under a trajectory distribution, what a trajectory distribution is, and how it is influenced by our choice of policy parameters θ, which in turn influence the policy pi θ.
 108. Because if this part is unclear, then what follows in the remainder of this lecture will be quite hard to follow.
 109. So please take a moment to think about this.
 110. And if you have any questions about the trajectory distribution, please be sure to write a comment on the video.
@@ -113,7 +113,7 @@
 113. And to interpret this as a Markov chain, we need to define an augmented statespace.
 114. So our original statespace is S, but we also have these actions, and the actions make this a Markov decision process.
 115. But we know that the action depends on the state based on the policy.
-116. So pi theta A t givens_t allows us to get a distribution of our actions conditioned on states.
+116. So pi θ A t givens_t allows us to get a distribution of our actions conditioned on states.
 117. So what we can do, is we can group this state and action together into a kind of augmented state.
 118. And now, the augmented states actually form a Markov chain.
 119. So P of st plus 1 comma a_t plus 1 given st comma at, the transition operator in this augmented Markov chain is simply the product of the transition operator in the MDP and the policy.
@@ -121,11 +121,11 @@
 121. So so far I've defined the objective as an expected value under the trajectory distribution of the sum of rewards.
 122. But remember that our distribution actually follows a Markov chain with this augmented space and this transition operator is the product of the MDP transitions and the policy.
 123. So we could also write the objective by linearity of expectation as the sum over time of the sum of the expected values under the state action of marginal in this Markov chain of the reward of that time step.
-124. So this is just using linearity of expectation to take the sum out of the expectation so that you have a sum over t of the expectation over tau of R st at.
-125. And then since the thing inside the expectation not only depends on st at, we can marginalize all the other variables out and we are left with a sum over the expectation under p theta t.
-126. So we could also write the objective as the sum over time of the sum over t of the expectation over tau of R st at.
+124. So this is just using linearity of expectation to take the sum out of the expectation so that you have a sum over t of the expectation over τ of R st at.
+125. And then since the thing inside the expectation not only depends on st at, we can marginalize all the other variables out and we are left with a sum over the expectation under p θ t.
+126. So we could also write the objective as the sum over time of the sum over t of the expectation over τ of R st at.
 127. Now this might seem like kind of a useless little mathematical, you know, kind of rewriting of the original objective, but it turns out to be quite useful if we want to extend this to the infinite horizon case.
-128. So this marginal p theta st given a t in a finite time Markov chain can be obtained just by marginalizing out all the other time steps.
+128. So this marginal p θ st given a t in a finite time Markov chain can be obtained just by marginalizing out all the other time steps.
 129. But we can also use this objective to get the infinite horizon case.
 130. So what if t equals infinity?
 131. Well, okay, the first thing that happens if t equals infinity is your objective might become ill-defined.
@@ -150,7 +150,7 @@
 150. Because otherwise it's not a stationary distribution.
 151. So stationary means it's the same before and after the transition.
 152. And if it's the same before and after the transition, then applying t enough times will eventually allow you to reach it.
-153. You can solve for the stationary distribution simply by rearranging this equation to see that it is equal to tau minus i times mu equals zero.
+153. You can solve for the stationary distribution simply by rearranging this equation to see that it is equal to τ minus i times mu equals zero.
 154. And remember that mu is a distribution.
 155. So it's a vector of numbers that are all positive and sum to one.
 156. So one way you can find mu is by finding the eigenvector with eigenvalue one for the matrix defined by t.
@@ -176,9 +176,9 @@
 176. So the reward function here appears to be discontinuous.
 177. There is a discontinuity between staying on the road and falling off the road.
 178. And if you try to optimize the reward function with respect to, for example, the position of the car, that optimization problem can't really be solved with gradient-based methods, because the reward is not a continuous, or much less a differentiable function, of the car's position.
-179. However, if you have a probability distribution over some action, let's say that abstractly that you just get to choose like fall or don't fall, so you have a binary action, you either fall or you don't fall, and it's a Bernoulli random variable with parameter theta.
-180. So with probability theta you fall off, with probability one minus theta you don't fall off.
-181. Now, the interesting thing is that the expected value of the reward with respect to pi theta is actually smooth in theta, because you have a probability of theta falling off, which has a reward of minus one, and a probability of one minus theta of staying on the road, so the reward is one minus theta minus theta.
-182. And that's perfectly smooth and perfectly differentiable, in theta.
+179. However, if you have a probability distribution over some action, let's say that abstractly that you just get to choose like fall or don't fall, so you have a binary action, you either fall or you don't fall, and it's a Bernoulli random variable with parameter θ.
+180. So with probability θ you fall off, with probability one minus θ you don't fall off.
+181. Now, the interesting thing is that the expected value of the reward with respect to pi θ is actually smooth in θ, because you have a probability of θ falling off, which has a reward of minus one, and a probability of one minus θ of staying on the road, so the reward is one minus θ minus θ.
+182. And that's perfectly smooth and perfectly differentiable, in θ.
 183. So, this is a very important property that will come up again and again, and that it really explains why reinforcement learning algorithms can optimize seemingly non-smooth and even sparse reward functions, which is that expected values of non-smooth and non-differentiable functions under differentiable and smooth probability distributions are themselves smooth and differentiable.
 184. Okay, let's pause there.

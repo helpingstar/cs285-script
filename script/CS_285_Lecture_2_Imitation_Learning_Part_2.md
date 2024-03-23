@@ -3,24 +3,24 @@
 3. Okay, so let's go back to this intuitive picture, which I used to argue that the reason that behavioral cloning doesn't do so well is because even if you learn a very good policy, if that policy makes a small mistake, it'll put you into a situation that's a little bit different from the ones that it was trained on, where it's more likely to make a bigger mistake, which in turn will put you into an even more unfamiliar situation.
 4. And from there, the mistakes might build up and up.
 5. So to try to make this more precise, let's start introducing a little bit of notation.
-6. We have a policy, pi theta at given ot, and that policy is trained using a training set that comes from a particular distribution.
+6. We have a policy, pi θ at given ot, and that policy is trained using a training set that comes from a particular distribution.
 7. And that distribution is produced by a person providing demonstrations, like a person driving a car, for example.
 8. So I'm going to use p data ot to denote the distribution that produced the training set.
 9.  Now, p data ot might be a very complex distribution.
 10. We don't really care about that.
 11. All we care about at this stage is that it is whatever distribution over observations comes from the human's drive.
 12. And then I'll use a different symbol to denote the distribution over observations that the policy itself sees when it's driving a car.
-13. And that's going to be denoted with p pi theta ot.
-14. And of course, because the policy doesn't drive exactly the same way that a person drives, p pi theta ot is not going to be the same as p data ot.
-15. So if we want to understand just how different these things are going to be, let's first discuss how pi theta is trained.
-16. Well, pi theta is trained under p data ot, which means that we can, if we're using some standard training objective, like supervised maximum likelihood or empirical risk minimization, basically, we can write the objective as the following.
+13. And that's going to be denoted with p pi θ ot.
+14. And of course, because the policy doesn't drive exactly the same way that a person drives, p pi θ ot is not going to be the same as p data ot.
+15. So if we want to understand just how different these things are going to be, let's first discuss how pi θ is trained.
+16. Well, pi θ is trained under p data ot, which means that we can, if we're using some standard training objective, like supervised maximum likelihood or empirical risk minimization, basically, we can write the objective as the following.
 17. It's maximizing the log probability of the actions from the human given the observations.
 18. And the observations are sampled from p data ot.
 19. So the expectation is under p data ot.
 20. Now, we know from supervised learning theory that if we train our policy in this way and we don't overfit and we don't underfit, then we would expect the log probability of the actions under the distribution p data ot to be high.
 21. We would expect good actions to have high probability.
-22. Of course, the problem is that performance of the policy is not determined by the log probability that assigns to good actions under the experts observation distribution, but under the testing distribution which is p pi theta.
-23. So the log probability of good actions under p pi theta might be very different because p data and p pi theta are not the same.
+22. Of course, the problem is that performance of the policy is not determined by the log probability that assigns to good actions under the experts observation distribution, but under the testing distribution which is p pi θ.
+23. So the log probability of good actions under p pi θ might be very different because p data and p pi θ are not the same.
 24. This is often referred to as distributional shift, which means that the distribution under which the policy is tested is shifted from the distribution under which it's trained.
 25. Now it just so happens that that shift is due to the policy's own mistakes, but this is the formal statement for why we can't in general expect it to be correct.
 26. And it's pretty easy to construct counter examples where this will be very bad.
@@ -52,12 +52,12 @@
 52. Okay, so our goal now is going to be to minimize the expected cost, meaning the expected number of mistakes that our policy is going to make, but expect that under what distribution?
 53. Well, what we care about is the number of mistakes that the policy makes when it actually drives the car.
 54. We don't really care how many mistakes it would make when it's looking at the human's images, because that's not how it's going to be used.
-55. So what we care about is the cost in expectation under p pi theta, under the distribution of states the policy will actually see.
+55. So what we care about is the cost in expectation under p pi θ, under the distribution of states the policy will actually see.
 56. And that's a very, very important distinction, because we're training the policy to assign high probability to the actions under p data.
-57. But what we really care about is to minimize the number of mistakes under p pi theta.
+57. But what we really care about is to minimize the number of mistakes under p pi θ.
 58. Okay?
 59. So that's an important distinction.
-60. So in analyzing how good behavioral cloning is, what we're really trying to do is we're trying to say, well, if we succeeded in doing our supervised learning well, what can we say about this expected value of this cost under p pi theta?
+60. So in analyzing how good behavioral cloning is, what we're really trying to do is we're trying to say, well, if we succeeded in doing our supervised learning well, what can we say about this expected value of this cost under p pi θ?
 61. So basically, will we successfully minimize the number of mistakes when we run the policy?
 62. Yes or no?
 63. Okay.
@@ -132,18 +132,18 @@
 132. So for any state sampled from P train, uh, your error is less than or equal to epsilon.
 133. It's actually enough to just assume that the expected value of the error is less than or equal to epsilon, which is more realistic, of course, because typically you train for the expected value of the, uh, of the loss.
 134. And with DAG, with, uh, with DAG, which we'll talk about later, it's an algorithm that we'll introduce at the end of the lecture.
-135. It'll make this problem go away because it'll make P train and P by theta the same, but for now they're not the same.
+135. It'll make this problem go away because it'll make P train and P by θ the same, but for now they're not the same.
 136. So that's going to be a problem.
 137. We're going to show that the expected number of mistakes is, uh, going to be epsilon T squared in the worst case.
 138. And then of course with DAG, or when they become equal, it will be epsilon T.
 139. Uh, so that'll the DAG stuff, don't worry about it yet.
 140. That'll come at the end of the lecture.
-141. Uh, but if P train is not equal to P theta, uh, then here's what happens.
+141. Uh, but if P train is not equal to P θ, uh, then here's what happens.
 142. What we can do if we want to figure out the expected value of the cost, uh, is we can describe the distribution over states at time step T as a sum of two terms.
 143. And one of those terms is going to be easy to analyze and the other term will be really complicated and we'll just use a bound for that.
 144. So we can say that at time step T there's some probability that you didn't make any mistakes at all, meaning some probability that you stayed on the tightrope, that you did everything right.
 145. And if the probability of making a mistake at each step step is epsilon and you start off at an indistribution state, uh, meaning you start off at a state sample from P train, then the probability that you made no mistakes for T time steps is just one minus epsilon to the power T, little t.
-146. So we can say that P theta ST is equal to one minus epsilon to the power T times P train ST because that's the probability that you didn't make a mistake.
+146. So we can say that P θ ST is equal to one minus epsilon to the power T times P train ST because that's the probability that you didn't make a mistake.
 147. And if you didn't make a mistake that you're still in the distribution P train plus one minus that one minus one minus epsilon to the T times some other distribution.
 148. So it's just saying that, there's some part of your distribution for all the possibilities where you didn't do anything wrong and then there's everything else.
 149. And the weight on the part where you did nothing wrong is one minus epsilon to the T and the distribution there is P train.
@@ -151,21 +151,21 @@
 151. So this is a decomposition you can make.
 152. Now P mistake is something really complicated, right?
 153. So we don't really understand what P mistake is.
-154. It's like the part of P theta that is separate from P train.
+154. It's like the part of P θ that is separate from P train.
 155. So we're not going to make any assumptions on P mistake other than that it only constitute a one minus one minus epsilon to the T portion of your distribution, okay?
-156. and of course if epsilon is very very small then the sum is dominated by the first term so if epsilon is very small then 1 minus epsilon is almost 1 so most of it is in p train but of course the larger t is the more that exponent is going to hurt okay so that's what we've got and now what i'm going to do is i'm going to relate the distribution p theta st to the distribution p train st now when you see me using this absolute value sign what i'm in general going to be referring to is a total variation divergence a total variation divergence is just a sum over all of the states of the absolute value of the difference in their probabilities it can be viewed as a very simple notion of divergence between distributions but for now we're just going to do this at one state so at any given state the absolute value of p theta st minus p train st
-157. Well it's pretty to work out if you just substitute in the equation above for p theta st you'll see there's a p train term that cancels out so you get a 1 minus epsilon to the t p train minus p train so that you can take out as a 1 minus 1 minus epsilon to the t and now you end up with this equation you get it up with 1 minus 1 minus epsilon to the t times the absolute value of p mistake minus p train okay now that's still a kind of a cryptic equation we don't know what this absolute value is but we know that all probability all probabilities have to be between 0 and 1.
+156. and of course if epsilon is very very small then the sum is dominated by the first term so if epsilon is very small then 1 minus epsilon is almost 1 so most of it is in p train but of course the larger t is the more that exponent is going to hurt okay so that's what we've got and now what i'm going to do is i'm going to relate the distribution p θ st to the distribution p train st now when you see me using this absolute value sign what i'm in general going to be referring to is a total variation divergence a total variation divergence is just a sum over all of the states of the absolute value of the difference in their probabilities it can be viewed as a very simple notion of divergence between distributions but for now we're just going to do this at one state so at any given state the absolute value of p θ st minus p train st
+157. Well it's pretty to work out if you just substitute in the equation above for p θ st you'll see there's a p train term that cancels out so you get a 1 minus epsilon to the t p train minus p train so that you can take out as a 1 minus 1 minus epsilon to the t and now you end up with this equation you get it up with 1 minus 1 minus epsilon to the t times the absolute value of p mistake minus p train okay now that's still a kind of a cryptic equation we don't know what this absolute value is but we know that all probability all probabilities have to be between 0 and 1.
 158. so the biggest difference between two probabilities can be at most 1 right because the worst case is p mistake is 1 and p train is 0 or vice versa and the largest total variation divergence meaning if you sum over all of the states and you try to evaluate the absolute value of their difference is going to be 2 because the worst case is that in one state one of the probabilities one the other is 0 and in some other state it's the other way around one of them is 0 is the other one so the worst possible difference between two distributions when you sum over all the states is 2.
-159. so that means that this whole thing is bounded by 2 times 1 minus 1 minus epsilon to the t so what we've shown is that the total variation divergence between p theta st and p train st is 2 times 1 minus 1 minus epsilon to the t and these exponents are a little hard to deal with but for values of epsilon between 0 and 1 there's a very convenient identity that 1 minus epsilon to the t is greater than or equal to 1 minus epsilon times t so that's true for any epsilon between 0 and 1 is just an algebraic identity so if we substitute that into the inequality above we can further bound this by 2 times epsilon t and that's just an algebraic convenience so that we can get rid of these exponents it gives us a slightly looser bound but it's a little easier to think about so what we've shown now is that the total variation divergence between p theta st and p train st is bounded by 2 times epsilon t and remember total variation divergence is just the sum over all of the s's of the absolute value of the difference of their probabilities
+159. so that means that this whole thing is bounded by 2 times 1 minus 1 minus epsilon to the t so what we've shown is that the total variation divergence between p θ st and p train st is 2 times 1 minus 1 minus epsilon to the t and these exponents are a little hard to deal with but for values of epsilon between 0 and 1 there's a very convenient identity that 1 minus epsilon to the t is greater than or equal to 1 minus epsilon times t so that's true for any epsilon between 0 and 1 is just an algebraic identity so if we substitute that into the inequality above we can further bound this by 2 times epsilon t and that's just an algebraic convenience so that we can get rid of these exponents it gives us a slightly looser bound but it's a little easier to think about so what we've shown now is that the total variation divergence between p θ st and p train st is bounded by 2 times epsilon t and remember total variation divergence is just the sum over all of the s's of the absolute value of the difference of their probabilities
 160. Okay, so now let's talk about the quantity that we actually care about what is uh what kind of bound can we derive based on this for the sum over all of the time steps of the expected value of our cost.
-161. Well, uh to figure that out we'll substitute in the equation for an expected value so an expected value is just a sum over all the states of the probability of that state times its cost and what i'm going to do is i'm going to replace p theta with p theta minus p train plus p train so I can subtract p train.
+161. Well, uh to figure that out we'll substitute in the equation for an expected value so an expected value is just a sum over all the states of the probability of that state times its cost and what i'm going to do is i'm going to replace p θ with p θ minus p train plus p train so I can subtract p train.
 162. I can add p train in both cases that's totally fine to do.
-163. And then I'll put an absolute value symbol around the p theta minus b train part because if you have some quantity you take its absolute value you can only make it bigger because if it was positive it stays where it is and if it was negative it becomes a larger value okay and that gets us this bound so in this bound what i've done is i've replaced the sum over st of the absolute value of p theta st minus p train st times ct with the total variation divergence times c max the largest value of the cost in any state so i have one portion which is p train times the cost and then i have another portion which is the total variation divergence times the maximum cost in any state so just to repeat how this step was produced first you replace p theta st with p theta st plus p train minus p train the plus p train term becomes that first term in the bound and and then I'm left with p theta minus p train.
+163. And then I'll put an absolute value symbol around the p θ minus b train part because if you have some quantity you take its absolute value you can only make it bigger because if it was positive it stays where it is and if it was negative it becomes a larger value okay and that gets us this bound so in this bound what i've done is i've replaced the sum over st of the absolute value of p θ st minus p train st times ct with the total variation divergence times c max the largest value of the cost in any state so i have one portion which is p train times the cost and then i have another portion which is the total variation divergence times the maximum cost in any state so just to repeat how this step was produced first you replace p θ st with p θ st plus p train minus p train the plus p train term becomes that first term in the bound and and then I'm left with p θ minus p train.
 164. I can take the absolute value of that.
 165. I can sum it over all the states, and that gives me the total variation divergence.
 166. And to account for the fact that in every state I have a different cost, I'll just replace that cost with the maximum cost, which I can take outside of the summation.
 167. And that gives me a valid upper bound.
-168. Now, at this point, I'm going to use my bound for that total variation divergence for the difference between p theta and p train, and that's 2 epsilon t.
+168. Now, at this point, I'm going to use my bound for that total variation divergence for the difference between p θ and p train, and that's 2 epsilon t.
 169. And, of course, I know that my cost in p train, my expected cost, is epsilon because that's my initial assumption.
 170. So the first term becomes, the first term sum over st of p train times c is epsilon.
 171. The second term is 2 epsilon t times c max, and c max, of course, is 1.

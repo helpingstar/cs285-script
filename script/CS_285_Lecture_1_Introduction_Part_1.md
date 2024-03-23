@@ -37,7 +37,7 @@
 37. And even outside of the kind of standard generative modeling applications, we've seen a lot of interesting results, for example, in biological sciences, where you can get generative models that will produce proteins that bind to certain kinds of viruses.
 38. So data-driven AI has really advanced tremendously, and we've seen a lot of advances from image generation to text to all sorts of other areas.
 39. A lot of these advances that have been very much in the news in the last few years are based on, in some sense, a very similar idea to the supervised learning approach that I presented as kind of a straw man in my discussion of the robotic example from before.
-40. The principle behind the image generation model, the language models and many of these other settings, is based on essentially a kind of density estimation, estimating P of X or conditional density estimation P of Y given X.
+40. The principle behind the image generation model, the language models and many of these other settings, is based on essentially a kind of density estimation, estimating p(x) or conditional density estimation P of Y given X.
 41. So for language models, typically estimate the distribution of natural language sentences.
 42. The image generation models might be conditional distributions over images conditioned on that prompt.
 43. But it's a very similar kind of idea.

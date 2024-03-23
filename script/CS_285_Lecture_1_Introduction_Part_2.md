@@ -55,7 +55,7 @@
 55. You have a data set of inputs and outputs.
 56. We refer to them typically as x and y.
 57. And you want to learn to predict y from x.
-58. So you want to learn some kind of function, f of x, which outputs values y that are close to the y labels in the data set.
+58. So you want to learn some kind of function, f(x), which outputs values y that are close to the y labels in the data set.
 59. So, for example, f might be represented by a deep neural network that you would train via classification or regression to match the labels y.
 60. And while the basic formulation of supervised machine learning is very straightforward, supervised machine learning methods make a number of assumptions that we often don't even think about because they're so natural, but that are important to bring up if we're going to discuss how this differs from reinforcement learning.
 61. Supervised learning typically assumes what is called independent and identically distributed data.
@@ -87,7 +87,7 @@
 87. So let's try to make this a little bit more precise.
 88. In supervised learning, you have an input x and you have an output y, and you have a data set that consists of x-y pairs.
 89. The goal is to learn a function that takes an x and approximates y.
-90. And typically this function has some parameters which are referred to as theta.
+90. And typically this function has some parameters which are referred to as θ.
 91. These might be, for example, the weights in a neural network.
 92. In reinforcement learning, we have a kind of a cyclical online learning procedure where an agent interacts with the world, the agent chooses actions, at, at every point in time, and the world responds with the resulting state, st plus one, and a reward signal.
 93. And the reward signal simply indicates how good that state is, but it doesn't necessarily tell you if the action that you just took was a good or bad action.
@@ -99,8 +99,8 @@
 99. Rewards are numbers, scalar values.
 100. And whereas in supervised learning, the data is given to you, you don't have to worry about who gave you the data, it's just provided to you as a set of x, y tuples, in reinforcement learning, you have to pick your own actions and collect your own data.
 101. So not only do you have to worry about the fact that the actions in your data set might not be the optimal actions, you have to also actually decide how that data will be collected.
-102. And your goal is to learn a policy, pi theta, which maps states s to actions a.
-103. And just like f, pi has parameters theta, so those might again be the weights in a neural network.
+102. And your goal is to learn a policy, pi θ, which maps states s to actions a.
+103. And just like f, pi has parameters θ, so those might again be the weights in a neural network.
 104. And a good policy is one that maximizes the cumulative total reward.
 105. So not just the reward at any point in time, but the total reward the agent receives.
 106. So that involves strategic reasoning.

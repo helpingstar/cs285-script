@@ -15,7 +15,7 @@
 15. Your policy is going to be univariate and normally distributed with just two parameters.
 16. One parameter k multiplies the state, so your mean is linear in the state, and the other parameter determines your variance, signal.
 17. So yeah.
-18. So you have k and sigma as your policy parameters theta.
+18. So you have k and sigma as your policy parameters θ.
 19. So you can think of the policy as basically a little Gaussian centered at your current location, and your action is k times your current state.
 20. So you're going to take this kind of noisy walk, hopefully towards the goal at s equals zero.
 21. Now the convenient thing with having a two-dimensional parameter space is that we can actually visualize the entire vector field corresponding to the gradient at all locations in the parameter space.
@@ -47,47 +47,47 @@
 47. But you want all of the parameters to reach their optimal value, so intuitively what you would like to do is to essentially have larger learning rates for those parameters that don't change the policy very much, and smaller learning rates for those that change it a lot.
 48. If we want to view this a little bit more mathematically, one of the things we can do is look at the constraint optimization view of first-order gradient ascent.
 49. So first-order gradient ascent, can be viewed as iteratively solving the following constraint optimization problem.
-50. Take the argmax with respect to theta prime integrated with say a new parameter value.
-51. Your objective is the first-order Taylor expansion of your original objective that's given by theta prime minus theta times grad j and you have a constraint that says theta prime minus theta squared should be small.
-52. So it's like saying within an epsilon ball around your current parameter value find the parameter value that maximizes theta.
+50. Take the argmax with respect to θ prime integrated with say a new parameter value.
+51. Your objective is the first-order Taylor expansion of your original objective that's given by θ prime minus θ times grad j and you have a constraint that says θ prime minus θ squared should be small.
+52. So it's like saying within an epsilon ball around your current parameter value find the parameter value that maximizes θ.
 53. If you were to repeat what we just fabricate a sized y wszystkie parameter sauve at 1,0 if the parameter camera sogge, then you'll find we're at none.
 54. So that's just a long way from a length price, of course that maximizes the linearization of your objective.
 55. That's essentially what first-order gradient descent is doing, and you can think of alpha as basically the Lagrange multiplier for that constraint.
 56. So those of you that have studied mirror descent or projected gradient descent would probably recognize this equation.
 57. Usually we pick alpha rather than epsilon, but alpha is basically just the Lagrange multiplier that corresponds to epsilon.
-58. So what this means is that when we do first-order gradient descent, we're finding the best value for theta prime within an epsilon ball, but that epsilon ball is in theta space.
+58. So what this means is that when we do first-order gradient descent, we're finding the best value for θ prime within an epsilon ball, but that epsilon ball is in θ space.
 59. Now our linearized objective is valid in only a small region around our current policy.
 60. That's why we can't use very large step sizes.
 61. But that region is very awkward to select if you have to select it in parameter space because some parameters will change the policy a lot and some will change it very little.
-62. So intuitively what we would like to do is we would like to simplify the equation to the value of theta prime.
+62. So intuitively what we would like to do is we would like to simplify the equation to the value of θ prime.
 63. We would like to somehow reparameterize this process so that our steps are of equal size in policy space rather than parameter space, which would essentially rescale the gradient so that parameters that change the policy a lot get smaller rates, parameters that change the policy very little get larger rates.
 64. So this is basically the problem.
 65. This controls how far we go, and it's basically in the wrong space.
 66. So can we rescale the gradient so that this doesn't happen?
 67. What if we instead iteratively solve this problem, maximize the linearized objective, but subject to a constraint that the distributions don't change too much?
-68. So here d is some measure of divergence between pi theta prime and pi theta, and we'd like that divergence measure to be less than or equal to epsilon.
+68. So here d is some measure of divergence between pi θ prime and pi θ, and we'd like that divergence measure to be less than or equal to epsilon.
 69. So we'd like to pick some parameterization-independent divergence measure, a divergence measure that doesn't care about how you're parameterizing your policy, just which distribution it corresponds to.
 70. A very good choice for this is the KL divergence.
 71. The KL divergence is a standard divergence, and it's a very good choice for us.
 72. So if I'm going to do a measurement of the divergence on distributions, I won't go into too much detail about how KL divergences are defined or derived, just that it's a measure of divergence on distributions, and it is parameter-independent, meaning that no matter how you parameterize your distributions, the KL divergence will remain the same.
 73. Now, the KL divergence is a little complicated to plug into this kind of constrained optimization.
 74. We want that constrained optimization to be very simple, because we're going to do that at every step of our gradient ascent procedure.
-75. But if we take the second-order Taylor expansion, the KL divergence, around the point theta prime equals theta, then the KL divergence can be expressed as approximately as a quadratic form for some matrix F, right?
+75. But if we take the second-order Taylor expansion, the KL divergence, around the point θ prime equals θ, then the KL divergence can be expressed as approximately as a quadratic form for some matrix F, right?
 76. That's just what a second-order Taylor expansion is.
 77. And it turns out that F is equal to what's called a Fisher information matrix.
-78. The Fisher information matrix is the expected value under pi theta, that's your old policy, of ∇log π times ∇log π transpose.
+78. The Fisher information matrix is the expected value under pi θ, that's your old policy, of ∇log π times ∇log π transpose.
 79. So it's the expected value of the, the outer product of the gradient with itself.
-80. Now notice that the Fisher information matrix is an expectation under pi theta, which should immediately suggest that we can approximate it by taking samples from pi theta, and actually trying to estimate this expectation.
+80. Now notice that the Fisher information matrix is an expectation under pi θ, which should immediately suggest that we can approximate it by taking samples from pi θ, and actually trying to estimate this expectation.
 81. And that's in fact exactly what we're going to do.
 82. So now we've arrived at this formulation for our covariant policy gradient.
 83. At every single step of our optimization, we maximize the linearity.
-84. We've got this linearized objective, subject to this approximate divergence constraint, which is just the difference between theta prime and theta, under the matrix F.
-85. So it's just like what we had before, theta prime minus theta, only before it was under the identity matrix, and now it's under the matrix F.
-86. And if you actually write down Lagrangian for this, and solve for the optimal solution, you'll find that the solution is just to set the new theta to be theta.
+84. We've got this linearized objective, subject to this approximate divergence constraint, which is just the difference between θ prime and θ, under the matrix F.
+85. So it's just like what we had before, θ prime minus θ, only before it was under the identity matrix, and now it's under the matrix F.
+86. And if you actually write down Lagrangian for this, and solve for the optimal solution, you'll find that the solution is just to set the new θ to be θ.
 87. So we have a solution.
-88. We have a solution to be theta plus alpha, where alpha is the Lagrange multiplier, of F inverse times grad theta J(θ).
-89. So before we had theta plus alpha grad theta J(θ).
-90. Now we have theta plus alpha F inverse grad theta J(θ).
+88. We have a solution to be θ plus alpha, where alpha is the Lagrange multiplier, of F inverse times grad θ J(θ).
+89. So before we had θ plus alpha grad θ J(θ).
+90. Now we have θ plus alpha F inverse grad θ J(θ).
 91. So F is basically our preposition right now.
 92. And it turns out that if you apply this F inverse in front of your gradient, then your vector field changes in a very nice way.
 93. So the picture on the right shows what you get by using this equation.
@@ -100,7 +100,7 @@
 100. The classical one, natural gradient or natural policy gradient, The classical one, natural gradient or natural policy gradient, selects alpha.
 101. A more modern variant called trust region policy optimization selects epsilon and then derives alpha.
 102. selects epsilon and then derives alpha.
-103. So the way that you derive alpha is by solving for the optimal alpha at the same time while solving for f inverse grad theta J(θ).
+103. So the way that you derive alpha is by solving for the optimal alpha at the same time while solving for f inverse grad θ J(θ).
 104. We won't go into how to do this, but the high level idea is that by using conjugate gradient you can actually get both alpha and the natural gradient simultaneously.
 105. So for more details on that, you can check out the paper called trust region policy optimization.
 106. The takeaway from all of this is that the policy gradient can be numerically very difficult to use because different parameters are used.
