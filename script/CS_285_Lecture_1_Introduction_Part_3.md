@@ -92,11 +92,11 @@
 92. It may make a decision, which could be the image label, but really the decision has implications of what happens downstream of that image label.
 93. Maybe this perception system is detecting how many cars there are at an intersection, and that label will be used to determine how to route traffic.
 94. So it has long term implications.
-95.  Maybe the computer vision system is detecting people in a security camera, and it's going to call security if it sees someone where they shouldn't be.
-96.  Well, that's definitely a decision that could lead to some very complex and very difficult to model outcomes.
-97.  If you view all of the outcomes of machine learning problems as decisions, then it becomes clear that all machine learning problems are really reinforcement learning problems in disguise.
-98.  It's just that in some cases we have the privilege of supervised labeled data that can aid us in solving them.
-99.  And while this perspective might be a little bit reductionist, I think it's important to keep in mind because it really tells us those building blocks, learning and search, are not just special things that we want for robots and video game playing, but they're really general building blocks of AI systems.
+95. Maybe the computer vision system is detecting people in a security camera, and it's going to call security if it sees someone where they shouldn't be.
+96. Well, that's definitely a decision that could lead to some very complex and very difficult to model outcomes.
+97. If you view all of the outcomes of machine learning problems as decisions, then it becomes clear that all machine learning problems are really reinforcement learning problems in disguise.
+98. It's just that in some cases we have the privilege of supervised labeled data that can aid us in solving them.
+99. And while this perspective might be a little bit reductionist, I think it's important to keep in mind because it really tells us those building blocks, learning and search, are not just special things that we want for robots and video game playing, but they're really general building blocks of AI systems.
 100. And that brings us to some big questions like how do we build intelligent machines?
 101. Very general intelligent machines, not just machines that can detect objects and images, but things like this, or this, or this, or if you are more nefariously inclined, things like this.
 102. The kinds of intelligent machines that were popularized in science fiction that captured the imagination, maybe they're quite a ways away, but how do we start taking steps towards this kind of thing?

@@ -1,5 +1,5 @@
-1.  All right, the remainder of today's lecture will focus on more practical methods that can make behavioral cloning work, as well as some other algorithms that we could use.
-2.  So we talked about a little bit of theory, but now we'll talk about how the problem can be addressed in a few ways.
+1. All right, the remainder of today's lecture will focus on more practical methods that can make behavioral cloning work, as well as some other algorithms that we could use.
+2. So we talked about a little bit of theory, but now we'll talk about how the problem can be addressed in a few ways.
 3. By being smart about collecting your data, by using very powerful models that make comparatively fewer mistakes, by using multitask learning, and by changing the algorithm.
 4. And I'll go through these pretty fast, so my aim with this portion of the lecture is not really to go in great detail about how to actually implement some of these methods, but just to give you a sense for the types of methodologies that people employ.
 5. The one method that you will implement in homework is Dagger, and I'll go through that somewhat more precisely.
@@ -88,15 +88,15 @@
 88. Again, I won't talk about those architectural details in detail because they're actually not imitation learning specific.
 89. So anything that you learned about before for sequence modeling could just as well be used for imitation learning.
 90. There is however an important caveat that I want to mention, which is that using histories of observations does not always make things better and the reason that if sometimes makes things worse is that it might exacerbate correlations that occur in your data.
-91.  This is a little bit of an aside.
-92.  I don't necessarily expect all of you to kind of to know this in detail, but I do think it's an interesting aside.
-93.  It's something that perhaps might inspire some ideas for things like final projects.
-94.  Why might this work poorly?
-95.  Well, here's a little scenario.
-96.  Let's say that you have a strange kind of car where there's a dashboard indicator for whether you're pressing the brakes.
-97.  So whenever you press the brakes, there's a light bulb that lights up inside the cabin.
-98.  And the camera that is recording your data for imitation learning is inside the cabin so the camera can see out of the window and it can also see the brake indicator.
-99.  So whenever the person steps on the brake, the light lights up.
+91. This is a little bit of an aside.
+92. I don't necessarily expect all of you to kind of to know this in detail, but I do think it's an interesting aside.
+93. It's something that perhaps might inspire some ideas for things like final projects.
+94. Why might this work poorly?
+95. Well, here's a little scenario.
+96. Let's say that you have a strange kind of car where there's a dashboard indicator for whether you're pressing the brakes.
+97. So whenever you press the brakes, there's a light bulb that lights up inside the cabin.
+98. And the camera that is recording your data for imitation learning is inside the cabin so the camera can see out of the window and it can also see the brake indicator.
+99. So whenever the person steps on the brake, the light lights up.
 100. Now in this case there's a person standing in front of the car and the driver stepped on the brakes because there was a person there @ what the policy @ in the training data is it'll see one frame where the person is visible, but the brake indicator is not on, and the brake is pressed.
 101. And then we'll see many steps after that where the brake indicator is pressed, is lit, and the brake is pressed.
 102. So there's a very strong association between the brake indicator and the brake being pressed.

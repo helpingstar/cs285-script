@@ -90,13 +90,13 @@
 90. But in general, we can have arbitrary costs on states and actions.
 91. And those can define arbitrary control tasks, like not being eaten by tigers or reaching a desired destination.
 92. So, the new thing that we're going to introduce and that we're going to use in lectures next week is the cost function.
-93.  Or, sometimes, the reward function.
-94.  Now, the cost function and the reward function are really the same thing.
-95.  They're just negatives of one another.
-96.  And the reason that we see both sometimes is the same kind of a cultural distinction that I alluded to before.
-97.  Remember, I mentioned that we have S and A, which comes from the study of dynamic programming.
-98.  And that's where the reward comes from.
-99.  In optimal control, it's a bit more common to deal with costs.
+93. Or, sometimes, the reward function.
+94. Now, the cost function and the reward function are really the same thing.
+95. They're just negatives of one another.
+96. And the reason that we see both sometimes is the same kind of a cultural distinction that I alluded to before.
+97. Remember, I mentioned that we have S and A, which comes from the study of dynamic programming.
+98. And that's where the reward comes from.
+99. In optimal control, it's a bit more common to deal with costs.
 100. I don't know if there's a cultural commentary here.
 101. Well, you know, optimal control originated in Russia.
 102. Maybe it's a little more common to think about costs in America.

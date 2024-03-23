@@ -75,7 +75,7 @@
 75. But if we take the second-order Taylor expansion, the KL divergence, around the point theta prime equals theta, then the KL divergence can be expressed as approximately as a quadratic form for some matrix F, right?
 76. That's just what a second-order Taylor expansion is.
 77. And it turns out that F is equal to what's called a Fisher information matrix.
-78. The Fisher information matrix is the expected value under pi theta, that's your old policy, of grad log pi times grad log pi transpose.
+78. The Fisher information matrix is the expected value under pi theta, that's your old policy, of ∇log π times ∇log π transpose.
 79. So it's the expected value of the, the outer product of the gradient with itself.
 80. Now notice that the Fisher information matrix is an expectation under pi theta, which should immediately suggest that we can approximate it by taking samples from pi theta, and actually trying to estimate this expectation.
 81. And that's in fact exactly what we're going to do.
@@ -85,9 +85,9 @@
 85. So it's just like what we had before, theta prime minus theta, only before it was under the identity matrix, and now it's under the matrix F.
 86. And if you actually write down Lagrangian for this, and solve for the optimal solution, you'll find that the solution is just to set the new theta to be theta.
 87. So we have a solution.
-88. We have a solution to be theta plus alpha, where alpha is the Lagrange multiplier, of F inverse times grad theta j theta.
-89. So before we had theta plus alpha grad theta j theta.
-90. Now we have theta plus alpha F inverse grad theta j theta.
+88. We have a solution to be theta plus alpha, where alpha is the Lagrange multiplier, of F inverse times grad theta J(θ).
+89. So before we had theta plus alpha grad theta J(θ).
+90. Now we have theta plus alpha F inverse grad theta J(θ).
 91. So F is basically our preposition right now.
 92. And it turns out that if you apply this F inverse in front of your gradient, then your vector field changes in a very nice way.
 93. So the picture on the right shows what you get by using this equation.
@@ -100,7 +100,7 @@
 100. The classical one, natural gradient or natural policy gradient, The classical one, natural gradient or natural policy gradient, selects alpha.
 101. A more modern variant called trust region policy optimization selects epsilon and then derives alpha.
 102. selects epsilon and then derives alpha.
-103. So the way that you derive alpha is by solving for the optimal alpha at the same time while solving for f inverse grad theta j theta.
+103. So the way that you derive alpha is by solving for the optimal alpha at the same time while solving for f inverse grad theta J(θ).
 104. We won't go into how to do this, but the high level idea is that by using conjugate gradient you can actually get both alpha and the natural gradient simultaneously.
 105. So for more details on that, you can check out the paper called trust region policy optimization.
 106. The takeaway from all of this is that the policy gradient can be numerically very difficult to use because different parameters are used.

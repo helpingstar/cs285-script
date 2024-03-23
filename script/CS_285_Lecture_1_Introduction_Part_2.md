@@ -95,8 +95,8 @@
 95. The input to our agent is going to be the state st at each time step.
 96. So this is kind of the n log of x.
 97. The output is at at each time step.
-98.  The data, which is collected by the agent itself classically, consists of sequences of states, actions, and variables.
-99.  Rewards are numbers, scalar values.
+98. The data, which is collected by the agent itself classically, consists of sequences of states, actions, and variables.
+99. Rewards are numbers, scalar values.
 100. And whereas in supervised learning, the data is given to you, you don't have to worry about who gave you the data, it's just provided to you as a set of x, y tuples, in reinforcement learning, you have to pick your own actions and collect your own data.
 101. So not only do you have to worry about the fact that the actions in your data set might not be the optimal actions, you have to also actually decide how that data will be collected.
 102. And your goal is to learn a policy, pi theta, which maps states s to actions a.

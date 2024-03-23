@@ -1,6 +1,6 @@
 1. In the next portion of today's lecture, we're going to talk about implementing policy gradients in practice, in deep RL algorithms.
 2. One of the main challenges with implementing policy gradients is that we would like to implement them in such a way that automatic differentiation tools like TensorFlow or PyTorch can calculate the policy gradient for us with reasonable computational and memory requirements.
-3. If we wanted to implement policy gradients naively, we could simply calculate grad log pi AIT given SIT for every single state action tuple that we sampled.
+3. If we wanted to implement policy gradients naively, we could simply calculate ∇log π AIT given SIT for every single state action tuple that we sampled.
 4. However, typically, this is very inefficient because neural networks can have a very large number of parameters.
 5. In fact, the number of parameters is usually much larger than the number of samples that we've produced.
 6. So let's say that we have n parameters, where n might be on the order of a million.
@@ -19,14 +19,14 @@
 19. The way that we're going to figure this out is by starting with the gradients that we already know how to compute, which are maximum likelihood gradients.
 20. So if we want to compute maximum likelihood gradients, then what we would do is we would implement the maximum likelihood objective using something like a cross-entropy loss, and then call dot backward or dot gradients on it, depending on your automatic differentiation package, and obtain your gradients.
 21. So the way that we're going to implement policy gradients to get our auditive package to calculate them efficiently, is by implementing a kind of pseudo loss as a weighted maximum likelihood.
-22. So instead of implementing J maximum likelihood, we'll implement this thing called J tilde, which will just be the sum of the log probabilities of all of our sampled actions, multiplied by the rewards to go, Q hat.
+22. So instead of implementing J maximum likelihood, we'll implement this thing called J tilde, which will just be the sum of the log probabilities of all of our sampled actions, multiplied by the rewards to go, ^{Q}.
 23. Now critically, this equation is not the reinforcement learning objective.
 24. In fact, this equation is not anything.
 25. It's just a quantity, chosen such that its derivatives come out to be the policy gradient.
-26. Of course, a critical portion of this is that our automatic differentiation package doesn't realize that those Q hat numbers are themselves affected by our policy.
+26. Of course, a critical portion of this is that our automatic differentiation package doesn't realize that those ^{Q} numbers are themselves affected by our policy.
 27. So it's just dealing with the graph that we provided it.
 28. So in a sense, we're almost trying to trick our auditive package into giving us the gradient that we want.
-29. Okay, so here log pi is, you know, would be for example our cross-entropy loss.
+29. Okay, so here log π is, you know, would be for example our cross-entropy loss.
 30. If we have discrete actions or squared error if we have normally distributed continuous actions.
 31. All right, so I have some pseudocode here.
 32. This pseudocode is actually in TensorFlow because I taught the class in TensorFlow in past years.

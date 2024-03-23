@@ -1,7 +1,7 @@
 1. In the next portion of today's lecture, we're going to talk about how we can extend policy gradients from the on-policy setting into the off-policy setting.
 2. So the first part I want to cover is why policy gradients are considered an on-policy algorithm.
 3. Policy gradients are the classical example of an on-policy algorithm because they require generating new samples each time you modify the policy.
-4. The reason this is an issue is if you look at the form of the policy gradients, it's an expected value under p theta of tau of grad log p of tau times r of tau, and it's really the fact that the expected value is taken under p theta of tau that's the problem.
+4. The reason this is an issue is if you look at the form of the policy gradients, it's an expected value under p theta of τ of ∇log p(τ) times r of tau, and it's really the fact that the expected value is taken under p theta of τ that's the problem.
 5. The way that we calculate this expectation in policy gradients is by sampling trajectories using the latest policy.
 6. But since the derivative evaluated at parameter vector theta requires samples sampled according to theta, we have to throw out our samples each time we change theta.
 7. Which means that policy gradient is an on-policy algorithm.
@@ -22,8 +22,8 @@
 22. But if we do want to use off-policy samples, we can modify policy gradients using something called importance sampling.
 23. And that's what we're going to cover next.
 24. So what if we don't have samples from P theta of tau?
-25. What if we instead have samples from some other distribution that I'm going to call P bar of tau instead?
-26. Now P bar of tau could be a previous policy gradient, but it's not exactly a positive case policy.
+25. What if we instead have samples from some other distribution that I'm going to call P bar(τ) instead?
+26. Now P bar(τ) could be a previous policy gradient, but it's not exactly a positive case policy.
 27. So you could be trying to reuse old samples that you've generated, or it could even be some other distribution, like for example, demonstrations from a person.
 28. All right, so the trick that we're going to use to modify the policy gradient to accommodate this case is something called importance sampling.
 29. Importance sampling is a general technique for evaluating an expectation under one distribution when you only have samples from a different distribution.
@@ -42,26 +42,26 @@
 42. Of course the variance of this estimator could change but in expectation is going to stay the same.
 43. So now we're going to apply the same trick to evaluate the policy gradient where the Q here is going to be P bar and the P is going to be P theta.
 44. So here is what the importance sample version of the policy gradient of the RL objective would look like.
-45. The importance sampled version of the RL objective would be the expected value under some other distribution P bar of tau of P theta of tau divided by P bar of tau times R of tau.
+45. The importance sampled version of the RL objective would be the expected value under some other distribution P bar(τ) of P theta of τ divided by P bar(τ) times R of tau.
 46. So that's the RL objective and this is our importance weight.
 47. Now if we'd like to understand what the importance weight is equal to, well we can use our identity that describes the trajectory distribution using the chain rule.
-48. So we can substitute that in for P theta of tau and P bar of tau.
-49. Now we know that both P theta of tau and P bar of tau have the same initial state distribution P of S1 and the same transition probabilities P of S given S .
+48. So we can substitute that in for P theta of τ and P bar of tau.
+49. Now we know that both P theta of τ and P bar(τ) have the same initial state distribution P of S1 and the same transition probabilities P of S given S .
 50. They only differ by their policy because they both operate in the same MDP.
 51. Our distribution has the policy pi theta, the sampling distribution is the policy pi bar.
 52. So that means when we take the ratio of the two distributions, the initial state terms and the transition terms cancel and we're just left with a ratio of the products of the policy probabilities.
 53. And this is very convenient because in general we don't know P of S1 or P of S given S , but we do know the policy probabilities.
 54. So this allows us to actually evaluate these importance weights.
 55. Okay, so now let's derive the policy gradient with importance sampling where we're again going to use our convenient identity.
-56. So let's say that we have samples from P theta of tau and we want to estimate the value of some new parameter vector theta prime.
-57. The objective J theta prime will be equal to the expected value under P theta of tau of the importance weight multiplied by the reward.
-58. So P theta prime of tau divided by P theta of tau times R of tau.
+56. So let's say that we have samples from P theta of τ and we want to estimate the value of some new parameter vector theta prime.
+57. The objective J(θ) prime will be equal to the expected value under P theta of τ of the importance weight multiplied by the reward.
+58. So P theta prime of τ divided by P theta of τ times R of tau.
 59. Now notice that here the only part of this objective that actually depends on theta prime that depends on our new parameters is the numerator and the importance weight.
 60. Because now our samples are coming from a distribution from a different policy P theta of tau.
-61. So that means that when I want to calculate the derivative with respect of theta prime of J theta prime, all we have to worry about is this term in the numerator.
+61. So that means that when I want to calculate the derivative with respect of theta prime of J(θ) prime, all we have to worry about is this term in the numerator.
 62. So this is the derivative.
 63. I've just replaced only term that depends on theta prime with its derivative, and then I'm going to substitute my useful identity back in.
-64. So the identity tells me that grad theta prime p theta prime of tau is equal to p theta prime of tau times grad log p theta prime of tau.
+64. So the identity tells me that grad theta prime p theta prime of τ is equal to p theta prime of τ times ∇log p theta prime of tau.
 65. So I substitute that back in, and I get this equation.
 66. Now when you look at this equation, you'll probably immediately recognize it as exactly the equation that we get if we took the policy gradient and just stuck in an importance weight.
 67. And in fact, you could derive the importance sample policy gradient that way also.
@@ -70,13 +70,13 @@
 70. So this derivation actually gives you a different way to derive the same policy gradient that we had before.
 71. But in the off policy setting, theta prime is not equal to theta, and in that case, we have to fall back on our importance weights, which we derived before, as simply the ratio of the products of the policy probabilities.
 72. And if we substituted in all three now the terms in this policy gradient, the importance weights are product overall time steps of pi theta prime over pi theta.
-73. The grad log pi part is a sum over all time steps of grad theta prime log pi theta prime, and the reward is a sum over all time steps of the reward.
+73. The ∇log π part is a sum over all time steps of grad theta prime log π theta prime, and the reward is a sum over all time steps of the reward.
 74. So we have three terms inside of our importance sampled off policy policy gradient estimator, and we just multiply those three terms together.
 75. Now what about causality?
 76. What about the fact that we don't need to consider the effect of current actions on past rewards?
 77. Well, we can work those in too, in which case we, again, distribute the terms.
 78. So we have three terms inside of our importance sampled off policy gradient estimator, and we just multiply those three terms together.
-79. We distribute the rewards and the importance weights into the sum over grad log pis, and we get a sum from t equals one capital T of grad log pi times the product of all the importance weights in the past.
+79. We distribute the rewards and the importance weights into the sum over ∇log pis, and we get a sum from t equals one T of ∇log π times the product of all the importance weights in the past.
 80. You can think of that intuitively as the probability that you would have arrived at the state using your new policy, times the sum of rewards weighted by the importance weights in the future.
 81. So future actions don't affect the correct weight.
 82. That's fine.
@@ -90,9 +90,9 @@
 90. That is not true for this first term.
 91. Okay.
 92. So let's look at the first term.
-93. The sum, the product from t prime equals one to little t of the probability ratios.
+93. The sum, the product from t' equals one to little t of the probability ratios.
 94. So this first term is trouble.
-95. The reason this first term is trouble is because it's exponential in capital T.
+95. The reason this first term is trouble is because it's exponential in T.
 96. Right.
 97. Let's say that the importance weights are all less than one.
 98. That's a pretty reasonable assumption because you sampled your actions according to pi theta, so your actions are going to have a higher probability under pi theta than they do under pi theta prime.
@@ -106,10 +106,10 @@
 106. And the reason we're doing all this is because we really just want an excuse to delete that term.
 107. So to try to find that excuse, let's write our objective a little bit differently.
 108. So here's our on-policy policy gradient.
-109. It's a sum over all of our samples, a sum over all of our time steps of grad log pi times this reward to go times this q hat.
-110. The q hat is just the sum of all of our time steps.
-111. It's a sum from t prime equals t to capital T of the rewards.
-112. But I'll write it as q hat because otherwise the notation is going to get pretty hairy.
+109. It's a sum over all of our samples, a sum over all of our time steps of ∇log π times this reward to go times this ^{Q}.
+110. The ^{Q} is just the sum of all of our time steps.
+111. It's a sum from t' equals t to T of the rewards.
+112. But I'll write it as ^{Q} because otherwise the notation is going to get pretty hairy.
 113. Now, the way that we sampled our SITs and AITs is by actually rolling out our policy in the environment.
 114. But you can equivalently think of it as sampling state-action pairs from the state-action marginal at time step t.
 115. Because when you sample entire trajectories, the corresponding state-action at every time step, look indistinguishable from what you would have gotten if you sampled from the state-action marginal at that time step.
@@ -119,13 +119,13 @@
 119. But writing it out in this way allows us to perform a little trick.
 120. We can split up using the chain rule, we can split up this marginal, both in the numerator and the denominator, into the product of two terms, a state marginal, pi theta prime of SIT, and the action conditional, pi theta prime of AIT given SIT.
 121. And then we could imagine what happens if we just ignore the state marginals, if we just ignore the ratio of the state probabilities.
-122. Well, then we get an equation for the importance sampled policy gradient that is very similar to the one I have at the top of the slide, only the product neglects all of the ratios except at t prime equals t.
-123. So if you don't want your importance weights to be exponential on capital T, you could try to ignore the ratio, of the state marginal probabilities.
+122. Well, then we get an equation for the importance sampled policy gradient that is very similar to the one I have at the top of the slide, only the product neglects all of the ratios except at t' equals t.
+123. So if you don't want your importance weights to be exponential on T, you could try to ignore the ratio, of the state marginal probabilities.
 124. So you're still accounting for the ratio of action probabilities, but ignoring the state marginal probabilities.
 125. This does not in general give you the correct policy gradient.
 126. However, we'll see later on in the course when we discuss advanced policy gradients, that ignoring the state marginal probabilities is reasonable in the sense that it gives you bounded error in the case where theta prime is not too different from theta.
 127. And this simple insight is actually very important for deriving practical importance sample policy gradient algorithms that don't suffer from an exponential increase in their variance, right?
-128. Because when you multiply together importance weights over all time steps from t prime equals 1 to t, you get an exponential increase in variance because your weights exponentially attract to zero.
+128. Because when you multiply together importance weights over all time steps from t' equals 1 to t, you get an exponential increase in variance because your weights exponentially attract to zero.
 129. But if you ignore the state marginal rate ratio, then you only get the weights at the time step 2.
 130. So you're only going to get a state marginal rate ratio at t, which means that their variance does not grow exponentially.
 131. So we'll learn later on when we discuss advanced policy gradients, why ignoring this part is reasonable.
