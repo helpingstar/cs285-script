@@ -2,19 +2,19 @@
 2. In today's lecture, we're going to go over a comprehensive introduction to reinforcement learning algorithms, definitions, and basic concepts.
 3. So let's start with some definitions.
 4. First, let's go over some of the terminology that we covered in the previous lecture.
-5. When we talked about imitation learning, we learned that we can represent a policy as a distribution over actions AT, conditional observations OT.
-6. We call this policy pi, and we often use a subscript θ to denote that the policy depends on a vector of parameters that we're going to denote θ.
+5. When we talked about imitation learning, we learned that we can represent a policy as a distribution over actions a_t, conditional observations o_t.
+6. We call this policy π, and we often use a subscript θ to denote that the policy depends on a vector of parameters that we're going to denote θ.
 7. When we're doing deep reinforcement learning, oftentimes we will represent the policy with a deep neural network, although, as we will learn in the next two lectures in the course, depending on the type of reinforcement, learning algorithm, we might choose to represent the policy directly or implicitly through some other object, such as a value function.
-8. Important definitions to know are the state, which we denote ST, the observation OT, and the action AT.
-9. As we learned in the imitation learning lecture, the observation and state can be related to one another by the following graphical model, where the edge between observations and actions is the policy, the edge between current states and actions and future states is the transition probability, or the dynamics, and the state satisfies the Markov property, which means that the state at time t plus 1 is independent of the state at time t minus 1, when conditioned on the current state ST.
+8. Important definitions to know are the state, which we denote s_t, the observation o_t, and the action a_t.
+9. As we learned in the imitation learning lecture, the observation and state can be related to one another by the following graphical model, where the edge between observations and actions is the policy, the edge between current states and actions and future states is the transition probability, or the dynamics, and the state satisfies the Markov property, which means that the state at time t plus 1 is independent of the state at time t minus 1, when conditioned on the current state s_t.
 10. The Markov property is the main thing that distinguishes the state from the observation.
 11. The state has to satisfy the Markov property, whereas the observation does not.
 12. And we learned in the imitation learning lecture that the observation is some stochastic function of the state which may or may not contain all the information necessary to infer the full state.
 13. So that's kind of the primary difference.
 14. We will discuss algorithms for both fully observed reinforcement learning, where we have access to the state, and partially observed reinforcement learning, where you only have access to an observation.
 15. Alright, so that's the Markov property.
-16. And typically, you'll see me write the policy as πθ AT given OT, or πθ AT given ST, depending on whether I'm talking about the partially observed or the fully observed case.
-17. I will sometimes get a little sloppy and use ST, when in fact you could also use OT, but in cases where this distinction is important, I'll make a remark in the lectures.
+16. And typically, you'll see me write the policy as π_θ(a_t|o_t), or π_θ(a_t|s_t), depending on whether I'm talking about the partially observed or the fully observed case.
+17. I will sometimes get a little sloppy and use s_t, when in fact you could also use o_t, but in cases where this distinction is important, I'll make a remark in the lectures.
 18. So in imitation learning, we saw that we could collect a dataset, let's say of humans driving a vehicle, consisting of observation action tuples, and then use supervised learning algorithms to figure out how to train a policy to take actions that resemble those of the expert.
 19. In today's lecture, we'll introduce the formalism of reinforcement learning, which allows us to train these policies without having access to expert data.
 20. So to do that, of course, we need to define what it is that we want the policy to do.
@@ -40,17 +40,17 @@
 40. The Markov chain is named after Andrei Markov, who was a mathematician who pioneered the study of stochastic processes, including Markov chains.
 41. And the Markov chain has a very simple definition.
 42. It consists of just two things, a set of states, s, and a transition function, t.
-43. The state space is simply a set, which could be either discrete or continuous, so you could have a discrete state, in which case each state is a discrete element in a finite-size set, or you could have a continuous state, in which case perhaps your states correspond to real-valued vectors in Rn.
-44. t is a transition operator.
+43. The state space is simply a set, which could be either discrete or continuous, so you could have a discrete state, in which case each state is a discrete element in a finite-size set, or you could have a continuous state, in which case perhaps your states correspond to real-valued vectors in R^n.
+44. T is a transition operator.
 45. It can also be referred to as a transition probability or a dynamics function.
 46. It specifies a conditional probability distribution.
-47. So in a Markov chain, t denotes the probability of the state at time t, condition on the state at time t.
-48. And the reason that it's called an operator is because if we represent the probabilities of each state at time step t as a vector, so let's say we have n states, this becomes a vector with n elements, and we can call it mu for t comma i the probability of the ith state.
-49. The whole vector would be called mu .
-50. Then we can write the transition probability as a matrix, where the ijth entry is the probability of going into state i if you are currently in the state j.
-51. And if we do this, then we can express the vector of state probabilities at the next time step, mu t minus 1, as simply a matrix vector product between the matrix of probabilities t and the vector of state probabilities mu t.
+47. So in a Markov chain, T denotes the probability of the state at time t, condition on the state at time t.
+48. And the reason that it's called an operator is because if we represent the probabilities of each state at time step t as a vector, so let's say we have n states, this becomes a vector with n elements, and we can call it μ_{t,i} for the probability of the ith state.
+49. The whole vector would be called μ_t.
+50. Then we can write the transition probability as a matrix, where the i,jth entry is the probability of going into state i if you are currently in the state j.
+51. And if we do this, then we can express the vector of state probabilities at the next time step, μ_{t+1}, as simply a matrix vector product between the matrix of probabilities T and the vector of state probabilities μ_t.
 52. This is simply a way of writing the chain rule of probability with a little bit of linear algebra.
-53. But here you can see that t acts on mu t as a linear operator, which is why we call it the transition operator.
+53. But here you can see that T acts on μ_t as a linear operator, which is why we call it the transition operator.
 54. It's an operator that when applied to the current vector of state probabilities produces the next vector of state probabilities.
 55. So here's the graphical model corresponding to the Markov chain, and here is the edge denoting transition probabilities.
 56. And of course the states in the Markov chain satisfy the Markov property, which means that the state at time t plus 1 is conditionally independent of the state at time t minus 1 given the state at time t.
@@ -61,14 +61,14 @@
 61. So now we have a state space, which is a discrete or continuous set of states.
 62. We have an action space, which is also a discrete or continuous set.
 63. So the graphical model now contains both states and actions, and our transition probabilities are now conditional on both states and actions.
-64. So we have P given ofs_t plus 1 givens_t comma a t.
+64. So we have P given ofs_t plus 1 givens_t,a t.
 65. T is still called a transition operator, but it can no longer be expressed as a matrix, now it's actually a tensor, because it has three dimensions, the next state, the current state, and the current action.
-66. But we can do the same kind of linear algebra trick so if we let mu t comma j denote the probability of being in state j at time t, and we can have another vector that will denote the probability of taking some action, and now we can write t as a tensor, so t i j k is the probability of entering state i if you're in state j and taking action k.
-67. Then you can write a linear form that describes the state probability mu t plus one comma i, at the next time step as a linear function of the current state probabilities, the current action probabilities, and the transition probabilities.
+66. But we can do the same kind of linear algebra trick so if we let μ_t,j denote the probability of being in state j at time t, and we can have another vector that will denote the probability of taking some action, and now we can write t as a tensor, so t i j k is the probability of entering state i if you're in state j and taking action k.
+67. Then you can write a linear form that describes the state probability μ_t plus one,i, at the next time step as a linear function of the current state probabilities, the current action probabilities, and the transition probabilities.
 68. So that means that this transition operator, although it is now a tensor, is still a linear operator that transforms current action and state probabilities into next time step state probabilities.
 69. Now we also have this reward function, and the reward function is a mapping from the Cartesian product of the state and action space into real value numbers.
 70. And this is what allows us to define an objective for reinforcement learning.
-71. So we call r of s_t, comma a_t the reward, and our objective, which I will define in a few slides from now, will be to maximize total rewards.
+71. So we call r of s_t,,a_t the reward, and our objective, which I will define in a few slides from now, will be to maximize total rewards.
 72. But before I do that, I just want to extend this Markov decision process definition to also define the partially observed Markov decision process, and this is what will allow us to bring in the notion of observations.
 73. So a partially observed Markov decision process further augments the definition with two additional objects, an observation space O and an emission probability, or an observation probability, E.
 74. So again, s is the state space, a is an action space, and O is now an observation space.
@@ -87,16 +87,16 @@
 87. So that's the process that we are controlling.
 88. Now in this process we can write down a probability distribution over trajectories.
 89. So trajectories are sequences of states and actions, s1, a1, s2, a2, etc, etc, until you get to s_t, a_t.
-90.  For now we will assume that our control problem is finite horizon, which means that the decision-making task lasts for a fixed number of time steps capital T, and then ends.
-91.  We will extend this to the infinite horizon setting shortly, but for now we'll write down the finite horizon version because it's quite a bit easier to start with.
-92.  So if we write down the joint distribution of our states and actions, and here I'm putting the subscript θ on this joint distribution to indicate that it depends on the policy π_θ, we can factorize it by using the chain rule in terms of probability distributions that we've already defined.
-93.  So we have an initial state distribution P of s 1.
-94.  I sort of brush this under the rug when I define the Markov chain, the MDP and the POMDP, but all of these also have an initial state distribution P of s_1.
-95.  And then we have a product over all time steps of the probability of an action, a_t, given s_t, and the probability of the transition to the next time step, s_t plus 1, given s_t, a_t.
-96.  Now I said that this is derived from the chain rule of probability, but of course in the chain rule of probability you need to condition on all past variables, but here we are exploiting the Markov property to drop the dependence on s_t minus 1, s_t minus 2, etc., etc., because we know that s_t plus 1 is conditionally independent of s_t minus 1, given s_t.
-97.  So this is how we can define the trajectory distribution.
-98.  And for notational brevity I will sometimes write P of τ to denote P of s1.
-99.  So τ is just a shorthand for trajectory, and all it means is a sequence of states and actions.
+90. For now we will assume that our control problem is finite horizon, which means that the decision-making task lasts for a fixed number of time steps capital T, and then ends.
+91. We will extend this to the infinite horizon setting shortly, but for now we'll write down the finite horizon version because it's quite a bit easier to start with.
+92. So if we write down the joint distribution of our states and actions, and here I'm putting the subscript θ on this joint distribution to indicate that it depends on the policy π_θ, we can factorize it by using the chain rule in terms of probability distributions that we've already defined.
+93. So we have an initial state distribution P of s 1.
+94. I sort of brush this under the rug when I define the Markov chain, the MDP and the POMDP, but all of these also have an initial state distribution P of s_1.
+95. And then we have a product over all time steps of the probability of an action, a_t, given s_t, and the probability of the transition to the next time step, s_t plus 1, given s_t, a_t.
+96. Now I said that this is derived from the chain rule of probability, but of course in the chain rule of probability you need to condition on all past variables, but here we are exploiting the Markov property to drop the dependence on s_t minus 1, s_t minus 2, etc., etc., because we know that s_t plus 1 is conditionally independent of s_t minus 1, given s_t.
+97. So this is how we can define the trajectory distribution.
+98. And for notational brevity I will sometimes write P of τ to denote P of s1.
+99. So τ is just a shorthand for trajectory, and all it means is a sequence of states and actions.
 100. Okay, so having defined the trajectory distribution, we can actually define an objective for reinforcement learning, and we can define that objective as an expected value under the trajectory distribution.
 101. So the goal in reinforcement learning is to find the parameters θ that define our policy so as to maximize the expected value of the sum of rewards over the trajectory.
 102. So we would like a policy that produces trajectories that have the highest possible rewards in expectation.
@@ -104,7 +104,7 @@
 104. So this is the definition of the reinforcement learning objective that we're going to work with.
 105. There are, of course, a few variants on this, and we will derive them over the course of the next few lectures, but this is the most basic version.
 106. So at this point I would like all of you to pause and look carefully at the subjective and really make sure that you understand what this means.
-107. That you understand what it means to have a sum over rewards, what it means to take their expectation under a trajectory distribution, what a trajectory distribution is, and how it is influenced by our choice of policy parameters θ, which in turn influence the policy pi θ.
+107. That you understand what it means to have a sum over rewards, what it means to take their expectation under a trajectory distribution, what a trajectory distribution is, and how it is influenced by our choice of policy parameters θ, which in turn influence the policy π_θ.
 108. Because if this part is unclear, then what follows in the remainder of this lecture will be quite hard to follow.
 109. So please take a moment to think about this.
 110. And if you have any questions about the trajectory distribution, please be sure to write a comment on the video.
@@ -113,10 +113,10 @@
 113. And to interpret this as a Markov chain, we need to define an augmented statespace.
 114. So our original statespace is S, but we also have these actions, and the actions make this a Markov decision process.
 115. But we know that the action depends on the state based on the policy.
-116. So pi θ A t givens_t allows us to get a distribution of our actions conditioned on states.
+116. So π_θ A t givens_t allows us to get a distribution of our actions conditioned on states.
 117. So what we can do, is we can group this state and action together into a kind of augmented state.
 118. And now, the augmented states actually form a Markov chain.
-119. So P of st plus 1 comma a_t plus 1 given st comma at, the transition operator in this augmented Markov chain is simply the product of the transition operator in the MDP and the policy.
+119. So P of st plus 1,a_t plus 1 given st,at, the transition operator in this augmented Markov chain is simply the product of the transition operator in the MDP and the policy.
 120. So this can allow us to define the objective in a slightly different way that will be convenient to use in some of our later derivations.
 121. So so far I've defined the objective as an expected value under the trajectory distribution of the sum of rewards.
 122. But remember that our distribution actually follows a Markov chain with this augmented space and this transition operator is the product of the MDP transitions and the policy.
@@ -137,28 +137,28 @@
 137. Dividing by capital T is a constant, so in general this doesn't change the maximum, but then you can take t to infinity and get a well-defined quantity.
 138. Later on we'll learn about something called discounts, which is another way to get a finite number for the infinite horizon case.
 139. But so making this finite is pretty easy, but let's talk about how we can actually define an infinite horizon objective.
-140. So we have our Markov chain from before, and our augmented Markov chain has this transition operator, so that means that we can write the vector s_t plus one comma a_t plus one as some linear operator t applied to st comma at, and this is the state action transition operator.
+140. So we have our Markov chain from before, and our augmented Markov chain has this transition operator, so that means that we can write the vector s_t plus one,a_t plus one as some linear operator t applied to st,at, and this is the state action transition operator.
 141. And more generally we can skip k time steps ahead and we can say that st plus k at plus k is equal to t to the power k times st at.
-142. So one question we could ask is, does the state action marginal, p of st comma at, converge to a stationary distribution, basically converge to a single distribution, as little k goes to infinity?
-143. If this is true, that means that we should be able to write the stationary distribution mu as being equal to t times mu.
+142. So one question we could ask is, does the state action marginal, p of st,at, converge to a stationary distribution, basically converge to a single distribution, as little k goes to infinity?
+143. If this is true, that means that we should be able to write the stationary distribution μ as being equal to t times mu.
 144. And under a few technical assumptions, namely ergodicity and the chain being aperiodic, we can actually show that the stationary distribution exists.
 145. Intuitively being aperiodic simply means exactly what it sounds like, that the Markov chain is not periodic, and being ergodic means that, roughly speaking, every state can be reached from every other state with non-zero probability.
 146. The ergodic assumption is important because it prevents a situation where, if you start in one part of the MDP, you might never reach another one.
 147. So if this is true, if starting in one part may result in you never reaching another part, then where you start always matters, and the stationary distribution doesn't exist.
 148. But if this is not the case, if there's even a slight chance of getting to any state from any other state eventually, then you will have a stationary distribution, provided that it's aperiodic.
-149. So the stationary distribution must obey this equation, mu equals t times mu.
+149. So the stationary distribution must obey this equation, μ equals t times mu.
 150. Because otherwise it's not a stationary distribution.
 151. So stationary means it's the same before and after the transition.
 152. And if it's the same before and after the transition, then applying t enough times will eventually allow you to reach it.
-153. You can solve for the stationary distribution simply by rearranging this equation to see that it is equal to τ minus i times mu equals zero.
-154. And remember that mu is a distribution.
+153. You can solve for the stationary distribution simply by rearranging this equation to see that it is equal to τ minus i times μ equals zero.
+154. And remember that μ is a distribution.
 155. So it's a vector of numbers that are all positive and sum to one.
-156. So one way you can find mu is by finding the eigenvector with eigenvalue one for the matrix defined by t.
-157. So mu is eigenvector of t with eigenvalue one.
+156. So one way you can find μ is by finding the eigenvector with eigenvalue one for the matrix defined by t.
+157. So μ is eigenvector of t with eigenvalue one.
 158. And it always exists under the ergodicity and aperiodicity assumptions.
-159.  So if we know that if we run this Markov chain forward enough times, eventually it'll settle into mu.
+159. So if we know that if we run this Markov chain forward enough times, eventually it'll settle into mu.
 160. That means that as t goes to infinity, this sum of the expectations of the marginals becomes dominated by the stationary distribution terms.
-161. So you have some finite number of terms initially that are not in the stationary distribution, mu one, mu two, mu three, etc.
+161. So you have some finite number of terms initially that are not in the stationary distribution, μ one, μ two, μ three, etc.
 162. Then you have infinitely many terms that are very, very close to the stationary distribution.
 163. Which means that once you put in the average reward case, so you're going to find one over t.
 164. And then take the limit as t goes to infinity.
@@ -178,7 +178,7 @@
 178. And if you try to optimize the reward function with respect to, for example, the position of the car, that optimization problem can't really be solved with gradient-based methods, because the reward is not a continuous, or much less a differentiable function, of the car's position.
 179. However, if you have a probability distribution over some action, let's say that abstractly that you just get to choose like fall or don't fall, so you have a binary action, you either fall or you don't fall, and it's a Bernoulli random variable with parameter θ.
 180. So with probability θ you fall off, with probability one minus θ you don't fall off.
-181. Now, the interesting thing is that the expected value of the reward with respect to pi θ is actually smooth in θ, because you have a probability of θ falling off, which has a reward of minus one, and a probability of one minus θ of staying on the road, so the reward is one minus θ minus θ.
+181. Now, the interesting thing is that the expected value of the reward with respect to π_θ is actually smooth in θ, because you have a probability of θ falling off, which has a reward of minus one, and a probability of one minus θ of staying on the road, so the reward is one minus θ minus θ.
 182. And that's perfectly smooth and perfectly differentiable, in θ.
 183. So, this is a very important property that will come up again and again, and that it really explains why reinforcement learning algorithms can optimize seemingly non-smooth and even sparse reward functions, which is that expected values of non-smooth and non-differentiable functions under differentiable and smooth probability distributions are themselves smooth and differentiable.
 184. Okay, let's pause there.
