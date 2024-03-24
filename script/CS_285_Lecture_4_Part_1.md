@@ -79,7 +79,7 @@
 79. Alright, now that we've defined the mathematical objects of the Markov chain, the Markov decision process, and the partially observed Markov decision process, let's define an objective for reinforcement learning.
 80. So in reinforcement learning, we're going to be learning some object that defines a policy.
 81. So for now let's just assume that we learn the policy directly, and we'll see later on how there are some other methods that might represent a policy implicitly.
-82. But for now we'll be explicitly learning pi θ, a given s.
+82. But for now we'll be explicitly learning π_θ, a given s.
 83. We'll come back to the partially observed case later, for now let's just say that our policy is conditional on s, and θ corresponds to the parameters of the policy.
 84. So if the policy is a deep neural net, then θ denotes the parameters of that deep neural net.
 85. The state goes into the policy, the action comes out, and then the state and action go into the transition probability, basically the physics that govern the world, which produces the next state.
@@ -89,7 +89,7 @@
 89. So trajectories are sequences of states and actions, s1, a1, s2, a2, etc, etc, until you get to s_t, a_t.
 90.  For now we will assume that our control problem is finite horizon, which means that the decision-making task lasts for a fixed number of time steps capital T, and then ends.
 91.  We will extend this to the infinite horizon setting shortly, but for now we'll write down the finite horizon version because it's quite a bit easier to start with.
-92.  So if we write down the joint distribution of our states and actions, and here I'm putting the subscript θ on this joint distribution to indicate that it depends on the policy pi θ, we can factorize it by using the chain rule in terms of probability distributions that we've already defined.
+92.  So if we write down the joint distribution of our states and actions, and here I'm putting the subscript θ on this joint distribution to indicate that it depends on the policy π_θ, we can factorize it by using the chain rule in terms of probability distributions that we've already defined.
 93.  So we have an initial state distribution P of s 1.
 94.  I sort of brush this under the rug when I define the Markov chain, the MDP and the POMDP, but all of these also have an initial state distribution P of s_1.
 95.  And then we have a product over all time steps of the probability of an action, a_t, given s_t, and the probability of the transition to the next time step, s_t plus 1, given s_t, a_t.

@@ -99,7 +99,7 @@
 99. Rewards are numbers, scalar values.
 100. And whereas in supervised learning, the data is given to you, you don't have to worry about who gave you the data, it's just provided to you as a set of x, y tuples, in reinforcement learning, you have to pick your own actions and collect your own data.
 101. So not only do you have to worry about the fact that the actions in your data set might not be the optimal actions, you have to also actually decide how that data will be collected.
-102. And your goal is to learn a policy, pi θ, which maps states s to actions a.
+102. And your goal is to learn a policy, π_θ, which maps states s to actions a.
 103. And just like f, pi has parameters θ, so those might again be the weights in a neural network.
 104. And a good policy is one that maximizes the cumulative total reward.
 105. So not just the reward at any point in time, but the total reward the agent receives.

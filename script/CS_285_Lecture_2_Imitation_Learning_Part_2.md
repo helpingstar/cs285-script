@@ -52,7 +52,7 @@
 52. Okay, so our goal now is going to be to minimize the expected cost, meaning the expected number of mistakes that our policy is going to make, but expect that under what distribution?
 53. Well, what we care about is the number of mistakes that the policy makes when it actually drives the car.
 54. We don't really care how many mistakes it would make when it's looking at the human's images, because that's not how it's going to be used.
-55. So what we care about is the cost in expectation under p pi θ, under the distribution of states the policy will actually see.
+55. So what we care about is the cost in expectation under p π_θ, under the distribution of states the policy will actually see.
 56. And that's a very, very important distinction, because we're training the policy to assign high probability to the actions under p data.
 57. But what we really care about is to minimize the number of mistakes under p pi θ.
 58. Okay?
