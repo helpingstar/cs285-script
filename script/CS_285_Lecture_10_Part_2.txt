@@ -1,0 +1,245 @@
+Okay, so in the next part of the lecture I'm going to discuss some algorithms for open-loop planning that make kind of minimal assumptions about the dynamics model.
+So they require you to know the dynamics model, but otherwise they don't make any assumption about it being continuous or discrete, stochastic or deterministic, or about whether it's even differentiable.
+So for now we're going to concentrate on the open-loop planning problem, where you are given a state and you have to produce a sequence of actions that will maximize your reward when you start from that state.
+So this won't be a very good idea for taking that math test, but it can be a pretty good idea for many other practical problems.
+Okay, so we'll start with a class of methods that can broadly be considered stochastic optimization methods.
+These are often sometimes called black box optimization methods.
+So what we're going to do is we're going to first abstract away the temporal structure in order to get the most out of the problem.
+So we're going to start with the optimal controller planning.
+So these methods are black box, meaning that to them the optimization problem you are solving is a black box.
+So they don't care about the fact that you have different time steps, that you have a trajectory distribution over time.
+All they care about is that you have some maximization or minimization problem.
+So the way we'll abstract this away is we'll say that we're just solving some problem over some variables a1 through a capital T with an objective that I'm going to denote as J.
+So J, which is obviously the norm of A1, is the number which, if for that crime is immediate to the F-zone.
+The nya function that J sees thenostες where the value B, vinOK, you know right now clued up in both and we basically replace J in back to D2.
+And then we get this mathematical problem of this regular double function answering the paper again, but here J is an X1 squared netto store Y2 at the that point on the top.
+However, we'll define your problem just like we if of A1 to A2.
+It consoles and масers, it compots or composes the nagantum and Ano, just guess and check.
+So you just pick a set of action sequences from some distribution, maybe even uniformly at random.
+So just pick A1 through A capital N.
+And then you choose your action sequence, you choose some AI based on which one is the arg max with respect to the index of jai.
+You basically choose the best action sequence instead of maximizing over, let's say, a large or continuous valued sequence of actions.
+You just maximize over a discrete index from 1 to N.
+That's very, very easy to do.
+Just check each of those action sequences and take the one that gets the largest reward.
+Hence, guess and check.
+This is sometimes referred to as the random shooting method.
+Shooting because you can think of this procedure where you pick this action sequence as sort of as randomly shooting the environment.
+You say, well, if I just try this open loop sequence of actions, what happens?
+Well, I can't do that.
+So I can't do that.
+So I can't do that.
+So I can't do that.
+So I can't do that.
+So I can't do that.
+So I can't do that.
+So I can't do that.
+So I can't do that.
+What will I get?
+This might seem like a really bad way to do control, but in practice for low dimensional systems and small horizons, this can actually work very well.
+And it has some pretty appealing advantages.
+Take a moment to think about what these advantages might be.
+So one major advantage of this approach is that it is very, very simple to implement.
+Coding this up takes just a few minutes.
+It's also often quite efficient, especially if you're working on modern hardware.
+Because later on when we talk about learned models, when your model is represented by something like a neural network, it can actually be quite nice to be able to evaluate the value of multiple different action sequences in parallel.
+You can essentially treat A1 through AN as a kind of mini badge and evaluate the returns through your neural network model all simultaneously.
+And then the ARC max is a max reduction.
+So there are typically very, very fast ways to implement these methods on modern hardware.
+So you can do this with modern GPUs with modern deep learning frameworks.
+What's the disadvantage of this approach?
+Well, you might not pick very good actions because you're essentially relying on getting lucky.
+You're relying on one of those randomly sampled action sequences being very good.
+So one way that we can dramatically improve this random shooting method while still retaining many of its benefits is something called the cross-entropy method or CEM.
+The cross-entropy method is quite a good choice if you want a black box optimization algorithm for these kinds of control problems in low to moderate dimensions with low to moderate time horizons.
+So our original recipe with random shooting was to choose a sequence of actions from some distribution like the uniform distribution and then pick the ARC max.
+So what we're going to do in cross-entropy method is we're going to be a bit smarter about selecting this distribution.
+Instead of sampling the actions completely at random from the, let's say, the uniform distribution or all valid actions, we'll instead select this distribution to focus in on the regions where you think the good actions might lie.
+And this will be an iterative process.
+So the way that we're going to do better intuitively will be like this.
+Let's say that we generated four samples, and here's what those samples look like.
+So the horizontal axis is a the vertical axis j of a.
+What we're going to do is we're going to fit a new distribution to the region where the best distribution is.
+And this distribution is going to be the best distribution, better samples seem to be located and then we'll generate more samples from that new distribution, refit the distribution again and repeat.
+And in doing this repeatedly we're going to hopefully arrive at a much better solution because each time we generate more samples we're focusing in on the region where the good samples seem to lie.
+So one way that we can instantiate this idea, for example with continuous valued actions, is we can iteratively repeat the following steps.
+Sample your actions from some distribution P , where initially P might just be the uniform distribution, then evaluate the return of each of those action sequences and then pick something called the elites.
+So the elites is a subset of your n samples, so you pick m of those samples where m is less than n, that have the highest value.
+One common choice is to pick the 10% of your samples with the best value.
+And then we're going to refit the distribution again.
+So we're going to refit the distribution P just to the elites.
+So, for example, if you choose your distribution to be a Gaussian distribution, you would simply fit the Gaussian fit to the best m samples among the n samples that you generated.
+And then you repeat the process.
+Then you generate n more samples from that fitted distribution, evaluate their return, tick their elites, and find a new distribution that's hopefully better.
+Cross-Sentry method has a number of very appealing guarantees.
+If you choose a large enough initial distribution and you generate enough samples, cross-entropy method will in general actually find the global optimum.
+Of course for complex problems that number of samples and that number of iterations might be prohibitively large, but in practice cross-entropy can work pretty well and it has a number of advantages.
+So because you're evaluating the return of all of your action sequences in parallel, this is very friendly to modern deep learning frameworks that can accommodate a mini-batch.
+The method does not require your actions, your model to be differential with respect to the actions and it can actually be extended to things like discrete actions by using other distribution classes.
+So typically you would use a Gaussian distribution for continuous actions, although other classes can also be used.
+And you can make CEM quite a bit fancier, so if you want to check out more sophisticated methods in this category.
+Check out CMAES.
+CMAES, which stands for Provarious Metrics Adaptation Evolution Strategies, is a kind of extension to CEM which includes kind of momentum style terms, where if you're going to take many iterations, then CMAES can produce better solutions with smaller population sizes.
+Okay, so what are the benefits of these methods to summarize?
+Well they are very fast if they're parallelized.
+They are generally extremely simple to implement.
+What are the benefits of these methods?
+Well, they are generally extremely simple to implement.
+What are the benefits of these methods?
+Well, they are very fast if they're parallelized.
+What's the problem?
+The problem is that they typically have a pretty harsh dimensionality limit.
+You're really relying on this random sampling procedure to get you good coverage over potential actions.
+And while refitting your distribution like we did in CEM can help the situation, it still poses a major challenge.
+And these methods only produce open loop planning.
+So the dimensionality limit, if you want kind of a rule of thumb, obviously depends on the details of your problem.
+But typically if you have more than about 30 to 60 dimensions, chances are these methods are going to struggle.
+You can sometimes get away with longer sequences.
+So if you have, let's say, a 10-dimensional problem and you have 15 time steps, you technically have 150 dimensions.
+But the successive time steps are strongly correlated with each other, so that might still work.
+But generally, you know, 30 to 60 dimensions works really well.
+If you're doing planning, rule of thumb, 10 dimensions, 15 time steps is about what you're going to be able to do.
+Much more than that, and you'll start running into problems.
+Okay, next we're going to talk about another way that we can do planning, which actually does consider the closed, you know, closed loop feedback, which is Monte Carlo Tree Search.
+Monte Carlo Tree Search can accommodate both discrete and continuous states, although it's a little bit more commonly used for discrete states.
+And it's particularly popular for board games.
+So things like AlphaGo actually used a variant of Monte Carlo Tree Search.
+In general, Monte Carlo Tree Search is a very good choice for kind of games of chance.
+So poker, for example, is a common application for Monte Carlo Tree Search.
+So here's how we can think about Monte Carlo Tree Search.
+Let's say that you want to play an Atari game, let's say you want to play this game called SeaQuest, where you have to shoot these torpedoes at some fish.
+I don't know why you want to shoot torpedoes at fish, that seems ecologically irresponsible, but that's what the game requires you to do.
+And the game requires selecting from a set of actions to control your little submarine.
+What you could imagine if you have access to a model is you could take your starting state and see what happens if you take action A1 equals zero and see what happens if you take action A1 equals one, maybe just two actions.
+And both of the, you know, each of those actions will put you in a different state.
+It might put you in a different state each time you take that action, so the true dynamics might be stochastic, but that's okay.
+We would just take the action multiple times and see what happens.
+And then maybe for each of the possible states you land in, you can try every possible value fraction, A2, and so on and so on.
+Now if you can actually do this, you will eventually find the optimal action to take, but this is unfortunately an exponentially expensive process.
+So without some additional tricks, this general unrestricted unconstrained tree search requires an exponential number of expansions at every layer, which means that if you want to control your system for capital T time steps, you can do that.
+You need a number of steps that's exponential in capital T, and that's no good.
+We don't want that.
+So how can we approximate the value of some state without expanding the full tree?
+Well, one thing you could imagine doing is when you land at each, at some node, let's say you pick a depth.
+Let's say you say, my depth is going to be three.
+I'll expand the tree to depth three, and after three steps what I'll do is I'll just run some baseline policy.
+Maybe it's even just a random policy.
+Now the value of the tree is going to be three.
+So the value that I get when I run that baseline policy is not really going to be exactly the true value of having taken those actions, but if I've expanded enough actions, and especially if I have some like a discount factor, that rollout with the random policy might still give me a reasonable idea of how good those states are.
+Essentially, if I land in a really bad state, the random policy will probably do badly.
+If I land in a really good state, let's say I land in a state where I'm about to win the game, pretty much any move will probably give me a decent value.
+So it's not an optimal strategy.
+It's not going to give you exactly the right value, but it might be pretty good if you expand the tree enough and use a sensible rollout policy.
+In fact, in practice, Monte Carlo Tree Search is actually a very good algorithm for these kinds of discrete stochastic settings where you really want to account for the closed loop case.
+Okay, so this might have first seemed a little weird, a little contradictory, but it turns out the basic idea actually works very well.
+Okay, now we can't of course search all the paths, so the question we usually have to answer with Monte Carlo Tree Search is with which path do we search first?
+So we start at the root, we have action a1 equals 0 and a1 equals 1.
+Which one do we start with?
+Well, let's say that we picked a1 equals 0.
+We don't know anything about these actions initially, so we have to make that choice arbitrarily or randomly.
+We picked a1 equals 0, and we got a reward of a value of plus 10.
+Now plus 10 here refers to the full value of that rollout, so it refers to what we got from taking action a1 equals 0 and then running our baseline policy.
+Now at this point we don't know whether plus 10 is good or bad, it's just a number, so we have to take the other action.
+We don't know anything about the other action, so we can't really trade off which of these two paths is more promising to explore.
+Let's say we take the other action and we get a return of plus 15.
+And remember, plus 15 refers to the total reward you get from taking the action a1 equals 1 and then running your baseline policy.
+Now we have to remember something very important here.
+We are planning in a stochastic system, which means that if we were to take a1 equals 0 again and run that random policy again, we might not get plus 10 again.
+We might get something else.
+We might get something else because our policy is random and because the outcome of a1 equals 0 is also random.
+So these values should be treated as sample-based estimates for the real value of taking that action.
+Okay, so at this point if we look at these two outcomes, a reasonable conclusion we might draw is that action 1 is a bit better than action 0.
+We don't know that for sure, we might be wrong, but we took both actions once and one of them ended up being better, so if you really had to choose which to choose, you might be wrong.
+So we're going to take a look at the two outcomes.
+So we're going to take a look at the two outcomes, and we're going to take a look at the two outcomes.
+Which direction to explore?
+Maybe we should explore the one that produced the better return.
+So the intuition is you choose the nodes with the best return, but you prefer rarely visited nodes.
+So if some node was not visited before at all, you really need to try it because you have no way of knowing whether its return is better or worse.
+But at this point we probably want to explore the right subtree.
+Okay, so let's try to formalize this into an actual algorithm.
+Here's a generic sketch of an MCTS method.
+First, we're going to take our current tree, and we're going to find a leaf using one tree.
+The term tree policy doesn't refer to an actual policy that you run in the world.
+It refers to a strategy for looking at your tree and selecting which leaf node to expand.
+Step 2, you expand that leaf node using your default policy.
+Default policy here is actually referring to a real policy, like our normal policy.
+like that random policy that I had before.
+How do you expand the leaf?
+Well, remember that the nodes in the tree correspond to action sequences.
+The same action sequence executed multiple times might actually lead to different states.
+So the way that you evaluate a leaf is you start in the initial state S1 and then you take all the actions on the path from that leaf to the root and then follow the default policy.
+So you don't just teleport to some arbitrary state.
+You could do the teleporting thing too and that would also give you actually a well-defined algorithm but typically you would actually execute the same sequence of actions again to actually give them the chance to lead to a different random outcome.
+Because remember, you want the actions that are best in expectation.
+And then step three, update all the values in the tree between S1 and SL.
+And then repeat this process.
+And then once you're done, you take the best action from the root S1.
+And typically in MCTS, you would actually rerun the whole planning process each time, each time step.
+So you would take the best action from the root and then the world would randomly present you with a different state and then you would do all the planning all over again.
+Okay, so our tree policy initially can't do anything smart.
+If we haven't expanded any of the actions, you just have to try action zero and then you evaluate the, using the default policy.
+And then you update all the values in the tree between S1 and SL.
+SL here is S2.
+And notice here that we collected a return, which is 10.
+And we also record how many times we visited that node, which is one.
+Now we have to expand the other action.
+We can't really say anything meaningful about it without expanding it.
+So we go and expand the action one.
+And there we get a return of 12 and n equals one, because we visited only one.
+So we can't really say anything about it.
+So a very common choice for the tree policy is the UCT tree policy, which basically follows the following recipe.
+If some state has not been fully expanded, choose a new action in that state.
+Otherwise choose a child of that state with the best score and the score will be defined shortly.
+And then you apply this recursively.
+So essentially this tree policy starts at the root S1.
+If some action at the root is not expanded, then you expand it.
+Otherwise you choose a child with the best score and then recurse.
+So here, you know, for any reasonable value of score, we would have chosen S2 because they both have been visited the same number of times, but the value at S2 is larger.
+So we would go and expand a new action for S2.
+And maybe we get a return of 10.
+Now the n value at that leaf is one, but remember step three in MCTS is to propagate all the values back up to the root.
+So we also update S2 to give it n equals two and q equals 22.
+So essentially every time we update a node, we add the new value to its old value and we add one to its count.
+That way we can always recover the average value at some node by dividing q by n.
+By the way, one thing I might mention is when you see these indices, S1, S2, S3, these numbers are just referring to the time step.
+They are...
+Remember, these nodes do not uniquely index states.
+If you take the same action sequence two times, you might get a different state, but I'm still referring to that as S2 or S3 because it's the state at time step two or three.
+So the actual states are stochastic.
+All right, so now we have a choice to make.
+We have two possible choices from the root.
+One leads to a node with q equals 10 and n equals one.
+The other leads to q equals 22 and n equals two.
+So the action one still leads to a higher average value, which is 11, but the action zero leads to a node that has been visited less often.
+So here the choice of score is actually highly non-trivial.
+There are many possible choices for the scoring MCTS, but one very common choice, which is this UCT rule, is to basically choose a node based on its average value, so q over n, plus some bonus for rarely visited nodes.
+So one commonly used bonus is written here, which is q over n.
+So one commonly used bonus is written here, which is q over n.
+So one commonly used bonus is written here, which is q over n.
+Well, you could set a J-shape function that can create three-dimension<|lt|> tapiets like this.
+And dizettes that can create three-dimension if you're thinking of changing on the line.
+So, for example, if we're giving the code of our property, someemos for some modal roller, it would rather choose an unessional style R.
+denominator of 1, the node fraction 1 has a denominator of 2.
+So a1 equals 0 has a bigger bonus.
+The numerator is 2 times the natural log of the number of times the current node has been visited and that's meant to basically account for the fact that if you visited some node a very small number of times then you want to prioritize novelty more.
+If you visited a node a very large number of times then you probably have a more confident estimate of values.
+Okay so in this case we would probably actually choose to visit the node a1 equals 0 because even though its average value is lower its n value is also lower so we'll get a larger bonus which might exceed the difference in value if the constant C is large enough.
+And then when we visit that node we have to just expand an arbitrary new action because we don't know the value of anything else.
+And maybe here we report q equals 12, n equals 1, we again propagate it back up to the root so add the n to the n at the parent node, add the q to the q at the parent node, and now we have two nodes with equal values.
+They're both 11.
+So we have to break the tie somehow arbitrarily and we'll go over here we get a q equals 8 and n equals 1 and now the value at this node becomes 30 and the denominator is 3.
+So now take a moment to think about which way MCTS would go.
+Yep it has to go to the right because then the node for the right, the one corresponding to action a1 equals 1, has both a larger value and a lower visitation count.
+So that's what we're going to do.
+And so on.
+So then this process will recurse for some number of steps.
+You have to choose your step based on your computational budget and once your computational budget is exhausted then you take the action leading to the node with the best average return.
+Okay if you want to learn more about MCTS I would highly recommend this paper, A Survey of Monte Carlo Nodes.
+It's a new paper on the subject that I'm going to get into in a moment.
+It's about some of the most popular methods.
+In general, MCTS methods are very difficult to analyze theoretically and they actually have surprisingly a few guarantees, but they do work very well in practice.
+And if you have a kind of a some kind of game of chance where there's stochasticity, these kinds of algorithms tend to be a very good choice.
+And of course there are many ways you can make MCTS more clever.
+For instance by actually learning your default policy terminal nodes and so on.
+If you take this to the extreme you get something similar to for example what AlphaGo actually did which was a combination of MCTS and reinforcement learning of value functions and default policies.

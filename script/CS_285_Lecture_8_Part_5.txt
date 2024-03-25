@@ -1,0 +1,116 @@
+So, so far, when we've talked about Q-learning algorithms, we mainly focused on algorithms with discrete action spaces.
+It is actually possible, but somewhat more complicated, to extend Q-learning procedures to the case when we have continuous actions.
+And that's what I'm going to discuss in the next section of this lecture.
+So, let's talk about Q-learning with continuous actions.
+What's the problem with continuous actions?
+Well, the problem is that when you select your actions, you need to perform this argmax.
+An argmax over discrete actions is pretty straightforward.
+You simply evaluate the Q value for every possible action and take the best one.
+But when you have continuous actions, this is, of course, much harder.
+This comes up in two places, when evaluating the argmax policy and when computing the target value, which requires the max, or, in the case of double Q-learning, also an argmax.
+So, this is, the target value max is particularly problematic because that happens in the inner loop of training.
+So, you really want this to be very fast and very efficient.
+So, how can we perform this max when we have continuous actions?
+Well, we basically have three choices.
+Option one is to use a continuous optimization procedure, like, for instance, gradient descent.
+Now, gradient descent by itself can be pretty slow because it has, you know, a lot of time.
+So, we're going to talk about that in a little bit.
+So, let's start with the gradient descent.
+It requires multiple steps, gradient calculations, and it happens in the inner loop of an outer loop learning procedure.
+So, there are better choices that we could use.
+And our action space is typically low-dimensional.
+So, in some sense, it presents a slightly easier optimization problem than the kind of problems we typically take on with SGD.
+So, it turns out that for evaluating the max with optimization, a particularly good choice is to use a derivative-free stochastic optimization procedure.
+So, let's talk about that.
+So, let's talk about that a little bit.
+A very simple solution is to simply approximate the max over a continuous action as the max over a discrete set of actions that are sampled randomly.
+So, for instance, you could sample a set of n actions, maybe uniformly at random from the set of valid actions, and then take the Q value with the largest of those actions.
+Now, that's not going to give you an exact max.
+It'll give you a very approximate max.
+But if your action space is pretty low-dimensional, and you can bombard it with enough samples, this max might actually be pretty good.
+And, of course, if overestimation is your problem, this might actually suffer from overestimation less, because the max is less effective.
+This has the advantage of being dead simple.
+It's very efficient to parallelize, because you can essentially use your favorite deep learning framework and just treat these different actions as different points in a mini-batch, and evaluate all of them in parallel.
+The problem is that it's not very accurate.
+Especially as the action space dimensionality gets larger, this random sampling method just doesn't actually give you a very accurate max.
+But maybe we don't care about that.
+Maybe if overestimation is our issue, maybe a worse max is actually alright.
+If you do want a more accurate solution, there are better algorithms that are based on basically the same principle.
+So, cross-centropy method is a simple solution.
+It's a simple method.
+Cross-centropy method is a simple iterative stochastic optimization scheme, which we'll discuss a lot more when we talk about model-based RL later.
+But intuitively, cross-centropy method simply consists of sampling sets of actions, just like in the simple solution above.
+But then, instead of simply taking the best one, cross-centropy method refines the distribution from which you sample to then sample more samples in the good regions and then repeat.
+And this can also be a very, very fast algorithm if you're willing to parallelize and you have a low-dimensional action space.
+So, for example, CMAES, you can kind of think of it as a much fancier version of CEM.
+So it's substantially less simple, but structurally very similar.
+And these kinds of methods work okay for up to about 40-dimensional action spaces.
+So if you use one of these solutions, you simply plug this in place of your argmax to find the best action, and the rest of your Q-learning procedure stays basically the same.
+Another option that you can use is the RL-based RLM.
+So, if you're looking for a solution that's more complex, you can simply plug this in place of your argmax to find the best action, and the rest of your Q-learning procedure stays basically the same.
+Another option that you can use is the RL-based RLM.
+This option is non- concretive, but if you've got many questions or your patients need help looking to talk about different questions, you can indeed сразу figure out how to do it.
+And stone's ride out here as you say.
+miss you already heard RLM feed work tweeting out to C� disturbing you that a drank You could go to the web you should run through their web page.
+So Pocahontas.
+What we're going to do here is share a new solution that we can do to solve this problem.
+But also, remember that finished learning.
+So we're going to...
+If you were asked what do you think about law?
+It's really easier to do.
+As soon as an identifier startsь So what will that do?
+As soon as an identifier getsえ e I'll write what I really want to know.
+The way the model starts to work is shamei So you could, for example, express your Q function as a function that is quadratic in the action.
+And the optimum for quadratic has a closed-form solution.
+So one of the ways you could do this, this is something called the NAF architecture, proposed in this paper by Shishian Gu in 2016, is to have a neural network that outputs three quantities.
+A scalar-valued bias, a vector value, and a matrix value.
+And the vector and matrix together define a quadratic function in the action.
+So this function is completely nonlinear in the state.
+It can represent any function of the state, but for a given state, the shape of the Q value in terms of the action is always quadratic.
+And when it's always quadratic, then you can always find the maximum.
+In this case, the maximum is just mu phi of s, as long as p phi of s is positive definite.
+So this is called the normalized advantage function.
+And the reason that it's called normalized is that if you exponentiate it, then you get a normalized probability distribution.
+So the arcmax of Q phi is mu phi, and the max is v phi.
+So now we've just made this maximization operation very easy at the cost of reducing the representational capacity of our Q function.
+Because if the true Q function is not quadratic in the action, then of course the problem we have is that we can't represent it exactly.
+So there's no difference between the two.
+We can do a change to the algorithm.
+It's just as efficient as Q learning, but it loses some representational power.
+All right.
+The last option I'm going to discuss is to perform Q learning with continuous actions by learning an approximate maximizer.
+This is going to be a little bit similar to option one, only instead of running the optimization separately for every single arcmax that we have to take, we'll actually train a second neural network to perform the maximization.
+So the particular algorithm that I'll describe is most closely related to DDPG by Lillicrap et al.
+and ICLR 2016.
+But DDPG itself is almost identical to another algorithm called NFQCA, which was proposed much earlier.
+So you could equivalently think of this as basically NFQCA.
+This algorithm can also be interpreted as a kind of deterministic after-critic method, but I think it's actually simplest to think of it conceptually as a Q learning algorithm.
+So remember that our max over a of Q phi SA is just Q phi evaluated at the arcmax.
+So as long as we can do that arcmax, we can perform Q learning.
+So the idea is to train another network, mu theta S, such that mu theta S is approximately the arcmax of Q phi.
+And you can also think of mu theta S as a kind of policy, because it looks at a state and outputs the action, specifically the arcmax action.
+How do we do this?
+Well, you just solve for theta to find the theta that maximizes Q phi at S comma mu theta S.
+So you basically push gradients through your Q function and maximize.
+And you can use the chain rule to evaluate this derivative.
+So DQ phi D theta is just DA D theta, which is the derivative of mu theta, times DQ phi DA.
+So you can obtain this derivative by backpropagating through the graph, propagating through the Q function and into the mu, and then into the mu parameters.
+So now our targets are going to be given by as Yj equals Rj plus gamma times Q phi prime, evaluated at Sj prime comma mu theta Sj prime, which is really an approximation for the arcmax, as long as mu theta is a good estimate of the arcmax.
+So here is what that algorithm will look like.
+Step 1, take some action AI, observe the corresponding transition Si, Ai, Si prime, Ri, and add it to your buffer, just like in Q-learning.
+Step 2, sample a mini-batch Sj, Aj, Sj prime, Rj from your buffer, uniformly at random.
+Step 3, compute your target value.
+And now instead of using the arcmax, you're going to use mu theta.
+And in fact, you're going to use mu theta prime.
+So you actually have a target network for Q phi prime and a target network for mu theta prime.
+And then step 4, just like in Q-learning, perform a gradient update on phi.
+And additionally, we'll now perform a gradient update on theta.
+So the gradient on theta uses that chain rule derivation for the gradient that I showed in the previous slide.
+So it takes the derivative of the Q value with respect to the action, and then multiplies that by the derivative of the action with respect to theta, which is just backpropagation through mu.
+Then we're going to update our target parameters, phi prime and theta prime, for example, using polyarcha-aversion.
+And then we'll repeat this process.
+So this is the basic pseudocode for a continuous action Q-learning algorithm.
+In this case, this particular algorithm is DDPG, but there are many more recent variants as well as older variants.
+So for classic work on this, you can check out an algorithm called NFQCA.
+For more recent variants, you can check out TD3-NSAC.
+Thank you.

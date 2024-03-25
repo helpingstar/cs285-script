@@ -1,0 +1,148 @@
+All right, in today's lecture we're going to continue our discussion of value-based methods from last time, and we'll discuss some practical deep reinforcement learning algorithms that can utilize Q-functions.
+So even though we learned that value-based methods in general are not guaranteed to converge, in practice we can actually get some very powerful and very useful reinforcement learning algorithms out of them, and that's what we'll talk about today.
+So first, to recap from last time, we discussed how we could derive a general class of value-based methods which we called fitted Q-duration algorithms, which do not require knowledge of the transition probabilities, and do not require us to explicitly represent a policy.
+So in this class of methods there are basically three steps.
+Step one, we collect a data set using some policy, and we learn that these are off-policy algorithms, which means that they can collect their data sets using a wide range of different policies.
+They can aggregate data sets using a wide range of different policies.
+They can aggregate data sets using a wide range of different policies.
+They can aggregate data from previous iterations, and they can use various exploration rules like epsilon greedy and Boltzmann exploration.
+Then in step two, for each transition in our data set, and when I say transition I mean S, I, A, I, S, I prime, and R, I tuples, for each transition we calculate what we call the target, which I'm denoting as y i, which is equal to the current reward plus gamma times the max over the actions of the next time step.
+And we learned that this max is equal to the current ما order times the remaining screens.
+But what I thought was really hard to understand was the number of illusions that we want to get from any of the layers possible.
+Using ein state JWG or doing some other way to do that we are comprisτά goal agency.
+So we use .
+Order state is a way that we can climb multiple virtual Y i members at putting those virtual y i at on theeston does not define this as anóle machine-created union or as an mouth爾 DC happen for any kidd of a group that we mean we employeesism yeah little som and and in step 3 we update our function approximately or stirring for q and we're going in step two again in step three we update our function approximator for q and then we update our function approximator for q, which is also important which is parameterized by phi, by finding the argmin parameters, the parameters that minimize the difference between the output of Q phi and the target's Yi that we just computed.
+Step two and three can in general be repeated some number of times before we collect more data.
+So this is the general recipe of the Fittick Q-duration algorithm, which has a number of choices that we can make.
+We can choose how many transitions to collect in step one.
+We can choose how many gradient steps to take in step three when we optimize phi.
+And we can choose how many times to alternate between steps two and step three before we collect more data.
+If we choose each of these hyperparameters to be one, meaning one step of data collection, one gradient step, and only do step two and three once before collecting more data, then we get what is called the online Q-learning algorithm, which has a number of choices that we can make.
+Here I've called online Q-duration.
+This is really Q-learning.
+So if you hear someone say Q-learning, they really mean this method.
+Step one, take one action Ai and observe the resulting transition, Si, Ai, Si prime, Ri.
+Step two, calculate the target value Yi for that transition.
+Step three, perform one gradient step on the difference between the output of the Q function and the value that you just calculated.
+And of course, as usual, this algorithm fits into our anatomy of our reinforcement learning method.
+The orange box is step one.
+The green box is where we fit our Q function.
+And the blue box here is somewhat degenerate.
+It just involves choosing the action to be the arcmax of the Q.
+All right, so what are some things that are problematic about this general procedure?
+We learned about a few things last time.
+For instance, we learned that the update in step three, even though it looks like a gradient update, it looks like it's applying the chain rule, it's not actually the gradient of any well-defined objective.
+So Q-learning is not gradient descent.
+If you were to substitute in the equation for Yi, you would see that Q phi shows up in two places, but there is no gradient through the second term.
+So this is not properly applying the chain rule.
+We could properly apply the chain rule, and then we get a class of methods.
+It's called residual gradient algorithms.
+Unfortunately, such algorithms tend to work very poorly in practice because of very severe numerical ill-conditioning problems.
+There's another problem with the online Q-learning algorithm, which is that when you sample one transition at a time, sequential transitions are highly correlated.
+So the state I see at time step T is likely to be quite similar to the state that I see at time step T plus one, which means that when I take gradient steps on those samples in step three, I'm taking gradient steps on highly correlated transitions.
+This violates commonly held assumptions for stochastic gradient methods, and it has a pretty intuitive reason to not work very well, which we'll discuss next before presenting a solution.
+All right, so let's talk about the correlation problem.
+So here I've just simplified the algorithm.
+I've just plugged in the equation for the target value right into the gradient update, so there's only two steps instead.
+So I've just simplified the algorithm.
+I've just put in the equation for the target value right into the gradient update, so there's only two steps instead.
+So I've just simplified the algorithm.
+So states that you see one right after the other are going to be strongly correlated, meaning that the state at time T plus one is probably similar to the state at time step T, but even if it's not similar, it probably has a very close relationship to it.
+And your target values are always changing.
+So even though your optimization procedure looks like supervised regression, in a sense, it's kind of chasing its own tail.
+It's trying to catch up to itself and then changing out from under itself.
+So it's kind of chasing its own tail.
+It's trying to chase itself and then changing out from under itself.
+So it's kind of chasing its own tail.
+It's chasing itself and then changing out from under itself.
+So it's kind of chasing its own tail.
+It's chasing itself and the gradient doesn't account for this change.
+So the reason this might be a problem is if you imagine that this is your trajectory and you get a few transitions, you'll kind of locally overfit to these transitions because you're seeing very similar transitions right one right after the other.
+And then you get some other transitions and then you overfit a little bit to those.
+And then you see some others and you overfit to those and so on and so on.
+And then when you start a new trajectory, your function approximator will have been left off at the point where it had overfitted to the other.
+And then it will be at the end of the previous one and will again be bad.
+So if it had seen all the transitions all at once, it might have actually fitted all of them accurately.
+But because it's seeing this very local highly correlated window at a time, it has just enough time to overfit to each window and not enough broader context to accurately fit the whole function.
+Now we could borrow the same idea that we had in actor-critic.
+When we talked about actor-critic algorithms, we actually discussed a solution to the same exact problem when we discussed online actor-critic.
+And the particular solution we discussed was to parallelize.
+It was to have multiple workers that each collect a different transition, S, A, S', R, collect a batch consisting of samples from all of these workers, update on that batch, and repeat.
+And this procedure can in principle address the problem with sequential states being highly correlated.
+The sequential states are still correlated, but now you get a batch of different transitions from different workers and across workers they are hopefully not correlated.
+So it doesn't solve the problem fully, but it can mitigate it.
+And of course, just like we learned about an actor-critic, you could have an asynchronous version of this recipe where the individual workers don't wait for a synchronization point for an update to the parameters, but instead query a parameter server for the latest parameters and then proceed at their own pace.
+In fact, with Q-learning, this recipe should in theory work even better, because in Q-learning you don't even need the workers to use the latest policy.
+So the fact that you might have a slightly older policy that is being executed on some of the workers is in theory not a major problem.
+However, there is another solution to the correlated samples problem that tends to be quite easy to use and works very well in practice.
+And that's to use something called a replay buffer.
+Replay buffers are a fairly old idea in rate-horizontal programming.
+Replay buffers are a fairly old idea in rate-horizontal programming.
+Replay buffers are a fairly old idea in rate-horizontal programming.
+They were introduced way back in the 1990s.
+And here's how they work.
+So let's think back to the full-fitted Q-iteration algorithm.
+In the full-fitted Q-iteration algorithm, we would collect a data set of transitions using whatever policy we wanted, and then we would make multiple updates on that data set of transitions.
+So we would label all of the transitions with target values.
+Then we might make a large number.
+We might make a large number of gradient steps regressing onto those target values.
+And then we might even go back and compute new target values before we even collect more data.
+So we might go back and forth between step 2 and step 3, k times, and if k is larger than 1, we might do quite a bit of learning on the same set of transitions.
+So the online Q-learning algorithm is simply the special case of this when k is set to 1, and we take one gradient step in step 3.
+And of course, we can also use the Q-learning algorithm to compute new target values.
+And of course, any policy for collection will work so long as it has broad support.
+In fact, we could even omit step 1 altogether.
+So we could just load data from the buffer.
+So we can basically have a bunch of stored data loaded from a buffer in step 2, and then iterate on in step 3.
+So this gives us this view of Q-learning or fitted Q-iteration as a kind of data-driven method, where we just have a big bucket of transitions.
+We don't really care so much where these transitions came from, so long as they cover the same data set.
+So we don't really care so much where these transitions came from, so long as they cover the same data set.
+And that's a really good idea.
+But I think this also gives us a base of all possibilities pretty well.
+And we're just going to crank away taking more and more updates on those transitions alternately between computing target values and regressing onto those target values.
+So we could still take one gradient step in step 3 if we want.
+And then we get something that looks a lot like online Q-learning only without the data collection.
+So if we take one gradient step, then we're basically just alternating between computing target values for our transitions and taking gradient step for our transitions.
+And due to this, we really get the understanding of what's happening in the framework of our system.
+So this gives us this modified version of the Q-learning algorithm with a replay buffer.
+In step one, instead of actually taking steps in the real world, we simply sample a batch, multiple transitions, si, ai, si', ri, from our buffer, which I'm going to call b.
+And then in step two, we sum up our gradient over all of the entries in that batch.
+So each time around this loop we might sample a different batch, we sample it iid independently and identically distributed from our buffer, which means that our samples are no longer correlated.
+And then the only question I have to answer is where do we get our buffer?
+So we have multiple samples in the batch, so we have a low variance gradient, and our samples are no longer correlated, which satisfy the assumption of stochastic gradient methods.
+We still unfortunately don't have a real gradient, because we're not computing the derivative through this second term, but at least the sample is not a gradient.
+So we can't get a gradient, but we can get a gradient.
+So we can get a gradient, but we can't get a gradient.
+So we can't get a gradient.
+So we can't get a gradient.
+So where will the data come from?
+Well, what we need to do is we need to periodically feed the replay buffer.
+Because initially, our policy will be very bad.
+And maybe our initial very bad policy just won't visit all the interesting regions of the space.
+So we still want to occasionally feed the replay buffer by using our latest policy, maybe with some epsilon greedy exploration to collect some better data, some data that achieves better coverage.
+So then, the data that we want to collect will be the same as we did with the policy.
+So we can get a gradient, and we can get a gradient.
+So we're going to do that.
+And the diagram you could think of might look like this.
+We have our buffer of transitions.
+We're cranking away on this buffer doing our off policy Q learning.
+And then periodically, we deploy some policy back into the world.
+For example, the greedy policy with epsilon greedy exploration to collect a little bit more data and bring back some more transitions to add back to our buffer.
+And that will refresh our buffer with a little bit more data.
+So we can do that.
+We can devise a full kind of Q learning recipe with replay buffers.
+Step one, collect a data set of transitions using some policy.
+Maybe initially, it's just a random policy.
+Later on, it will be the argmax policy with epsilon greedy exploration, and add this data to your buffer B.
+So that's this part.
+Step two, sample a batch from B, and then do some learning on that batch by summing over the batch, and then do some learning on that batch by summing over the batch.
+And then we'll do this Q learning pseudo gradient.
+So we're going to calculate target values for every entry in the batch.
+And then we're going to do the current Q value minus the target value times the derivative.
+And then we'll sum it over the whole batch.
+Since we sum over the whole batch, we get a lower variance gradient.
+It has more than one sample.
+And since we sample the batch iid from our buffer, our samples are going to be de-correlated so long as our buffer is big enough.
+So we're going to do this Q learning algorithm.
+And then we'll do the same thing.
+So if you repeat this K equals one times, and then go out and collect more data, then you get a fairly classic kind of deep Q learning algorithm with replay buffers.

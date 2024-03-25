@@ -1,0 +1,206 @@
+All right, in the last portion of today's lecture, we're going to shift gears a little bit and talk about how we can do model-based reinforcement learning with images.
+So what happens with complex image observations, things like images in Atari or pictures from a robot's camera performing some manipulation task?
+Well, with the algorithms that we talked about before, they all have some form of model that predicts the next state from the previous state in action and then plans over these states.
+What is hard about doing this with images?
+Well, first, images have very high dimensionality, which can make prediction difficult.
+Images also have a lot of redundancy.
+So, you know, the different pixels in the image for the Atari game are very similar to each other.
+And that means that the state contains redundancy.
+That means a lot of redundant information.
+Image-based tasks also tend to have partial observability.
+So if you observe one frame in an Atari game, you might not know how fast the ball is moving in breakup, for instance, or in which direction.
+So when we're dealing with images, we typically deal with a POMDP model.
+And this is the graphical model illustration for a POMDP.
+It has a distribution of next states given previous states in actions and distribution of over-observations given states.
+And typically, when we're doing this, we're going to do a POMDP model.
+And typically, when we're doing this, we're going to do a POMDP model.
+When we're doing RL with images, we know the observations and actions, but we do not know the states.
+So we would like to learn the transition dynamics in state space, P of ST plus 1 given ST, AT, but we don't even know what S is.
+So perhaps we could separately learn P of OT given ST and P of ST plus 1 given ST comma AT.
+And that could be quite nice because P of OT given ST handles all the high dimensionality.
+And that could be quite nice because P of OT given ST handles all the high dimensionality.
+And that could be quite nice because P of OT given ST handles all the high dimensionality.
+But it doesn't have to deal with the complexity of temporal dynamics.
+Whereas the P of ST plus 1 given ST, AT has to deal with the dynamics, but doesn't have to deal with the high dimensional stuff.
+And maybe this separation of roles can give us some viable model-based RL algorithms for image observations.
+I'll discuss such algorithms briefly and somewhat informally.
+But then at the end, I'll also talk about how maybe some of this is not actually true.
+Maybe it is not too bad to actually learn dynamics directly on images.
+So that'll come at the end.
+But first, let's talk about these kind of state-space models.
+So these are sometimes referred to as latent space or latent state models.
+In general, they're state-space models.
+So here we're going to learn two objects.
+We're going to learn a P of OT given ST.
+Basically, how does our state map to an image?
+That's the observation model.
+And a P of ST plus 1 given ST, AT, which is our dynamics model.
+In our unobserved state.
+So we're going to learn a P of RT given ST, AT.
+We will typically also need to learn a reward model, P of RT given ST, AT, because our reward depends on the state.
+And since we don't know what the state is, we don't know how the reward depends on it.
+So we typically also add a reward node to this and learn a reward model.
+All right.
+So how should we train one of these things?
+Well, if we had a standard fully observed model, we would train it with maximum likelihood.
+We would basically take our data set of N, and we would train it to train the number of different transitions.
+And for each transition, we would maximize the log probability of ST plus 1 comma I, given STI and ATI.
+If we have a latent space model, now we have a P of OT given ST and a P of ST plus 1 given ST, AT.
+So we have to maximize the log probabilities of both of those, and potentially also the reward model, if we want to add that in.
+If we knew the states, then this would be easy.
+Then we would just add together log P5, P5, P5 and P5.
+st plus one given st at to log p phi ot given st.
+The problem is that we don't know what s is, so we have to use an expected log likelihood objective where the expectation is taken over the distribution over the unknown states in our training trajectories.
+Those of you that are familiar with things like hidden Markov models, it's basically the same idea.
+So we would need some sort of algorithm that can compute a posterior distribution over states given our images and then estimate this expected log likelihood using states sampled from that approximate posterior.
+So the expectation is taken with respect to p of st comma st plus one given o one through t and a one through t at every time step.
+Okay.
+So how can we actually do this?
+Well, one thing we could do is we can actually learn an approximate posterior, and I'm going to say this approximate posterior has parameter psi, and I'm going to note a q psi, and the approximate posterior will be another neural network that gives the distribution over st given the observations and actions seen so far.
+And there are a few choices that you could make.
+So we call this approximate posterior the encoder, and you can learn a variety of variables.
+You could equip these type ofangen parameters.
+So we could give antimeron, and we could list the numerical variables as Ю satu c of aM.
+Let's say, skin number t plus aenda a from s t plus one, given for the order na and s t of a, we could also plot a n plus c, Plein знаком states from the left hand side and then use the wrong name for canal science by acting with their values from both sides, get you anidel method chiaorest from it and that's it.
+So what you would learn is we would learn in iniationinsky counting the number e and plus its and as theisions that posterior that just tries to guess the current state given the current observation, for example if the partial observability effects are minimal.
+And this is the easiest posterior to train, but also the worst in the sense that using it will be the furthest away from the true posterior that you want, which is P , given O1 through T, A1 through T.
+So you could ask for a full smoothing posterior or a single-step encoder.
+The full smoothing posterior is the most accurate in the sense that it most accurately represents your uncertainty about the states, but it's also by far the most complicated to train.
+The single-step encoder is by far the simplest, but provides the least accurate posterior.
+In general, you would want a more accurate posterior in situations that are more partially observed.
+So if you believe that your problem is such where the state can be pretty much entirely guessed from the current observation, then a single step posterior is a really good choice.
+Whereas if you have a heavily partially observed setting, then you want something closer to a full smoothing posterior.
+And there are of course a lot of in-between choices, like estimating st given .
+Now in terms of how to actually train these posteriors, this requires an understanding of something called variational inference, which we'll cover in more detail next week.
+I'll gloss over how to train these probabilistic encoders in this lecture, and I'll instead focus on a very simple limiting case of the single step encoder.
+So we're going to talk about the single step encoder, and we're going to talk about a very simple special case of the single step encoder.
+So if we were to really do this right, then for every time step we would sample st from q of st given .
+And st plus 1 from q of st plus 1 given ot plus 1.
+And then using those samples, maximize log p of st plus 1 given st and log p of ot given st.
+But a very simple special case of this, if you believe that your problem is almost fully observed, is to actually use a deterministic encoder.
+So instead of outputting a distribution over st given ot, we would just output a single st for our current ot.
+The stochastic case requires variational inference, which I'll discuss next week, but the deterministic case is quite a bit simpler.
+So the deterministic case can be thought of as a delta function centered at some deterministic encoding g psi of ot.
+So that means that st is equal to g psi of ot.
+And if we use this deterministic encoder, then we can simply substitute that in everywhere where we see an s in the original objective, and we can remove the expectation.
+So now our objective is to maximize, with respect to 5, the total number of steps we want to do.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+The sum over all of our trajectories of the sum over all of our time steps of log p g of ot plus 1 given g of ot comma at plus log p of ot given g of ot.
+So the second term can be thought of as a kind of autoencoder.
+It just says that if you encode ot, you should be able to reconstruct it back out again.
+And the first term, it enforces that the encoded states should obey the learned dynamics.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+So we can simply remove the expectation.
+Then you could optimize both phi and psi jointly by back-propagating through this whole thing.
+If the dynamics is stochastic, then you want to use something called the reparameterization trick to make this possible to solve with gradient descent, which I'll cover next week.
+But you could also use deterministic dynamics in this case and have a fully deterministic state-space model of this sort.
+So the short version is write down this objective, and then optimize it with back-propagation and gradient descent.
+So everything is differentiable, and you could train everything with back-prop.
+All right.
+So take a minute to think about this formulation.
+Look over the slide and think about whether everything here makes sense to you.
+If you have a question about what's going on here, it would be a very good idea to write a comment or question in the comments, and then we could discuss this in class.
+So if you have a question about what's going on here, write a comment or question in the comments.
+And then we could take a minute to think about this.
+But to briefly summarize, we talked about how if you want to learn stochastic state-space models, you need to use an expected log likelihood instead of a standard log likelihood, where the expectation is taken with respect to an encoder, which represents the posterior.
+There are many ways to approximate the posterior, but the absolute simplest one is to use an encoder from observations to states and make it a deterministic encoder, in which case the result is a function of the previous condition in place of states in your dynamics and observation model objectives.
+And of course the reward model would work the same way.
+So if we had a reward model, we would also add a log p of rt given g of ot in here.
+Okay.
+So there's our state-space model.
+You can think of g of ot as an additional virtual edge that maps from O to S.
+And we also have the reward model.
+So we have a stochastic encoder to model uncertainty, and we have a stochastic encoder to model uncertainty.
+And then we have a latent space dynamics, image reconstruction, and a latent space reward model.
+There are many practical methods for using a stochastic encoder to model uncertainty, and in practice those do work better.
+But for simplicity of exposition, if you think about this as a deterministic encoder, I think that makes a lot of sense.
+Okay.
+So how do we use this in an actual model-based RL algorithm?
+Well, it's actually a very simple way to do this.
+You can run your model-based RL version 1.5 algorithm that I discussed before.
+You can run your base policy pi 0 to collect the data set of transitions.
+Now, these transitions consist of observation, action, and next observation tuples.
+Then you train your dynamics, reward model, observation model, and encoder together with back propagation.
+Plan through the model to choose actions that maximize the reward.
+Execute the first planned action.
+And observe the next resulting observation.
+So you can do that in the first iteration of the model, and then you can do that in the second iteration of the model, and then you can do that in the third iteration of the model.
+So this is a very simple way to do it.
+It's just a very simple way to do it.
+And then you have the outer data collection loop where every n steps you collect more data and retrain all of your models.
+All right.
+A few examples of actual algorithms in the literature that have used this trick.
+So here is an example by Vatter et al.
+called embed to control.
+This paper used a stochastic encoder.
+But otherwise, the idea is fairly similar.
+And then they used LQR to construct their plans through the state-space model.
+So here's a video.
+First, they're showing their state-space.
+This is for a kind of a point-mass 2D navigation task where you just have to avoid those six little obstacle locations.
+And what they're showing on the right is an embedding of the state-space learned by their model.
+And you can see that it kind of has a 2D decomposition that reflects the 2D structure on the task, even though the observations are images.
+Here is an inverted pendulum task where they're training on images from the inverted pendulum.
+And you can see that the state-space model has this kind of cool 3D structure reflecting the cyclical nature of the pendulum task.
+Here is the actual algorithm in action for pendulum swing-up.
+So on the right, they're showing basically one-step predictions from their model.
+And on the left, they're showing the real image.
+And on the bottom graph is anhighlight on the three-step model.
+This score desc Syっと and this score cancel the two-step model.
+And then there showing the real image and you can see that it's kind of fuzzy but has some reasonable idea of what's going on.
+Here is another task which is cart-pull balancing.
+So here again you can see the images on the right are a little fuzzier but they generally have a similar rough idea.
+And here is a simple reaching task with a three-link muscular arm and it's trying to reach a particular goal image.
+So you can see that it kind of reaches out and more or less goes to the right goal image.
+All right, here's a more recent paper that builds on these ideas to develop a more sophisticated state-space model.
+So here the state-space model actually is regularized to be locally linear which makes it well suited for iterative linearization algorithms like iterative LQR.
+And this method is tested on some robotics tasks.
+This was actually done by a student who was an undergraduate here at Berkeley at the time.
+And here the observations that the robot are seeing are shown in the top left corner.
+And then it's using LQR with this learned state-space model to put the Lego block on the other Lego block.
+And here's another example of a task where the robot has to use images to push this cup to the desired location.
+And Laura here, who is one of the authors on this paper, is in real time giving the robot rewards to supervise this reward model by hitting that button on the keyboard.
+All right.
+So here's a little bit more of an illustration.
+This is essentially running PI0.
+This is the initial random data collection.
+From here on out, the model will be trained and then will be used for testing in different positions.
+So here are some tasks where the object starts in different locations.
+So here you can see on the left is the encoder and decoder, so this is basically evaluating the observation model.
+And you can see, yeah, a big part of the implementation model.
+And you can see the observation model reconstructs the images fairly accurately.
+And on the right is what the robot is actually doing.
+And this is after about 20 minutes of training.
+So these kinds of algorithms tend to be quite a bit more efficient than model-free algorithms that we discussed before.
+Okay.
+Now, so far, we've talked about algorithms that learn a latent state-space model.
+They learn some sort of encoder with an embedding g of ot equals st.
+What if we dispense with the embedding altogether and actually go back to the original recipe and model-based RL, but in observation space?
+So what if we directly learn p of ot plus 1 given ot at?
+If we have partial observability, then we probably need to use a recurrent model.
+So we need to make ot plus 1 also depend on old observations.
+But as long as we do this, we can actually do a pretty decent job of modeling dynamics directly in image space.
+And there's been a fair bit of work doing this.
+This is an example, actually, from a somewhat older paper now, three years ago, showing a robotic arm.
+And each column shows a different action starting from the same point.
+So you can see that for different actions, the arm moves left, right, up, and down.
+And when it contacts objects, it pushes those objects.
+These kinds of methods can work fairly well in more complex settings where learning a compact latent space is very difficult.
+So if you have dozens of objects in the scene, it's not actually clear how to build a compact state-space for them.
+But predicting directly an image space can actually work very well.
+So we're going to go ahead and do that.
+So we're going to go ahead and do that.
+And we're going to go ahead and do that.
+And then you could direct the robot to do a particular thing by, for example, telling it this particular point in the image, move it to this location.
+And then it figures out actions that lead to that outcome.
+And you can do things like reach out and grab a stapler.
+So here is the animation of what the model thinks is going to happen.
+And when it actually goes and does it, it reaches out, puts the hand on the stapler, and then pushes it to the desired location.
