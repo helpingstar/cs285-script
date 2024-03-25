@@ -70,7 +70,7 @@
 70. Alright, so regular value iteration can be written extremely concisely as just repeatedly applying this one step V goes to BV.
 71. Now let's go to the fitted value iteration algorithm.
 72. The fitted value iteration algorithm has another operation.
-73. It has a step two where you actually perform the art min with respect to phi.
+73. It has a step two where you actually perform the art min with respect to ϕ.
 74. How can we mathematically understand that second step?
 75. So the first step is basically the Bellman backup.
 76. The second step trains the neural network.
@@ -101,25 +101,25 @@
 101. So we'll project down onto the set omega, and it'll be a right angle projection.
 102. So that'll get us V prime.
 103. So we can define this as a new operator.
-104. We can call this operator pi for projection.
-105. And we're going to say that pi V is just the art min within the set omega of this objective.
+104. We can call this operator π for projection.
+105. And we're going to say that π V is just the art min within the set omega of this objective.
 106. And this objective is just the L2 norm.
-107. Now pi is a projection onto omega in terms of the L2 norm.
-108. And pi is also a contraction, because if you project something under L2 norm, it gets closer.
-109. So the complete fitted value iteration can be written also in one line as just V becomes pi BV.
+107. Now π is a projection onto omega in terms of the L2 norm.
+108. And π is also a contraction, because if you project something under L2 norm, it gets closer.
+109. So the complete fitted value iteration can be written also in one line as just V becomes π BV.
 110. So first you take a bell and back up on V, then you project it, and then you get your new V.
 111. So that's our fitted value iteration algorithm.
 112. B is a contraction with respect to the infinity norm, the so-called max norm.
 113. So that's what we saw before.
-114. Pi is a contraction with respect to the L2 norm, with respect to Euclidean distance.
-115. So pi V minus pi V bar squared is less than or equal to V minus V bar squared.
+114. π is a contraction with respect to the L2 norm, with respect to Euclidean distance.
+115. So π V minus π V bar squared is less than or equal to V minus V bar squared.
 116. So, so far so good.
 117. Both of these operators are contractions.
-118. The reason, by the way, the intuition behind why pi is a contraction, is that if you have any two points in Euclidean space and you project them on a line, they can only get closer to each other, they can never get further.
-119. So that's why pi is a contraction.
-120. Unfortunately, pi times B is not actually a contraction of any kind.
+118. The reason, by the way, the intuition behind why π is a contraction, is that if you have any two points in Euclidean space and you project them on a line, they can only get closer to each other, they can never get further.
+119. So that's why π is a contraction.
+120. Unfortunately, π times B is not actually a contraction of any kind.
 121. This might at first seem surprising, because they're both contractions individually, but remember that they're contractions for different norms.
-122. B is a contraction in the infinity norm, pi is a contraction in the L2 norm.
+122. B is a contraction in the infinity norm, π is a contraction in the L2 norm.
 123. It turns out if you put those two together, you might actually end up with something that is not a contraction under any norm.
 124. And this is not just a theoretically idiosyncrasy.
 125. This actually happens in practice.
@@ -140,9 +140,9 @@
 140. So now the max is after the transition operator.
 141. That's the only difference.
 142. B is still a contraction in the infinity norm.
-143. You can define an operator pi exactly the same way as the operator that finds the arg min in your hypothesis class that minimizes square difference.
-144. You can define fitted Q iteration, as Q becomes pi B Q, just like with value iteration.
-145. And just like before, B is a contraction in the infinity norm, pi is a contraction in the L2 norm, and pi B is not a contraction of any kind.
+143. You can define an operator π exactly the same way as the operator that finds the arg min in your hypothesis class that minimizes square difference.
+144. You can define fitted Q iteration, as Q becomes π B Q, just like with value iteration.
+145. And just like before, B is a contraction in the infinity norm, π is a contraction in the L2 norm, and π B is not a contraction of any kind.
 146. This also applies to online Q learning and basically any algorithm of this sort.
 147. Now at this point, some of you might be looking at this thing and thinking, something is very contradictory here.
 148. We just talked about how this algorithm works, this algorithm doesn't converge, but at the core of this algorithm is something that looks suspiciously like gradient descent.
@@ -164,9 +164,9 @@
 164. There's also, unfortunately, another sad corollary to all this, which is that our actual critic algorithm that we discussed before also is not guaranteed to converge under function approximation for the same reason.
 165. So there we also do a Bellman backup when we use a bootstrap update, and we do a projection when we update our value function, and the concatenation of those is not a convergent operator.
 166. So Fitted bootstrap policy evaluation also doesn't converge.
-167. And by the way, one aside about terminology, most of you probably already noticed this, but when I use the term V pi, I'm referring to the value function for some policy pi.
+167. And by the way, one aside about terminology, most of you probably already noticed this, but when I use the term V π, I'm referring to the value function for some policy π.
 168. This is what the critic does.
-169. When I use V star, this is the value function for the optimal policy pi star, and this is what we're trying to find in value iteration.
+169. When I use V star, this is the value function for the optimal policy π star, and this is what we're trying to find in value iteration.
 170. Okay, so to review, we talked about some value iteration theory, we discussed the operator for the backup, the operator for the backup, the operator for the projection.
 171. This is a typo on the slide, they're not actually linear operators, but they are operators.
 172. We talked about how the backup is a contraction, and how tabular value iteration converges.

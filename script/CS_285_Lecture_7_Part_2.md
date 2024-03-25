@@ -19,7 +19,7 @@
 19. Let's say just like in lecture 6, we're going to have a neural net value function that maps from states to scalar valued values.
 20. So we're going to have a neural net that looks like this, and it has some parameters, fine.
 21. So what we can do is we can fit our neural net value function in much the same way as we did in lecture 6 by doing least squares regression onto target values.
-22. And if we use the value iteration procedure from the previous section, then our target values are just the max over a of q pi sa.
+22. And if we use the value iteration procedure from the previous section, then our target values are just the max over a of q π sa.
 23. So the 38.
 24. Jerπ is going to be in theCu and traqn.
 25. So for the list of operations we could take in too complete an account, we could take as too large an account as people did, we can just stake out a maximum of 1 ут each time taking that capital and having it careers았어요 a maximum of 1 ут would look like this.
@@ -36,7 +36,7 @@
 36. We don't represent the Q function explicitly here.
 37. We just compute it as we go to evaluate the max.
 38. And that gives us our target values y.
-39. And then we solve for phi by doing least squares regression so that v phi of si is close to yi.
+39. And then we solve for ϕ by doing least squares regression so that v ϕ of si is close to yi.
 40. So this is fitted value direction.
 41. Step one, compute your target values by constructing the Q function for every possible action at each sampled state.
 42. So you have a finite sampling of states and we still assume that we have discrete action space so we can perform this enumeration exactly.
@@ -55,19 +55,19 @@
 55. And perhaps more importantly, it requires us to be able to try multiple different actions from the same state, which we can't do in general if we can only run policies in the environment, instead of teleporting to a state multiple times and trying multiple actions from the same exact state.
 56. So if we don't know the transition dynamics, generally we can't do this.
 57. So let's go back to policy iteration.
-58. In policy iteration, we alternated between evaluating q pi or a pi.
-59. But if you have a pi, or if you have q pi, you can recover a pi.
+58. In policy iteration, we alternated between evaluating q π or a π.
+59. But if you have a π, or if you have q π, you can recover a π.
 60. And then step two, setting our policy to be this greedy arc max policy.
 61. So that was policy iteration.
 62. And step one in policy iteration involved policy evaluation, which involved repeatedly applying this value function recurrence that we saw before.
-63. So what if instead of applying the value function recurrence to learn the value function, we instead directly constructed a q function recurrence in an analogous way?
-64. So if I wanted to construct the q function at a particular state action tuple, I can write exactly the same recurrence.
-65. Except that now, since the q function is a function of a state and an action, I don't need to evaluate the next state given s and pi of s.
-66. I just evaluate the next state given the sa tuple that I'm training my q function on.
+63. So what if instead of applying the value function recurrence to learn the value function, we instead directly constructed a Q function recurrence in an analogous way?
+64. So if I wanted to construct the Q function at a particular state action tuple, I can write exactly the same recurrence.
+65. Except that now, since the Q function is a function of a state and an action, I don't need to evaluate the next state given s and π of s.
+66. I just evaluate the next state given the sa tuple that I'm training my Q function on.
 67. And this might at first seem like a very subtle difference, but it's a very, very important one.
-68. Because now, as my policy pi changes, the action for which I need to sample s prime, basically the a that's on the right of the conditioning bar and p of s prime given sa, doesn't actually change.
-69. Which means that if I have a bunch of samples, s comma a comma s prime, I can use those samples to fit my q function regardless of what policy I have.
-70. The only place where the policy shows up is as an argument to the q function at the state s prime inside of the expectation.
+68. Because now, as my policy π changes, the action for which I need to sample s prime, basically the a that's on the right of the conditioning bar and p of s prime given sa, doesn't actually change.
+69. Which means that if I have a bunch of samples, s comma a comma s prime, I can use those samples to fit my Q function regardless of what policy I have.
+70. The only place where the policy shows up is as an argument to the Q function at the state s prime inside of the expectation.
 71. And it turns out that this very seemingly very simple change allows us to perform policy iteration style algorithms without actually knowing the transition dynamics, just by sampling some s, a, s prime tuples, which we can get by running any policy we want.
 72. So, this second recurrence that I've written here doesn't require knowing the transition probabilities, it just requires samples of the form s comma a comma s prime.
 73. So if we do this for step one in policy iteration, we would no longer require knowing the transition probabilities.
@@ -87,16 +87,16 @@
 87. And step two fits a new value function to those target values.
 88. So the way that we construct a fitted Q iteration algorithm is very much analogous to fitted value iteration.
 89. We construct our target value YI as the reward of a sampled state action tuple SI AI plus gamma times the expected value of the value function at state S prime.
-90. and then in step 2 we simply regress our Q function Q phi onto those target values.
+90. and then in step 2 we simply regress our Q function Q ϕ onto those target values.
 91. The trick, of course, is that we have to evaluate step 1 without knowing the transition probabilities, so we're going to do two things.
-92. First, we're going to replace V of SI prime with the max over A at Q phi SI prime AI prime, because we're only approximating Q phi, we're not approximating V phi.
+92. First, we're going to replace V of SI prime with the max over A at Q ϕ SI prime AI prime, because we're only approximating Q ϕ, we're not approximating V ϕ.
 93. And second, instead of taking a full expectation over all possible next states, we're going to use the sampled state SI prime that we got when we generated that sample.
 94. And now all we need to run this fitted Q iteration algorithm is samples SI AI SI prime, which can be constructed by rolling out our policy.
 95. So this is fitted Q iteration.
 96. It alternates between two steps.
 97. Step one, estimate target values, which you can do using only samples, and step two, estimate target values, which you can do using only samples.
-98. And your previous Q function Q phi.
-99. Step two, fit a new phi with regression onto your target values using the same exact samples that you used to compute your target values.
+98. And your previous Q function Q ϕ.
+99. Step two, fit a new ϕ with regression onto your target values using the same exact samples that you used to compute your target values.
 100. And this doesn't require simulation of different actions.
 101. It only requires the actions that you actually sampled last time when you ran your policy.
 102. So this works even for off-policy samples.
@@ -129,10 +129,10 @@
 129. What policy do you use to collect this data?
 130. A very common choice is, in fact, to use the latest policy, but there are a few nuances about that choice that I'll discuss shortly.
 131. Step two, for every transition that you sampled, calculate a target value.
-132. So you calculate the target value, yi, by taking the reward from that transition, plus gamma times the max over the next action, ai prime, of the Q value, Q phi, si prime, ai prime, using your previous Q function estimator, Q phi.
-133. Step three, train a new Q function, which means find a new parameter vector phi, by minimizing the difference between the values of Q phi, si, ai, and the corresponding target value, yi.
+132. So you calculate the target value, yi, by taking the reward from that transition, plus gamma times the max over the next action, ai prime, of the Q value, Q ϕ, si prime, ai prime, using your previous Q function estimator, Q ϕ.
+133. Step three, train a new Q function, which means find a new parameter vector ϕ, by minimizing the difference between the values of Q ϕ, si, ai, and the corresponding target value, yi.
 134. So you have a Q function, which takes as input s and a.
-135. It outputs a scalar value, and it has parameters phi.
+135. It outputs a scalar value, and it has parameters ϕ.
 136. I should mention, by the way, that a very common design for a neural network architecture for a Q function with discrete actions is actually to have the actions be outputs rather than inputs.
 137. So an alternative design is to input the state s, and then output a different Q value for every possible action a.
 138. You can think of that as a special case of this design, and I'll discuss in class a little about how those relate.

@@ -58,7 +58,7 @@
 58. This controls how far we go, and it's basically in the wrong space.
 59. So can we rescale the gradient so that this doesn't happen?
 60. What if we instead iteratively solve this problem, maximize the linearized objective, but subject to a constraint that the distributions don't change too much?
-61. So here D is some measure of divergence between pi θ' and π_θ, and we'd like that divergence measure to be less than or equal to ϵ.
+61. So here D is some measure of divergence between π_θ' and π_θ, and we'd like that divergence measure to be less than or equal to ϵ.
 62. So we'd like to pick some parameterization-independent divergence measure, a divergence measure that doesn't care about how you're parameterizing your policy, just which distribution it corresponds to.
 63. A very good choice for this is the KL divergence.
 64. The KL divergence is a standard divergence of bregman divergence and I won't go into too much detail about how KL divergences are defined or derived, just that it's a measure of divergence on distributions, and it is parameter-independent, meaning that no matter how you parameterize your distributions, the KL divergence will remain the same.

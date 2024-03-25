@@ -37,7 +37,7 @@
 37. The intuition for why that's true, of course, is that eventually, is that each time the policy runs, you collect its observations, but then you might label them with actions that are different from the actions it took.
 38. But that distribution is closer than the initial one.
 39. So as long as you get closer each step, eventually you'll get to a distribution where the policy can actually learn and then you'll stay there forever.
-40. So then as you collect from it more and more, eventually your data set becomes dominated by samples from the correct p pi θ distribution.
+40. So then as you collect from it more and more, eventually your data set becomes dominated by samples from the correct p π_θ distribution.
 41. So that's the algorithm.
 42. It's a very simple algorithm to implement if you can get those labels.
 43. Here's a video of this algorithm in action.

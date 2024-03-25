@@ -1,13 +1,13 @@
 1. All right.
 2. In the next section of today's lecture, I'm going to talk about another way that we can use the critic by incorporating the critic as a baseline to the policy gradient.
-3. And this is going to have some interesting tradeoffs as compared to the standard actor-critic algorithm that we've discussed so far.
-4. So on this slide, I have the equation for the actor-critic that we discussed in today's lecture, as well as the equation for the policy gradient that we saw in the previous lecture.
-5. The actor-critic consists of the grad log pi term multiplied by the reward plus gamma times the next value minus the current value.
-6. The policy gradient consists of the grad log pi term times the sum of the rewards to go minus a baseline.
-7. So the sum of the rewards to go is an unbiased single sample estimate of the Q value at SIT AIT.
-8. Now, the actor-critic policy gradient estimator.
+3. And this is going to have some interesting tradeoffs as compared to the standard Actor-Critic algorithm that we've discussed so far.
+4. So on this slide, I have the equation for the Actor-Critic that we discussed in today's lecture, as well as the equation for the policy gradient that we saw in the previous lecture.
+5. The Actor-Critic consists of the ∇log π term multiplied by the reward plus gamma times the next value minus the current value.
+6. The policy gradient consists of the ∇log π term times the sum of the rewards to go minus a baseline.
+7. So the sum of the rewards to go is an unbiased single sample estimate of the Q value at s_{i,t} a_{i,t}.
+8. Now, the Actor-Critic policy gradient estimator.
 9. Has the advantage that drastically lowers the variance because the function approximator in the critic integrates in all those different possibilities for what might happen instead of relying on a single sample.
-10. Unfortunately, the actor-critic gradient estimator also has the disadvantage that it's no longer unbiased.
+10. Unfortunately, the Actor-Critic gradient estimator also has the disadvantage that it's no longer unbiased.
 11. The reason for that is that if your value function is slightly incorrect, which it might be because it's a function approximator trained on a finite number of samples.
 12. Then you can't do that.
 13. Then you can't do that.
@@ -18,7 +18,7 @@
 18. So one question we could ask is, could we get a policy gradient that's unbiased?
 19. Could we get a policy gradient estimator that is still unbiased, but uses the critic in some other way to lower the variance?
 20. And the answer is that we can.
-21. We can actually construct a policy gradient estimator that has slightly higher variance than the actor-critic version, but no bias like the policy gradient version.
+21. We can actually construct a policy gradient estimator that has slightly higher variance than the Actor-Critic version, but no bias like the policy gradient version.
 22. And the way that we can do this is by using what's called a state-dependent baseline.
 23. So it turns out that we can prove by extending the proof from the previous lecture that not only does the policy gradient, not only does the policy gradient, remain unbiased when you subtract any constant b, it actually still remains unbiased if you subtract any function that depends on only the state and not on the action.
 24. It's actually a very easy proof to construct.
@@ -27,9 +27,9 @@
 27. It's very straightforward to do.
 28. But the bottom line is that you can use any baseline that depends on the state, and a very good choice is the value function.
 29. Because you would expect this single sample estimator in expectation to come out to be equal to the value function.
-30. So if you use the value function as the baseline, then the numbers that are multiplying the grad log pi, should it in expectation be smaller, which means that their variance is smaller, which means that the variance of your entire policy gradient is smaller.
+30. So if you use the value function as the baseline, then the numbers that are multiplying the ∇log π, should it in expectation be smaller, which means that their variance is smaller, which means that the variance of your entire policy gradient is smaller.
 31. So it's actually quite a good idea to use a value function as a baseline.
-32. Now this doesn't lower the variance as much as the full actor-critic algorithm, because you still have the sum over future rewards, but it's much lower than a constant baseline, and it's still unbiased.
+32. Now this doesn't lower the variance as much as the full Actor-Critic algorithm, because you still have the sum over future rewards, but it's much lower than a constant baseline, and it's still unbiased.
 33. Now, some of you might be wondering at this point, well, okay, we used the value function as a baseline, we made it depend on more stuff, and we got a lower variance, what if we make it depend on even more things?
 34. What if we make the baseline depend on the state and the action?
 35. Will we get an even lower variance that way?
@@ -68,7 +68,7 @@
 68. And furthermore, in many continuous action cases, if you make a careful choice of the class of distributions and the class of Q functions, this integral also has an analytic solution.
 69. For example, the expected value of a quadratic function under a Gaussian distribution has an analytic solution.
 70. So in many cases, the second term can be evaluated in such a way that its variance is 0 or very close to 0.
-71. And the first term has low variance because Q hat minus Q pi is typically going to be a small number.
+71. And the first term has low variance because ^{Q} minus Q π is typically going to be a small number.
 72. So this kind of trick can be used to provide a very low variance policy gradient, especially if you can get a good Q function estimator.
 73. If you want to read more about these kinds of control variants and how you can use a critic without incurring bias, provided the second term can be evaluated, then check out this paper by Shixiang Gu called QPro.
 74. Okay, so so far we talked about ways that we can use critics and get policy gradient estimators that are unbiased.

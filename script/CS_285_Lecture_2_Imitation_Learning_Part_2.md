@@ -3,24 +3,24 @@
 3. Okay, so let's go back to this intuitive picture, which I used to argue that the reason that behavioral cloning doesn't do so well is because even if you learn a very good policy, if that policy makes a small mistake, it'll put you into a situation that's a little bit different from the ones that it was trained on, where it's more likely to make a bigger mistake, which in turn will put you into an even more unfamiliar situation.
 4. And from there, the mistakes might build up and up.
 5. So to try to make this more precise, let's start introducing a little bit of notation.
-6. We have a policy, pi θ at given ot, and that policy is trained using a training set that comes from a particular distribution.
+6. We have a policy, π_θ at given ot, and that policy is trained using a training set that comes from a particular distribution.
 7. And that distribution is produced by a person providing demonstrations, like a person driving a car, for example.
 8. So I'm going to use p data ot to denote the distribution that produced the training set.
 9.  Now, p data ot might be a very complex distribution.
 10. We don't really care about that.
 11. All we care about at this stage is that it is whatever distribution over observations comes from the human's drive.
 12. And then I'll use a different symbol to denote the distribution over observations that the policy itself sees when it's driving a car.
-13. And that's going to be denoted with p pi θ ot.
-14. And of course, because the policy doesn't drive exactly the same way that a person drives, p pi θ ot is not going to be the same as p data ot.
-15. So if we want to understand just how different these things are going to be, let's first discuss how pi θ is trained.
-16. Well, pi θ is trained under p data ot, which means that we can, if we're using some standard training objective, like supervised maximum likelihood or empirical risk minimization, basically, we can write the objective as the following.
+13. And that's going to be denoted with p π_θ ot.
+14. And of course, because the policy doesn't drive exactly the same way that a person drives, p π_θ ot is not going to be the same as p data ot.
+15. So if we want to understand just how different these things are going to be, let's first discuss how π_θ is trained.
+16. Well, π_θ is trained under p data ot, which means that we can, if we're using some standard training objective, like supervised maximum likelihood or empirical risk minimization, basically, we can write the objective as the following.
 17. It's maximizing the log probability of the actions from the human given the observations.
 18. And the observations are sampled from p data ot.
 19. So the expectation is under p data ot.
 20. Now, we know from supervised learning theory that if we train our policy in this way and we don't overfit and we don't underfit, then we would expect the log probability of the actions under the distribution p data ot to be high.
 21. We would expect good actions to have high probability.
-22. Of course, the problem is that performance of the policy is not determined by the log probability that assigns to good actions under the experts observation distribution, but under the testing distribution which is p pi θ.
-23. So the log probability of good actions under p pi θ might be very different because p data and p pi θ are not the same.
+22. Of course, the problem is that performance of the policy is not determined by the log probability that assigns to good actions under the experts observation distribution, but under the testing distribution which is p π_θ.
+23. So the log probability of good actions under p π_θ might be very different because p data and p π_θ are not the same.
 24. This is often referred to as distributional shift, which means that the distribution under which the policy is tested is shifted from the distribution under which it's trained.
 25. Now it just so happens that that shift is due to the policy's own mistakes, but this is the formal statement for why we can't in general expect it to be correct.
 26. And it's pretty easy to construct counter examples where this will be very bad.
@@ -37,7 +37,7 @@
 37. And the cost is a function of states and actions, and we'll say that the cost is zero if the action is the same as the human driver's action.
 38. So let's assume the human driver has a deterministic policy.
 39. It's not hard to extend this to stochastic policies, but it makes a lot of the notation very complex.
-40. So we'll just say that say that the human driver has a deterministic policy, Pi star, the cost is zero if the action matches what they would have done, and it's 1 otherwise.
+40. So we'll just say that say that the human driver has a deterministic policy, π star, the cost is zero if the action matches what they would have done, and it's 1 otherwise.
 41. And that's a very convenient cost to define, because you can basically say that whenever the policy that you learn makes a mistake, you pay a cost of 1.
 42. So the total cost is basically the number of mistakes you're going to make.
 43. Notice here that I started mixing up S and O.
@@ -54,10 +54,10 @@
 54. We don't really care how many mistakes it would make when it's looking at the human's images, because that's not how it's going to be used.
 55. So what we care about is the cost in expectation under p π_θ, under the distribution of states the policy will actually see.
 56. And that's a very, very important distinction, because we're training the policy to assign high probability to the actions under p data.
-57. But what we really care about is to minimize the number of mistakes under p pi θ.
+57. But what we really care about is to minimize the number of mistakes under p π_θ.
 58. Okay?
 59. So that's an important distinction.
-60. So in analyzing how good behavioral cloning is, what we're really trying to do is we're trying to say, well, if we succeeded in doing our supervised learning well, what can we say about this expected value of this cost under p pi θ?
+60. So in analyzing how good behavioral cloning is, what we're really trying to do is we're trying to say, well, if we succeeded in doing our supervised learning well, what can we say about this expected value of this cost under p π_θ?
 61. So basically, will we successfully minimize the number of mistakes when we run the policy?
 62. Yes or no?
 63. Okay.

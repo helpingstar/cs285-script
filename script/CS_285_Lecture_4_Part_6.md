@@ -3,7 +3,7 @@
 3. So some examples of specific algorithms, and don't worry if you haven't heard these names, we'll cover these more later.
 4. Value function fitting methods, so these are things like Q-learning, DQN, temporal difference learning, these are all value function methods, fitted value iteration.
 5. Policy gradient methods, these are methods like reinforce, natural gradient, Trust region policy optimization, or TRPO, PPO, etc.
-6. Actor-critic algorithms, these are things like asynchronous advantage actor-critic or A3C, soft actor-critic, DDPG and so on.
+6. Actor-critic algorithms, these are things like asynchronous advantage Actor-Critic or A3C, soft Actor-Critic, DDPG and so on.
 7. Model-based RL algorithms, these are things like Dyna, Guided policy search, MBPO, SVG, etc.
 8. And we'll learn about most of these in the next few weeks.
 9. But first, let's go through a few examples.
@@ -20,7 +20,7 @@
 22. This is from the paper "High Dimensional Continuous Control with Generalized Advantage Estimation".
 23. It uses a variant of an algorithm called Trust Region Policy Optimization, which uses policy gradient methods.
 24. A method that combines in this case a trust region with value function approximation.
-25. So this is technically an actor-critic algorithm derived from policy gradient algorithm.
+25. So this is technically an Actor-Critic algorithm derived from policy gradient algorithm.
 26. And here you can see it training this little humanoid robot how to walk.
 27. And here is the video that I actually showed in the first lecture for the Grasping Robot.
 28. This particular result was actually also produced by a Q-learning algorithm, not that different from the Atari example that I showed a few slides ago, but in this case with a particular modification to handle continuous actions.

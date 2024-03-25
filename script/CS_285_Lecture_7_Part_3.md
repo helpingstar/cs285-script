@@ -9,19 +9,19 @@
 9. So as our policy changes, what really changes is this max.
 10. Remember, the way that we got this max was by taking the argmax, which is our policy, the policy in an argmax policy, and then plugging it back into the Q value to get the actual value for the policy.
 11. So inside of that max, you can kind of unpack it.
-12. And pretend that it's actually Q phi of si prime comma argmax of Q phi, and that argmax is basically our policy.
+12. And pretend that it's actually Q ϕ of si prime comma argmax of Q ϕ, and that argmax is basically our policy.
 13. So this is the only place where the policy shows up.
 14. And conveniently enough, it shows up as an argument to the Q function, which means that as our policy changes, as our action ai prime changes, we do not need to generate new rollouts.
 15. You can almost think of this as a kind of model.
 16. The Q function allows you to sort of simulate what kind of values you want to get out of the model.
 17. So you can simulate the values you would get if you were to take different actions.
 18. And then, of course, you take the best action if you want to most improve your behavior.
-19. So this max approximates the value of pi prime, our greedy policy, at si prime.
+19. So this max approximates the value of π prime, our greedy policy, at si prime.
 20. And that's why we don't need new samples.
 21. We're basically using our Q function to simulate the value of new actions.
-22. So given a state and an action, the transition is actually independent of pi.
+22. So given a state and an action, the transition is actually independent of π.
 23. Right?
-24. If si and ai are fixed, no matter how much we change pi, si prime is not going to change, because pi only influences ai, and here ai is fixed.
+24. If si and ai are fixed, no matter how much we change π, si prime is not going to change, because π only influences ai, and here ai is fixed.
 25. So one way that you can think of Theta Q iteration kind of structurally is that you have this big bucket of different transitions, and what you'll do is you'll back up the values along each of those transitions, and each of those backups will improve your Q value.
 26. But you don't actually really care so much about which specific transitions they are, so long as they kind of cover up the value of each of those transitions.
 27. So you don't really care so much about which specific transitions they are, so long as they kind of cover up the value of each of those transitions.
@@ -33,12 +33,12 @@
 33. So in the tabular case, this would literally be your policy improvement.
 34. And your step 3 is minimizing the error of fit.
 35. So if you had a tabular update, you would just directly write those YIs into your table, but since you have a neural network, you have to actually perform some optimization to minimize an error against those YIs, and you might not drive the error perfectly to 0.
-36. So you could think of Theta Q iteration as optimizing an error, the error being the Bellman error, the difference between Q, phi, SA, and those target values Y, and that is kind of the closest to an actual optimization objective.
+36. So you could think of Theta Q iteration as optimizing an error, the error being the Bellman error, the difference between Q, ϕ, SA, and those target values Y, and that is kind of the closest to an actual optimization objective.
 37. But of course, that error itself doesn't really reflect the goodness of your policy.
 38. It's just the accuracy with which you're able to copy your target values.
-39. If the error is 0, then you know that Q, phi, SA is equal to RSA plus gamma max A prime Q, phi, S prime A prime.
+39. If the error is 0, then you know that Q, ϕ, SA is equal to RSA plus gamma max A prime Q, ϕ, S prime A prime.
 40. And this is an optimal Q function, corresponding to the error of fit.
-41. And this is an optimal Q function, corresponding to the optimal policy pi prime, where the policy is recovered by the argmax rule.
+41. And this is an optimal Q function, corresponding to the optimal policy π prime, where the policy is recovered by the argmax rule.
 42. So this you can show maximizes reward.
 43. But if the error is not 0, then you can't really say much about the performance of this policy.
 44. So what we know about Theta Q iteration is, in the tabular case, your error will be 0, which means that you'll recover Q star.
@@ -55,7 +55,7 @@
 55. Very much analogous to how you calculate the advantage value in actor critic, in online actor critic, for the one transition that you just took.
 56. And then in step three, you take one gradient descent step on the error between your q values and the target value that you just computed.
 57. So the equation that I have here, it looks a little complicated, but I basically just applied the chain rule of probability to that objective inside the art min in step three.
-58. So applying chain rule, you get dq d phi at si, ai times the error q phi si, ai minus yi.
+58. So applying chain rule, you get dq d ϕ at si, ai times the error q ϕ si, ai minus yi.
 59. And the error in those parentheses, that q si, ai minus yi, is something that you can do in the algorithm.
 60. So you can do that in the algorithm.
 61. So you can do that in the algorithm.

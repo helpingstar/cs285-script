@@ -37,7 +37,7 @@
 37. In theory, this methodology is actually a little bit problematic because now we actually see distributional shift in two places.
 38. We see distributional shift as before in the sense that our state distribution is different.
 39. Our P train is different from...
-40. Sorry, our P data is different from P pi θ.
+40. Sorry, our P data is different from P π_θ.
 41. But we also see distributional shift in another place when we do relabeling like this.
 42. And I'll leave that part as an exercise to the reader and something we could discuss in class.
 43. So as a hint, we see distributional shift actually in two places.

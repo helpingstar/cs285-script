@@ -1,5 +1,5 @@
-1. All right, now that we've talked about policy evaluation and how value functions can be incorporated into the policy gradient, let's put these pieces together and construct an actor-critic reinforcement learning algorithm.
-2. So a basic batch actor-critic algorithm can look something like this.
+1. All right, now that we've talked about policy evaluation and how value functions can be incorporated into the policy gradient, let's put these pieces together and construct an Actor-Critic reinforcement learning algorithm.
+2. So a basic batch Actor-Critic algorithm can look something like this.
 3. This is kind of based on the reinforce procedure before, but with some additional steps added.
 4. So step one, just like before, is going to be to generate samples by running rollouts through our policy.
 5. That's basically the orange box.
@@ -8,7 +8,7 @@
 8. And that's what's going to replace the green box.
 9. So instead of just naively summing up all the rewards, we're now going to fit a neural network as we discussed in the previous section.
 10. Step three, for every state action tuple that we sampled, evaluate the approximate value of the next state minus the value of the current state.
-11. Step four, use these advantage values to construct a policy gradient estimator by taking grad log pi at every time step and multiplying it by the approximate advantage.
+11. Step four, use these advantage values to construct a policy gradient estimator by taking ∇log π at every time step and multiplying it by the approximate advantage.
 12. And then step five, like before, is to take a gradient ascent step.
 13. So the part that we talked about when we discussed policy evaluation is mostly the same as the previous step.
 14. Right?
@@ -81,7 +81,7 @@
 81. This type of estimator is essentially the single sample version of what you would get if you were to use the value function with the discounted bootstrap.
 82. There is another way that we can introduce a discount into the Monte Carlo policy grading, which seems like it's very similar but has a subtle and important difference.
 83. What if we take this value function and we can use it to calculate the value function in the same way that we did in the original Monte Carlo policy grading?
-84. Well, we can take the original Monte Carlo policy grading that we had before we did that causality trick, where we just sum together the grad log pi's and then multiply them together with the sum of the rewards.
+84. Well, we can take the original Monte Carlo policy grading that we had before we did that causality trick, where we just sum together the ∇log pi's and then multiply them together with the sum of the rewards.
 85. And then we're going to put a discount into that.
 86. We'll put a gamma to the t minus 1 multiplier in front of the reward, so that the reward at the first time step is multiplied by 1, the reward at the second time step is multiplied by gamma, the reward at the third time step is multiplied by gamma squared and so on.
 87. Take a moment to think about how these two options compare.
@@ -96,8 +96,8 @@
 96. So option 1 and option 2 are not the same.
 97. In fact, option 1 matches the critic version with the exception that we have a single sample estimator.
 98. Option 2 does not.
-99. In fact, if we were to rewrite option 2 by using the causality trick where we distribute the rewards inside the sum over grad log pi's and then eliminate all of the rewards that happened before the current time step, we'll end up with this expression.
-100. We'll end up with grad log pi times step t times the sum from t prime equals t to capital t of gamma to the t prime minus 1.
+99. In fact, if we were to rewrite option 2 by using the causality trick where we distribute the rewards inside the sum over ∇log pi's and then eliminate all of the rewards that happened before the current time step, we'll end up with this expression.
+100. We'll end up with ∇log π times step t times the sum from t prime equals t to capital t of gamma to the t prime minus 1.
 101. Whereas before, we had gamma to the t prime minus 1.
 102. So before, we had gamma to the t prime minus t.
 103. So what's going on here?
@@ -105,7 +105,7 @@
 105. Well, one way that we can understand this difference is if we take the gamma to the t minus 1 factor and distribute it out of the sum.
 106. So the last line I have here is exactly equal to the preceding line.
 107. I've just distributed out a gamma to the t minus 1 factor.
-108. So now the reward to go calculation is exactly the same as option 1, but I have this additional multiplier of gamma to the t minus 1 in front of grad log pi.
+108. So now the reward to go calculation is exactly the same as option 1, but I have this additional multiplier of gamma to the t minus 1 in front of ∇log π.
 109. So what is that doing?
 110. Well, what that's doing is actually quite natural.
 111. It's saying that because you have this discount, not only do you care less about rewards further in the future, you also care less about decisions further in the future.
@@ -141,18 +141,18 @@
 141. So if you have infinitely large rewards, you also have infinitely large variances, right?
 142. Because infinitely large values have infinite variances.
 143. By ensuring that your reward sums are finite by putting a discount in front of them, you're also reducing variance at the cost of introducing bias by not accounting for all those rewards.
-144. So what happens when we introduce the discount into our actor-critic algorithm?
+144. So what happens when we introduce the discount into our Actor-Critic algorithm?
 145. Well, the only thing that changes is step 3.
-146. So in step 3, you can see that we've added a gamma in front of V pi phi S prime.
+146. So in step 3, you can see that we've added a gamma in front of V π ϕ S prime.
 147. Everything else stays exactly the same.
-148. One of the things we can do with actor-critic algorithms once we take them into the infinite horizon setting is we can actually derive a fully online actor-critic method.
-149. So we can actually derive a fully online actor-critic method.
+148. One of the things we can do with Actor-Critic algorithms once we take them into the infinite horizon setting is we can actually derive a fully online Actor-Critic method.
+149. So we can actually derive a fully online Actor-Critic method.
 150. So, so far when we talked about policy gradients, we always used policy gradients in a kind of episodic batch mode setting where we collect a batch of trajectories.
 151. Each trajectory runs all the way to the end.
 152. And then we use that batch to evaluate our gradient and update our policy.
-153. But we could also have an online version when we use actor-critic where every single time step, every time we step the simulator or we step the real world, we also update our policy.
-154. And here's what an online actor-critic algorithm would look like.
-155. We would take an action, A, sample from pi theta A given S, and get a transition, S comma A comma S prime comma R.
+153. But we could also have an online version when we use Actor-Critic where every single time step, every time we step the simulator or we step the real world, we also update our policy.
+154. And here's what an online Actor-Critic algorithm would look like.
+155. We would take an action, A, sample from π_θ A given S, and get a transition, S comma A comma S prime comma R.
 156. So we would take one time step.
 157. And at this point I'm not putting T subscripts on anything because this can go on in a single infinitely long non-episodic process.
 158. Step two, we update our value function by using the reward plus the value of the next state as our target.
@@ -164,7 +164,7 @@
 164. Step three, we evaluate the advantage as the reward plus the value function of the next state minus the value function of the current state.
 165. Again, this only uses things that we already know.
 166. It uses S A S prime R and our learned value function.
-167. And then using this, we can construct an estimate for the policy gradient by simply taking the grab log pi for this action that we just took multiplied by the advantage that we just calculated.
+167. And then using this, we can construct an estimate for the policy gradient by simply taking the grab log π for this action that we just took multiplied by the advantage that we just calculated.
 168. And then we can update the policy parameters with policy gradient.
 169. And then we repeat this process.
 170. And we do this every single time step.

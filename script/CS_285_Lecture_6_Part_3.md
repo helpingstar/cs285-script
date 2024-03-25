@@ -1,4 +1,4 @@
-1. All right, next we're going to talk about some design decisions for actually implementing actor-critic algorithms.
+1. All right, next we're going to talk about some design decisions for actually implementing Actor-Critic algorithms.
 2. So we'll start with the discussion of neural network architectures.
 3. In order to actually instantiate these algorithms as deep RL algorithms, we have to pick how we're going to represent the value function and the policy.
 4. So before, in the last lecture, we just had the policy to deal with.
@@ -120,37 +120,37 @@
 120. It'll give you the value of some other actor, not your latest actor.
 121. And that is not what you want.
 122. So formally the answer is that the target value is not the same as the target value.
-123. The issue is that AI did not come from the latest pi theta.
-124. It came from some older pi theta.
+123. The issue is that AI did not come from the latest π theta.
+124. It came from some older π theta.
 125. And therefore si prime also was not the result of taking an action with the latest actor.
 126. And that's a problem.
-127. The second issue is that for that same reason, because AI didn't come from the latest policy pi theta, you can't compute the policy gradient this way.
-128. Remember from the previous lecture it is very very important when computing the policy gradient that we actually get actions that were sampled from our policy, because this needs to be an expected value under pi theta.
+127. The second issue is that for that same reason, because AI didn't come from the latest policy π theta, you can't compute the policy gradient this way.
+128. Remember from the previous lecture it is very very important when computing the policy gradient that we actually get actions that were sampled from our policy, because this needs to be an expected value under π theta.
 129. If that is not the case, we need to employ some kind of correction, such as importance sampling.
 130. And we could actually do this with importance sampling, but it turns out there's actually a better way to do it for off-policy actor critic, which I will tell you about next.
 131. But first, let's talk about fixing the value function.
 132. So I'll first fix the problem in step 3, and then I'll fix the problem in step 5.
 133. So to fix the problem in step 3, instead of working with value functions, let's instead think back to lecture 4, where we also introduced this notion of a Q function.
-134. If the value function tells you the expected reward you will get if you start in state s and then follow the policy pi, the Q function tells you the reward you'll get if you start in state s , then take action a and then follow the policy pi.
+134. If the value function tells you the expected reward you will get if you start in state s and then follow the policy π, the Q function tells you the reward you'll get if you start in state s , then take action a and then follow the policy π.
 135. Now notice here that there's no assumption that the action a actually came from your policy.
 136. So the Q function is a valid function for any action.
-137. It's just in all subsequent steps you follow pi.
-138. So what we're going to do to accommodate the fact that our transition s , a , s did not come from our latest policy pi is that we will actually not learn v, but we will instead learn q.
-139. So we will not keep track of v hat pi phi, we will keep track of q hat pi phi.
+137. It's just in all subsequent steps you follow π.
+138. So what we're going to do to accommodate the fact that our transition s , a , s did not come from our latest policy π is that we will actually not learn v, but we will instead learn q.
+139. So we will not keep track of ^{V}^π_ϕ, we will keep track of ^{Q} π ϕ.
 140. It's going to be a different neural network.
 141. We'll take in a state and an action and output a q value.
 142. But otherwise the principle behind the update is the same.
 143. So we're going to compute target values and then we will regress onto those target values.
 144. It's just that now we'll give the action as an input to the Q function.
-145. Another way to think about it is we can no longer assume that our action came from our latest policy pi theta, so we'll instead learn a state action value function that is valid for any action so that we can train it even using actions that didn't come from pi theta, but then query it using actions from pi theta.
+145. Another way to think about it is we can no longer assume that our action came from our latest policy π theta, so we'll instead learn a state action value function that is valid for any action so that we can train it even using actions that didn't come from π theta, but then query it using actions from π theta.
 146. Now those of you that are paying attention might notice that there's a little bit of an issue here.
 147. Because before I was learning v hat and I was using v hat in my targets.
 148. And that's okay because I'm learning v hat so I have it available to me to use in my targets.
 149. But now I'm learning q hat, but I still need v hat for my target values.
 150. So where do I get that?
-151. Well, remember that the value function can also be expressed as the expected value of the q function where the expectation is taken under your policy.
+151. Well, remember that the value function can also be expressed as the expected value of the Q function where the expectation is taken under your policy.
 152. So what we can do is we can replace the v in our target value with q, evaluate it at the action ai prime, except that ai prime now is not the action from our replay buffer.
-153. ai prime is actually the action that your current policy pi theta would have taken if it had found itself in si prime.
+153. ai prime is actually the action that your current policy π_θ would have taken if it had found itself in si prime.
 154. So you'll actually sample si ai si prime from your replay buffer, but then you will sample ai prime by actually running your latest policy.
 155. And you can do that because your policy is just a neural network.
 156. You don't have to actually interact with a simulator to ask the policy what action it would have taken.
@@ -161,22 +161,22 @@
 161. And that gets us a target value that actually represents the value of the latest policy at this old state si prime.
 162. That's really cool.
 163. Okay, so we've resolved our issue with the value function.
-164. Instead of learning v, we're going to learn q and we're going to exploit the fact that we can evaluate the value function with the expected value of the q function under the policy.
+164. Instead of learning v, we're going to learn q and we're going to exploit the fact that we can evaluate the value function with the expected value of the Q function under the policy.
 165. Now, how are we going to deal with step 5?
 166. How are we going to deal with a policy gradient?
 167. Well, all we're going to do is we're going to use the same trick but this time we're going to use it for ai instead of ai prime.
-168. So in order to evaluate the policy gradient we need to figure out an action sampled from the latest policy pi theta at the state si.
+168. So in order to evaluate the policy gradient we need to figure out an action sampled from the latest policy π_θ at the state si.
 169. But of course we can do that.
 170. We can just ask our policy what it would have done at the state si if it had the option to act there.
-171. And we'll call this action ai pi to differentiate it from ai.
+171. And we'll call this action ai π to differentiate it from ai.
 172. So ai was actually from the buffer.
 173. ai prime is what the policy would have done if it had been in the buffer state si.
-174. And now we'll just plug in this ai pi into our policy gradient equation and that's now correct because ai prime did in fact come from pi theta so this is in fact an unbiased estimator of expectations under pi theta.
-175. So remember, ai pi here is not the action that we're going to be using.
+174. And now we'll just plug in this ai π into our policy gradient equation and that's now correct because ai prime did in fact come from π_θ so this is in fact an unbiased estimator of expectations under π theta.
+175. So remember, ai π here is not the action that we're going to be using.
 176. So we're going to use this as an example of how we can evaluate the policy gradient at the state from the replay buffer.
 177. It's the action sampled from your policy at the state from the replay buffer.
 178. Now in practice when we do this kind of off-policy actor critic we don't actually use the advantage values.
-179. We just plug in our q hat directly into this equation.
+179. We just plug in our ^{Q} directly into this equation.
 180. We don't have to do it.
 181. We could actually calculate advantages.
 182. There's nobody stopping us from doing that.
@@ -189,7 +189,7 @@
 189. So it doesn't require any simulation it just requires running the network a few more times.
 190. So in practice we're actually okay with a higher variance here because in exchange we get a larger batch size and it's all good.
 191. And it spares us the complexity of computing the advantage of step four.
-192. So we're actually going to completely drop step four for off-policy actor critic algorithms and we'll use q hat instead of a hat.
+192. So we're actually going to completely drop step four for off-policy actor critic algorithms and we'll use ^{Q} instead of a hat.
 193. Which is still unbiased it just doesn't have the baseline.
 194. So that gives us the more or less complete algorithm for off-policy actor critic.
 195. What else is left?
@@ -198,7 +198,7 @@
 198. It came from the state margin of an old policy.
 199. Unfortunately there's basically nothing we can do here.
 200. So this is going to be a source of bias in this procedure and we'll just have to accept it.
-201. The intuition for why it's not so bad is because ultimately we want the optimal policy on p theta of s but we get the optimal policy on a broader distribution.
+201. The intuition for why it's not so bad is because ultimately we want the optimal policy on p θ of s but we get the optimal policy on a broader distribution.
 202. So our replay buffer will contain samples from the latest policy as well as many samples from other older policies.
 203. So the distribution is sort of broader than the one we want.
 204. So we don't want to be on the states from our latest policy we just also have to be good on a bunch of other states which we might never visit.
