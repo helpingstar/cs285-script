@@ -24,9 +24,9 @@
 24. Basically, how many times do we have to sample from our policy until we can make it perform well.
 25. That's the orange box.
 26. One of the most important questions in determining the sample efficiency of an algorithm is whether the algorithm is what's called an off-policy algorithm or not.
-27. An off-policy algorithm is an algorithm that can improve the policy by using previously collected samples and on-policy algorithm has to throw out all of its sampels each time the policy changes even a little bit and generate new sampels.
+27. An off-policy algorithm is an algorithm that can improve the policy by using previously collected samples and on-policy algorithm has to throw out all of its samples each time the policy changes even a little bit and generate new samples.
 28. For this reason on-policy algorithms can be a lot less efficient.
-29. For instance, a policy gradient algorithm which is a on-policy algorithm must collect new samples each time it takes a gradient step on the policy because each time the policy changes even a littel bit new samples must be collected.
+29. For instance, a policy gradient algorithm which is a on-policy algorithm must collect new samples each time it takes a gradient step on the policy because each time the policy changes even a little bit new samples must be collected.
 30. So in general, if we want to look at a kind of spectrum of with more efficient algorithms on the left and less efficient algorithms on the right, a major dividing line on the spectrum is whether it's an on-policy or an off-policy algorithm, where on the extreme end of less efficient algorithms will be things like evolutionary or gradient-free methods, then on-policy policy gradient algorithms, then Actor-Critic style methods, which can be either on-policy or off-policy, then purely off-policy methods like Q-learning, then maybe model-based deep RL methods, model-based shallow RL methods, and so on.
 31. But then we could say, well, why would we ever want to use a less efficient algorithm?
 32. So it seems like we should just go with the stuff on the left end of the spectrum.
