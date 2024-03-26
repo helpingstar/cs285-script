@@ -1,0 +1,124 @@
+So in the next portion of today's lecture, we're going to talk about how we can modify the policy gradient calculation to reduce its variance, and in this way actually obtain a version of the policy gradient that can be used as a practical reinforcement learning algorithm.
+The first trick that we'll start with is going to exploit a property that is always true in our universe, which is causality.
+Causality says that the policy at time t' can't affect the reward at another time step t if t is less than t'.
+This is another way of saying that what you do now is not going to change the reward that you got in the past.
+Now, it's important to note here that this is not the same as the Markov property.
+The Markov property says that the state in the future is independent of the state in the past given the present.
+The Markov property is sometimes true, sometimes not true, depending on your particular temporal process.
+Causality is always true.
+Causality just says that rewards in the past are independent of decisions in the present.
+So this is not really an assumption.
+This is always true for any process where time flows forward.
+The only way this would not be true is if you had time travel and you could take an action or travel back into the past and change your action.
+But we're not allowed to do that.
+All right, so I'm going to claim that the policy gradient that I've derived so far does not actually make use of this assumtions.
+And that it can be modified to utilize this assumption and thereby reduce variance.
+You can take a moment to think about where this assumption might be introduced.
+The way that we're going to see this is we're going to rewrite the policy gradient equation.
+I've not changed it in any way.
+I've simply rewritten it.
+And what I've done here is I used the distributive property to distribute the sum over rewards into the sum over ∇log π.
+So you can think of this as taking that first set of parentheses over the sum of ∇log π's and taking the outer parentheses and wrapping it around the rewards.
+So this gives me the sum over all of my samples from i=1 to N times the sum over time steps from 1 to T of ∇log π at that time step multiplied by another sum over another variable t' from 1 to T of the rewards.
+So that means that at every time step, I multiply the grand log probability of the action at that time step t by the sum of rewards over all time steps in the past, present, and future.
+Now at this point, you might start imagining how causality fits into this.
+We're going to change the log probability of the action at every time step based on whether that action corresponded to larger rewards in the present and in the future, but also in the past.
+And yet we know that the action at time step t can't affect the rewards in the past.
+So that means that those other rewards will necessarily have to cancel out an expectation, meaning that if we generate enough samples, eventually we should see that all the rewards at time steps t' less than t will average out to a multiplier of 0, and they will not affect the log probability at this time step.
+And in fact we can prove that this is true.
+The proof is somewhat involved so I won't go through it here, but once we show that this is true, then we can simply change the summation of rewards and instead of summing from t'=1 to T, simply sum from t'=t to T.
+Basically discard all the rewards in the past because we know that the current policy can't affect them.
+Now we know they'll all cancel out an expectation, but for a finite sample size, they wouldn't actually cancel out.
+So for a finite sample size removing all those rewards from the past will actually change your estimator but it will still be unbiased.
+So this is the only change that we made.
+Now having made that change we actually end up with an estimator that has lower variance.
+The reason it has lower variance is very simple.
+We've removed some of the terms from the sum which means that the total sum is a smaller number and expectations of smaller numbers have smaller variances.
+Now one aside that I might mention here is that this quantity is sometimes referred to as the reward to go.
+You can kind of guess why that is.
+It's the rewards from now until the end of time which means that it refers to the rewards that you have yet to collect.
+Basically all the rewards except for the ones in the past or the reward to go.
+And we sometimes use the symbol ^{Q}_{i,t} to denote the reward to go.
+Now take a moment to think back to the previous lecture where we also used the symbol Q.
+The reward to go ^{Q} here actually refers to an estimate of the same quantity as the Q function that we saw in the previous lecture.
+We will get much more into this in the next lecture when we talk about Actor-Critic algorithms but for now we'll just use a similar symbol with a hat on top to denote that it's a single sample estimate.
+Alright now the causality trick that I described before you can always use it.
+You'll use it in homework too.
+It reduces your variance.
+There's another slightly more involved trick that we can use that also turns out to be very important to make policy gradients practical and it's something called a baseline.
+So let's think back to this cartoon that we had where we collect some trajectories and we evaluate the rewards and then we try to make the good ones more likely than the bad ones less likely.
+That seemed like a very straightforward elegant way to formalize trial and error learning as a gradient ascent procedure.
+But is this actually what policy gradients do?
+Well intuitively policy gradients will do this if the rewards are centered, meaning that the good trajectories have positive rewards and the bad trajectories have negative rewards.
+But this might not necessarily be true.
+What if all of your rewards are positive?
+Then the green checkmark will be increased, its probability will be increased, the yellow checkmark will be increased a little bit, and the red X will be also increased but a tiny bit.
+So intuitively it kind of seems like what we want to do is we want to center our rewards so the things that are better than average get increased and the things that are worse than average get decreased.
+For example maybe we want to subtract a quantity from our reward which is the average reward.
+So instead of multiplying ∇log p by r(τ) we multiply by (r(τ)-b) where b is the average reward.
+This would cause policy gradients to align with our intuition.
+This would make policy gradients increase the probability of trajectories that are better than average and decrease the probabilities of trajectories that are worse than average.
+And then this would be true regardless of what the reward function actually is even if the rewards are always positive.
+That seems very intuitive but are we allowed to do that?
+It seems like we just arbitrarily subtracted our constant from all of our rewards.
+Is this even correct still?
+Well it turns out that you can show that subtracting a constant b from your rewards in policy gradient will not actually change the gradient in expectation although it will change its variance.
+Meaning that for any b doing this trick will keep your gradient estimator unbiased.
+Here's how we can derive this.
+So we're going to use the same convenient identity from before.
+Which is that p(τ) times ∇log p(τ) is equal to ∇p(τ).
+And now we're going to substitute this identity in the opposite direction.
+So what we're going to do is we're going to analyze ∇log p(τ) times b.
+So if I take the difference (r(τ) - b) and I distribute ∇log p into it then I get a ∇log p times r term which is my original policy gradient minus a ∇log p times b term which is the new term that I'm at.
+So let's analyze just that term.
+It's the expected value of ∇log p times b which means that it's the integral of p(τ) times ∇log p(τ) times b.
+And now I'm going to substitute my identity back in.
+So using the convenient identity in the blue box over there I know this is equal to the integral of ∇p(τ) times b.
+Now by linearity of the gradient operator I can take both the gradient operator and b outside of the integral.
+So this is equal to b times the gradient of the integral over τ of p(τ).
+But p(τ) is a probability distribution and we know that probability distributions integrate to 1 which means that this is equal to b times the gradient with respect to θ of 1.
+But the gradient with respect to θ of 1 is 0 because 1 doesn't depend on θ.
+Therefore we know that this expected value comes out equal to 0 in expectation.
+But for a finite number of samples it's not equal to 0.
+So what this means is that subtracting b will keep our policy gradient unbiased but it will actually alter its variance.
+So subtracting a baseline is unbiased in expectation.
+The average reward which is what I'm using here turns out to not actually be the best baseline but it's actually pretty good.
+And in many cases when we just need a quick and dirty baseline we'll use average reward.
+However we can actually derive the optimal baseline.
+The optimal baseline is not used very much in practical policy gradient algorithms but it's perhaps instructive to derive it just to understand some of the mathematical tools that go into studying variance.
+So that's what we're going to do in the next portion.
+In the next portion we'll go through a mathematical calculation where we will actually derive the expression for the optimal baseline to optimally minimize variance.
+So to start with we're going to write down variance.
+So if you have the variance of some random variable X it's equal to the E[x^2] - E[x]^2.
+So we can use the same equation to write down the variance of our policy gradient.
+So here's our policy gradient.
+The variance of the policy gradient is equal to the expected value of the quantity inside the bracket squared minus the whole expected value squared.
+Now the second term here is just the the policy gradient itself, right, because we know that (r(τ) - b) in expectation ends up not making a difference.
+So basically the actual expected value of ∇log p times (r - b) is the same as the expected value of ∇log p times r.
+So we can just forget about the second term, changing r is not going to change its value in expectation.
+So it's really only the first term that we care about.
+Alright, I'm going to change my notation a little bit just to declutter it.
+So I'll just use g(τ) in place of ∇log p(τ).
+So if you see g at the bottom that's just ∇log p, I just wanted to write a shorter value.
+So I know that the second term in the variance doesn't depend on b, but the first term does.
+So then in order to find the optimal b, I'm going to write down the derivative dVar/db and solve for the best b.
+So the derivative of the second part is 0 because it doesn't depend on b.
+So I just use the first part d/db of the expected value of g^2 times (r - b)^2.
+Now I can expand out the quadratic form and I get d/db of the E[g^2 r^2] - 2 E[g^2 r b] + b^2 E[g^2].
+So all I've done here is I've just expanded out the quadratic form (r - b)^2, distributed the g^2 into it, and then pulled constants out of expectations.
+Now looking at this equation, we can see the first term doesn't depend on b, but the second two terms do.
+So we can eliminate this part, and the second two terms if we take the derivative respect to b, the minus two term is linear in b and the plus term is quadratic in it, so we get the derivative is equal to -2E[g^2 r] + 2b × E[g^2].
+Now we can push the constant term on the right-hand side and solve for b and we get this equation, b is equal to the E[g^2 r]/E[g^2].
+So I've just solved for b when the derivative is equal to 0, so this is the optimal value of b.
+Now looking at this thing you could try to imagine what is the optimal baseline really intuitively.
+Well perhaps one thing that might jump out at you is that the baseline now actually depends on the gradient, which means that if the gradient is a vector with multiple dimensions, if you have multiple parameters, you'll actually have a different baseline for every entry in the gradient.
+So if you have a hundred different policy parameters you'll have one value of the baseline for parameter one, a different value of the baseline for parameter two and intuitively looking at this equation the baseline for each parameter value is basically the expected value of the reward weighted by the magnitude of the gradient for that parameter value.
+So it's a kind of reweighted version of the expected reward, it's not the average reward anymore, it's a reweighted version of it.
+It's reweighted by gradient magnitudes.
+So this is the baseline that minimizes the variance.
+Now again, in practice, we often don't use the optimal variance, we just, sorry, we often don't use the optimal baseline.
+We typically just use the expected reward.
+But if you wanted the optimal baseline, this is how you would get it.
+All right, so to review what we've covered so far, we talked about the high variance of policy gradients algorithms.
+We talked about how we can lower that variance by exploiting the fact that present actions don't affect past rewards.
+And we talked about how we can use baselines, which are also unbiased, and we can analyze variance to solve for the optimal baseline.

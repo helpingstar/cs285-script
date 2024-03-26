@@ -1,0 +1,111 @@
+All right, the last topic we're going to talk about is the Dagger algorithm.
+And the Dagger algorithm is actually something that you're going to be implementing in your homework.
+And the Dagger algorithm aims to provide a more principled solution to the imitation learning distributional shift problem.
+So as a reminder, the problem with distributional shift intuitively is that your policy makes at least small mistakes, even close to the training data.
+And when it makes small mistakes, it finds itself in states that are more unfamiliar.
+And there it makes bigger mistakes, and the mistakes compound.
+More precisely, the problem can be described as a problem of distributional shift, meaning the distribution of states under which the policy is trained, pdata, is systematically different from the distribution of states under which it's tested, which is ppi θ.
+And so far, a lot of what we talked about are methods that try to change the policy so that ppi θ will stay closer to pdata by making fewer mistakes.
+But can we go the other way around?
+Can we instead change pdata?
+So that pdata better covers the states that the policy actually visits?
+Okay.
+How can we make pdata be equal to ppi θ?
+Well, of course, if we're changing our data set, we're introducing some additional assumptions.
+So we're going to be actually collecting more data than just the initial demonstrations.
+And the question then is which data to collect.
+And that's what Dagger tries to answer.
+So instead of being clever about ppi θ or about how we train our policy, let's be clever about our data collection strategy.
+So the idea in Dagger...
+is to actually run the policy in the real world, see which states it visits, and ask humans to label those states.
+So the goal is to collect data in such a way that ppi θ...
+that the trained data comes from ppi θ instead of pdata.
+And we're going to do that by actually running our policy.
+So here's the algorithm.
+Now, we're going to need labels for all those states.
+We're going to train our policy first on our training data, just on our demonstrations, to get it started.
+And then we'll run our policy and we'll record the observations that the policy sees.
+And then we'll ask a person to go through all of those observations and label them with the action that they would have taken.
+And now we have a labeled version of the policy data set.
+And then we're going to aggregate.
+We're going to take the union of the original data set and this additional label data set that we just got.
+And then go back to step one, retrain the policy and repeat.
+So every time through this loop, we run our policy, we collect observations.
+We ask humans to label them with the correct actions for those observations.
+And then we aggregate.
+And it can actually be shown that eventually this algorithm will converge such that eventually the distribution of observations in this data set will approach the distribution of observations that the policy actually sees when it runs.
+The intuition for why that's true, of course, is that eventually, is that each time the policy runs, you collect its observations, but then you might label them with actions that are different from the actions it took.
+But that distribution is closer than the initial one.
+So as long as you get closer each step, eventually you'll get to a distribution where the policy can actually learn and then you'll stay there forever.
+So then as you collect from it more and more, eventually your data set becomes dominated by samples from the correct p π_θ distribution.
+So that's the algorithm.
+It's a very simple algorithm to implement if you can get those labels.
+Here's a video of this algorithm in action.
+This is in the original Dagger paper.
+This was a about 12 years ago where they actually used it to fly a drone through a forest and Dagger was used to where they actually flew the drone, collected the data and then asked humans to label it offline by actually looking at the images and using a little mouse interface to specify what the action should have been.
+And with a few iterations of Dagger, they can actually get it to fly pretty reliably through a forest, dodging trees.
+Now, there is, of course, a problem with this method, and that has to do with step three.
+It's sometimes not very natural to ask a human to examine images after the fact and output the correct action.
+When you're driving a car, you're not just instantaneously making a decision every time step about which action to choose.
+You are situated in a temporal process.
+You have reaction times, all that stuff.
+So sometimes the human labels that you can get offline in this sort of a counterfactual way can be not as natural as what a human might do when they were actually operating the system.
+So step three can be a bit of a problem for Dagger and many improvements on Dagger seek to alleviate that challenge.
+But the basic version of Dagger works like this, and that's the version that you will all be implementing in your homework.
+There's really not much more to say about Dagger.
+It alleviates the distributional shift problem.
+It actually provably addresses it.
+So you can derive a bound for Dagger and that bound is linear in T rather than quadratic.
+But of course, that comes at the cost of introducing this much stronger assumption that you can collect the additional data.
+OK, so that's basically the list of the methods I wanted to cover for how to address the challenges of behavior cloning.
+We can be smart about how we collect and augment our data.
+We can use powerful models that make very few mistakes.
+We can use multitask learning or we can change the data collection procedure and use Dagger.
+The last thing I want to mention, which is a little bit of a preview of what's going to come next, is why is imitation learning not enough by itself?
+Why do we even need the rest of the course?
+Well, humans need to provide data for imitation learning, which is sometimes fine, but deep learning works best when the data is very plentiful.
+So asking humans to provide huge amounts of data.
+Can be a huge limitation.
+If the if the algorithm can collect data autonomously, then we can be in that regime where DeepNets really thrive and data is very plentiful without exorbitant amounts of human effort.
+The other thing is that humans are not good at providing some kinds of actions.
+So humans might be pretty good at specifying whether you should go left or right on a hiking trail or controlling a quadcopter through a remote control.
+But they might not be so good at, for example, controlling the low level commands to quadcopter rotors to make it do some really complex aerobatic trick.
+If you want humans to control all the joints in a complex humanoid robot, that might be even harder.
+Maybe you need to rig up some really complicated harness for them to wear.
+If you want to control a giant robotic spider, well, good luck finding a human who can operate that.
+And humans can learn things autonomously and just intellectually, it seems very appealing to try to develop methods that can allow our machines to do the same.
+As I mentioned in lecture one, one of the most exciting things we can get out of learning based control is emerging behaviors, behaviors that are better than what humans would have done.
+And in that case, it's very desirable to learn autonomously.
+When learning autonomously, in principle, machines can get unlimited data from their own experience, and they can continuously self-improve and get better and better, in principle, exceeding the performance of humans.
+Now, in order to start thinking about that, we have to introduce some terminology and notation.
+We have to actually define what it is that we want.
+If our goal is no longer just to imitate, but we want to do something else, well, what is it that we want?
+And maybe instead of matching the actions in the expert data set, we want to bring about some desired outcome.
+Maybe in the tiger example, we want to minimize the probability of being eaten by the tiger.
+So, we want to minimize the probability that we will land in a state, s', which is an eaten by tiger state.
+And we can write that down mathematically.
+And in general, we can write it as the expected value of some cost.
+In this case, the cost is being eaten by a tiger.
+Now, we already saw costs before when we talked about counting the number of mistakes.
+But in general, we can have arbitrary costs on states and actions.
+And those can define arbitrary control tasks, like not being eaten by tigers or reaching a desired destination.
+So, the new thing that we're going to introduce and that we're going to use in lectures next week is the cost function.
+Or, sometimes, the reward function.
+Now, the cost function and the reward function are really the same thing.
+They're just negatives of one another.
+And the reason that we see both sometimes is the same kind of a cultural distinction that I alluded to before.
+Remember, I mentioned that we have S and A, which comes from the study of dynamic programming.
+And that's where the reward comes from.
+In optimal control, it's a bit more common to deal with costs.
+I don't know if there's a cultural commentary here.
+Well, you know, optimal control originated in Russia.
+Maybe it's a little more common to think about costs in America.
+We are all very optimistic, and we think about life as bringing rewards.
+Maybe there's something to that.
+But for the purpose of this class, don't worry about it.
+C is just a negative of R.
+And to bring this all the way back around to imitation, well, the cost function that we saw before for imitation can be framed in exactly the same framework.
+We have rewards, which are log probabilities.
+We have costs, and those are interchangeable.
+You can have the cost be the negative of the reward, and you can define a cost for imitation.
+But you can define a more expressive cost for the thing you actually want, like reaching your destination or avoiding a car accident, and then use those with the more powerful reinforcement learning algorithms that we'll cover in future weeks.
