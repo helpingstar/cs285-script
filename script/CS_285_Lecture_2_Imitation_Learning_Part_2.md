@@ -6,7 +6,7 @@
 6. We have a policy, π_θ at given ot, and that policy is trained using a training set that comes from a particular distribution.
 7. And that distribution is produced by a person providing demonstrations, like a person driving a car, for example.
 8. So I'm going to use p data ot to denote the distribution that produced the training set.
-9.  Now, p data ot might be a very complex distribution.
+9. Now, p data ot might be a very complex distribution.
 10. We don't really care about that.
 11. All we care about at this stage is that it is whatever distribution over observations comes from the human's drive.
 12. And then I'll use a different symbol to denote the distribution over observations that the policy itself sees when it's driving a car.
@@ -92,11 +92,11 @@
 92. And you're very concerned about that, not because you'll hurt yourself, but because you won't know what to do in that situation afterwards.
 93. So how many mistakes will you make over the course of a trajectory on average if your probability of making a mistake is less than or equal to epsilon at every state on the tightrope?
 94. So what we want to do is we want to write down a bound on the total cost.
-95.  So on the first time step, your probability of making a mistake is epsilon.
-96.  If you make a mistake, you fall off the tightrope, all of the remaining time steps are also in general going to be mistakes because you have no idea what to do.
-97.  So for the first time step, you incur at least epsilon times capital T mistakes on average.
-98.  Now with probability one minus epsilon, you didn't make a mistake.
-99.  So then you move on to the next time step, the second square.
+95. So on the first time step, your probability of making a mistake is epsilon.
+96. If you make a mistake, you fall off the tightrope, all of the remaining time steps are also in general going to be mistakes because you have no idea what to do.
+97. So for the first time step, you incur at least epsilon times capital T mistakes on average.
+98. Now with probability one minus epsilon, you didn't make a mistake.
+99. So then you move on to the next time step, the second square.
 100. And in the second square, you again have an epsilon probability of making a mistake, in which case, you fall off the tightrope.
 101. And the remaining T minus one time steps are spent flailing around off the tightrope and making capital T minus one mistakes because that's how many time steps are left.
 102. And then with probability one minus epsilon, you go on to the third step and so on and so on.

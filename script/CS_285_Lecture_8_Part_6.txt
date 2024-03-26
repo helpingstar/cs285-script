@@ -91,7 +91,7 @@ And this uses that NAF representation.
 So this is a Q function that is quadratic in the actions, making maximum performance.
 And it's really useful for maximization easier.
 You use a replay buffer and target network, a one-step backup.
-And this one actually uses four grading steps per simulation step to improve the efficiency.
+And this one actually uses four gradient steps per simulation step to improve the efficiency.
 Because collecting data from the robots, I guess it's not even simulations, it's actually real world.
 Collecting data from the robots is expensive.
 So you'd like to do as much computation with as little data as possible.

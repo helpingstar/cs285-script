@@ -6,7 +6,7 @@
 6. In the same way, we can apply the chain rule and write out an expected value with respect to that distribution as a series of nested expectations.
 7. So, the outermost expectation here would be over p(s_1).
 8. Inside of it, we have an expected value with respect to a_1, distributed according to π(a_1|s_1).
-9.  And now, since we have an expectation for both s_1 and a_1, we can put in the first reward, r(s_1,a_1).
+9. And now, since we have an expectation for both s_1 and a_1, we can put in the first reward, r(s_1,a_1).
 10. And notice that this inner expectation, the one over a_1, is conditional on s_1.
 11. I have a bunch of blank space here because I'm going to need to put in all the other rewards.
 12. But we already have r(s_1,a_1).

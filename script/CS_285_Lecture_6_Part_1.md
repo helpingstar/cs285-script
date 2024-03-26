@@ -108,7 +108,7 @@
 108. When your function approximator depends on fewer things, it's easier to learn because you won't need as many samples.
 109. So maybe what we should do is just fit V^π(s).
 110. This is not the only choice for Actor-Critic algorithms, and we will learn about Actor-Critic methods that use Q functions as well later on in the course, but for now, we'll talk about Actor-Critic algorithms that just fit V^π(s), and then use the equation to derive the advantage function approximately.
-111. So when we fit V^π(s), we would have some kind of model, such as a neural network, that maps states S to approximate values ^{V}^π(s).
+111. So when we fit V^π(s), we would have some kind of model, such as a neural network, that maps states s to approximate values ^{V}^π(s).
 112. And this network will have some parameters, which I'm going to call ϕ.
 113. So let's talk about the process of fitting V^π(s).
 114. This process is sometimes referred to as policy evaluation, because V^π represents the value of the policy at every state, so calculating the value is evaluation.

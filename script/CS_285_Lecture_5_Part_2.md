@@ -1,6 +1,6 @@
 1. Alright, now that we've covered the mathematical derivation for policy gradients, let's work a little bit on developing some intuition for what policy gradients are actually doing.
 2. Alright, so these are the equations that we saw before.
-3. We've got the approximate expression for the derivative of J(θ), which is a sum over all of our samples of the sum of ∇log pi's along that sample trajectory times the total reward of that trajectory.
+3. We've got the approximate expression for the derivative of J(θ), which is a sum over all of our samples of the sum of ∇log π's along that sample trajectory times the total reward of that trajectory.
 4. So what is this ∇log π thing actually?
 5. Well, let's say that our policy for now is just a discrete.
 6. Let's say that it's just a mapping from images, maybe these are driving images, to a discrete action turn left or turn right.
@@ -40,7 +40,7 @@
 40. So in a sense you can think of the policy gradient as a kind of formalization of trial and error learning.
 41. If reinforcement learning refers to learning about trial and error then policy gradient simply formalizes that notion as a gradient ascent algorithm.
 42. Now what I would like to briefly mention next is a short aside regarding partial observability.
-43. So if we want to learn policies that are conditional observations rather than states, the main difference is taht states satisfy the markov property whereas observation in general do not.
+43. So if we want to learn policies that are conditional observations rather than states, the main difference is that states satisfy the markov property whereas observation in general do not.
 44. As a reminder the markov property simply says that future states are conditionally independent of past states given present states.
 45. States satisfy this whereas observations in general don't.
 46. Now interestingly enough when we derive the policy gradient at no point did we actually use the markov property which means that if you wanted to derive the policy gradient for a partially observed system, you could do so and you would get exactly the same equation.
@@ -56,7 +56,7 @@
 56. Let's say that the horizontal axis here denotes the trajectory, and I know the trajectory in general is not one-dimensional, but let's pretend it is, and the vertical axis represents the reward.
 57. So here we have a reward, it's kind of this bell curve shape with a peak here, and let's say that we have three samples and the height of the bars here represents the reward of those samples.
 58. So the blue curve shows the probability under the policy, that's the bell curve, and the green bars show the rewards.
-59. So I apologize here, the Y-axis is actually a little bit overloaded, it's showing both rewards AND probabilities, so the blue thing is a probability, is a probability, it's always positive.
+59. So I apologize here, the Y-axis is actually a little bit overloaded, it's showing both rewards and probabilities, so the blue thing is a probability, is a probability, it's always positive.
 60. The green stuff is the reward, which may be positive or negative.
 61. Okay, so with these three samples, we could now imagine when we calculate the policy gradient, which way will the blue policy distribution move?
 62. Which way will the projection distribution move?

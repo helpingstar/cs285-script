@@ -82,7 +82,7 @@
 82. If our goal is no longer just to imitate, but we want to do something else, well, what is it that we want?
 83. And maybe instead of matching the actions in the expert data set, we want to bring about some desired outcome.
 84. Maybe in the tiger example, we want to minimize the probability of being eaten by the tiger.
-85. So, we want to minimize the probability that we will land in a state, S prime, which is an eaten by tiger state.
+85. So, we want to minimize the probability that we will land in a state, s', which is an eaten by tiger state.
 86. And we can write that down mathematically.
 87. And in general, we can write it as the expected value of some cost.
 88. In this case, the cost is being eaten by a tiger.

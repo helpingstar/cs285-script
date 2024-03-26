@@ -27,7 +27,7 @@
 27. We would take our dataset of states and actions.
 28. For every sample state, we would evaluate every possible action you could take in that state, and we would take a max over those actions of our q values.
 29. So what I have in the parentheses here is I have just substituted in the q value.
-30. So the q values of the reward, plus gamma times the expected value of the next state.
+30. So the q values of the reward, plus γ times the expected value of the next state.
 31. You'll see this is real.
 32. Here is ourginqu.tm.
 33. Now we get 5u.
@@ -40,7 +40,7 @@
 40. So this is fitted value direction.
 41. Step one, compute your target values by constructing the Q function for every possible action at each sampled state.
 42. So you have a finite sampling of states and we still assume that we have discrete action space so we can perform this enumeration exactly.
-43. For every action we valued its reward plus gamma times the expected value of the value at the next state.
+43. For every action we valued its reward plus γ times the expected value of the value at the next state.
 44. Do the max over that.
 45. That gives us our target value.
 46. And then in step two, regress onto those target values.
@@ -86,7 +86,7 @@
 86. And we transformed to this other algorithm where step one constructs target values by taking a max over the Q values.
 87. And step two fits a new value function to those target values.
 88. So the way that we construct a fitted Q iteration algorithm is very much analogous to fitted value iteration.
-89. We construct our target value YI as the reward of a sampled state action tuple SI AI plus gamma times the expected value of the value function at state S prime.
+89. We construct our target value YI as the reward of a sampled state action tuple SI AI plus γ times the expected value of the value function at state s'.
 90. and then in step 2 we simply regress our Q function Q ϕ onto those target values.
 91. The trick, of course, is that we have to evaluate step 1 without knowing the transition probabilities, so we're going to do two things.
 92. First, we're going to replace V of SI prime with the max over A at Q ϕ SI prime AI prime, because we're only approximating Q ϕ, we're not approximating V ϕ.
@@ -129,7 +129,7 @@
 129. What policy do you use to collect this data?
 130. A very common choice is, in fact, to use the latest policy, but there are a few nuances about that choice that I'll discuss shortly.
 131. Step two, for every transition that you sampled, calculate a target value.
-132. So you calculate the target value, yi, by taking the reward from that transition, plus gamma times the max over the next action, ai prime, of the Q value, Q ϕ, si prime, ai prime, using your previous Q function estimator, Q ϕ.
+132. So you calculate the target value, yi, by taking the reward from that transition, plus γ times the max over the next action, ai prime, of the Q value, Q ϕ, si prime, ai prime, using your previous Q function estimator, Q ϕ.
 133. Step three, train a new Q function, which means find a new parameter vector ϕ, by minimizing the difference between the values of Q ϕ, si, ai, and the corresponding target value, yi.
 134. So you have a Q function, which takes as input s and a.
 135. It outputs a scalar value, and it has parameters ϕ.

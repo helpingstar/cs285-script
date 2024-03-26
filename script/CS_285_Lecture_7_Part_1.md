@@ -54,7 +54,7 @@
 54. But for now, let's say that we have discrete actions.
 55. The big puzzle is really how to do step one.
 56. How do you evaluate the advantage a π for a particular state action tuple for a given previous policy π, which will also be an implicit policy, but we don't care so much about that right now.
-57. So like before, we can express the advantage a π sa as the reward sa plus gamma times the expected value of v π at s prime minus v π at s.
+57. So like before, we can express the advantage a π sa as the reward sa plus γ times the expected value of v π at s prime minus v π at s.
 58. So let's try to evaluate v π of s.
 59. One way to evaluate v π of s in order to then estimate these advantages for policy iteration is to use dynamic programming.
 60. So for now, let's assume that we have a p of s prime given sa.
@@ -74,7 +74,7 @@
 74. And your transition probabilities t are represented by a 16 by 16 by 4 tensor.
 75. So when we say we're doing tabular reinforcement learning or tabular dynamic programming, what we're really referring to is a setting kind of like this.
 76. And now we can write down the bootstrapped update for the value function that we saw in lecture 6 in terms of these explicit known probabilities.
-77. So if we want to update v π of s, we can set it to be the expected value with respect to the actions a sampled from a policy pine of the reward s a plus gamma times the expected value over s prime sampled from p of s prime given s a of v π s prime.
+77. So if we want to update v π of s, we can set it to be the expected value with respect to the actions a sampled from a policy pine of the reward s a plus γ times the expected value over s prime sampled from p of s prime given s a of v π s prime.
 78. And if you have a tabular MDP, meaning you have a small discrete state space, and you know the transition probabilities, this backup can be calculated exactly.
 79. So each of the expected values can be computed by summing over all values of that random variable and multiplying the value inside the parentheses by its probability.
 80. And then of course, we need to know v π s prime.
@@ -85,7 +85,7 @@
 85. So expected values with respect to this π will be pretty easy to calculate.
 86. So we can also use this data to calculate the probability of the action.
 87. So we can simplify our bootstrap update by removing the expectation with respect to π and just directly plugging in the only action that has non-zero probability.
-88. So then we get the simplified backup where v prime of s is set to r of s comma π of s plus gamma times the expectation under p s prime given s π of s of v π s prime.
+88. So then we get the simplified backup where v prime of s is set to r of s comma π of s plus γ times the expectation under p s prime given s π of s of v π s prime.
 89. Okay, so now we can, I think, we can do a little bit more awhile over here because I can't see the numbers yet.
 90. So first step is we plug this procedure into our policy iteration algorithm.
 91. So as a reminder our policy iteration algorithm.

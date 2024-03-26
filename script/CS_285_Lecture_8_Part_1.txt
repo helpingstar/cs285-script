@@ -6,7 +6,7 @@ Step one, we collect a data set using some policy, and we learn that these are o
 They can aggregate data sets using a wide range of different policies.
 They can aggregate data sets using a wide range of different policies.
 They can aggregate data from previous iterations, and they can use various exploration rules like epsilon greedy and Boltzmann exploration.
-Then in step two, for each transition in our data set, and when I say transition I mean S, I, A, I, S, I prime, and R, I tuples, for each transition we calculate what we call the target, which I'm denoting as y i, which is equal to the current reward plus gamma times the max over the actions of the next time step.
+Then in step two, for each transition in our data set, and when I say transition I mean S, I, A, I, S, I prime, and R, I tuples, for each transition we calculate what we call the target, which I'm denoting as y i, which is equal to the current reward plus γ times the max over the actions of the next time step.
 And we learned that this max is equal to the current ما order times the remaining screens.
 But what I thought was really hard to understand was the number of illusions that we want to get from any of the layers possible.
 Using ein state JWG or doing some other way to do that we are comprisτά goal agency.
@@ -64,14 +64,14 @@ And then when you start a new trajectory, your function approximator will have b
 And then it will be at the end of the previous one and will again be bad.
 So if it had seen all the transitions all at once, it might have actually fitted all of them accurately.
 But because it's seeing this very local highly correlated window at a time, it has just enough time to overfit to each window and not enough broader context to accurately fit the whole function.
-Now we could borrow the same idea that we had in actor-critic.
-When we talked about actor-critic algorithms, we actually discussed a solution to the same exact problem when we discussed online actor-critic.
+Now we could borrow the same idea that we had in Actor-Critic.
+When we talked about Actor-Critic algorithms, we actually discussed a solution to the same exact problem when we discussed online Actor-Critic.
 And the particular solution we discussed was to parallelize.
 It was to have multiple workers that each collect a different transition, S, A, S', R, collect a batch consisting of samples from all of these workers, update on that batch, and repeat.
 And this procedure can in principle address the problem with sequential states being highly correlated.
 The sequential states are still correlated, but now you get a batch of different transitions from different workers and across workers they are hopefully not correlated.
 So it doesn't solve the problem fully, but it can mitigate it.
-And of course, just like we learned about an actor-critic, you could have an asynchronous version of this recipe where the individual workers don't wait for a synchronization point for an update to the parameters, but instead query a parameter server for the latest parameters and then proceed at their own pace.
+And of course, just like we learned about an Actor-Critic, you could have an asynchronous version of this recipe where the individual workers don't wait for a synchronization point for an update to the parameters, but instead query a parameter server for the latest parameters and then proceed at their own pace.
 In fact, with Q-learning, this recipe should in theory work even better, because in Q-learning you don't even need the workers to use the latest policy.
 So the fact that you might have a slightly older policy that is being executed on some of the workers is in theory not a major problem.
 However, there is another solution to the correlated samples problem that tends to be quite easy to use and works very well in practice.

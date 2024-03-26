@@ -5,14 +5,14 @@ So if this material goes by fast, if it's a little difficult to follow, please m
 And don't be concerned if you have to go through it a couple of times to really get the full gist of it.
 So the goal in today's lecture is going to be to combine some of the policy gradient ideas that we discussed before with some more recent concepts that we cover in the course, like policy iteration, to provide a new perspective on policy gradient methods and a little bit of analysis about when and why we would expect policy gradients to work.
 Now, this lecture is primarily about policy gradients.
-But the insights that I think we get from this type of analysis can also be used for things like actor-critic algorithms and more generally, to gain a deeper understanding of RL methods.
+But the insights that I think we get from this type of analysis can also be used for things like Actor-Critic algorithms and more generally, to gain a deeper understanding of RL methods.
 So if you have an interest in reinforcement learning theory, in understanding how and why to design algorithms in a certain way, and if you just want to get more in-depth knowledge about policy gradients, this is the lecture for you.
 All right, so let's just recap the policy gradient material that we had before.
 So initially, we covered the basic reinforced algorithm, where the procedure is that we sample some trajectories, and then we calculate the reward to go.
 And then we calculate the reward to go from our current policy, our current suboptimal policy.
-Then for every one of those trajectories and every time step along each of those trajectories, we calculate the reward to go and then multiply the grad log pi's by the reward to go to get an estimate of the gradient.
+Then for every one of those trajectories and every time step along each of those trajectories, we calculate the reward to go and then multiply the grad log π's by the reward to go to get an estimate of the gradient.
 And then we perform gradient descent.
-And then we saw, for instance, in the actor-critic lecture that this reward to go could be computed in various ways, using the same method, but with a different method, or with more sophisticated methods that involve actually learning value function estimators.
+And then we saw, for instance, in the Actor-Critic lecture that this reward to go could be computed in various ways, using the same method, but with a different method, or with more sophisticated methods that involve actually learning value function estimators.
 So of course, like all of the algorithms that we cover, policy gradients follow the same basic recipe.
 They generate samples in the orange box, fit some estimate to the reward to go, either with a learned value function or just with Monte Carlo estimates in the green box, and then perform gradient descent in the blue box.
 So this is kind of the most generic form of the policy gradient, where you have many choices about what goes in for q hat.
@@ -47,7 +47,7 @@ Remember that we would always pick the policy pi prime that assigns a probabilit
 In some sense, policy gradients makes a much gentler update.
 It doesn't immediately jump to the argmax, but it improves a little bit in the direction where the advantages are large.
 Right?
-Because if you look at the policy gradient expression at the top of the slide, we take gradlog pi times pi, times a hat, which means that actions with a large a hat will get larger probabilities, and actions with a lower a hat will get lower probabilities.
+Because if you look at the policy gradient expression at the top of the slide, we take gradlog π times pi, times a hat, which means that actions with a large a hat will get larger probabilities, and actions with a lower a hat will get lower probabilities.
 So you could almost think of policy gradients as a kind of softened version of the policy iteration procedure we discussed before, where the policy iteration procedure from last week would simply immediately assign a probability of 1 to the highest advantage action, whereas policy gradients changes the policy parameters to move towards parameters that give higher probabilities to the argmax and lower probabilities to actions with worse advantages, but it doesn't immediately jump all the way to 1 and 0.
 And that might be desirable if you think that your advantage estimator is not perfect.
 If your advantage estimator is not perfect, perhaps what you would like to do is just slightly change your policy in the direction suggested by your advantage estimator, and then collect some more transitions, some more samples, and improve your advantage estimator.
@@ -104,7 +104,7 @@ So I'm going to replace v pi theta of s0 with this funny quantity.
 So let's look at this quantity.
 This is a difference of two sums.
 The first sum is a sum from 0 to infinity, and the second sum is a sum from 1 to infinity.
-And what I'm summing in both cases is gamma to the power t times v pi theta evaluated at s t.
+And what I'm summing in both cases is γ to the power t times v pi theta evaluated at s t.
 So I'm summing the same thing in both cases, just that one sum runs from 0 to infinity and the other runs from 1 to infinity.
 So that means when I take the difference of these two sums, all the elements in the first sum from 1 to infinity get cancelled out by the second sum.
 So that means that the difference of these two infinite sums is just v pi theta evaluated at s0.
@@ -128,9 +128,9 @@ And then I'm going to pair off these terms.
 So for the first term in the first sum, that's evaluating s1.
 For the first term in the second sum, that's evaluating s0.
 And they're off by one factor of gamma.
-So the first term becomes gamma v s1 minus v s0.
-The second term becomes gamma squared v s2 minus gamma v s0.
-And I'll take the gamma to the t term out so that I get an expression that looks like this.
+So the first term becomes γ v s1 minus v s0.
+The second term becomes γ squared v s2 minus γ v s0.
+And I'll take the γ to the t term out so that I get an expression that looks like this.
 So it's just a little bit of algebra and rearrangement.
 But if this rearrangement is unclear to you, please take a moment to think about it and write about it in the comments.
 Okay.
@@ -138,12 +138,12 @@ And what I'm going to do next is I'm going to substitute in the definition for j
 And this definition is taken from the thing in the top right corner of the slide.
 So all I've done on this slide is I've simply replaced j theta prime with the definition of j theta prime.
 So now at this point, if you look at these two equations, it might be apparent to you what I'm about to do, right?
-I have two expectations, both under p theta prime of tau, both from zero to infinity, both have a gamma to the t power in front of them.
-And one of them has an r, and the other one has gamma v s1 minus v s0.
+I have two expectations, both under p theta prime of tau, both from zero to infinity, both have a γ to the t power in front of them.
+And one of them has an r, and the other one has γ v s1 minus v s0.
 So I can group these two expectations together.
-I can distribute the expectation out, and I get a sum from zero to infinity, gamma to infinity, gamma to the power t, and then a quantity inside the parentheses, which is exactly the advantage function.
+I can distribute the expectation out, and I get a sum from zero to infinity, γ to infinity, γ to the power t, and then a quantity inside the parentheses, which is exactly the advantage function.
 And crucially, because the value function here is the value for pi theta, the advantage is the advantage for pi theta as well.
-So that means that this is equal to the expected value under p theta prime of tau of the sum from zero to infinity of gamma to the t of the advantage of pi theta s, t, a, t.
+So that means that this is equal to the expected value under p theta prime of tau of the sum from zero to infinity of γ to the t of the advantage of pi theta s, t, a, t.
 So this proves the claim that we want to prove.
 And just to make sure everyone is on the same page, concretely what this proves is that if we maximize the expected value of the advantage of an old policy with respect to an expectation for the new policy, then we will optimize j theta prime.
 We'll actually optimize the reinforcement learning objective.

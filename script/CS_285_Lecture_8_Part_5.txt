@@ -95,7 +95,7 @@ So you basically push gradients through your Q function and maximize.
 And you can use the chain rule to evaluate this derivative.
 So DQ phi D theta is just DA D theta, which is the derivative of mu theta, times DQ phi DA.
 So you can obtain this derivative by backpropagating through the graph, propagating through the Q function and into the mu, and then into the mu parameters.
-So now our targets are going to be given by as Yj equals Rj plus gamma times Q phi prime, evaluated at Sj prime comma mu theta Sj prime, which is really an approximation for the arcmax, as long as mu theta is a good estimate of the arcmax.
+So now our targets are going to be given by as Yj equals Rj plus γ times Q phi prime, evaluated at Sj prime comma mu theta Sj prime, which is really an approximation for the arcmax, as long as mu theta is a good estimate of the arcmax.
 So here is what that algorithm will look like.
 Step 1, take some action AI, observe the corresponding transition Si, Ai, Si prime, Ri, and add it to your buffer, just like in Q-learning.
 Step 2, sample a mini-batch Sj, Aj, Sj prime, Rj from your buffer, uniformly at random.

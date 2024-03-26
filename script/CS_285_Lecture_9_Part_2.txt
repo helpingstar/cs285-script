@@ -119,7 +119,7 @@ And so, in this case, we're going to use the largest reward, because ultimately,
 So that means that the c is on the order of the number of time steps times r max, and if you have infinite time steps, but you use a discount, then you know that the discount values, they form a geometric series, so they have to sum to 1 over 1 minus gamma.
 So in a finite horizon case, c is capital t times arg max.
 In an infinite horizon case, it's r max over 1 minus gamma.
-By the way, as an aside here, if you're doing reinforcement learning theory, and you ever see a term that looks like 1 over 1 minus gamma, just mentally substitute the time horizon for that, because 1 over 1 minus gamma is essentially the equivalent of a horizon in the infinite horizon case.
+By the way, as an aside here, if you're doing reinforcement learning theory, and you ever see a term that looks like 1 over (1-γ), just mentally substitute the time horizon for that, because 1 over (1-γ) is essentially the equivalent of a horizon in the infinite horizon case.
 It's basically the number of time steps, the effective number of time steps that you're summing rewards over.
 Okay.
 So essentially, all this says is the maximum maximizing this equation at the bottom maximizes a bound on the thing that we really want, which is the expectation under p theta prime, which we've proven to be the same as maximizing the RL objective.

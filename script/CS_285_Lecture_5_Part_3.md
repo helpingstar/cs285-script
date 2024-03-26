@@ -6,7 +6,7 @@
 6. The Markov property says that the state in the future is independent of the state in the past given the present.
 7. The Markov property is sometimes true, sometimes not true, depending on your particular temporal process.
 8. Causality is always true.
-9.  Causality just says that rewards in the past are independent of decisions in the present.
+9. Causality just says that rewards in the past are independent of decisions in the present.
 10. So this is not really an assumption.
 11. This is always true for any process where time flows forward.
 12. The only way this would not be true is if you had time travel and you could take an action or travel back into the past and change your action.
@@ -96,7 +96,7 @@
 96. Now the second term here is just the the policy gradient itself, right, because we know that (r(τ) - b) in expectation ends up not making a difference.
 97. So basically the actual expected value of ∇log p times (r - b) is the same as the expected value of ∇log p times r.
 98. So we can just forget about the second term, changing r is not going to change its value in expectation.
-99.  So it's really only the first term that we care about.
+99. So it's really only the first term that we care about.
 100. Alright, I'm going to change my notation a little bit just to declutter it.
 101. So I'll just use g(τ) in place of ∇log p(τ).
 102. So if you see g at the bottom that's just ∇log p, I just wanted to write a shorter value.

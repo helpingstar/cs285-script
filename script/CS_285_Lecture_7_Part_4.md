@@ -2,7 +2,7 @@
 2. So to get started, let's start with the value iteration algorithm that we covered before.
 3. It's a pretty simple algorithm and it's a little easier for us to think about, but we'll get back to the Q iteration methods a little bit later.
 4. So to remind everybody, in value iteration, we can think of it as having two steps.
-5. Step one, construct your table of Q values as the reward plus gamma times the expected value at the next state.
+5. Step one, construct your table of Q values as the reward plus γ times the expected value at the next state.
 6. And then step two, set your value function to be the max over the rows of that table.
 7. So you can think of it as constructing this table of values and then iterating this procedure.
 8. So the question we could ask is, does this algorithm converge?
@@ -13,10 +13,10 @@
 13. When applied to this vector of numbers, it performs the following operation.
 14. First, it takes V and applies the operator.
 15. And then it takes the operator T subscript A.
-16. T subscript A is a matrix with dimensionality S by S, where every entry in that matrix is the probability of S prime given S comma A, where A is chosen according to that max.
+16. T subscript A is a matrix with dimensionality S by S, where every entry in that matrix is the probability of s' given S comma A, where A is chosen according to that max.
 17. So this is basically computing that expectation.
 18. The expectation is a linear operator.
-19. We multiply it by gamma and we add this vector RA.
+19. We multiply it by γ and we add this vector RA.
 20. The vector RA is a vector of numbers.
 21. And then we have the function of rewards, where for every state, you pick the reward for the corresponding action A.
 22. And then outside of this, you perform a max over A.
@@ -26,13 +26,13 @@
 26. So the value iteration algorithm consists of repeatedly applying the operator B to the vector V.
 27. The max comes from step 2, and the stuff inside the max comes from step 1.
 28. So the reward is a stacked vector of rewards at all states for action A.
-29. And T is a matrix of transitions for action A, such that T is the probability that S prime equals I, given that S equals J.
+29. And T is a matrix of transitions for action A, such that T is the probability that s' equals I, given that S equals J.
 30. And we took the action A.
 31. Now, one interesting property that we can show is that V star, is a fixed point of B.
 32. What is V star?
 33. V star is the value function for the optimal policy.
 34. So if we can get V star, then we will recover the optimal policy.
-35. V star is equal to the max over A of RSA plus gamma, times the expected value of V star S prime.
+35. V star is equal to the max over A of RSA plus γ, times the expected value of V star s'.
 36. Right?
 37. So if we find a value function, if we find a vector that satisfies this equation, we found the optimal value function.
 38. And if we use the argmax policy with a solution, we find that the value function is equal to the maximum value function of RSA plus gamma.
@@ -57,7 +57,7 @@
 57. Now, the proof that B is a contraction is not actually all that complicated.
 58. I just don't want to go through it on this slide, but you can look it up as a standard kind of textbook result.
 59. But just to very briefly explain why showing that it's a contraction implies that value iteration converges, if you choose V star as your V bar, you know that V star is a fixed point of B.
-60. So if you substitute in V star for V bar, then you get the equation BV minus V star norm is less than or equal to gamma times V minus V star.
+60. So if you substitute in V star for V bar, then you get the equation BV minus V star norm is less than or equal to γ times V minus V star.
 61. Which means that each time you apply B to V, you get closer to V star.
 62. So each time you change your value function by applying the non-linear operator B, you get closer to your optimum V star.
 63. It's important to note here that the norm under which the operator B is a contraction is the infinity norm.
@@ -136,7 +136,7 @@
 136. It's actually exactly the same thing.
 137. So in fitted Q iteration, you can also define an operator B.
 138. It looks a little bit different.
-139. Now it's R plus gamma T times max Q, so the max is now at the target value, but same basic principle.
+139. Now it's R plus γ T times max Q, so the max is now at the target value, but same basic principle.
 140. So now the max is after the transition operator.
 141. That's the only difference.
 142. B is still a contraction in the infinity norm.

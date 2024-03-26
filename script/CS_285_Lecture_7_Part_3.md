@@ -36,7 +36,7 @@
 36. So you could think of Theta Q iteration as optimizing an error, the error being the Bellman error, the difference between Q, ϕ, SA, and those target values Y, and that is kind of the closest to an actual optimization objective.
 37. But of course, that error itself doesn't really reflect the goodness of your policy.
 38. It's just the accuracy with which you're able to copy your target values.
-39. If the error is 0, then you know that Q, ϕ, SA is equal to RSA plus gamma max A prime Q, ϕ, S prime A prime.
+39. If the error is 0, then you know that Q, ϕ, SA is equal to RSA plus γ max A prime Q, ϕ, s' A prime.
 40. And this is an optimal Q function, corresponding to the error of fit.
 41. And this is an optimal Q function, corresponding to the optimal policy π prime, where the policy is recovered by the argmax rule.
 42. So this you can show maximizes reward.
@@ -106,4 +106,4 @@
 106. the second half of the course, but these simple rules are hopefully going to be enough to implement basic versions of Q iteration and Q learning algorithms.
 107. All right, so to review what we've covered so far, we've discussed value-based methods, which don't learn a policy explicitly, but just learn a value function or Q function.
 108. We've discussed how if you have a value function, you can recover a policy by using the arcmax, and how we can devise this fitted Q iteration method, which does not require knowing the transition dynamics, so it's a true model-free method.
-109. And we can instantiate it in various ways, as a batch mode off policy method, or an online Q learning method, depending on the choice of those hyperparameters, the number of steps we take to gather data, the number of grading updates, and so on.
+109. And we can instantiate it in various ways, as a batch mode off policy method, or an online Q learning method, depending on the choice of those hyperparameters, the number of steps we take to gather data, the number of gradient updates, and so on.

@@ -1,5 +1,5 @@
-1.  All right, in part four of the lecture, I'll talk about a few algorithmic approaches that can also make behavioral cloning work pretty well.
-2.  The first one I'll discuss is to use multitask learning.
+1. All right, in part four of the lecture, I'll talk about a few algorithmic approaches that can also make behavioral cloning work pretty well.
+2. The first one I'll discuss is to use multitask learning.
 3. So this might seem a little paradoxical at first, but it turns out that sometimes learning many tasks at the same time can actually make imitation learning easier.
 4. So let's say that you would like to train your agent, let's say your vehicle, to drive to a particular location.
 5. Let's call it location P1.

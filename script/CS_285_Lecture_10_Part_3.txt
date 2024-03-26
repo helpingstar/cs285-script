@@ -172,7 +172,7 @@ Then we express our value function as a quadratic form in terms of these Qs, and
 Just by plugging in the expression for u in place of u in that formula for the Q function, and then collecting all the quadratic and linear terms to express the value function as a function only of v with a quadratic term and a linear term.
 Again, if at this point you're having a little bit of trouble following the algebra, it's a very good idea to get out a sheet of paper and just re-derive this, following along with the slides.
 It's quite easy to re-derive, it just takes a long time to write.
-Alright, so now we have a value function at time step t, which means that we can repeat and go to time step t minus 1 and use that value function to compute the preceding Q function.
+Alright, so now we have a value function at time step t, which means that we can repeat and go to time step (t-1) and use that value function to compute the preceding Q function.
 When we're all done with this, what we've produced is an expression for capital K and lowercase k at every single time step.
 So, going backwards through time, we've expressed our action at every time step as a function that is linear in the state and has this constant term.
 And when we get all the way to the end of the equation, all the way back to u1, the nice thing at time step 1 is that we actually know x1.

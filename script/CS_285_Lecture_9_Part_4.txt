@@ -86,10 +86,10 @@ We don't want to use a first order Taylor expansion because the KL divergence ha
 It's actually flat but its second derivative is not zero.
 The second order Taylor expansion is a quadratic form with some matrix f and it turns out that the matrix that goes in there is something called the Fisher information matrix.
 The calculation for this is a bit involved but you basically start with a formula for the KL divergence and if you take the second derivative you can show that the correct thing to use for that matrix is the Fisher information matrix.
-So the Fisher information matrix is the expected value under pi theta of the outer product of the grad log pi's.
+So the Fisher information matrix is the expected value under pi theta of the outer product of the grad log π's.
 And one very convenient thing about the Fisher information matrix is that you can approximate it using samples.
 Because it's the expected value of some quantity you could simply use the same samples that you drew from pi theta to estimate your policy gradient to also estimate the Fisher information matrix.
-So the Fisher information matrix is the expected value of the grad log pi's.
+So the Fisher information matrix is the expected value of the grad log π's.
 Now if we're going to use this second order Taylor expansion as an approximation for our KL divergence constraint something that we can note is that gradient descent actually also has a quadratic constraint.
 Theta minus theta prime squared can also be interpreted as theta prime minus theta transpose times identity times theta prime minus theta.
 And now we have the same thing only instead of identity we have f.

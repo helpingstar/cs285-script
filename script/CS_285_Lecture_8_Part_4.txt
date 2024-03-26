@@ -55,7 +55,7 @@ And you can verify this yourself in homework 3 when you implement Q learning.
 You can measure the numerical value of the Q value that you're getting, and then measure the actual return that you get, and compare those two numbers, you'll find they don't agree very well.
 There are a few details that you have to get right.
 One thing that you have to get right is that you have to make sure that when you calculate the true value, you use a discounted estimator.
-So you calculate the true value by taking the trajectories that you actually executed, and taking the reward times step 1, plus gamma times the reward at 2, plus gamma squared times the reward at 3, etc., etc., etc., and then compare that to the Q value at step 1.
+So you calculate the true value by taking the trajectories that you actually executed, and taking the reward times step 1, plus γ times the reward at 2, plus γ squared times the reward at 3, etc., etc., etc., and then compare that to the Q value at step 1.
 Because the Q value at step 1 is trying to predict the expected sum of discounted rewards.
 So if you compare that to the discounted sum of rewards that you actually got, if your Q value is a good predictor, you should see that those are similar.
 And what you'll actually see is that they're not very similar.
@@ -159,12 +159,12 @@ Take a moment to imagine what this multi-step target would look like.
 If you have a piece of paper in front of you, consider writing it down, and then you can check what you wrote down against what I'm going to tell you on the next slide.
 Sorry, it's actually on this slide.
 So the way that you can construct a multi-step target is basically exactly analogous to what we saw in the actor critic lecture.
-So the way that you can construct your multi-step target is by not just using one reward, but making a little sum from t prime equals t to t plus n minus one, and for each of those, you take rj t prime multiplied by gamma to t minus t prime.
+So the way that you can construct your multi-step target is by not just using one reward, but making a little sum from (t'=t) to t plus n minus one, and for each of those, you take rj t prime multiplied by γ to t minus t prime.
 And you can verify that if n equals one, then you recover exactly the standard rule that we had for Q learning.
-But for n larger than one, you sum together multiple reward values, and then you use your target network for the t plus n step multiplied by gamma to the n.
+But for n larger than one, you sum together multiple reward values, and then you use your target network for the t plus n step multiplied by γ to the n.
 So this is sometimes called an n-step return estimator, because instead of summing the reward for one step, you sum it for n steps.
 So this is the n-step return estimator.
-And just like with actor critic, the trade-off of the n-step return estimator is that it gives you a higher variance because of that single sample estimate for r, but lower bias because even if your Q function is incorrect, now it's being multiplied by gamma to the n, and for larger values of n, gamma to the n might be a very small number.
+And just like with actor critic, the trade-off of the n-step return estimator is that it gives you a higher variance because of that single sample estimate for r, but lower bias because even if your Q function is incorrect, now it's being multiplied by γ to the n, and for larger values of n, γ to the n might be a very small number.
 Okay.
 So let's talk about Q learning with these n-step returns.
 It's less biased because the target, because the Q values are multiplied by a small number, and it's typically faster early on because when the target values are bad, those sums of rewards really give you a lot of useful learning signal.

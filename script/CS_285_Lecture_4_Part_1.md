@@ -6,7 +6,7 @@
 6. We call this policy π, and we often use a subscript θ to denote that the policy depends on a vector of parameters that we're going to denote θ.
 7. When we're doing deep reinforcement learning, oftentimes we will represent the policy with a deep neural network, although, as we will learn in the next two lectures in the course, depending on the type of reinforcement, learning algorithm, we might choose to represent the policy directly or implicitly through some other object, such as a value function.
 8. Important definitions to know are the state, which we denote s_t, the observation o_t, and the action a_t.
-9. As we learned in the imitation learning lecture, the observation and state can be related to one another by the following graphical model, where the edge between observations and actions is the policy, the edge between current states and actions and future states is the transition probability, or the dynamics, and the state satisfies the Markov property, which means that the state at time t plus 1 is independent of the state at time t minus 1, when conditioned on the current state s_t.
+9. As we learned in the imitation learning lecture, the observation and state can be related to one another by the following graphical model, where the edge between observations and actions is the policy, the edge between current states and actions and future states is the transition probability, or the dynamics, and the state satisfies the Markov property, which means that the state at time t plus 1 is independent of the state at time (t-1), when conditioned on the current state s_t.
 10. The Markov property is the main thing that distinguishes the state from the observation.
 11. The state has to satisfy the Markov property, whereas the observation does not.
 12. And we learned in the imitation learning lecture that the observation is some stochastic function of the state which may or may not contain all the information necessary to infer the full state.
@@ -53,7 +53,7 @@
 53. But here you can see that T acts on μ_t as a linear operator, which is why we call it the transition operator.
 54. It's an operator that when applied to the current vector of state probabilities produces the next vector of state probabilities.
 55. So here's the graphical model corresponding to the Markov chain, and here is the edge denoting transition probabilities.
-56. And of course the states in the Markov chain satisfy the Markov property, which means that the state at time t plus 1 is conditionally independent of the state at time t minus 1 given the state at time t.
+56. And of course the states in the Markov chain satisfy the Markov property, which means that the state at time t plus 1 is conditionally independent of the state at time (t-1) given the state at time t.
 57. Alright, now the Markov chain by itself doesn't allow us to specify a decision-making problem because there's no notion of actions.
 58. So in order to go towards the notion of actions, we need to turn the Markov chain into a Markov decision process, and this was really a much more recent invention pioneered than the 1950s.
 59. So the Markov decision process adds a few additional objects to the Markov chain.
@@ -72,7 +72,7 @@
 72. But before I do that, I just want to extend this Markov decision process definition to also define the partially observed Markov decision process, and this is what will allow us to bring in the notion of observations.
 73. So a partially observed Markov decision process further augments the definition with two additional objects, an observation space O and an emission probability, or an observation probability, E.
 74. So again, S is the state space, A is an action space, and O is now an observation space.
-75. The graphical model now looks the same as it did for the MDP, with the addition that we have these observations O that depend on the state.
+75. The graphical model now looks the same as it did for the MDP, with the addition that we have these observations o that depend on the state.
 76. So we have a transition operator just like before, and now we have an emission probability, a p(o_t|s_t), and of course we also have the reward function.
 77. The reward function is still mapping from states and actions to real numbers, so the reward function conventionally is defined on states, not on observations.
 78. But typically in a partially observed Markov decision process, or POMDP, we would be making decisions based on observations without access to the true states.

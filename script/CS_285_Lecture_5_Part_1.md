@@ -2,7 +2,7 @@
 2. Now, policy gradients are in some ways kind of the simplest reinforcement learning algorithm, in that they directly attempt to differentiate the reinforcement learning objective, and then perform gradient descent on the policy parameters to make the policy better.
 3. So, to start with, let's recap the objective function for reinforcement learning from last time.
 4. In reinforcement learning, we have a policy, which we're going to call π.
-5. That policy has parameters, θ, and the policy defines a distribution over actions A, conditioned on either the states S or the observations O.
+5. That policy has parameters, θ, and the policy defines a distribution over actions A, conditioned on either the states s or the observations o.
 6. And I'll come back to the partially observed case later in the lecture, but for now, we'll just work on policies that are conditioned on states.
 7. If the policy is represented, for example, by a deep neural network, then θ denotes the parameters of the policy, which are the weights in the neural network.
 8. This network takes as input the state or observation, and produces as output the action.
@@ -54,7 +54,7 @@
 54. And I'll often say in this lecture just p(τ).
 55. Usually when I say p(τ), I just mean p_θ(τ).
 56. Okay, so now so far this doesn't actually give us a practical way to evaulate the policy gradient because ∇_θ p_θ(τ) requires differentiating the unknown initial state distribution and the unknown transition probabilities but there's a very useful identity that will allow us to rewrite this equation in a way that we can evaluate using only samples, much like how we evaluated the objective value.
-57. So the convenient identity that we will use, and this is basically the only piece of mathematical cleverness in this whole derivation, is that if we have an equation like this, if we have p(τ) times ∇log p(τ), we can write it as p(τ) times ∇p(τ) over p(τ).
+57. So the convenient identity that we will use, and this is basically the only piece of mathematical cleverness in this whole derivation, is that if we have an equation like this, if we have p(τ) times ∇log p(τ), we can write it as p(τ) times ∇p(τ)/p(τ).
 58. This follows directly from simply the equation for the derivative of a logarithm.
 59. So if you open a calculus textbook and look up the derivative for, you know, d dx of log x, you'll find that it's basically equal to, d x over x, right?
 60. So that means that ∇log p is ∇p over p.
