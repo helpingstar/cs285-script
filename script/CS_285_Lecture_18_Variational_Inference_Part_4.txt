@@ -1,0 +1,238 @@
+Alright, in the last portion of today's lecture, we're going to talk about how we can actually instantiate practical deep learning models based on the principles that we discussed in the other parts, and we'll actually briefly discuss some examples of how these types of models could be applied in Deep RL.
+Now we'll discuss the role of variational inference in Deep RL more broadly in later lectures, but for today we'll just focus on direct applications of generative models trained with amortized variational inference.
+So let's first start with arguably the most basic of amortized variational inference models, which is the variational autoencoder.
+So in a variational autoencoder, we're going to be modeling some kind of input x, which is typically going to be an image, using a latent variable or a latent vector z.
+We're going to have an encoder and a decoder like before, so this is going to be more or less the most direct instantiation of the principles that we've outlined.
+Our encoder is a deep neural network that takes in x and produces the mean and variance over z.
+So the encoder defines a Gaussian distribution, pq , where the mean and the variance are given by the output of a neural network.
+The decoder is a neural network that's going to take in z and is going to produce a mean and variance over the observed variable x.
+So the idea is that if we want a sample, we would generate a z from the prior distribution, which is typically fixed to be a zero mean unit variance Gaussian, and then we would decode that using a latent variable.
+So we're going to be using the decoder ptheta , which basically means running it through the decoder neural network and then sampling from the resulting Gaussian distribution over the inputs.
+For example, this could be used to build a generative model over images.
+Here you can see some examples of samples drawn from a variational autoencoder trained on pictures of faces.
+So here the x's are pixel images, so they're arrays of pixels, and the z's are going to be latent vectors with some dimensionality like 64 or 128.
+The architecture of the variational autoencoder.
+Essentially follows what we discussed in previous sections.
+So if we want to set this up as a computational graph for training, we would have the encoder q with parameters phi, take in the image xi, and that neural network would output the mean mu phi of xi and the variance sigma phi of xi.
+Then we would sample some noise from a zero mean unit variance distribution, and then we would form the resulting z by taking the mean and adding the noise epsilon times the z.
+So we would have the standard deviation sigma, and that gives us z.
+And then we can pass z through the decoder, p theta of x given z, and that would produce the image.
+The training procedure trains this whole thing with the reparameterization trick.
+So it's trained to maximize the variational lower bound with respect to both the parameters of the decoder theta and the parameters of the encoder phi.
+So the objective just ends up being the average over the entire data set of the log probability of the image from the decoder.
+And then we can write the result in the decoder, where the mean and standard deviation for the z comes from the encoder.
+So we use the reparameterization trick to backpropagate the error of this first log probability term all the way from the decoder back into the encoder, and thus train both theta and phi.
+And of course, we also have to subtract off the KL divergence regularizer, which basically accounts for the prior.
+And the KL divergence here is between the encoder distribution, q phi of z given xi, and the prior p of z.
+And since q phi of z given xi is Gaussian, and the prior p of z by convention is a zero mean unit variance Gaussian, this KL divergence can actually be computed in closed form using the analytic formula for the KL divergence between two Gaussians.
+So that's pretty straightforward to do.
+All right, so that's the variational autoencoder.
+And what the variational autoencoder allows us to do is it allows us to train a latent variable model representing some inputs, which are typically taken to be images.
+So how could we use the variational autoencoder?
+Well, we can use the variational autoencoder by training on a bunch of images and getting a latent variable representation.
+And we can sample from it by, for example, generating a sample from the prior p of z, and then decoding that sample using the decoder p of x given z.
+Now, why does this actually work intuitively?
+So the math is all the stuff from the previous sections.
+The intuition behind why this works is that the evidence lower bound, the variational lower bound, is going to try to make the images in the data set as likely as possible, given the z's that we obtained for those images from the encoder.
+But the encoder is also trained to stay close to the prior, which means that if the encoder produces z's that are too different from the kinds of z's that you would get by sampling from the zero mean unit variance prior distribution over z's, then the variational autoencoder will be able to see the z's that are too different from what we obtained from the encoder.
+So that's kind of the way we can use this to test the variational autoencoder.
+Now, let's see how we can do this.
+And I'll just show you a little bit of an example.
+Here we have a set of z's that we can get.
+then the encoder will pay a very heavy price for it.
+So the encoder has a very strong incentive to produce Zs that look like samples from the prior, because if it doesn't do that, then that KL divergence term will be very large, and that will incur a large penalty.
+Now, this explains why samples from the encoder will be within that unit variance prior.
+It doesn't by itself explain why any sample from the unit variance prior will be close to something that is being encoded.
+The argument for that has to do with efficiency.
+The thing is, the encoder also wants to have a pretty high variance.
+It wants to have a variance close to 1, because that's what the prior has.
+So the encoder wants to be pretty frugal in its use of the latent space, which means that it really wants to use every piece of the latent space.
+If there's some piece of the latent space that's unused, it'll be better for the encoder to expand into those spaces and increase its variance so that its variance can be closer to 1.
+So as a result, you end up with a mapping between these Zs and Xs, where pretty much every Z that you sample from the encoder will be close to 1.
+So the encoder from the unit variance prior will map to some valid X.
+So that means that you can both take images and encode them and get the representation Z, and you can actually sample from the prior decode and get reasonable sampled images, which was actually what's shown in this animation here on the slide.
+All right, let's talk about some applications of this in Deep RL.
+Variational autoencoders of this sort typically have been used in Deep RL for the purpose of representation learning.
+Now, this is not to be confused with the use of the deep RL with handling partial observability.
+We'll actually talk about partial observability a little bit more later.
+For now, we're just talking about Zs as representations of individual states.
+So we're still assuming that everything is fully observed in the sense that the state contains all the information needed to infer the action.
+It's all Markovian and all that good stuff.
+But the state observations are somehow complicated.
+For example, they might correspond to images in Atari games.
+In this case, it might actually be beneficial to use a variational autoencoder not to sample additional images, but just to get a better representation of those images.
+So here, our decoder will now be trained to generate states given Zs, but if the states are images, it's basically the same exact type of model that we saw before.
+So, for example, what we could do is we could train a VAE on all of the states in our replay buffer for, let's say, our Atari game.
+And then when we run RL, we would use Z in place of the original state's S as the state representation for RL.
+And then we would just repeat this process.
+Now, why is this so important?
+Well, because it's a very simple process.
+And this is a good idea.
+Why might we expect these Zs to be better state representations than the states themselves?
+Well, the idea is that a variational autoencoder, because it learns these Z representations that satisfy an independent Gaussian prior, meaning that every dimension of Z is independent of every other dimension, should lead to better disentanglement of the underlying factors of variation than the images themselves.
+Imagine this image from Montezuma's Revenge in the upper right.
+The individual pixels that correspond to that character, the player character, are very correlated with each other in the sense that while the player character consists of many pixels, those pixels move as one.
+So, for downstream RL, it's not really that important what the color of every pixel on the player is.
+What's important is the overall position and maybe velocity that that blob of pixels is moving at.
+So there's some underlying factors of variation that constitute the image, in this case the position, direction, and velocity of the player character and the skull and the key and so on, which represent a much more parsimonious and useful representation of the image than the image pixels themselves.
+These are underlying factors of variation.
+And what we would like to do intuitively is to take this image and disentangle the underlying factors of variation such that each reasonably independent factor of variation, like the position of the player character and the skull, constitute different dimensions of the new learned state representation.
+And this is more or less what variational autoencoders are trying to do.
+These pictures that I have shown in the lower left, these are from a work by Higgins et al.
+from 2017, show what happens when different types of variational autoencoders are trained on data that has known underlying factors of variation.
+So on the left you can see examples of furniture items which differ in their shape, size, and orientation.
+In the middle you can see faces that differ in the lighting direction, the facial expression, and the orientation of the face.
+And on the right side are natural face images from the CelebA data so that they differ in terms of age, race, hairstyle, and so on.
+And what the authors are doing in these pictures is, in every row, they are interpolating between the image on the left side and on the right side.
+Now if you interpolate images in pixel space, they don't actually interpolate along the natural factors of variation.
+So for example, the chair in the left top row interpolates its orientation from a chair facing right to a chair facing left.
+That's not what you would get if you actually interpolate the pixel colors themselves.
+So that means that the underlying representation, z, is actually capturing the factors of variation in the environment.
+And that's what we would expect good VAEs to do.
+Now I will say that it's of course debatable in practice the degree to which VAEs actually capture the true factors of variation in these images, but that is what they're trying to do.
+So a practical instantiation of this idea, for example in the context of a Q-learning algorithm like the one in homework 3 might look like this.
+Just like in regular Q-learning, you collect a transition from your environment using your exploration policy, and add it to your replay buffer.
+Then you update your decoder and encoder using the variational lower bound using a batch sample from the replay buffer.
+And that improves the representation z.
+Then you update your Q function with a batch from the replay buffer, but the Q function now takes as input the latent representation z produced by the encoder, not the original images.
+And we would expect this to be an easier process because now the representation fed into the Q function is a better representation than the original image.
+And then we repeat this process.
+And it's also worth noting this provides us with a great way to use prior data.
+So if we have reasonable prior images of Atari trials, we could use this to pre-train the variational auto-encoder which would give us a good representation right off the bat that we could use for RL.
+Or of course we could learn it on the fly as we go.
+Alright.
+The next class of models I'll talk about are conditional models.
+Now conditional models are just like the VAE from before, except that now our goal is not to model a distribution over images p , but to model some conditional distribution p .
+And the idea is that it's the p that might be complex and multimodal.
+So we don't actually care about how x is distributed, we just care about how y is distributed, given x.
+But we want that distribution p to be very expressive.
+To handle this, we need to simply put the conditioning information x on the right of the conditioning bar for the encoder and the decoder.
+We could also optionally put it to the right of the conditioning bar for the prior itself as well, although we don't have to.
+And it's very common for conditional models to simply use an unconditional prior.
+So the practical change is simply that we still have an encoder network, we still have a decoder network, but now both of those take this x, the conditioning information, as input.
+Of course a very classical way to use this is for policy.
+So y might be the actions and x might be the observations.
+And now you can think of this as a policy, y given x, that additionally takes a noise sample as input.
+So making it p of y given x comma z.
+So now a quick pop quiz for everybody.
+This p of y given x comma z, is that the encoder or is it the decoder?
+Take a moment to think about this.
+So the answer of course is that it's the decoder, right?
+Because the decoder is the thing that takes in z and produces the variable.
+So the variable here that we're modeling is y, so p of y given x comma z.
+is the decoder.
+Basically everything is the same as before, except now we're generating y and both the encoder and decoder get x as input.
+The prior can optionally depend on x, but there's really no need to do this.
+So the architecture now is you have your encoder with parameters phi, it takes in x and y, and it produces the mean and standard deviation of z, mu and sigma.
+We still have the noise, we still add mu plus epsilon times sigma to get our z, but now our decoder takes in both z and x as input and produces p theta of y given x comma z.
+And just like before, the whole thing is trained with the variational lower bound shown at the top of the slide.
+So even though the model is conditional, very little actually changed.
+And then at test time, we could simply sample z from the prior, and then decode it using p of y given x comma z.
+These types of conditional variational autoencoders are most commonly used to represent multimodal policies.
+These multimodal policies could be used with reinforcement learning, although they're much more commonly used with imitation learning.
+Why is that?
+We actually discussed the reason for this in some of our previous lectures.
+In RL, our aim is typically to learn a near optimal policy, and we know that fully observed MDPs generally will have optimal policies that are deterministic.
+But in imitation learning, we might need to imitate multimodal and non-Markovian human behavior in which case having a multimodal policy might be very important.
+Like in the example of the tree from the beginning of the class, where you can go around the tree on the left side or on the right side, but you really don't want to split the difference, meaning that if the human sometimes went left and sometimes went right, you really would like to have a multimodal policy to represent this distribution so that you don't end up inadvertently going down the middle.
+Here are a few examples of papers that have used these kinds of conditional variational autoencoders to represent multimodal policies.
+In learning latent plans from play, which we discussed before, the method consisted of a fairly complex variational autoencoder that would model free-form human behavior data, where humans essentially played with this robotic environment, where the conditional VAE would actually not even represent individual actions, but sequences of actions, which the paper refers to as plans.
+And the idea is that humans might execute many different combinations of actions to go between any two points, and the latent variables here explain the difference between those choices, even for the same start and end point.
+Here is another video of a different paper that uses a conditional variational autoencoder.
+This is a real-world robotic system.
+It's a bimanual manipulator that is learning fairly complex tasks, like, for example, putting a shoe on a foot.
+The variational autoencoder here is conditional, and both the encoder and the decoder in this case are actually represented by transformers.
+So the architecture is a little bit complex, and the word encoder and decoder here is a little bit overloaded.
+The orange thing on the left side is the VAE encoder, which takes in actions.
+It actually takes sequences of actions to improve the modeling accuracy, but it might as well do individual actions, and encodes them into a latent variable z using a transformer.
+And then the decoder actually consists of a transformer encoder, which takes in inputs from multiple cameras on the robot and the latent variable z, and then decodes them into sequences of future actions.
+So it's a more elaborate model that combines conditional VAEs with transformers.
+So, long story short, conditional variational autoencoders have found a lot of applications in imitation learning for representing much more complex policies than would be possible with just regular Gaussians.
+Alright, the last class of models that we'll talk about are actually models that we discussed before in the model-based IRL lecture, although back then we didn't yet know about variational autoencoders, so we had to describe these at a very high level, and I'll go into this in a little bit more detail now.
+So the aim here is going to be to deal with partially observed systems.
+In partially observed systems, we do not know the states, we instead have sequences of observations.
+And we're going to learn state-space models, where the states z are actually going to be the latent states in the variational autoencoder.
+So, let's say that we have these image observations.
+How do we formulate the sequence-level problem as a variational autoencoder?
+So we're in the partially observed setting, that's why I'm using O instead of S, and I would somehow like to coerce the sequence modeling problem where I have Zs and Os into a model where I have a single latent vector Z and a single observed vector X.
+And the choices I have to make are, what is Z, what is X, what is the form of the prior, what is the form of the decoder, and what is the form of the encoder?
+So, I have to essentially wire up these pieces together.
+And this is actually highly non-trivial.
+This model is going to be much more complex than the models we described before.
+Because now, the latent variable is actually itself a sequence.
+It's not that every single time step, Z1, Z2, Z3, is going to be a different latent variable in a VE.
+The entire sequence of Zs is going to be the latent variable.
+So the X, the observation, is a sequence of Os, an entire trajectory.
+The Zs are a sequence of the Zs of the individual time steps, Z2 through Zt.
+So the variational autoencoder is now a sequence level variational autoencoder.
+It's sometimes called a sequence VAE.
+In fact, this sequence VAE is actually conditional.
+So it's a sequence level conditional VAE.
+What is it conditioned on?
+Well, take a moment to think about this.
+The answer, of course, is it's conditioned on the only part of this that we are not modeling, which is the action.
+So it's actually a conditioned VAE, where the conditioning information, the We want to take into account the dynamics, and those are going to be part of the prior.
+So notice that our prior now is actually conditioned.
+The prior P is given by the product of P , which could be a zero-mean-unit variance Gaussian, times the product of P , given Zt .
+And the dynamics part is typically also learned for a sequence VAE.
+So it's part of the prior, but it is learned.
+So the first step is Gaussian, but the other steps are not.
+So you could imagine that the Zs form a trajectory in the latent space, but remember, except for Z1, Z2, Z3, Z4, and so on, are not in general distributed according to a unit Gaussian.
+Their distribution depends on the previous Z.
+Our decoder is going to decode the Zs into the Os.
+And the decoder is typically independent per time step.
+And the reason for this is that we want the Zs to summarize all the information necessary for that time step.
+We want the Zs to constitute a Markovian state space.
+So our decoder is going to be decoding each individual time step independently.
+So it's just given by a product over all the time steps, of P given Zt.
+Now what about our encoder?
+Can our encoder also be independent?
+Well, in general, the answer of course is no, because if we're in a partially observed setting, the whole point is that O doesn't have enough information about the underlying state Z2.
+So our encoder in a sequence VAE is typically actually the most complex part.
+The encoder is going to give us the distribution over Zt given all of the previous Os.
+Given all of the previous Os.
+Now there are many different ways to represent the encoder.
+The encoder could also take previous Zs into account.
+It could be structured actually in many different ways.
+We talked about some of the ways to structure the encoder in the model-based RL lectures.
+And the papers that I'm going to mention next all actually have different encoder architectures.
+I won't go into the details about how all these encoders could be structured, and the simplest one to imagine is the independent encoder I have here.
+But notice that this independent encoder treats all the Zs as independent of each other, but treats them as dependent on the entire sequence of actions.
+So you can imagine that the process of producing a single Z corresponds to looking at the history of Os and inferring what the Z should be right now.
+And that's actually very natural.
+If we want to have a state estimator in a partially observed environment, we might infer the distribution over states now, given the history of observations so far.
+Of course, we could have a much better encoder if we also take into account Zt-1.
+So we could have an encoder Q phi Zt given Zt-1 and O1-1.
+So we could have an encoder Q phi Zt given Zt-1 through T, and that would be a better encoder.
+Different works have explored a variety of different encoders, and the whole point of using the variational inference framework is that we actually have a lot of flexibility in what kind of encoder to use.
+Some encoders will be better than others in the sense that they lead to more accurate posteriors, but all of them constitute valid variational lower bounds.
+So in this example, the decoders would be independent, meaning that each Z would be decoded into the image at that time step, and the images are independent of each other but of course the Zs are all closely coupled because of the prior.
+The encoder would take in a history of images and produce a distribution over the current Zs, and that we might represent with some kind of sequence model like an LSDM or transformer.
+And you can see that once we represent the encoder as a sequence model, it's easy enough to also feed in previous Zs.
+Alright, so here are some applications of these kinds of sequence models in Deep RL.
+One application is the one that we call the state-based application area, is to learn state-based models and then plan in the state-space.
+There have been a number of papers that have done this.
+One of the earliest is this paper called Embed to Control, where the idea was to learn these latent-space embeddings of a variety of simple systems like cart-pole and point-mass and things like that.
+So here they're visualizing the state-space.
+This is a state-based space for a cart-pole, and you can see on the right side they're kind of visualizing its geometry over the course of training.
+And the point that they're making is that the real state-space, the real degrees of freedom of the pendulum, are actually inferred by the algorithm as it trains from pixels.
+Here's a more complex task.
+Here the latent-space is three-dimensional, and you can see that it kind of unfolds the images into this latent-space, which resembles the geometry of the true state-space of the system.
+And here are some visualizations.
+This is a simple pendulum environment.
+On the right side they're visualizing the generations, on the left side are the real images.
+And here's a simple picture of the real state-space.
+And here is a more complex cart-pole balancing task that they did.
+Now of course this is a much earlier work, it used very primitive images.
+Since then things have come a long way.
+This is work that is about seven years ago, where these kinds of models were used to control real robots.
+So here the sequence VE is actually predicting images from the robot, and the policy is then controlling it to stack these Lego blocks.
+Later on these things were also applied to lots of pictures and pixel-based benchmark tasks, and work pretty well with a variety of different types of encoders, and also a variety of planning algorithms, everything ranging from LQR to random sampling, and other kinds of trajectory optimizers.
+The other class of approaches with sequence models use the state-space model to infer a state-space, and then actually run RL in that state-space.
+Here is an example called stochastic latent actor critic.
+This used a Q-function actor critic algorithm, a soft actor critic.
+And this is a model to make it work with image observations.
+So here the sequence VE was used to extract a representation for the actor critic algorithm.
+And you can see here some true rollouts from the system, and then some samples from the VAE, showing that the VAE is actually learning to generate videos that look very much like the real system.
+Here is another paper that did something very similar, using an actor critic algorithm and actually short horizon rollouts, which is actually a combination with sequence VAEs to represent latent states.
+Okay, thank you very much.

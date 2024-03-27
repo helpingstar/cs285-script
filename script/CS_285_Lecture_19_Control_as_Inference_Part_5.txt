@@ -1,0 +1,117 @@
+Okay, in the last portion of today's lecture, I'm going to talk about some previous research papers that actually utilize this variational inference or soft optimality framework to instantiate some algorithms with some interesting properties.
+So first, I'll talk about fine-tuning, exploration, and robustness.
+So let's say that we run, for instance, a policy gradient algorithm to train this humanoid robot to walk.
+So we can get them to walk, and it'll look pretty cool, pretty compelling.
+But if we run the same algorithm twice, we might get a very different gate.
+So in the second attempt, the humanoid still walks, but walks very differently.
+And in fact, we see this all the time in Deep RL, running the same algorithm multiple times doesn't necessarily lead to two identical solutions.
+Intuitively, this issue is just kind of a more complex, more general version.
+So let's say that we run a very specific local optimum problem.
+This is maybe best illustrated with a simple example.
+So we run a very specific local optimum problem.
+And if it commits to the wrong one randomly, then it will get stuck and it won't be able to reach the destination.
+And if it commits to the wrong one randomly, then it will get stuck and it won't be able to reach the destination.
+Intuitively, if you want to solve problems like this, you have to track both hypotheses, basically explore both passages, until you figure out that one is significantly better than the other.
+So this is where soft Q-learning can actually be very effective.
+And what I'm going to discuss is based on this paper by Thomas Harnoya and Haran Tan called Reinforcement Learning with Deep Energy-Based Policies.
+And what I'm going to discuss is based on this paper by Thomas Harnoya and Haran Tan called Reinforcement Learning with Deep Energy-Based Policies.
+So we have our Q-function, which maps from states and actions to continuous values.
+And early on in training, the agent here will see that it's getting larger Q-values for both the upper passage and the lower passage.
+So you can kind of think of this picture as a crude cartoon illustration of the Q-function at the initial state.
+It has these two peaks, one corresponding to the upper passage and one to the lower one.
+And which peak is taller is largely arbitrary.
+It depends on the situation.
+It depends mostly on how far the agent got along each passage.
+So if it got a little further along the upper passage, it'll look a little bit better because it got closer to the goal.
+So that peak might be just a little bit higher.
+And when it's a little bit higher, the agent will commit a disproportionate amount of its exploration energy to explore that upper passage.
+And the corresponding peak will get even higher.
+If we instead choose our policy according to this variational inference framework, if we choose it to be proportional to the exponential Q-value, we'll put probability mass on both peaks and actually explore both passages.
+And of course, as I said before, the normalizer here is just the value function.
+So it has this appealing interpretation as the exponential of the advantage.
+So this leads us directly to the soft Q-learning procedure.
+And it turns out that it has this nice appealing property that will explore both hypotheses until we figure out which one is the best one.
+It turns out that this approach is very simple.
+It turns out that this approach is actually very nice for pre-training.
+Because if you use it for pre-training in an under-specified task, then you will learn to solve that task in a wide variety of different ways.
+And then when the environment changes and you have to specialize your skill, then you simply have to remove all the wrong ways of solving it rather than relearn it.
+So to illustrate this with an example, I'm recording this on October 31st.
+It's Halloween, so it's very suitable.
+We're going to have an explosion of spiders.
+On the left here, we have a very interesting example.
+On the left here, you can see the standard, in this case DDPG, deterministic RL algorithm with a reward function that says run very fast in any direction.
+On the right, you can see the soft Q-learning approach.
+Now when the soft Q-learning approach is given a reward that is high for running in any direction, it will try to run in as many directions as possible because that increases entropy.
+And also produces a video, very suitable for Halloween, with this terrifying explosion of spiders.
+Now you might say, well, why is this useful?
+Why do we want ants that run in random directions?
+Well, the reason this is useful is that if you pre-train the policy in this way and then put it in an environment like this hallway, where it has to fine-tune to run in a single particular direction, the policy that has been pre-trained with soft Q-learning can fine-tune much faster.
+So initially, the DDPG policy runs in a specific but incorrect direction.
+The soft Q-learning policy runs in a random direction on every axis.
+So if you pre-train the policy in this way, then you can run in a specific but incorrect direction.
+So if you pre-train the policy in this way, then you can run in a specific but incorrect direction on every axis.
+With a little bit of fine-tuning, the soft Q-learning policy essentially needs to learn not to run in the incorrect directions and retain only the correct one.
+Whereas the DDPG policy has to unlearn how to run in the wrong direction and then relearn how to run in the correct one, which means that it's going to fine-tune much, much more slowly.
+And of course we see this quantitatively here.
+The blue line shows fine-tuning from soft Q-learning.
+The green line shows fine-tuning from the deterministic DDPG policy.
+The green line shows fine-tuning from the deterministic DDPG policy.
+The green line shows fine-tuning from the deterministic DDPG policy.
+Now, besides producing hilarious explosions of spiders for Halloween and enabling better fine-tuning, the framework of soft optimality can also simply lead to more performant, more effective, reinforced learning algorithms.
+In fact, one of the most widely used off-policy continuous control algorithms today is something called soft actor critic, which is based on the principle of soft optimality.
+Soft actor critic is essentially the actor critic counterpart of soft Q-learning.
+Soft actor critic is essentially the actor critic counterpart of soft Q-learning.
+So in soft actor critic, there's a Q-function update, but it's not a softmax, it's actually trying to learn the Q-function for a given policy.
+You can think of this as basically message passing in the variational family.
+And it looks exactly the same as the regular actor critic Q-function update with the addition of this minus log pi term to account for entropy.
+And then the policy update is just like that policy gradient objective that I showed before, but using this Q-function.
+And because this algorithm uses a Q-function, it can learn from off-policy data.
+And then of course, every time it updates the Q-function and it updates the policy, it interacts with the world and collects more data to add to its replay buffer.
+So you can think of this, of step one, as in the parlance of RL updating the Q-function, but in the parlance of variational inference, it's doing inference in the graphical model corresponding to the variational family to do message passing.
+And then the update to the policy fits the variational distribution to be a better approximation to the approximate posterior from the original graphical model.
+So the justification for the algorithm is somewhat involved in terms of variational inference, but the practical instantiation is actually very simple.
+It's an off-policy algorithm involving a Q-function where we subtract the entropy from future Q-values.
+This algorithm turns out to work very well.
+This is a video of a Sawyer robotic arm learning a Lego block stacking task.
+It is actually learning directly in the real world.
+What's interesting about this experiment is not just that it learns to stack the Lego block, but actually that once learning is completed, you can actually go in and perturb the robot.
+And because it learned to perform the task in a wide variety of different ways because of that entropy term, it actually remains quite robust.
+So it can respond to the perturbation, recover, and still stack the Lego block.
+So it's very robust at this task.
+Thomas Harnoy also ran some really interesting experiments to use this algorithm to learn some locomotion tasks.
+So here, this is called the Minotaur robot.
+It learned to walk forward directly in the real world using soft actor critic.
+So initially, it just kind of moves around randomly.
+But after a fair bit of training, it can actually figure out a pretty decent forward gait.
+So this is sped up 5x.
+But now we're going to fast forward a little bit.
+At 18 minutes, you can see it has like kind of a gradual crawl where it's able to move forward, but only a little bit.
+At 36 minutes, sometimes it falls, but sometimes it moves forward quite a bit faster.
+It's kind of skittering a little bit, kind of like a cockroach.
+And then at 54 minutes, it has a pretty nice and reliable gait.
+And of course, as before, the gait has a degree of robustness.
+So we can put it on flat ground and it can sort of demonstrate what it learned.
+We can also put some obstacles in front of it and see how it reacts.
+So the robot, of course, was not trained on slopes.
+But when it's put on a slope, it actually reacts somewhat intelligently.
+Here it's walking downstairs.
+It can't quite walk up the stairs, but it can walk down the stairs reliably.
+And it can also play Jenga, but very badly.
+All right.
+So that concludes the lecture.
+If you're interested in learning more about control as inference and soft optimality, here are some suggested readings.
+Much of the material that I discussed today is derived from a body of previous work on something called Linearly Solvable Markov Decision Problems.
+So if you're interested in that, check out some of the work by Emmanuel Todorov on this topic.
+Emmanuel Todorov's group also pioneered research into how soft optimality provides a plausible explanation for motor control in humans.
+Bert Kampen is a researcher at the University of New York.
+Bert Kampen is another researcher that has done a lot of foundational work in this area.
+So if you're interested in that, check out the paper Optimal Control as a Graphical Model Inference Problem.
+And of course, Brian Zebart was one of the pioneers in this area, particularly in application of this principle to inverse reinforcement learning, which we'll talk about a lot more on Wednesday.
+Another kind of interesting paper on this topic is this paper by Rolick et al.
+that uses similar mathematical tools to develop a kind of iterative actor-critic style method.
+And then, of course, there are the more recent papers, Soft Q-Learning.
+This is a paper that also uses a very similar framework for an actor-critic style approach.
+This paper additionally also discusses the relationship between policy gradients and Q-Learning.
+And this is the Soft Actor-Critic paper that describes what is now one of the most widely used off-policy continuous reinforcement learning methods based on the principle of soft optimality.
+And then if you want kind of a tutorial or survey overview, I actually wrote a tutorial on this.
+I actually wrote a tutorial on this topic in 2018, which you can check out if you want to get a more complete coverage of the literature.

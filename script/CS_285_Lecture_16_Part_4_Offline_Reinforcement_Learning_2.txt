@@ -1,0 +1,165 @@
+In the last part of today's lecture, I'm going to conclude my discussion of offline RL with a brief summary, some discussion of applications, and some discussion of open questions.
+So the first question that I'll talk about here as part of the summary is maybe something that some of you already have on your mind, which is, well, I talked about lots of algorithms.
+Which offline RL algorithm should you actually use?
+Here is a rough back-of-the-envelope kind of rule of thumb.
+Of course, this is not the final word on anything, and your mileage may vary, but if I were to try to approach some new offline RL problem, here is the decision tree that I would use.
+If you want to train only offline, meaning that you're not going to do online fine-tuning, conservative Q-learning is a good choice because it has just one hyperparameter, and it's well understood and widely tested.
+And there has been extensive...
+...verification in many different papers showing that conservative Q-learning does work decently well in pure offline mode.
+Implicit Q-learning is also a good choice.
+It's a bit more flexible because it also works well for both offline and online, but it has more hyperparameters.
+If you want to only train offline and then fine-tune online, then advantage-weighted actual critic is a good choice.
+It's widely used and well tested in exactly this regime.
+Conservative Q-learning is actually not a good choice because conservative Q-learning, while it works very well offline, it doesn't fine-tune very well because it tends to be too conservative.
+Implicit Q-learning is a good choice for offline training followed by online fine-tuning.
+Empirically, that seems to work pretty well.
+And it actually seems to perform better than advantage-weighted actual critic, although it hasn't been around for as long and it's not as widely validated.
+If you have a good way to train models in your domain, then you can opt for a model-based offline RL method.
+Now, this is rather domain-dependent.
+So basically, depending on the particular model, you can train models in your domain.
+And depending on the particular dynamics that you have, it may be easy to train a good model or it may be very hard.
+But if you're pretty confident that you can train a good model, combo is a good choice.
+It's one of the best performing current offline model-based RL methods.
+It has similar properties as CQL, but it benefits from models.
+So you can think of combo as basically CQL but with models.
+But it's not always easy to train a good model in your domain.
+So you need to first check that you can actually get good models.
+Trajectory transformer can be a good choice because it has very powerful and effective models.
+The downsides are that it's extremely computationally expensive to train and evaluate.
+And because it's not learning a policy, there's still some limitations on horizon.
+So if you have very long horizon, a method that is more dyna-like that benefits from dynamic programming may still be better.
+So this is kind of the rule of thumb that I would suggest.
+Now, offline RL is a very rapidly evolving field.
+And it could be that by next year, some of these will change.
+Maybe new methods will come out or something better will be understood about current methods.
+But this is roughly what we're looking for.
+And this looks like as of when I recorded this lecture, which is in late 2021.
+Now, next, what I want to talk about is a little discussion of applications and a little discussion of why offline RL can be a very powerful framework for getting reinforcement learning to really work in the real world.
+Now, oftentimes you will do reinforcement learning with simulation, in which case you basically don't have to worry about this.
+If you are blessed enough to have a good simulator, doing all of this, you're going to be able to do it.
+And that's what I'm talking about.
+If you're blessed enough to have a good simulator, doing online RL is perfectly fine.
+But if you want to actually do reinforcement learning directly in the real world, if you want to use online RL, this is what your process might look like.
+Step one is you might instrument the task so that you can run RL.
+So you probably need some safety mechanism.
+You know, whether you're doing robotics or algorithmic trading, you need something to make sure that your exploration policy doesn't do crazy stuff.
+You may need to put some work into autonomous collection.
+So especially in robotics, you know, maybe you try a task that you need to try it again.
+So you need to reset between trials.
+You need to take care to design rewards.
+For offline RL, you can just label the rewards in the data set.
+You can, for example, crowdsource it.
+But for online RL, you really need an automated reward function, which means you need to write some code or train some model to do this.
+Then you would wait a long time for RL to run.
+And this can be a rather manual process because you might need some kind of safety monitor.
+And then you would change something about your algorithm in some small way to improve it and then do this all over again.
+So the iteration is very slow.
+Because each time you change something, you have to rerun the whole process.
+And when you're done, you throw it all in the garbage to start over for the next task.
+So if you trained a robot to, you know, make a cup of coffee and now you want it to make a cup of tea, typically you would throw this all out and start all over.
+With offline RL, you would collect your initial data set, which would come from a wide range of different sources.
+It could be human data, scripted controllers.
+It could come from some baseline policy or even a combination of all of the above.
+And then you would run it over again.
+You might still need to design a reward function, but you could also have humans just label the reward because you only need the reward on your training data.
+Then you would train your policy with offline RL.
+And then you might change the algorithm in some small way.
+But if you change the algorithm, you don't need to recollect your data.
+So this process becomes a lot more lightweight.
+You might choose to collect more data and add it to a growing data set.
+But again, you don't need to recollect the data from scratch.
+So anything you collect, you add to your data set.
+You append it.
+You aggregate it.
+And then you just keep reusing it.
+Now, for full disclosure, you will periodically need to run your policy online, mostly to see how well it's doing.
+But that's a lot less onerous than doing training online.
+And then if you have another project that you want to do in the future in a similar domain, you can keep your data set around and reuse it again.
+So if you really need to do real world RL training, if you don't have a simulator, the offline process can be a lot more practical.
+And I'll illustrate this with a few examples.
+So this is from some of my own research with colleagues at Google and also some folks at UC Berkeley.
+So this is kind of the fun video research portion of the lecture.
+This is not really like key material that you have to know.
+It's more just some examples and some fun videos to hopefully keep you entertained.
+So as I mentioned in the lecture on Monday, in 2018, we had this large project on RL.
+This is a project on real world reinforcement learning with Q-learning for robotic grasping.
+And more recently, in 2021, we extended this system.
+This is also some work that was done at Google to handle multiple tasks.
+The multitask part is not that important, but just to give you an idea of what was involved, there were 12 different tasks, several thousand different objects and months of data collection.
+So this is a really big manual effort to get lots of data collected with lots of robots.
+But once we did that, we had a hypothesis.
+The particular hypothesis is not that important for this lecture, but just to give you a sense for the process.
+So the hypothesis we had was, could we learn these tasks, these 12 tasks, without actually using rewards at all, just by using goal conditioned reinforcement learning?
+So the idea here is instead of giving the robot ground truth reward functions for which task it's doing, we just give it a goal image and we assign rewards automatically based on how similar the final state it reaches is to that goal image.
+That's just a hypothesis we had.
+It's a robotic centric hypothesis.
+It's not really a real one.
+It's not really about offline RL per se.
+But then what we did is instead of collecting all new data, we just reused the same data that we already had for these 12 different tasks, but trained a policy with goals instead of ground truth reward functions.
+And we could actually evaluate our hypothesis without any new data collection whatsoever.
+So this is that goal conditioned policy.
+The goal is shown in the lower right hand corner.
+And you can see that the robot does kind of a decent job.
+These grasping tasks are fairly simple.
+So here it's the goal image just has it holding an object and it figures out that means it has to go and pick it up.
+But we can also do some rearrangement tasks.
+So that's going to come next.
+So in this rearrangement tasks, the goal image has the carrot lying on the plate and then the robot figures out that means it needs to pick up the carrot and move it to the plate.
+So here there's no reward function at all.
+The task is defined entirely using a goal image.
+Well, there's no hand designed reward function.
+So it's just an automated reward function for reaching the goal.
+The method is very similar to conservative Q learning, just adapted to goal reaching.
+And one fun thing you can do with this is you can actually use it as an unsupervised pre-training objective.
+So kind of in the same way that you might pre-train with a language model in NLP and then fine tune it to a task.
+You can pre-train this goal conditioned thing on a large data set and then fine tune it with a task reward.
+And that leads to some pretty substantial improvements.
+So that's kind of nice.
+You can verify a new hypothesis in this case about goal conditioned RL without collecting any new data.
+But you can test it directly in the real world.
+Here's another robotics example.
+So in 2020, Gregory Kahn, who's a PhD student here at Berkeley at the time, collected a data set of about 40 hours of off-road navigation using a small ground robot in early 2020.
+In late 2020, Dhruv Shah, another PhD student, used the same data to build a goal conditioned navigation system that could do things like deliver mail or deliver a pizza.
+And he didn't need to collect any new data to do this.
+He could just reuse it.
+He could use the same data with offline RL.
+And in early 2021, Dhruv could use the same data set to train a policy that would learn to search for particular goals in an environment.
+The techniques used in this work were a little different than the algorithms that I covered in this lecture.
+But the basic principle that offline RL could let you test out these hypotheses very quickly in the real world without additional real world data collection, in my opinion, kind of illustrates one of the benefits of using this for kind of rapidly testing out new algorithmic ideas while sticking to real data without having to rely entirely on simulation.
+All right.
+Now let me talk about some takeaways, some conclusions, and also maybe some future directions.
+So the dream in offline RL is you could collect a data set using any policy or mixture of policies, and then you could run offline RL on this data set to learn a policy and then just deploy directly in the real world for medical diagnosis, for algorithmic trading, for logistics, driving, what have you.
+And then there's current RL algorithms.
+And there's still a gap there.
+But there's still a gap there.
+So here are a few things.
+And this is, you know, partly this is for you guys to think about project ideas, also to think about open problems.
+One of the open problems is workflows.
+So if you're doing supervised learning, you have a training validation test split.
+So you have pretty good confidence that if you train your policy on a training set and it does well according to a validation set, then it will probably do well in the real world.
+So, you know, in supervised learning, you typically don't even need to deploy your policy in the real environment.
+You can get a pretty good sense for how well you expect it to do just from your validation set or test set.
+What's the equivalent of that in offline RL?
+These days in offline RL, if you want to learn how well your policy is doing in the real world, if you want to understand how well it's doing in the real world, you would actually deploy it and run it.
+So the training is offline, but the evaluation is still online.
+And that can be costly or even dangerous.
+There is some work on this.
+We have actually some of my students have a paper on this called The Workbook.
+And it's a really good paper.
+It's called The Workflow for Offline Model-Free Robotic Reinforcement Learning.
+But there's still a big gap in understanding that.
+There's still a lot of theory that's missing.
+There's still a lot of basic understanding of how we should structure our offline RL workflows without requiring online evaluation that needs a lot of work.
+Classic techniques like off-policy evaluation, OPE, also get at this point.
+But OPE methods themselves require hyperparameter tuning, which in turn also often requires online evaluation.
+So it's a big open problem.
+Statistical guarantees are a big problem in offline RL.
+So there are a lot of bounds and results involving distributional shift, but they tend to be pretty loose and incomplete.
+And then, of course, scalable methods and large-scale applications.
+So in principle, offline RL can be applied to a wide range of settings.
+In practice, it still hasn't been applied that widely.
+And I think better understanding of the real limitations and constraints of real-world applications is really important to push us in the right direction.
+So I've talked about some examples in robotics.
+But there are a lot of things that we can do.
+I don't want to go into too much detail on this.
+But there are a lot of things outside of robotics these things could be applied to and a lot of open questions as to what goes wrong when we do that.

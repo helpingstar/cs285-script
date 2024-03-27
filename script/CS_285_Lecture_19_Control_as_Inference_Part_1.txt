@@ -1,0 +1,210 @@
+All right, welcome to Lecture 19 of CS285.
+In today's lecture, we're going to talk about how we can reframe the control problem as an inference problem.
+And we'll actually see some of the ideas from the variational inference lectures last week come up in today's lecture as ways to actually solve reinforcement learning problems once they've been reframed as inference problems.
+So in today's lecture, we're going to discuss the following questions.
+Does reinforcement learning and optimal control provide a reasonable model of human behavior?
+Is there perhaps a better explanation than the conventional notion of optimality that we've seen so far?
+And can we derive optimal control, reinforcement learning, and planning as probabilistic inference?
+And if so, in what model are we doing that inference?
+And how does this change our reinforcement learning algorithms?
+Do we actually derive better algorithms based on this foundation?
+And then in the next lecture, we're going to talk about how we can actually derive optimal control and planning as probabilistic inference.
+And in the next lecture, we'll see how these ideas are actually crucial for inverse reinforcement learning methods, which attempt to recover reward functions from observing near-optimal human behavior.
+So the goals for today's lecture will be to understand the connection between inference and control, understand how specific RL algorithms can be instantiated in this framework, and understand why this might actually be a good idea.
+So let's start with the discussion of how we might model human behavior, right?
+We know that, you know, there's a lot of things that we can do to model human behavior.
+And, you know, humans sometimes do goal-directed things.
+And we can argue over how rational humans are, but I think it's reasonable to say that, you know, some portion of what humans do is goal-directed and intentional.
+And, you know, people have studied this going back, you know, over 100 years, studying how notions of optimality can best represent human behavior, ranging from the lowest level primitive behavior, like how we walk and how we navigate to places and how we reach for locations, all the way to higher level concepts like how do we plan a route to navigate a city.
+And it's fairly reasonable to think that if humans are being rational, intelligent beings, then we should perform our tasks from the lowest level motor control to the highest level cognitive skills in ways that reflect some notion of optimality, that there is some utility function with respect to which we are near-optimal.
+Indeed, we can do that.
+We can do that.
+One of the ways to define rationality is by saying that a rational decision-maker is one whose behavior can be expressed with well-defined utilities.
+So we could say, well, we have this nice framework to think about optimal decision-making that we learned about when we discussed reinforcement learning and optimal control.
+Can we use this framework to try to understand human behavior?
+One of the things we could do, for instance, is we could say, well, we could say, well, we can do this.
+We can do this.
+We can do this.
+Well, let's assume that a person or an animal is behaving in a way that is optimal, that they're a rational decision-maker.
+Can we figure out with respect to which reward function are they optimal?
+That's actually what we're going to discuss for Wednesday's lecture on inverse reinforcement learning.
+So we could do this in the deterministic setting.
+You could do it in the stochastic setting.
+So before, we talked about settings where you know the reward function.
+We talked about the reward function.
+We talked about the reward function.
+We talked about the reward function.
+We talked about the reward function.
+You'd like to recover a policy.
+Now, we might think that we're observing a person.
+We're observing their policy.
+And we'd like to find a suitable reward function to explain the data, to explain the behavior that we observed.
+So this is a very tempting idea if we're studying human-animal behavior because the principle of optimality provides a really powerful tool to understand why somebody might do something.
+And if you can explain their behavior with a simple and compact objective function, then you can predict what they will do in other situations.
+This is, of course, very intuitive.
+If you know what somebody wants, then you can much more effectively predict what they will do.
+All right.
+So imagine yourself in the role of a scientist, and you'd like to think about how optimal control and reinforcement learning explain behavior, let's say, with animals.
+So you're going to get a monkey.
+And you're going to get this monkey to perform some tasks.
+And you're going to get this monkey to perform some tasks.
+And you're going to get this monkey to perform some tasks.
+And you're going to get this monkey to perform some tasks.
+And you're going to get this monkey to perform some tasks.
+And you want to understand its objective function.
+So one of the ways you might do this is you might pick a task where the objective function is known.
+Maybe the monkey has to move a lever so that a particular dot on the screen matches with another dot.
+And then the monkey gets a reward if it does that right.
+Now you might say, well, I know the reward function.
+So if optimal behavior is a good explanation of animal behavior, then I would expect the monkey to be able to do that.
+But the monkey has to behave similarly to an optimal controller or a reinforcement learning algorithm.
+So let's say the monkey has to move from this orange circle to this red cross.
+And the optimal trajectory is this one.
+And the researcher runs the experiment and finds that the monkey is a pretty good monkey.
+Like, it usually gets to the red cross.
+But it does so in a variety of different ways.
+So it doesn't always go for a straight line.
+Maybe one day the monkey is feeling a bit lazy.
+But it still gets to the destination and still gets the reward.
+So what's going on?
+Is it just that the monkey is kind of stupid?
+Like maybe a really smart person would be more accurate, but the monkey is just not very accurate.
+Or is there something else going on?
+Well, it turns out that, unsurprisingly, monkeys and humans are usually not perfectly optimal.
+We usually make mistakes.
+But crucially, those mistakes are not optimal.
+So what's going on?
+We've started training the hungry feature.
+They have complex rules.
+And yes, they learn better but they can't give good answers right away.
+of understanding that something matters less and therefore can be done less perfectly.
+So some mistakes matter more than others and it turns out that taking this into account appropriately is critical for developing models that explain intelligent behavior in humans and animals and also turns out to be a tool that will allow us to build better reinforcement learning algorithms and later on to build inverse reinforcement learning algorithms.
+Natural behavior in humans and animals is, you know, up to a first-order approximation, stochastic, meaning that faced with the same situation twice, the monkey won't do exactly the same thing.
+Now again, we might argue as to whether it's truly random or whether it's simply affected by a plethora of other external and internal factors that are not accounted for in the experiment, like for instance maybe the monkey is hungry, maybe its finger itches, maybe it's just a little more tired, maybe it's just a little more tired, maybe it's just a little more tired, maybe it's just a little more tired, maybe it got distracted and accidentally swerved the joystick a little to the left, but we could up to first-order approximation think of these effects as being random.
+But good behavior is still the most likely, so while the monkey might accommodate some moderate mistakes, it'll still make sure it reaches the goal because that's what gets it that reward that it wants so much.
+So if we believe that the behavior of natural rational decision makers is stochastic, then we need a probabilistic model of near optimal behavior.
+And the existing models that we've had don't really do this.
+They don't really tell us why we might choose to be random and not optimal.
+In fact, for both the deterministic and stochastic formulations of optimal control and reinforcement learning, we can actually prove that in all fully observed settings there exists deterministic and stochastic decision-making, policies that are optimal.
+Indeed, this would be true for any objective that is linear in the state action marginals.
+So anything that can be expressed as an expected value under the state action distribution of some reward that doesn't depend on the policy will admit a deterministic policy as a solution.
+So clearly this framework cannot explain random behavior as rational.
+So we need a kind of a different notion of rationality.
+When we want to represent stochastic events, a very powerful tool that we often turn to is the tool of probabilistic graphical models.
+So that's what we're going to do in today's lecture.
+We're actually going to draw a probabilistic graphical model such that inference in that model results in near-optimal behavior.
+And crucially this near-optimal behavior will not always be the same as the probabilistic behavior that we're going to use in the next lecture.
+So we're going to draw a solution from reinforcement learning and optimal control, but it will be quite similar.
+It will look very much like the suboptimal monkey behavior that we saw in the previous slide, where the agent will, all else being equal, attempt to accomplish the task, but for the aspects of the task that matter less, that affect the reward very little, the agent would prefer to do those largely at random.
+All right.
+So in thinking how to draw a graphical model for a decision making and control, we of course have to include the usual variables that we see in an MDP, namely the states and the actions.
+And we already know how the states and actions relate to one another.
+For now, we'll stick to fully observed settings.
+So we could also add observations to this picture, but we won't bother with that for now just to avoid cluttering up the notation.
+What we do, however, need to add is some additional variables that represent the task, that represent why the agent may choose to take one action or another.
+And so far we have the transition probabilities, P of s prime given s comma a.
+And our goal will be to model joint distributions over trajectories, so P of s1 through t and a1 through t.
+That's our trajectory tau.
+So what can we set this probability to?
+Well, if all we have is the CPDs in the MDP, the transition probabilities and the initial state distribution, there's no assumption of optimal behavior.
+So we have to add something else to represent why you might choose to take a more optimal action over a less optimal action.
+And we'll call these optimality variables, and I'll denote them as script O.
+These optimality variables are observed.
+You know that the monkey is trying to perform the task.
+If you didn't know that, then you would make a different inference about its behavior.
+So we can use the same logic to make the same logic for the other two.
+So we have a very specific answer to the option, and the answer to that is an expression, and we can use that expression to get the optimal behavior.
+Now we're going to make a slightly weird modeling choice, but later on we'll see that that modeling choice actually leads to a very convenient and elegant mathematical formulation.
+The modeling choice we will make is that these variables are binary.
+You can think of them as basically true or false variables saying, is the monkey trying to be optimal at this point in time?
+and all of them are set to true.
+So then the inference problem we need to solve is what is the probability of a trajectory given that all of the optimality variables from time 1 to capital T are true.
+Or we might want to make this inference condition on an initial state.
+So we could either do P of tau given O1 through T or P of tau given O1 through T comma S1.
+And the particular form of the distribution that we will choose for P of OT given ST comma AT is that we will set the probability that OT is equal to true to be the exponential of the reward at ST comma AT.
+Now this again is going to seem like a somewhat arbitrary decision and we will see later that the seemingly arbitrary decision actually leads to a very convenient and elegant mathematical framework.
+But for now, we will just go ahead and do the same thing over and over again.
+So we will just have to take it as a given.
+So let's just give this a shot, set this to be the probability and see where that leads us with the math.
+Now there is a technical condition we need in order to make this statement, which is that we need the rewards to all be negative.
+Because the probability of a discrete, in this case Bernoulli random variable, has to be less than one and the exponential of any positive number is going to be greater than one.
+So we need the rewards to all be negative.
+But fortunately, optimal behavior is invariant to additive factors in the reward.
+So if the reward is not negative, you can simply construct an equivalent decision-making problem with a reward equal to the old one minus the maximum possible reward.
+So essentially, saying that the reward is always negative just means you subtracted the maximum, which means all of the remaining rewards are negative.
+So that's not actually a limitation.
+We can do this without any loss of generality, as long as the rewards are bounded.
+If the rewards are unbounded, of course, this is impossible.
+So you can get infinite reward.
+Then that doesn't work.
+But I don't know how to deal with infinite reward anyway.
+So that's not much of a limitation either.
+All right.
+So now we've defined a probabilistic graphical model.
+It has dynamics.
+It has rewards.
+It seems like we can do Bayes' rule-style crunching and get out some distribution and see if the equation for that distribution is actually reasonable.
+So I'll plug in the definition of conditional probability to write p of tau given O1 through t as p of tau comma O1 through t divided by p of O1 through t.
+And then I can plug in all of the CPDs into this.
+I'll just ignore the denominator because I'm only interested in probability trajectory.
+So I'll write that this is proportional to.
+And what it's proportional to is the probability of the product.
+So I'll write that this is proportional to the product.
+And what it's proportional to is the product.
+So I'll write that this is proportional to the of all of our CPDs, which I'll write as the probability of tau, which just accounts for the dynamics and initial state, times the product of all of these Bernoulli random variable probabilities from time step 1 until t, which basically means we take the product of p and all of the exponential rewards over all the time steps.
+Okay, that seems fairly sensible.
+Now we know that a product of exponentials is the exponential of the sum of the exponents, so we're going to equivalently write it in a way that is maybe a little bit more suggestive of what this thing is doing, as p of tau times the exponential of the sum of rewards along that trajectory.
+Now this should immediately give us some fairly appealing intuition for what this framework is doing.
+For instance, imagine that the dynamics are deterministic, which means that p of tau is basically just an indicator variable.
+It's 1 if tau is a physically consistent trajectory and 0 otherwise.
+In that special case, we will see that the most likely trajectory is the one with the highest reward.
+However, trajectories that are suboptimal still have a non-zero probability which decreases exponentially as their reward decreases.
+And that actually seems fairly intuitive.
+It basically means that the monkey, given multiple different choices that all have equal reward, will choose among them randomly.
+But if there is a choice that has much lower reward, it is exponentially less likely to choose it.
+So the reason that it might deviate from the straight-line trajectory when reaching for the goal is because the reward that it gets for reaching the goal in any other way is about the same.
+Maybe it's a little bit lower because it takes longer, so because of its discount, it gets hungrier, but mostly it's about the same, whereas failing to reach the goal leads to a much, much worse reward, and therefore it's not going to do that.
+So this intuitively seems to explain the kind of behavior that we saw in the previous slide.
+We essentially construct a probabilistic model where the most optimal trajectory is the most likely, but suboptimal trajectories can also happen, just with probability that decreases exponentially as their reward decreases.
+Alright, so why is all this interesting?
+I mean, you know, if we want to model monkeys, of course this is probably interesting to you.
+But what if you don't care about monkeys?
+Well, the ability to represent suboptimal behavior as being approximately optimal under some relaxed notion of optimality is generally very very important for understanding the behavior of suboptimal agents and also for imitation learning.
+If you want to figure out what reward function a huge number of monkeys usually contains, the most annoying thing to liquidate is the loss of and moderate reward.
+So if you turn off probability, these are the подумative clash Erfahrrol—whose organizational depth notion, the Leaving ant tuition mod yoga, and other functional expectations are simply unique and unconscious.
+a human is trying to demonstrate to you, you have to account for the fact that they're not going to do it perfectly.
+And that turns out to be very important for inverse reinforcement learning, as we'll discuss for Wednesday's lecture.
+You can also apply inference algorithms to solve control and planning problems based on this framework.
+So because we drew a probabilistic graphical model where inference corresponds to solving the control problem, it means that we can bring to bear a wide array of inference methods to actually solve control and planning problems.
+And that turns out to be a fairly powerful idea.
+And lastly, this provides an explanation for why stochastic behavior might be preferred, even if deterministic behavior is possible.
+And this turns out to be quite useful for things like exploration and transfer learning.
+The reason that this is useful for exploration and transfer learning is because it's a very useful tool for learning.
+And it's also a very useful tool for learning learning.
+And it's also a very useful tool for learning.
+And it's also a very useful tool for learning.
+And it's also a very useful tool for learning.
+And it's also a very useful tool for learning.
+is that if you perform a task in multiple different ways, then you're more likely to transfer to new settings where the task now needs to be performed a little bit differently.
+All right.
+So for the bulk of today's lecture, we're actually going to talk about how we can perform this inference problem.
+And we'll see that applying both exact and approximate inference to this graphical model leads to algorithms that bear a lot of resemblance to the reinforcement learning algorithms we've already learned about.
+So how do we do inference in this model?
+Well, there are three operations that we need to know about.
+The first operation that we're going to need is how to compute backward messages.
+So if you've studied hidden Markov models, or common filters, or you've heard of variable elimination, then you probably already have some thoughts about how inference in this model needs to be done.
+It's a chain-structured dynamical Bayes net, and that means that it should be very useful for knowledge.
+And it's also very amenable to inference by message passing.
+Message passing being, of course, a particular instance of variable elimination.
+So there are two kinds of messages that we want to compute in a graph like this, very much like you would in HMM or common filtering.
+The first message is a backward message.
+The backward message tells you what is the probability of being optimal now until the end of the trajectory, given the state of action that you are in.
+And we'll call these backward messages beta.
+It turns out that using beta, you can actually recover the policy.
+So the policy is the probability of an action at time step t, given the state of time step t, and given the evidence that the entire trajectory from 1 to capital T is optimal.
+This is the stochastic optimal policy in this graphical model, and it turns out that if you can calculate backward messages, you can calculate the policy.
+A third operation that turns out to be very useful, especially when we deal with inverse reinforcement learning, is to compute what are called forward messages.
+Forward messages are kind of the backward analog of backward messages.
+A forward message says, what's the probability of landing in a particular state s , if you are optimal through time step t minus 1?
+If we put together backward messages and forward messages, we can actually recover state occupancies, which are not technically necessary to recover the optimal policy, but they are necessary to do inverse reinforcement learning.
+So we'll learn how to calculate these three things in the next part of today's lecture.

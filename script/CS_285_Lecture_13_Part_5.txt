@@ -1,0 +1,66 @@
+All right, next I'm going to discuss algorithms for exploration in DeepRL that draw on the ideas from posterior sampling or Thomson sampling that I've discussed before.
+So as a reminder, Thomson sampling or posterior sampling in a bandit setting refers to the case where we actually estimate a model of our bandit.
+So if the theta is parametrized, the distribution over the bandit's rewards, we would actually maintain a belief over theta.
+And then at each step of exploration, we would sample the thetas based on our beliefs and take the action that is the argmax of the bandit described by that corresponding model.
+So in the DeepRL setting, we could ask, well, what is it that we should sample and how do we represent the distribution?
+So in the bandit setting, there isn't really a choice to be made.
+The only thing that's unknown is the model of the rewards.
+And then, you know, that model is pretty simple, so it's not too hard to represent.
+In the DeepRL setting, this is, of course, a lot more complicated.
+So in the bandit setting, p hat theta 1 through theta n is a distribution of rewards.
+The analog in MDPs would be a Q function, because in a bandit, the instantaneous reward is basically all you need to know, so you can choose your action as the argmax of the reward.
+In MDP, we don't choose our action as the argmax of the reward.
+We choose the action as the argmax of the Q function.
+So the way that we could adapt...
+adopt posterior sampling or Thomson sampling, and this is not the only way, but this is one particularly simple way, is to sample a Q function from a distribution over Q functions, and then act according to that Q function for one episode, and then update your Q function distribution.
+And then repeat.
+Now, since the Q learning is off policy, we actually don't care which Q function was used to collect that episode.
+We can train all, you know, our whole distribution over Q functions, on the same data.
+So it's okay if we use a different exploration strategy or a different policy for every single rollout.
+How do we represent a distribution over functions?
+Well, one of the things we could do is we could think back to the model-based RL lectures, where we learned how we can represent distributions by using bootstrap ensembles, and essentially try the same thing.
+So given a data set D, we resample that data set with replacement n times, to get n data sets D1 through Dn, and then we train a separate model on each of those data sets, which basically means we train a separate Q function on each of those data sets.
+And then to sample from the posterior, we simply choose one of those models at random, and then use that model.
+So, here's a little illustration that shows uncertainty intervals estimated by these bootstrap neural nets.
+Now, of course, training n big neural nets is expensive.
+How can we avoid it?
+Well, we use again the same trick that we used in the model-based RL lectures, which is to not do the resampling with replacement, just use the same data set.
+And furthermore, one of the things we could do, and this is described in this paper at the bottom called Deep Exploration by Bootstrap DQN, is we can actually train one network with multiple heads.
+Now, that's not ideal, because now the outputs of those different heads will be correlated, but, in practice, they might be different enough to give us a little bit of variability for exploration.
+So this might not be a great way to estimate a very accurate posterior, but it might be good enough to ensure that each of those heads has slightly different behavior.
+By the way, for those of you that are not familiar with the deep learning terminology, when I say multiple heads, what I mean is all of the layers in the network are shared, except for the last layer.
+So there are multiple copies of the last layer, each of which we refer to as a different head.
+All right, so why does this work?
+Well, exploring with random actions, like, for example, by using something like Epsilon Greedy, results, one problem it results in, is that you kind of end up oscillating back and forth.
+And you might not go to a coherent or interesting place just through random oscillation.
+As an example, here's one of the kind of tricky Atari games, it's called Sequest, in Sequest you control the submarine and And for some reason what you're supposed to do is you're supposed to shoot the fish and like pick up the divers.
+Or maybe it's the other way around, I don't know, but something ecologically very unfriendly.
+But the submarine runs out of oxygen.
+So if it stays underwater too long, then you lose because you run out of air.
+So in order to play the game properly, what you're supposed to do is shoot all the fish, and then once the oxygen bar gets too low, then come back up and recover some air.
+The problem is that if you're exploring randomly, then once you're at the bottom of the ocean, it's extremely unlikely that you will randomly surface because that requires randomly pushing the up button many times.
+In fact, you're exponentially unlikely to resurface once you're at the bottom.
+And due to the mechanics of the game, it's actually a little bit easier to play if you go a little deeper down.
+So this makes surfacing for air very hard to discover through epsilon-greedy exploration.
+When you explore with random Q functions, you commit to a random surface, you commit to a random surface, you commit to a random surface, but you have to have a random but internally consistent strategy for an entire episode.
+So the Q functions might make slightly different conclusions.
+For example, one of the Q functions in your ensemble might decide that going deeper is good.
+Another one might decide that going up is good.
+And if you just randomly pick the one that decided that going up is good, then it will go up consistently, and you will actually surface for air.
+You won't surface for air on every episode, but it's more likely to happen for one of your random samples.
+So then you would get a strategy where you would actually go up.
+In the experiments in the paper, they do show that this bootstrap trick does actually help a fair bit on some games, although not others.
+It doesn't work very well on Montezuma's Revenge at all, for example.
+In general, this method doesn't work quite as well as good count-based exploration or pseudo-counts, but it has some major advantages.
+So it doesn't require any change to the original reward function.
+In fact, at convergence, you would expect that all of your Q functions in your ensemble would be pretty good, and you don't actually have to...
+tune any hyperparameters to trade off exploration and exploitation.
+So it's quite simple and convenient.
+It's a very unintrusive way to do exploration.
+Very good bonuses often do quite a bit better, though.
+So this is not the best exploration method.
+In practice, it's actually not used very much, simply because if you really have a difficult exploration problem, assigning bonuses will usually work better.
+But this is a fairly heavily studied class of exploration algorithms, and it's worth knowing about.
+So I hope you enjoyed this video.
+And I'll see you in the next one.
+Thanks for watching!

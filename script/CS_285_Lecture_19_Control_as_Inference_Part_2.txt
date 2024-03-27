@@ -1,0 +1,248 @@
+All right, let's talk about how we can actually solve this inference problem.
+So as we discussed in the previous part, there are really three inference problems that we're interested in in this control-as-inference graphical model.
+The first is to compute backward messages, which are the probability of optimality from little t to capital T given s, d, and a, t.
+The second one is to compute a policy, the probability of an action given a state and given that the entire trajectory is optimal.
+And that's what we're interested in if we want to solve the forward RL problem.
+And we'll see how this can be recovered more or less directly from the backward messages.
+And then the third one is to compute the forward messages, the probability of st given optimality at 1 through t minus 1.
+And this will be important later for inverse RL.
+So let's start with the backward messages.
+These are really the most important ones because if you can calculate these, then you can recover near optimal policies.
+And the way that we will derive the backward message is just with a bit of recursion and probability theory and a little bit of algebra.
+So first we can take this equation for the backward message and we can insert the next state st plus 1 and integrate it out.
+So the backward message is equal to the integral over all values of st plus 1 of p of o, t through big T, comma st plus 1 given s, d, a, t.
+And now what we'll do is we'll factorize this distribution using the CPF.
+And we'll use this to determine the order of the vectorization.
+So we'll do that by taking some of the TPFs that we have in our model and our goal on doing this factorization is to recover a recursive expression where we can represent beta t, st, a, t as some function of beta t plus 1 s plus 1.
+So in order to factorize this expression the thing that we have to note is that future optimality variables, namely o, t plus 1 through capital T, are independent of every everything in the past when conditioned on sd plus one.
+And we can see this just from inspection of the graphical model.
+And that means that we can factorize this expression into three parts.
+The first part is the probability of all of the optimality variables from t plus one until the end, given sd plus one.
+And we know that we don't have to condition this on st and at, because given st plus one, all of the future optimality variables are independent of st and at.
+Then we have the probability of st plus one, given st at.
+That's just the transition probability that we already know.
+And then we have the probability of the remaining optimality variable ot, given st at.
+And that just corresponds to the exponential rate of reward, because that's just one of the CBDs in our graphical model.
+So we know this thing.
+We know this thing, that's our transition probability.
+Although when we're doing RL, we might want to, compute backward messages without functional knowledge of this probability.
+For now, we'll assume that we know it.
+And that just leaves this remaining term.
+So the probability of optimality from t plus one to capital T given st plus one, can itself be written as the probability of optimality from t plus one to capital T, given st plus one and at plus one, times the probability of at plus one, given st plus one.
+Now this part, is simply the backward message of time step t plus one.
+So we've already gotten a little bit better.
+We've figured out something that's mostly a recursive expression, except it has this kind of weird term that we haven't defined yet.
+What's the probability of an action given a state?
+Now, crucially, this is not a policy.
+This is saying which actions are likely a priori, meaning if you don't know whether you're optimal or not, how likely are you to take a particular action?
+In general, if you don't know whether you're being optimal or not, you probably wouldn't know anything about which actions are more likely or less likely.
+So we could define this term, we could define an action prior, a P of a given s, but we'll assume that it's uniform for now.
+And this is a reasonable assumption for a couple of reasons.
+First, if you don't know anything about what the monkey is trying to do, then you probably can't say much about which action is more or less likely to perform.
+Second, and perhaps more mathematically, if you want to impose an action prior, it turns out that you can equivalently modify the reward function and keep a uniform action prior and get exactly the same solution.
+This result is a little more subtle, and I would leave it as an exercise to you guys to work this out on paper.
+But long story short, for now we'll assume that the action prior, P of a given s , is uniform.
+So we can say that the action prior, P of a given s, is uniform.
+Which means that it's a constant, which means that we can disregard it.
+Now, this does not mean that that policy is uniform, because remember our policy is the posterior distribution, a given s , through capital T.
+The action prior is just the probability of the action's a priori, before you know whether you're optimal or not.
+All right, so now that we've gotten rid of the action prior and we've expressed everything in terms of probabilities, we can now calculate the probability of optimality and the probability of optimality.
+So if we look at the probability of optimality in terms of transitions, probabilities of optimality, and recursively in terms of future backward messages, we can write down a recursive algorithm for computing the backward messages.
+It's a for loop that starts at the end of the trajectory and steps backward until the beginning.
+And at every time step from the end until the beginning, we calculate the backward message at time step T, multiplied by the expected value over s , of a quantity that I'm going to call beta s .
+Beta of s is a state backward message.
+So that's this equation, basically.
+And the state backward message is just the expected value of the state action backward message in expectation over the actions, distributed according to the uniform action part.
+So that's just this thing.
+And if we alternate these two steps, then we can recursively calculate the backward message all the way from the end to the beginning.
+The very last backward message, beta capital T, is just the last reward, because the probability of O capital T given s capital T comma a capital T is actually a CPD that is already present in your model.
+All right.
+Now let's take a closer look at this backward pass.
+So here's the recursive algorithm that I derived on the previous slide.
+And we're going to make some definitions with some very suggestive names that will help us understand this algorithm.
+First, we're going to define vt of st as the logarithm of beta t st.
+And then we'll define qt of st a t as the logarithm of beta t st a t.
+And now we can write these equations in log space.
+So if we write the equation for the state backward message in log space, then we get vt of st is equal to the logarithm of the integral of the exponentiated qt st a t.
+So that's kind of interesting.
+What a funny equation.
+At first, it doesn't seem like it's doing something particularly intuitive, but imagine that the values of qt are quite large.
+If you take the sum of the exponentials of a bunch of large values, then the largest of those values will dominate that sum, which means when you then take the logarithm, you will recover a number that is close to the largest among the values whose exponentials you summed up.
+In the extreme case, you could imagine that as the qt's become closer and closer to infinity, then the log of the sum of the exponentials becomes closer and closer to a max.
+So in fact, we can call this log of sum of exponentials a kind of a soft max.
+This is not the same as the soft max that we use as a loss function in deep learning.
+It is a soft relaxation of the max operator.
+So this expression for vt of st approaches the max over a of qt as qt gets bigger and bigger.
+So that's pretty interesting.
+We saw in reinforcement learning that the optimal value function is the max of the optimal q function.
+Now we see that in the inference perspective, the value function is the soft max of the q function, which kind of makes sense.
+We want to soften our notion of optimality so that slightly suboptimal things are still possible.
+Let's talk about the other expression.
+So if we write the other expression in log space, then we get the following equation.
+qt of st is equal to r of st plus the log of the expected value of the exponential of vt plus 1 at st plus 1.
+So that looks a lot like a Bellman backup because it has a reward and an expectation term, except that now you have this log around the expectation.
+Okay, so let's try to understand this equation a little bit better.
+There is a particular special case where it is exactly the same as the Bellman equation.
+Take a moment to think about what that special case would be.
+In which setting is the equation that I have on the right side of the slide exactly the same as the Bellman backup?
+Well, it turns out to be the case in the setting where the next state is a deterministic function of the current state in action.
+Because if the next state is a deterministic function of the current state in action, then the expected value only has one non-zero element in the sum, which means that the log and the exponent cancel out.
+So in the deterministic setting, it is exactly the Bellman equation.
+So we saw before how the value iteration algorithm alternates between computing the q function using the Bellman equation and computing the value function by taking a max.
+In the case of a deterministic transition, this expression for q is basically the same as the value function for the Bellman equation.
+In the case of a stochastic transition, you actually get a kind of optimistic transition.
+Notice that this is also a log sum x, which means that these target values will be dominated by the next state that has the largest value.
+So if you have the potential to get lucky, you will think that that is more likely.
+That is not actually a good idea, and we can actually improve our inference-based process by fixing this issue.
+But intuitively, the reason that this problem happens is because when we ask the question how likely are you to be optimal given a particular state of action, that doesn't distinguish between being optimal because you got lucky versus being optimal because you took the right action.
+We'll come back to this later and discuss the stochastic case in more detail on how to fix this problem.
+But for now, the thing I would note is that at least the deterministic case perfectly matches the classic notion of the stochastic case.
+So we can just use the same kind of value iteration we saw before, with the exception that we use a softmax instead of a hardmax.
+Alright, so just to summarize the backward pass, we have these backward messages beta t of st, a, t, which are equal to the probability of O little t through capital T given st, a, t.
+That's the probability that we can be optimal at steps little t through capital T given that we take action a, t in state st.
+And we can calculate this via recursion by repeating these two steps, computing the state action backward message as the expected value of the next state message times p of O given st, a, t, and computing the state backward message as the expected value of the state action backward message under the action distribution, which is uniform.
+So the log of beta t is kind of a Q-function-like object.
+And we can make this more apparent by setting vt to be log of beta t, st, and Qt to be log of beta t, st, a, t.
+Alright, let's discuss the action prior a little bit more, because I kind of brushed this under the rug a little bit, and this is something where I often get a lot of questions.
+So what if the action prior is not uniform?
+What if you believe the monkey is, maybe it's a lazy monkey, that even if it's not being optimal, it's more likely to take small actions than big actions?
+Well, if the action prior is not uniform, then our expression for v of st becomes a little bit more complex.
+Instead of being the log integral of the exponential to Q, now it's the log integral of the exponential to Q plus the log probability of the action given the state, where our Q is defined like this.
+So if we redefine Q to be a different quantity Q tilde, which is given by r plus log p, of a, t given st, plus the log expectation of the next value, then we get this expression that the corresponding value function is just the log of the integral of the exponentiated Q tilde.
+So this makes it apparent that if we simply add log p of a, t given st to the reward, and then do everything the same way we did before, as though the action prior was uniform, we'll recover exactly the right answer as we would have if we had properly accounted for a non-uniform action prior.
+And this is basically why we don't worry about the action prior, because we can always construct a different reward function that accounts for the action prior, and then treat it from there on out as though it was uniform.
+So that's why we basically don't worry about that term.
+We can always fold the action prior into the reward, and a uniform action prior can therefore be assumed without any loss of generality.
+All right.
+Next, let's talk about how we can recover the policy from the backward messages.
+So the policy is the probability of a, t given st, and given that the entire trajectory is optimal.
+So this is basically our near-optimal policy.
+Now, as before, we can note that past optimality variables are conditionally independent given the state.
+Which means that we can equivalently write this query as p given st, o .
+So basically, all of those optimality variables 1 through t minus 1 do not affect a, t, because they are de-separated by st.
+And this makes it maybe a little more obvious why we can recover the policy using only the backward messages.
+Because all of the variables that appear in this expression now were all present in the backward messages.
+So what we're going to do is we're going to write this conditional probability using the definition of conditional probability as p given o , divided by p given o .
+And then what we'll do is we will apply Bayes' rule to both the top and bottom.
+So it's a little weird because usually you think of applying Bayes' rule to one conditional distribution, but we're going to apply Bayes' rule at the same time to both the top and bottom.
+So we're going to apply Bayes' rule to both the numerator and the denominator.
+So Bayes' rule will allow us to flip the order.
+So our backward messages are o given a , and we want p given o , so Bayes' rule allows us to flip those.
+And that's what we see on the next slide.
+We apply Bayes' rule to both the numerator and the denominator, which means that we flip the order of things on the left and right side of the conditioning bar.
+We've introduced p divided by p .
+So we have o in the numerator, and p divided by p in the denominator.
+And now we're going to eliminate and remove some of these terms.
+So first, the denominator in Bayes' rule appears both on the top and bottom of the fraction, so that goes away.
+That simplifies very nicely.
+And that leaves us with these two expressions.
+Now remember that our backward message is o given sd .
+And our state backward message is o given st .
+So the first fraction in this expression is just the ratio of the state action backward message and the state backward message.
+The second ratio is just p given st, which is our action prior, which we've assumed to be uniform.
+So the second fraction goes away, because it's uniform, it's a constant, leaving us with just the first fraction.
+So that means that the optimum policy, pi of a given st, can simply be recovered as the ratio between the state action message and the state message.
+All right.
+Now, let's bring back this idea of expressing things in log space.
+So in log space, we saw that the logarithm of the state action backward message is kind of Q-like, and the logarithm of the state backward message is V-like.
+So we can see that the logarithm of the state action backward message is kind of Q-like, and the logarithm of the state action backward message is kind of V-like.
+So what if we plug those into the policy?
+If we plug these into the policy, then we get that pi of a given st is equal to the exponential of Q divided by the exponential of V, which is just the exponential of Q minus V, and Q minus V is an advantage-like function.
+So that's quite appealing.
+We're now able to express the policy, pi of a given st, as the exponential of the advantage st.
+which means your probability of taking an action is the Boltzmann distribution in this soft advantage-like function.
+Actions with higher advantage are more likely, the action with the largest advantage is the most likely, and actions become exponentially less likely as their advantage decreases.
+That seems like a fairly intuitive notion.
+All right.
+So to summarize policy computation, it's the exponential of the advantage, you could add in a temperature.
+So if you put in a one over alpha in front of the exponent, then you can smoothly interpolate between hard optimality and soft optimality.
+So as alpha goes to zero, then the policy becomes deterministic on the optimal action.
+As the alpha goes to one, then you recover the classic inference framework.
+So that gives you interpolation between standard hard optimality and the soft optimality that we learned about.
+Better actions are more probable.
+You get random tie-breaking.
+So if two actions have exactly the same advantage, you'll take them with equal value.
+And it's kind of analogous to Boltzmann exploration.
+And of course, this approaches the greedy policy as the temperature decreases.
+So if you take alpha down to zero, then you recover the standard greedy optimal policy.
+All right.
+So lastly, let's talk about forward messages.
+So the forward message is the probability of the state given optimality from one through t minus one.
+The way that we're going to calculate forward messages will be similar to how we calculated backward messages.
+We'll put in the previous time step variables, integrate them out, and recover a recursive procedure.
+So the two variables that I'm going to put in are st minus one and at minus one.
+So I get p of st, st minus one, at minus one, given o one through t minus one.
+Again, I'm going to factorize this expression into terms that I can figure out.
+So I'm going to factorize it into st given st minus one, comma at minus one, comma o one through t minus one.
+So that's just the first term.
+Then the third term, p of at minus one, given st minus one, comma o one through t minus one.
+And then the third term, p of st minus one, given o one through t minus one.
+So everything is conditioned o one through t minus one, and the rest is all chain rule.
+Now the first thing to note is the probability of st given st minus one, at minus one doesn't depend on o one through t minus one.
+That's just our transition probability.
+We already know that quantity.
+So this thing can be deleted.
+So we've collected it like this.
+We have three terms.
+The first one we know.
+The second and third are a little harder.
+So let's write the product of the second and third terms.
+The product of the second and third terms in this integral can be written by applying Bayes' rule to both expressions.
+And I'm going to apply Bayes' rule in a slightly funny way.
+So for the first expression, I'll do Bayes' rule to flip o t minus one and a t minus one.
+So I'll throw o t minus one on the left side and a t minus one on the right side.
+So that's the first fraction.
+When I do that, I get p of o t minus one given st minus one, a t minus one.
+I know what that is.
+That's just exponential reward.
+Then I get a t minus one given st minus one.
+That's my action prior.
+And then I get my denominator, o t minus one given st minus one.
+When I apply Bayes' rule to the second quantity, p of st minus one given o one through t minus one, what I'm going to do is I'm actually going to flip just the o t minus one part and flip that on the left side of the conditioning bar, put st minus one on the right side, but then I'll keep o one through t minus two on the right side of the conditioning bar.
+And when I do that, then I get p of o t minus one given st minus one, p of st minus one given o one through t minus two, and then a denominator which is p of o t minus one given o one through t minus two.
+So the reason I'm doing this trick is because now the denominator of the first fraction cancels with the o t minus one given st minus one part.
+So I can't just put the o t minus one term in the numerator of the second fraction.
+The action prior also goes away because that's a constant.
+This term in the numerator is just the backward message of the previous time step.
+And the backward message of the first time step is usually known.
+So now I'm left with only expressions that I know how to calculate up to a normalization constant.
+So that's how you can calculate the forward messages.
+Once we've calculated the forward messages, the next question we could ask is, well, what if we want to recover the state marginal?
+What if we want to recover the probability of a state given optimality everywhere from one through capital T?
+So in that case, now that we have both backward and forward messages, we can actually derive this equation pretty easily.
+So p of st given o one through capital T using the definition of conditional probability is p of st comma o one through capital T divided by p of st.
+So we can write p of st given st as the probability of st given st.
+Now we can factorize the numerator.
+And the way that we factorize the numerator is we're going to write it as p of o little t through capital T given st times the probability of st and all the other o's.
+And the reason we can do that is because we know that o through capital T is conditionally independent of past o's given st.
+Now here, the first one, the first term in the numerator is just the state backward message of st.
+So we can write this expression as following.
+We can write it as being proportional, if we disregard the denominator, to beta t st of p of st o one through t minus one times p of o one through t minus one.
+The second term is just the forward message.
+And the last term doesn't depend on st.
+So if we're willing to accept it in an unknown normalizing constant, we can simply disregard that.
+So then we're left with the probability of a state given o one through t is proportional to the backward message multiplied by the forward message.
+Very simple, very elegant.
+So that's how you can recover state marginals for the soft optimal policy.
+And this will become very important later when we talk about inverse reinforcement learning.
+So there's quite a lot of math here, but all of it is fairly straightforward algebra with a combination of probability theory, so if something here is unclear, what I would recommend you do is to download the slides from the course website and just go over the math on your own.
+Something that helps me when faced with equations like this is to write them down on a piece of paper and really work through them, because then everything becomes usually pretty clear.
+Alright.
+Let's think a little bit about the intuition behind this expression.
+One of the ways we can think about this way of computing state marginals, let's think back to the monkey case where you just want to go in a straight line from the start to the goal, is that the backward messages represent sort of a cone radiating outward from the end.
+So this cone kind of radiates like this, and the cone represents states from which you'll be able to reach the goal.
+So the further back you go, the more states there are from which you'll be able to reach the goal.
+So that's what's represented by this yellow thing.
+The forward messages represent states from which you'll be able to reach the goal.
+So the blue cone represents a cone radiating forward from the initial state, and that represents states with high probability of being reached from the initial state with high reward.
+So these are things you can reach if you start at the green circle and then maintain high reward.
+And then your state marginals are basically the intersections of these things, because you're going to be reaching the goal and you're going to be starting at the beginning.
+So the blue cone represents the forward messages, which are states you can reach with high reward if you start at the green circle.
+The yellow cone represents states from which you'll be able to reach the goal, and near optimal behavior will basically lie in the intersection of these two things.
+And one interesting tidbit is in experiments involving human motor control, scientists have actually observed that real human reaching behaviors exhibit this sort of distribution.
+So if you ask a person to hold a little tool and move that tool so that it touches a particular location, in this case, the person was asked to touch their elbow, and you actually plot the distribution of positions that the tooltip will travel through in space, you'll find that it's, of course, very precise at the beginning, because it starts at the beginning, it's very precise at the end, because it reaches the destination, and it has this outward-growing cigar-shaped distribution of states where you have the widest state marginals right in the middle.
+All right.
+So to summarize, we talked about how we can derive a probabilistic graphical model for optimal control, which is this graphical model.
+We talked about how control can be framed as inference, very similar to hidden Markov models, Kalman filters, and so on, and how the resulting inference procedure is very similar to dynamic programming or value iteration, but using the softmax instead of a hardmax.
+In the next portion of the lecture, I'll talk about how we can use variational inference to improve on this framework.
+Thank you.

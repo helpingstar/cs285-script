@@ -1,0 +1,200 @@
+All right, welcome to lecture 18 of CS285.
+In today's lecture, we're going to do something a little different than usual.
+Instead of covering any new reinforcement learning algorithms, we're actually going to talk about variational inference and generative models.
+This is a little bit of a break from our usual material, because we won't cover any reinforcement learning algorithms today.
+But I wanted to have an entire lecture on variational inference in this class, because the concepts of variational inference come up again and again in a variety of reinforcement learning topics, including model-based reinforcement learning, inverse reinforcement learning, exploration, and others.
+And more generally, variational inference has a very deep connection to reinforcement learning and learning-based control, and we'll learn about this next week.
+So in today's lecture, we're going to talk about probabilistic latent variable models, what they are, and what they're for, we'll talk about how variational inference can allow us to attractively approximate training of probabilistic latent variable models, and then we'll talk about something called amortized variational inference, which is a very useful and powerful tool to utilize variational inference together with function approximators like deep neural networks.
+And then we'll conclude with a discussion of some example models that we could train with amortized VI, including variational autoencoders and various sequences of models.
+So let's get started.
+So let's get started.
+So let's get started.
+So let's get started.
+Let's get started.
+So let's get started.
+So let's get started.
+Let's start with some problem-solving models that are useful in model-based RL.
+So the goals for today's lecture will be to understand latent variable models in deep learning, and understand how to use amortized variational inference in order to train them.
+Alright, so let's start with a very basic kind of overview.
+Those of you that are already familiar with this material may want to skip ahead, but I wanted to make sure to start at the very beginning to make sure that everyone is kind of at the same level in terms of notation, terminology, and so forth.
+So what is a probabilistic model?
+A probabilistic model is a very general term for a model that represents a probability distribution.
+So if you have some random variable x, then p can be represented by a probabilistic model.
+Take a moment to think about the kind of probabilistic models that we've already encountered in this course.
+What are some examples that we've already seen?
+So if you just have a random variable x and you want to model p , maybe you have some data, so those orange dots represent x's that you've actually observed.
+Modeling p means fitting some distribution to them.
+For instance, you might fit a multivariate normal distribution to try to represent this data.
+Now probabilistic models could also be conditional models.
+So for instance, you could have a model p .
+In this case, maybe you don't care about modeling the distribution over x, but you care about modeling the conditional distribution over y, given x.
+So if you have some inputs x on the x-axis and some outputs y on the y-axis, you might fit a conditional Gaussian model, a model that represents y as in this case a linear function of x with some additive Gaussian noise.
+Now we've definitely seen models like this before.
+Take a moment to think back to when in this class we've seen conditional probabilistic models.
+So one example of this, of course, is policies.
+Policies are overlaying the setups around the particular distribution on those见 We'll probably go there somewhat later as we laughing at them, but, if you'll go ahead and try it out by yourself using a verb constitution сообщ sob of x there is no evidence and the query is x, in p of y given x the evidence is x and the query is y.
+If you have a latent variable model that means that there are some other variables in the model that are neither the evidence nor the query and therefore need to get integrated out in order to evaluate the probability that you want.
+A very classic example of a latent variable model that people use to represent p of x is a mixture model.
+So in this picture we have data that is organized to three very clear clusters.
+Now a priori we're not told what those clusters are.
+So the clusters here are color coded but the data is not actually color coded, the data is just a collection of points and you want to represent a distribution that accurately fits that data.
+Now here it turns out to be very convenient to get the data to be a very clear and accurate distribution.
+So we can see that here we have a data collection that accurately fits the data.
+Now here it turns out to be very convenient, to represent this distribution with a mixture model consisting of three multivariate normals.
+This is a type of latent variable model.
+Take a moment to think about what the latent variable here is.
+So in this case the latent variable is actually a categorical discrete variable that can take on one of three values corresponding to the three cluster identities.
+And we can represent this latent variable model as a sum over all the possible values of the latent variable of the conditional distribution over the variable that we're modeling which is x given the latent variable z times the probability of that.
+So here p of x is given by sum over z of p of x given z times p of z.
+Z is a categorical variable that takes on one of three values corresponding to the identity of the cluster and x is a two-dimensional continuous variable of course a superposition.
+corresponding to the actual location of the point.
+We can do the same exact thing for conditional models.
+We could say that P is given by a sum over our latent variable z of P times P .
+Now there are other ways to create this decomposition.
+You could, for example, say that P also depends on x.
+So you could have P times P .
+You could even have the conditional over y not depend on x.
+So you could have P times P .
+Those are all valid decompositions, and that's a design choice that you make.
+If we want to stick with discrete categorical variable z, one example of a model like this that we've actually already seen before is the mixture density network, which is the model that we discussed when we talked about imitation learning and how we might want to do multimodal imitation learning in order to do that.
+This is a model that we've already seen in the previous lecture, but it's a very simple model.
+We can't deal with multimodal situations like driving around the tree.
+So back in the second lecture of the course, we learned about how we could have neural networks that output distributions represented by mixtures of Gaussians.
+So the neural network outputs multiple mu's and sigma's, one for each mixture element, and multiple w's.
+Okay, let's say the input to the network is x, it is an itself performance Castrel some碼.
+So f is square root of cuál.
+And we should plug in a number well aboveไดں the expression including a mistaken number w., opposite of % means everything.
+belongs to itself.
+Once again, công� Lauta-umi is a division Utilize perform the n Zusammenalt The equation ⋅ .
+stands for this Зап educación.
+means and variances of the Gaussians, and it's also outputting the W's, the probabilities of each mixture element.
+So in fact, this model is given by a sum over z of p of y given x comma z times p of z given x.
+So it's actually a little different than the equation I've written here.
+Here in the picture right there, the p of z actually depends on x.
+So it's a design choice that we make.
+All right, so in general, if you have a latent variable model, you could think about it like this.
+You have some complicated distribution over x, represented by this picture.
+So p of x is some complicated thing.
+You have some prior over z, p of z.
+Typically, we would choose this prior to be a simpler distribution.
+Maybe z is categorical, so p of z is a simpler distribution.
+Maybe z is a discrete distribution, or maybe z is continuous, but p of z is some very simple class of distributions, like a Gaussian distribution.
+And then we might represent the mapping from z to x, the p of x given z, as some simple conditional distribution.
+So p of x given z maybe could be a neural network, where the mean is given by a neural net function of z, and the variance is given by a neural net function of z.
+Now, those functions might be very complicated, but the actual distribution, x given z, could be very simple.
+It could be, for example, a Gaussian, a normal distribution.
+So p of z is a simple distribution.
+P of x given z is also a simple distribution.
+The parameters of that simple distribution might be complicated, but the distribution is simple.
+For example, something that can be parametrized explicitly.
+This is a very important point to understand, especially what I mean by the word simple.
+Here, p of x is not simple, because it is very hard to find a single parametrization, like a Gaussian distribution or a beta distribution, that perfectly captures p of x.
+P of z is simple, because a simple distribution like a Gaussian captures it perfectly.
+P of x given z is also simple, because you could represent it with a Gaussian distribution, although the parameters of that Gaussian distribution may be very complex.
+Now, of course, I'm using Gaussian distributions as an example here.
+These could be different kinds of distributions, different parametrizations.
+They could be discrete or continuous.
+So this is just an example.
+But in general, p of x would be given by some sum or integral over all possible values of z, of p of x given z times p of z.
+So what's going on here is that both p of z and p of x given z are simple, but their product, when you integrate them, is a simple distribution.
+So what's going on here is that both p of x and p of x are simple, but their product, when you integrate them, is a simple distribution.
+And this is a very powerful idea, because it allows us to represent complicated distributions as products of simple distributions that we can learn and parametrize.
+All right.
+So we have two easy distributions.
+Multiply them and integrate out z.
+The same exact thing can happen in the conditional case.
+So in the example I had before, conditional latent variable models for multimodal policies, you could have a Gaussian mixture on the output, or more generally, you could have some latent variable, let's call it z, that serves as an additional input into the model.
+And you have some prior p of z.
+And you have your conditional p of y given x comma z.
+And the same exact logic as on the previous slide would apply.
+So p of z would be simple.
+p of y given x comma z would be simple.
+But the result of integrating out z, meaning the resulting distribution p of y given x, could be extremely complex.
+Another case where these kinds of things come up is model-based reinforcement learning.
+So you could have latent variable models in model-based reinforcement learning.
+We already saw an example of this when we talked about model-based RL with images.
+So we saw these examples of latent state models where you observe images O, and you want to learn a latent state x that depends on actions u.
+And here, we actually have a more complex latent space.
+So we have our observation distribution p of O given x, and our prior p of x actually models the dynamics.
+It actually models p of xt plus 1 given xt and p of x1.
+So the prior on x is much more structured and more complex.
+The latent space for these models has structure.
+And we'll revisit this at the end of the lecture.
+So if this part is not entirely clear, don't worry about that.
+We'll come back to it.
+All right.
+So now we've learned about what latent variable models are, what they're for, why we want to have them.
+We'll see latent variable models in other places.
+So next week, we'll also talk about how we can use reinforcement learning together with variational inference to actually model human behavior.
+So instead of saying, given a reward function, what is the optimal way to act?
+You can instead say, given date of a person doing something, can we sort of reverse engineer what the person is trying to do?
+Can we infer their objective function?
+Can we infer something about their thought processes?
+And this is common both in imitation learning domains and also in the study of human behavior in neuroscience and motor control.
+We also see latent variable models and generative models in exploration.
+So when we talked about exploration, we actually briefly alluded to this.
+We discussed how we can use variational inference techniques for things like information gain calculations and how we use generative models and density models to assign pseudo counts and count-based bonuses.
+So these kinds of generative models and latent variable models come up all the time in the study of reinforcement learning.
+By the way, when I use the term generative model, just to clarify the terminology a little bit, a generative model is a model that generates x.
+So p is a generative model.
+A latent variable model is a model that has latent variables.
+Not all generative models are latent variable models, and not all latent variable models are generative models.
+However, usually it is much, much easier to represent generative models as latent variable models, because a generative model typically needs to represent a very complex probability distribution.
+And it is much, much easier to represent a complex probability distribution as a product of multiple simple probability distributions.
+So for that reason, while generative models do not need to be latent variable models, oftentimes it's very convenient when we have a complex generative model to model it as a latent variable model.
+All right, so now let's get to the meat of the lecture.
+Let's talk about how it is that we can train latent variable models, and why this is difficult.
+So let's say we have our model p theta of x.
+So theta here represents the parameters of a model.
+And we have data x1, x2, x3, etc.
+through xn.
+When we want to fit the data, what we typically want is a maximum likelihood fit.
+So the most natural generative modeling objective is to set theta to be the argmax of 1 over n, times the sum over all of your data points, of log papa of xi.
+So if you find theta that maximized the log probability of all of your data points, you will have found what's called the maximum likelihood fit, which in some sense is kind of the best model that you could have for your data.
+And your p is given by the integral over z of p<|zh|> So if I substitute this equation for P , into the maximum likelihood fit , I get this training objective.
+Now of course the first thing that you might notice that this training objective is quite difficult to calculate.
+If z is a continuous variable, calculating this integral every time you want to take a gradient step gets to be pretty intractable.
+So we can't really do this directly.
+In some very simple cases we could, for example if we have a Gaussian mixture model, we can actually sum over all the mixture elements.
+It turns out that algorithm is still not very good because it ends up having very poor numerical properties.
+So even in cases where we can estimate the integral, we oftentimes don't want to because the resulting optimization landscape is very nasty.
+But with continuous variables, we might not even have that choice.
+We might not be able to estimate that integral accurately even if we wanted to.
+Alright, so how can we estimate the log likelihood and the gradient of that log likelihood in a tractable way?
+That's really the key to training these like variable models.
+Well, one alternative is to use an objective called the expected log likelihood.
+I'm going to just state the objective here.
+I'm not going to justify it, but when we talk about variational inference later, we'll see why this objective is reasonable.
+So for now just kind of take it at face value.
+This is the objective we're going to use, but later on we'll see the justification for why this objective is a principled choice.
+So the expected log likelihood, intuitively, amounts to sort of guessing what the latent variable models are.
+So you could think of the latent variables as basically being partial observations of the data.
+So the data really consists of X's and Z's, but you observe the X's but not the Z's.
+So what you could do is you could essentially guess what the Z's were.
+You could say, well, given that the data point is over here, it probably belongs to this cluster.
+And then construct a kind of fake label that says this X i actually has this value of Z.
+And then do maximum likelihood on that value.
+So you could say, well, this is the value of X and Z.
+Now, of course, in reality, you don't know the Z that goes with a particular X i exactly, but you might have a distribution over it.
+So instead of just taking the one value of Z that is the most likely, you would take the entire distribution over Z's and average the likelihood weighted by the probability of that Z.
+And that's what gives us the expected log likelihood calculation.
+So the objective we're going to use is the sum over all of our data points of the expectation over Z given X i, of the log p theta X i comma Z.
+So the intuition is you guess the most likely Z given X i and pretend it's the right one.
+Although, of course, in reality, you don't actually guess just one Z.
+You actually sum over all the Z's weighted by their probability of being the right one.
+So there are many possible values of Z, so you use the distribution p of Z given X i.
+Alright, so first of all, why is a subjective more tractable?
+Well, because expected values can be estimated with samples.
+Right, so that expected value, if you want to get an unbiased estimate of the expected value, you don't need to actually consider all Z's.
+You can simply sample from the posterior p of Z given X i, and then average together the log probabilities of those samples.
+You can't do that trick on the previous slide.
+You can't do that trick if you have the log of the integral, because the log of an integral or sum doesn't decompose linearly.
+But the sum does, so you can estimate it with samples.
+So the tractable algorithm for estimating this, just like we saw with policy gradient, is to just sample from Z given X i and average together the log probabilities, and you can do, of course, the same thing for the gradient.
+So if you can get this posterior p of Z given X i, then you can calculate the expected log likelihood in a tractable way, and calculate its gradient in a tractable way.
+But then the big challenge becomes, how do we calculate p of Z given X i?
+If we could just calculate that quantity, then we could estimate the expected log likelihood.
+So this is going to be the topic for the next part of the lecture.
+So when you want to estimate p of Z given X i, what you're really saying is, given some point in X, map it back to distribution over Z's, which might be some fairly complex distribution, and then calculate the expected log likelihood under that distribution.
+All right, so that's what we're going to talk about.
+In the next part of the lecture.

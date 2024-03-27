@@ -1,0 +1,93 @@
+Alright, let's discuss a few reinforcement learning algorithms based on the ideas that I presented in the previous section, as well as some maybe more direct approaches.
+So first, we could imagine doing Q-learning with soft optimality.
+Standard Q-learning uses this update.
+So you set your new phi vector to be the old one plus some learning rate times grad phi Q times the Bellman error, r plus next v minus Q.
+Where your target value is just the max over the Q values of the next time step.
+You can implement a soft Q-learning procedure in exactly the same way.
+In fact, the Q function update is identical.
+The only difference is when you calculate your target value, instead of taking a hard max over the next action, you take a soft max, which is a log integral of exponentiated Q values or a log sum of exponentiated values if you have discrete values.
+So you can calculate the value of the target value and the value of the next action.
+So that's very straightforward.
+And you can derive it in the same way that we derived Q-learning from value iteration when we talked about value-based methods before.
+And I would encourage you to do this as an exercise if you want to get more familiar with this material.
+The policy that you recover in soft Q-learning is given by the exponentiated advantage, rather than being the greedy policy.
+And this policy can be shown to be the solution to the corresponding variational inference problem.
+So the resulting algorithm, the resulting soft Q-learning algorithm, looks very similar to the algorithms that we saw before.
+We take some action and observe Si, Ai, Si' , Ri, added to our buffer, sample a mini-batch from our buffer, and then we compute a target value where the only difference is that instead of taking a max over the Q value at the next time step, now we take a soft max.
+But then just like before, we update our Q function to take a recurrent value.
+And then we take a regression step to improve our fit to the target value, and we lazily update our target network parameters.
+So everything is exactly the same, except for the use of the soft max.
+We could also not worry about dynamic programming and instead go back to the original objective that I obtained from variational inference, which is the sum of expected rewards plus the sum of entropies.
+And it's actually very straightforward to derive a policy gradient algorithm to optimize this objective.
+Of course, the expected reward portion of the objective, its gradient is exactly the standard policy gradient.
+The only new thing is the entropy.
+So the intuition behind this procedure is that the policy pi will be proportional to the exponentiated Q value, or equal to the exponentiated advantage, when pi minimizes the KL divergence between pi and the n-th derivative.
+So we're going to go back to the previous example and see what the and 1 over z times the exponentiated q.
+And of course the scale divergence is equal up to a constant to the expectation under pi of q minus the entropy of pi.
+So this is actually often referred to as an entropy regularized policy gradient, and it can be a good idea for policy gradients because it combats premature collapse of the policy entropy.
+Remember that the on-policy policy gradient algorithm explores entirely with the stochasticity that's present in the policy.
+So if the policy becomes too deterministic too early, you'll get very bad results.
+So this entropy regularizer that we're adding to the policy objective can be very helpful in practice.
+It turns out to be also very closely related to q-learning algorithms, and this is discussed in a few previous works, which I will reference at the end of the last part of this lecture.
+Okay, let's talk a little bit about how policy gradients relate to q-learning in this inference framework.
+So if we write out the objective, that here there's the objective again, and I called it j of theta, just like in the policy gradient lecture.
+The entropy is just the expected value under pi of negative log pi.
+So this is an equivalent way of writing this.
+When we take the gradient of this expression, we can write that gradient as the sum of two terms.
+The first one is the regularization, the regular policy gradient that treats r minus log pi as a reward, and the second term has the gradient going through the log pi term in the objective.
+Now, it turns out that if you actually crunch the numbers on this, the expression is actually equal to the regular policy gradient with r minus log pi as the reward, with the additional term added by the gradient through log pi simply being minus one.
+Why is it minus one?
+Well, it's minus one if we apply the same identity that we use to derive policy gradient, but in reverse.
+Because we have a grad log pi outside the parentheses, so the derivative of minus log pi is just grad log pi times negative one.
+So that's where the minus one comes from.
+It's very, very, very simple.
+But remember that the policy gradient is equal in expectation if you add or subtract any quantity to the reward.
+So that minus one actually has no effect, which leads us to the surprising conclusion that if you want to do entropy regularized policy gradient, all you have to do is subtract log pi from the reward, and the gradient expression doesn't actually change.
+So that's where the one comes from, and you can ignore it because of the baseline.
+All right, so this quantity inside the parentheses, you can think of it as the Q value at the next time step, right?
+So this is the sum of all the rewards minus all the log pi's from T plus one until the end.
+And remember that the policy is given by the exponential of Q minus V in soft optimality.
+So we can substitute this in for log pi, and we can basically replacing log pi everywhere with Q minus V.
+We can write.
+This expression is following.
+We can write it as grad Q minus grad V times R plus next Q minus current Q plus current V.
+But remember, because of the baseline property, any state dependent function inside the parentheses can be removed.
+So this V of ST, we can simply get rid of it.
+And now remember what the Q learning objective is.
+The Q learning objective is grad Q times R plus the softmax of the next Q minus the current Q.
+So here we can see now that the policy gradient actually looks a lot like the Q learning objective under the soft optimality framework.
+The main difference being the policy gradient subtracts the minus grad V, and the Q learning objective has the softmax.
+So the Q learning objective has this off policy correction.
+If you had an on policy Q learning method, you could omit this.
+And the policy gradient has the minus grad V term.
+But otherwise, they're actually quite similar.
+All right.
+So that's maybe a little bit of a tidbit involving the connection between these two approaches in the soft optimality framework.
+But maybe more practically, what are some of the benefits of all this variational inference, control as inference, and soft optimality stuff?
+Well, one benefit, at least in the case of policy gradients, is that it improves exploration and prevents premature entropy collapse.
+Which for policy gradients can greatly harm exploration.
+It can be somewhat easier to specialize or fine-tune policies for more specific tasks.
+When you end up with policies that are more random, it turns out they're better suited for fine-tuning when the task changes slightly.
+And I'll show some examples that illustrate this in the next part of the lecture.
+It provides a principled approach to break ties.
+So if two actions really have the same exact advantage, they will also have the same exact probability without having to worry about how to take an argmax.
+This approach also provides better robustness, because you achieve better coverage of different states.
+You can think of this intuitively as following.
+If you learn to solve the task in many possible ways, then if one of those ways becomes invalid due to a change in the environment, then you might still have a non-zero chance of succeeding.
+And of course this framework reduces to classical hard optimality as the reward magnitude increases, or if you put a temperature and drive the temperature to zero.
+So this is a very simple approach to break ties.
+But it's also a very simple approach to break ties.
+And it's also a very simple approach to break ties.
+And it's also a very simple approach to break ties.
+And it's also a very simple approach to break ties.
+It's also a good model for modeling human behavior, It's also a good model for modeling human behavior, which is not in general deterministic, and humans do tend to make mistakes.
+So this basically says you can make mistakes, but the mistakes become exponentially unlikely but the mistakes become exponentially unlikely as their reward decreases.
+So we'll talk about this a lot more on Wednesday.
+So we'll talk about this a lot more on Wednesday.
+Alright, so just to review, we talked about how reinforcement learning can be viewed as inference in a graphical model.
+We talked about how the value function We talked about how the value function is a very important message.
+And we talked about how we can maximize the reward and the entropy, and the bigger the reward, the less the entropy matters, so we can recover hard optimality.
+We talked about how variational inference removes the optimism problem.
+And we discussed how to instantiate it as either soft Q-learning or an entropy-regularized pulse-to-gradient procedure, but also how these two approaches actually have some pretty striking similarities.
+actually have some pretty striking similarities.
+The first problem as seen in外国 isK isK isK isK and and and and And

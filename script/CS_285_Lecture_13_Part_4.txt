@@ -1,0 +1,123 @@
+All right, in the next portion of the lecture, I'll go through a few other novelty-seeking exploration methods.
+So for these, I won't go through them in quite as much detail, but I just want to give you a sense for other techniques that have been put forward in the literature that also exploit the notion of optimism to improve exploration.
+So the first one I'm going to talk about, you can think of it as a kind of account-based method with a more sophisticated density model.
+So this is from this paper by Tang et al.
+called Hash Exploration.
+And the idea here is counting with hashes.
+So here's the notion.
+Instead of doing this pseudo-count thing, what if you still do regular counts, but under a different representation?
+So perhaps what you could do is you could take your states and you compute a kind of a hash that compresses the state, so it's a lossy hash, in such a way that states that are very different get...
+get very different hashes, but states that are very similar might be...
+might map to the same hash.
+So the idea is that we're going to compress s into a k-bit code via some encoder phi of s.
+And if k is chosen to be small enough, such that the number of states is larger than 2 to the k, then we'll have to compress some states into the same code.
+And then we will do counting, but we'll count with respect to these codes.
+We'll actually count how many times we've seen the same code instead of the same state.
+And the shorter your code is, the more hash collisions you get, which means the broader your notion of similar, for the purpose of determining if two states are similar, will be.
+So will similar states get the same hash?
+Well, maybe.
+It depends a little bit on the model you choose.
+So the way that you can improve the odds is instead of using some standard hash function that typically aims to minimize hash collisions, you could instead use an odd number.
+The hash is used in the same way in which the hash is trained, so that it gets the maximum reconstruction accuracy.
+And if you train the autoencoder to maximize reconstruction accuracy, then if it's forced to have hash collisions, it'll produce hash collisions for those settings where the black collision results in small reconstruction error.
+So basically if it mistakes one state for another but they still look pretty similar, then that mistake costs the autoencoder a lot less than if the states look very different.
+So learning the hash functions will help you choose the correct hash for the hash variable, or the hash that you are trying to apply.
+So learning the hash functions will help you choose the correct hash for the hash variable, or the hash that you are trying to apply.
+basically provides hash collisions that are a little more similarity driven.
+And then this algorithm will take the bottleneck from this autoencoder, essentially treating the encoder of the autoencoder as 5s, clamp it to be 0, 1, perform a downsampling step, and that's the code, the k-bit code that they're going to use.
+And then they just do regular counting on these k-bit codes.
+And the resulting algorithm actually turns out to work decently well with a variety of different coding schemes.
+So that's kind of a nice way that you could adapt regular counts if you don't want to deal with pseudo counts.
+Another thing you could do is you could avoid density modeling altogether by actually exploiting classifiers to give you density scores.
+So remember that ptheta of s needs to be able to output densities, but it doesn't necessarily need to produce great samples.
+And we can exploit this by devising a class of models that are particularly easy to use.
+And we can exploit this by devising a class of models that are particularly easy to train that can't produce samples at all, but can give reasonable densities.
+So this is from a paper called EX2 by Hu et al.
+So here's the idea.
+We're going to try to explicitly compare the new state to past states.
+And the intuition is that if a classifier can easily distinguish whether the state it's looking at is the new state or a past state, then the new state is very novel and therefore should have low density.
+If it's very hard to distinguish, that means that the new state looks indistinguishable from past states and therefore has high density.
+And while this notion is somewhat intuitive and informal, it can actually be made mathematically precise.
+So if the state is novel, if it is easy to distinguish from all previously seen states by a classifier.
+So for each observed state s, what we're going to do is we will fit a separate classifier to classify that state against all past states in the new state.
+And we're going to do that by using the new state in the buffer.
+And then we'll use the classifier likelihood or the classifier error to obtain a density.
+So it turns out that if the probability that your classifier assigns to the state is given by d of s, and I have the subscript s because this is the classifier that's trying to classify the state s against all past states.
+So d subscript s of s is the probability this classifier assigns a new state.
+The density of the state turns out can be written as p theta of s is equal to 1 minus d s of s divided by d s of s.
+And the way that you obtain this equation is you write down the formula for the optimal classifier, which can be expressed in terms of the density ratio, and then do a bit of algebra.
+So this is the probability that the classifier assigns that s is a positive, meaning that s is a new state.
+And the classifier is going to be able to do the same thing.
+So the classifier is trained where the only positive is s and the negatives are all the d's.
+Now at this point, you might be wondering what the heck is going on here.
+Like you have a classifier that just tries to classify whether s is equal to itself.
+Like shouldn't that always output true?
+Well, remember what counts are doing.
+What counts are doing is they're counting how many times you've seen that exact same state multiple times.
+So if you're actually in that regime of counts and s has a large count, then s will also occur in d.
+So you'll have one copy of s in the positives, but you might have multiple copies of s in the negatives, which means that the true answer, the true d s of s, is not one.
+Because if you see the state s, it could be a positive, but it could also be a negative.
+For example, if the state s occurs in the set of negatives 50% of the time, if literally half your negative states are also s, then d s of s is not 100%.
+It's actually 75%.
+Because 50% that's a positive, 25% that is, you know, the other half of the negatives.
+So the larger the count, the lower d s of s will be.
+And of course, in larger continuous spaces, where the counts are always one, this model will still produce non-trivial conclusions because the classifier is not going to overfit.
+The classifier is actually going to generalize a little bit, which means that if it sees very similar states in the negatives, it will assign a lower probability to the positive.
+So that's why you can use a classifier to estimate densities like this.
+If you want to go through the algebra for how to derive the probability from the classifier, check out the paper.
+It's actually a fairly simple bit of algebra.
+The intuition is that you first write down the equation for a base optimal classifier, which is an expression in terms of p theta of s, and then you solve that expression to find an equation for p theta of s.
+As I mentioned before, aren't we just checking if s is equal to s?
+Well, if there are copies of s present in the data set, then the optimal d s of s is not one, as I mentioned before.
+And in fact, the optimal classifier is given by one over one plus p of s.
+And again, this is a bit of algebra that you can check.
+So if you rearrange this to solve it for p of s, you get the equation on the right.
+Now, in reality, of course, each state is unique, and your classifier can overfit.
+So you have to regularize the classifier to ensure that it doesn't overfit and doesn't just assign a probability of one all the time.
+So you would use something like weight decay to regularize your classifier.
+Now, the other problem with this is that, as I've described this procedure so far, we're training a totally separate classifier for every single state we see.
+Now, isn't that a bit much?
+Are we going to go kind of crazy with all those classifiers?
+Well, one solution we could have, is we could instead train an amortized model.
+So instead of training one classifier for every single state, we can train just a single classifier that is conditioned on the state that it's classifying.
+So it's an amortized model that takes the exemplar as input, that's x star, and it takes the state that it's classifying as input, that's x.
+And now we just train one network, and we update it with every state that we see.
+So this is an amortized model.
+And this basic scheme actually works pretty well.
+It compares very favorably to some other exploration methods, including the hash-based exploration method I described before, and provides maybe an interesting perspective on how the type of density model we use for exploration doesn't necessarily need to be able to produce samples, and it could even be obtained from a classifier.
+And then in the paper, there's some experiments with using this for some visual navigation tasks in VisDoom, where you have to traverse, many different rooms before you find the treasure, and a good exploration algorithm should figure out when it's in a novel room, and then seek out more novel rooms that it hasn't seen too much.
+All right, now there are also more heuristic methods that we could use to estimate quantities that are not really counts, but that kind of serve a similar role as counts in practice, and can work pretty well.
+So remember that p theta of s needs to be able to output densities, but it doesn't necessarily need to produce great samples.
+In fact, it doesn't even necessarily need to produce great densities.
+You could just think of it as a score, and you just want that score to be larger for novel states and smaller for non-novel states, or the other way around.
+So basically, you just need some number that is very predictive of whether a state is novel or not.
+It doesn't even have to be a proper density.
+So you just need to be able to tell if a state is novel or not, and if that's all you want, there are other ways to get this that are a little more heuristic, but can work well.
+So, for example, let's say that we have some target function f star of s comma a.
+Don't worry about what this function is for now.
+Let's just say it's some scalar value function on states and actions.
+So maybe it's this function.
+And we take our buffer of states and actions that we've seen, and we fit an estimate to f star.
+So we fit some function f hat theta.
+So f hat theta is trying to match f star on the data.
+So maybe our data set contains these points, and we can use this data set to match f hat theta.
+So we can use our data set to match f hat theta.
+So we can use this data set to match f hat theta.
+And if we take our data set, f hat theta might look like this.
+So it's going to be similar to those points, close to the data, but far from the data, it's going to make mistakes because it hasn't been trained in those regions.
+So now we can use the error between f hat and f star as our bonus, because we expect this error to be large when we're very far away from states and actions that theta might make really big mistakes.
+So then we would say the novelty is low when the error is low, and the novelty is high when the error is high.
+So then we could ask, well, what kind of function should we use for f star?
+And there are a number of different choices that have been explored in the literature.
+So one common choice is to set f star to be the dynamics.
+So basically f star of s a is s prime.
+That's very convenient because it's a quantity that clearly has something to do with the dynamics of the MDP, and of course you've observed s prime in your data.
+So you could essentially train a model and then measure the error of that model as a notion of novelty.
+This is also related to information gain, which we'll discuss in the next part of the lecture.
+An even simpler way to do this is to just set f star to be a neural network with parameters phi, where phi is chosen randomly.
+So this network is not actually trained, it's actually just initialized randomly to obtain an arbitrary but structured function.
+The point here is that you don't actually need f star to be all that meaningful.
+You just need it to be something that can serve as a target that varies over the state and action space in ways that are not trivial to model.
+So that's why just using a random network actually can work pretty well.
+And this is actually part of the material that will be on homework 5.
+So it's a good idea to kind of understand why this works.

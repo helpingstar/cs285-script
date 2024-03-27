@@ -1,0 +1,168 @@
+All right, so so far we saw how we could frame control as inference in a particular graphical model, and then we talked about how we could do exact inference in that graphical model and understand three possible inference problems, computing backward messages, computing policies which uses those backward messages, and computing forward messages, which as I've alluded to will be useful later on when we talk about inverse reinforcement learning.
+Now, all of the inference procedures we've discussed so far have been exact inference, but of course in complex high-dimensional or continuous state spaces or settings where the dynamics are not known, where the transition probabilities are not available to us and we can only sample from them by performing rollouts, we need to do approximate inference.
+And that's what I'm going to talk about in the next section.
+I'll actually use the tools that we learned about from last week, the tools of variational inference, to show you how to do that.
+And then I'll show you how model-free reinforcement learning procedures can be derived from this control as inference framework.
+Now, in the course of designing these approximate algorithms, we're also going to see how we can devise a solution to a particular problem that I raised previously, and that's the optimism problem that I mentioned.
+So if you recall from the previous part of the lecture, we talked about how the state backward message and the state action backward message, they're logarithmic.
+And so we can derive the algorithm that is very similar to value iteration, except the max over the actions is replaced with a softmax, and the Bellman backup has a log expected value exponential form.
+Now the softmax is not really that much of a problem.
+That's actually where we get this notion of soft optimality.
+So we actually want that.
+But this kind of backup is a little bit problematic.
+The trouble with this backup is that the log of the expected value of the exponentiated next state values is going to be dominated by the luckiest state.
+The easiest way to see this is to imagine that the action corresponds to buying a lottery ticket.
+So you have a one in a thousand chance of getting an extremely large payoff and a 990 in a thousand chance of getting nothing.
+Now the effect of this will be that the expected value is zero times 0.9999 and one million times 0.001.
+So that means that it's just one million times 0.001.
+When you take the exponential of that and then the logarithm, the zeros, their effect, will essentially disappear and the final value will be dominated by that positive outcome.
+And that's really bad news because, of course, buying the lottery ticket is not a good idea and its expected value is not high, but its log expected exponentiated value is high.
+So essentially this kind of backup results in a kind of optimism bias.
+Now why does this happen?
+Well.
+Well, the first problem that we're solving is to infer the most likely trajectory given optimality.
+And then marginalizing and conditioning this, we get the policy P of At given St comma O one through T.
+The question intuitively that this inference problem is asking is, given that you obtained high reward, what was your action probability?
+Now think back to the lottery example.
+If you know that you've got a million dollars.
+that makes it more likely that you played the lottery.
+That doesn't mean that playing the lottery is a good idea.
+So fundamentally, the tension here is that the inference question we're asking is not quite the question to which we really want the answer.
+What we want to know is what would you have done if you were trying to be optimal, not what do I think you did given that you got a million bucks.
+And the issue that this really stems from is that the posterior probability of ST plus 1 given STAT and O1 through capital T is not the same as its prior probability.
+So when we perform this inference process, we're actually altering the dynamics to agree with our evidence.
+Again, the intuition here follows very nicely from the lottery example.
+If you know that you got a million bucks, and you bought the lottery ticket, there's a higher probability that you won the lottery.
+Because the evidence that you got a million bucks increases the belief that you actually won the lottery.
+But of course, the dynamics are not allowed to change in reality.
+In reality, we'd like to figure out what is an approximately optimal thing to do in the actual original dynamics.
+So this question, is given that you obtained higher reward, what was your transition probability?
+But in a sense, we don't care about this question.
+Your transition probability should remain fixed.
+So let's think about how we can address this optimism problem.
+So what we want is we want the policy, but we don't want our process of inferring the policy to allow us to change the dynamics.
+So intuitively what we want is, given that you obtained higher reward, what was your action probability, given that your transition probabilities did not change?
+So one of the ways that we could approach this is we could say, can we find another distribution, Q, over states and actions, that is close to the posterior over states and actions given O1 through T, but has the same original dynamics?
+So in this approximate posterior Q, we want the dynamics to be the same as they were originally, unaffected by your knowledge of the reward, but we want the action probabilities to change.
+So where have we seen this before?
+Where have we seen the notion of approximating one probability distribution with another one that has some constraints?
+So if, for example, we say that X is O1 through T, and Z is S1 through T and A1 through T, then this problem is equivalent to saying, find Q to approximate P .
+Basically, find an approximate distribution that accurately approximates the posterior over unobserved variables.
+And that is basically the problem that variational inference solves.
+So can we shoehorn this problem?
+Can we find another distribution, Q, S1 through T, A1 through T, that is close to the posterior P, but has the dynamics P given S, D, A, T?
+Can we shoehorn this into the framework of variational inference?
+Take a few moments to think about this.
+Think about how you could use variational inference to address this.
+Maybe pause the video and think about it.
+And then check your answer against what I'm going to do next.
+And then I'll tell you on the next slide.
+All right.
+So what we're going to do in order to perform control using variational inference is we'll define a somewhat peculiar distribution class for Q.
+We'll define Q of S1 through T and A1 through T as the product of P , the product of the transition probabilities P given S, D, A, T at every time step, and an action distribution, Q of A, T given S, D.
+Now this definition for the variational distribution is quite peculiar because typically when we use variational inference, we learn the entire variational distribution.
+But here we're actually fixing some parts of the variational distribution to be the same as P and only learning the action conditional.
+So we're going to have the same dynamics and the same initial state as P.
+And that's going to be important for combating this optimism bias.
+So the only thing that we learn for learning this approximate posterior is Q of A, T given S, D.
+We can represent this graphically as follows.
+The real graphical model in which we are trying to do inference is shown here.
+So we have the observed variables O1 through T and the unobserved variables, the S's and the A's.
+So we have the initial state, the transition probabilities, and the optimality variable probabilities.
+The approximation corresponds to this graphical model.
+So remember, in variational inference, the variational distribution does not contain the observed variables.
+So it makes sense that the O's are removed, only the S's and A's remain.
+And we have the same initial state distribution, the same transition probabilities.
+We no longer have the O's, but instead we have Q of A, T given S, D.
+And that's the only part that we're going to learn.
+By the way, as an aside, I should mention that all of these derivations are presented for the case where S1 is unobserved.
+Oftentimes, you might actually know S1, in which case P of S1 goes away, the S1 node will be shaded everywhere, and it will not actually be represented as part of your variational distribution.
+It's very straightforward to derive that.
+It just adds a little bit more clutter to the notation, which is why I omit that on these slides and treat S1 as a latent variable.
+But keep in mind that if you are in a situation where you know the current state and you just want to figure out future states and actions, then S1 will be observed.
+But it's pretty easy to extend this to that setting, and I would encourage you to do that as an exercise on your own time.
+Okay.
+So now to tie this back to the variational inference discussion from last week, again, we're going to say X, our observed variables, is just O1 through T.
+Z, our latent variables, correspond to S1 through T, and so on.
+And then we're going to write out our variational lower bound in terms of these things.
+And then we will optimize that variational lower bound, and we'll see that actually corresponds very closely to a lot of our algorithms that we've already learned about.
+Okay.
+So here's the variational lower bound that we saw in the lecture last week.
+The log probability of X is greater than the probability of X being greater than the probability of X being greater than X.
+So we're going to write out our variational lower bound in terms of these things.
+So we'll say that the value of X is greater than or equal to the expected value under Q of Z of log P of X comma Z minus log Q of Z.
+And this is actually true for any Q of Z, but of course, as we learned last week, the closer Q of Z is to the posterior P of Z given X, the tighter this bound becomes.
+And this last term is just the entropy of Q.
+So substituting in our definitions for X and Z we can write out log P of O1 through T, the log probability of our evidence, as being greater than or equal to the expected value under S1 through T and A1 through T distributed according to Q of all of the probabilities in our graphical model, log P of S1 plus the sum of the log probabilities of the transitions plus the sum of the log probabilities of the equations.
+So we can write out log P of O1 through T, the sum of the log probabilities of the optimality variables, minus the entropy, which is going to be minus log P of S1.
+So this S1 comes from our definition for Q, minus the log probabilities of the transitions, again, this comes from our definition for Q, and then minus the log Q of A given S .
+So now we can see why we made this particular choice for Q.
+We chose Q so that the initial state probabilities and the transition probabilities very conveniently cancel out, which means that our bound now just corresponds to the sum of the log probabilities of the optimality variables minus the log probabilities of the actions under Q.
+Substituting in the definition for P of O given S , we get this expression.
+The lower bound on our likelihood is just the expected value of the total reward minus log Q given S at every time step.
+And I can move the sum outside of the expectation by linearity of expectation and replace the log Q term with an entropy, and now we can see that this lower bound is exactly equivalent to maximizing the reward and maximizing the action entropy.
+And remember that Q has the same initial state distribution and transition probabilities as the original problem, which means that this is precisely the expected reward, our original reinforcement learning objective, plus these additional entropy terms, and the additional entropy terms serve to justify why you don't want just the single optimal solution, but why you might want some stochastic behavior that also models things that are slightly suboptimal.
+Thinking back to the suboptimal monkey, this is optimizing this objective will basically give us the suboptimal monkey.
+So the cool thing about this is just by applying the variational lower bound, we recovered an objective that looks very much like the original reinforcement learning objective, but with the addition of these additional entropy terms.
+Okay, so how can we optimize this variational lower bound?
+So there's our Q, there's our bound from the last slide.
+Take a moment to think about how we could optimize it.
+Can we, for example, employ some of the algorithms that we already learned about from the previous lectures?
+So one of the things we could do is we could employ dynamic programming approach.
+So similarly to the value iteration style methods we learned about, we could solve for the last time step, which just has a single reward function.
+And when solving for the last time step, we can group the terms, so we have the expected value of S under Q , of the expected value of A , of the reward plus the entropy.
+And you could actually show that any time you have a maximization objective which has the form of the expected value under a distribution of some quantity minus the log probability of that distribution, the solution always has the form of the exponential of that quantity.
+It's pretty easy to show this by just setting the derivatives, you know, taking the derivative, setting the derivative to 0, and solving for Q given S .
+But in general, it's a good rule of thumb that if your objective is the expected value of something minus the log probability of the thing under which you're taking the expected value, the solution is always the exponentiation of that quantity.
+So the last time step is always optimized when Q given S is proportional to the exponential of the last time step reward.
+And in particular, if we write out the normalization, you can see that the denominator is just the integral over all actions of the exponentiated reward, which, of course, is exactly the exponentiation of the Q function minus the value function.
+Of course, on the last time step, the Q function is kind of trivial.
+The Q function is just the reward, and the value function is just the log integral exponentiation of the Q function.
+So the value function is just the value function of the Q function, which is the normalizing constant.
+So that's the value function.
+Now, if I were to then substitute it in this expression for Q, then I know that the difference between R and log Q is just the value, right?
+Because log Q, log little q, is going to be big Q minus V.
+So big Q here is R.
+So R minus R plus V, I end up with the expression on the right side.
+So this is somewhat analogous to what we did in LQR.
+We're starting at the back, solving for the optimal policy, and then substituting in the corresponding expression.
+So what this tells us is that the expression is just the value function.
+So we can just write out the expression and then substitute it in the corresponding expression.
+So what this tells us is that for the last time step, the contribution this last time step makes to the overall objective is V of s capital T, where little q of a t given s t is given by this expression.
+And then we can proceed with the recursive case.
+We can say that at any given time step, the Q of a little t given s t at that time step is the argmax of the expected value under Q of s t of the expected value under Q of a t given s t of the reward at that time step, plus the expected value of the value function at the next time step, plus the entropy of Q of a t given s t.
+And of course, if we do that, we can always say that we have this quantity Qt s t a t, which is R plus next V.
+That's just the regular Bellman backup, which is not optimistic anymore.
+And we substitute that into this equation.
+And again, we get an expression that looks like the expected value under Q of a t s t of some quantity minus log Q.
+So we know that again, the solution is the exponentiated Q value and the normalizer is again the value function.
+So again, we get the same expression for Q of a t given s t, and we can repeat this recursion backwards in time.
+So this gives us a dynamic programming solution.
+And of course, we can formalize this as a backward pass.
+And here is a summary of that backward pass.
+From the last time step until the beginning, we have a very simple method.
+We can set your Q function to be R plus the expected value of next V.
+So this is the regular Bellman backup.
+Set your V to be the softmax.
+So this is the soft maximum.
+And just like in the regular value iteration algorithm, we would repeat these backups.
+Now we have a soft value iteration algorithm where everything is exactly the same, except that V is a softmax rather than a hardmax.
+And the final policy is the exponential of Q minus V.
+Okay.
+So to summarize this, we have our original model.
+We made a variational approximation.
+Our value functions at every step are the log integral of the exponentiated Q values.
+Our Q values are backed up normally, like in the regular Bellman backup.
+And you can read more about this in this tutorial article from 2018 called Reinforced Learning and Controlless Probabilistic Inference tutorial and review.
+But this basically gets us a dynamic programming algorithm that is a soft analog to value iteration.
+Now there are many variants of this.
+You could, for example, construct a discounted variant where you put a gamma in front of the expected value of the next value function.
+And that just corresponds to changing your dynamics to have a 1 minus gamma probability of death.
+You could also add an explicit temperature.
+So when you perform this value function computation, you can add an alpha where you multiply your Q value by 1 over alpha and then multiply the result by alpha at the end.
+And as alpha goes to 0, this will approach a hardmax.
+Of course, you can also construct an infinite horizon formulation for this where instead of literally doing dynamic programming from the end of the structure to the beginning, you actually run an infinite horizon soft value iteration procedure.
+And that's also a perfectly reasonable, perfectly correct thing to do for the infinite horizon case.
+It basically works exactly as you would expect, exactly according to the procedure outlined on this slide.
+Okay, so that's the dynamic programming way of doing control as variational inference.
+In the next part, I'm going to talk about how to instantiate this idea as well as some other ideas to design some practical RL algorithms that utilize this variational inference formulas.

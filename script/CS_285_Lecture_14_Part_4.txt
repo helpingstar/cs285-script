@@ -1,0 +1,79 @@
+All right.
+In the last portion of today's lecture, I'm going to talk about how we can go beyond covering state distributions and actually learn diverse skills.
+So what do I mean by this?
+Let's say that we have a policy pi of a given s comma z, where z is a task index.
+You know, maybe z is a categorical variable that takes on one of n different values.
+If you want the case where you have literally different policies for different skills, that's actually a special case of this.
+So you could imagine that you have n different policies that represent n different skills.
+Maybe washing dishes is one of them.
+And you can construct this pi of a given s comma z by saying, well, first look at z, determine which skill you want, and then run the corresponding policy.
+But most generally, you can write it as one conditional distribution, a given s comma z.
+Just keep in mind this case where you have discrete skills is just a special case.
+So you could imagine, for instance, in a 2D navigation scenario, maybe the skill zero goes up, skill one goes right, et cetera, et cetera, et cetera.
+So if you have six different skills, you want them to do six different things.
+Now, reaching diverse goals is not the same as performing diverse tasks, because not all behaviors can be captured as goal-reaching behaviors, at least not in the original state representation.
+So you could imagine, for instance, the age of a child.
+A small child can reach 12.
+Right, So there's no why you don't reach this green circle.
+Sorry, this green ball while avoiding the red circle.
+individual states.
+So here's how we could learn skills that goes beyond just state coverage.
+We could have a kind of diversity promoting reward function.
+So we could, you know, in any RL problem, we define our policy as the argmax of some reward function.
+And what we're going to do is we're going to reward states for a given z that are unlikely for other z's.
+So if you're running the policy for z equals zero, you should visit states that have low probability for z equals one and z equals two and z equals three, etc.
+And that will ensure that for every z, you do something unique.
+Another way of putting this is, if you look at what states the policy visited, you should be able to guess which z it was trying to fulfill.
+So one of the ways to do this is to have the reward be a classifier.
+A classifier that guesses which z you are doing based on which state you're in.
+So this classifier predicts p of z given s and will assign rewards as log p of z given s.
+So we want to basically make it easy to guess which skill you were doing and therefore you should visit states that have low probability for other skills.
+So the way that we can instantiate it, we can view it graphically like this.
+We have our usual RL loop, we have our policy and our environment.
+The skill is given to the policy in the beginning and there's a discriminator, this classifier, that looks at the state and tries to predict which skill you were given when you reached that state.
+And every iteration, you update the discriminator to be a better discriminator and you update the policy to be better at maximizing log p of z given s.
+We can imagine what this algorithm will do with a little visualization.
+So let's say that we have just two skills, green and blue.
+And initially they're kind of random and they kind of do similar things.
+But just through random chance, they visit slightly different states.
+So when we then draw a decision boundary between them, maybe our classifier will say, well here's the decision boundary, everything to the lower left of this is blue, everything to the upper right of this is green.
+And when we then update the policy with RL with this classifier as our reward, the skills will move a little bit apart.
+And then the decision boundary will separate them even more cleanly.
+And then they'll move even more apart.
+And so on.
+And of course in reality, we do this not with two skills, but with dozens of skills, maybe even hundreds of skills.
+So then they will get good coverage of the space and they will actually do things that are more sophisticated than just reaching individual states.
+In fact, if we actually run this on some standard kind of benchmark environments, we get pretty interesting behaviors.
+So this is what happens when we run this algorithm on the little cheetah task that you guys saw.
+So we run this on homework one.
+So you can see that some of the skills involve running forward, some involve running backward, and some involve doing a cool flip.
+So intuitively it makes sense when you look at these different states, it's pretty clear that they're all different from each other.
+So if I told you that the backflip is skill number two, the forward run is skill number one, and the backward run is skill number three, then just from looking at a still picture of this, you could probably guess which one of these it was doing.
+Same thing for the ant.
+Same thing for other environments.
+For mountain car, some of the skills actually change.
+So we can see that the ant is doing a cool flip, and the backward run is just performing and solving the task.
+So it seems like this is a viable way to get diverse skills.
+But we could also ask, well, what is this really doing?
+So it seems, again, just like with the other methods I described, at first it seems like a somewhat arbitrary recipe, but can it be shown to optimize a well-defined objective?
+Well, it turns out that this method, too, has a very close connection to mutual information.
+And if you want to learn more about this, there are two papers at the bottom, Diversity is All You Need and Variational Intrinsic Control.
+So if you write down the mutual information between Z and S, between the skill and the state, that, as usual, will factorize as H minus H given S.
+The first term you maximize just by choosing a uniform prior over skills.
+So essentially, if you have n different skills, they're all equally likely to be triggered.
+So you select uniformly from among the n.
+So that will very easily maximize the first term.
+So then all you have to do is minimize the second term.
+And the second term is minimized.
+By maximizing log P of Z given S.
+If Z is very easy to predict from the state, that means that you are reaching, you're taking states where the entropy over Z is very low.
+So simply being good at predicting the state, both by changing the policy and by changing your classifier, actually minimizes H of Z given S, which means that the entire algorithm maximizes the mutual information between Z and S.
+So to summarize, let me just describe some of the themes that many of you might have already noticed.
+So I described three different methods.
+They're all very related.
+And all of these methods basically end up with some flavor of maximizing a mutual information between your outcome and some notion of goal or task.
+So your outcome might be your final state or any state, and some notion of goal or task might be the goal state or the skill Z.
+And in all these cases, we saw that, maximizing mutual information between outcomes and tasks is an effective way to perform unsupervised reinforcement learning.
+And in fact, we even saw that if you don't know which task you'll be given at test time, if the best you can assume is that you'll be given an adversarially chosen task, then not only is this a good thing to do, it's actually the optimal thing to do.
+So hopefully this discussion gives you kind of a sense of the nature of the problem.
+Let's look at the different perspective on exploration, how we can think about exploration in the fully unsupervised setting, and even begin to bring to bear some powerful mathematical tools that can give us a notion of optimality and can sort of discern the patterns in some of these seemingly arbitrary recipes.

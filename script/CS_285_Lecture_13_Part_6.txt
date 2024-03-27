@@ -1,0 +1,131 @@
+All right, the last category of deep RL exploration methods we'll talk about are methods based on information gain.
+So to recap, when we reason about information gain, what we want to do is we want to select an action that will result in an observation that in expectation will give us the most information about some variable of interest called z.
+And of course, the question we have to answer when we actually implement these algorithms is information gain about what?
+So we could ask for information gain about the reward function, but that's not very useful if we have a hard exploration problem because the reward is probably zero almost everywhere, so that's not good.
+We could ask for information gain about the state density P of S, which sounds a bit strange, but actually somewhat makes sense because information gain about the state density means that you want to do things that will change the state density, which means that you would do novel things.
+So that goes back to the first category of methods.
+So it's kind of weird.
+It's a weird choice, but it actually kind of makes sense.
+Another thing you could do is information gain about dynamics, about P of S prime given S A.
+And this is a very reasonable choice because information gain about the dynamics shows that you're learning something about the MDP.
+So if you assume that the reward of the MDP is mostly sparse, meaning that it's mostly zero everywhere, then the main thing there is to learn about is the dynamics of the MDP.
+And since the MDP is fully determined by the initial state, the dynamics, and the reward, and the reward is not informative, and the initial state is very easy to determine, then it makes sense that you would ask for information gain about the dynamics because that's the one thing that varies quite frequently and provides a useful signal.
+So this is a good proxy for learning the MDP, though it's still heuristic.
+Now generally, it's intractable to use information gain exactly, regardless of which one of these things you're estimating, if you have a large state space or action space.
+So if we want to use information gain for exploration, then we have to use information gain for the MDP.
+So if we want to use information gain for exploration, we have to make some kind of approximation.
+And a lot of the technical complexity in using these methods is really in the nature of approximation that you're going to make.
+So there are a few approximations.
+One approximation we could make is something called prediction gain.
+Prediction gain is not the same as information gain, but it can be shown to be a crude approximation to information gain.
+Prediction gain is the difference between log p theta of s and log p theta prime of s and log p theta of s.
+So if we want to use information gain, we have to make some kind of approximation.
+Prediction gain is something called prediction gain.
+Prediction gain is something called a pseudo count of s and log p theta of s.
+So if you think back to the electron pseudo counts, theta prime denotes the new parameters of a density model that we get after updating on the latest state theta.
+So if you just compare the log probabilities of that new state before and after updating on it, that refers to something called prediction gain.
+Prediction gain is something called prediction gain, which is an approximation for information gain.
+Specifically the information about the state density.
+So this results in an algorithm that's maybe a little bit similar to that pseudo count spell, but the function of the state density is the same and the information is different.
+a little bit similar to that pseudo-counts method, but doesn't actually involve explicitly trying to estimate pseudo-counts.
+So the intuition is if the density changed a lot, then the state was very novel.
+Another kind of approximation we could use is variational inference.
+And this is what I'm going to go to in a little bit more detail in this front paper called Vine.
+So an interesting observation is that information gain can be equivalently written as the KL divergence between P of z given y and P of z.
+It kind of makes sense that this would be the case, because if P of z given y is very similar to P of z, then you're not learning a lot about z from observing y.
+Whereas if they are very, very different, then you're learning a lot about z from observing y.
+So in fact, it's exactly equivalent to the KL divergence.
+Now we're going to be learning about the dynamics.
+So the quantity of the dynamic is going to be the quantity of the dynamic.
+And the quantity of the Z is the parameter vector theta that describes the dynamics model.
+So we have some dynamics model P theta of st plus 1 given st at, using any of the techniques we discussed in the model-based RL lectures.
+And the quantity of interest z is theta.
+And the observation y is a transition.
+It's a tuple st at st plus 1.
+And the question we're going to ask is, well, which action should we be taking to get the most informative transitions, the transitions that are the most informative about theta?
+So then the KL divergence that we want is the following.
+We want to maximize the KL divergence between P theta, given our history, given all the data we've seen so far, and the new transition against P of theta given only our history.
+So h here denotes basically our replay buffer without this new transition added to it.
+And theta denotes the model parameters.
+So we want the model parameters after observing a new transition to be the new transition.
+So we want the model parameters after observing a new transition to be very different from the model parameters from only observing the history without that new transition.
+So the intuition is that a transition is more informative if it causes a belief over theta to change.
+Now the problem with this, of course, is that estimating a parameter posterior, as we've discussed multiple times now, is in general intractable.
+So if theta represents the parameters of some neural net, then we can't in general get a true posterior P theta, but we can get approximations to it.
+So the idea will be to use variational inference to estimate some approximate posterior that we're going to call Q of theta, given some variational parameters phi, which we're going to try to use to closely approximate P theta given h.
+And then given a new transition, we'll update the variational parameters phi to get new variational parameters phi prime, and then we'll compare these two distributions.
+So we're going to have our approximate posterior, Q of theta given phi.
+And then we'll have our q of theta given phi, which is approximately equal to P theta given h.
+And then what we have to do is we have to actually train this approximate posterior, and we'll train it to optimize the variational lower bound, which is given by the KL divergence between Q theta given phi and P of h given theta times P of theta.
+So this is the usual variational lower bound.
+If you're not familiar with variational lower bounds, don't worry, we'll cover them in a lot more detail in a subsequent lecture.
+So we're going to try to make Q of theta given phi to be close to P of theta given h.
+And by Bayes' rule, that's actually the same as trying to make it close to P of h comma theta, which factorizes as P of h given theta times P of theta.
+So that's the objective for getting Q.
+Now, how do we represent Q?
+Well, as we discussed before in the model-based RL lecture, one of the ways we can represent a distribution over parameters is as a product of independent Gaussians.
+So for every number in our parameter vector, we have a Gaussian with a mean and a variance, and phi represents the mean.
+It could also represent the variance, but for now, let's just say it represents the mean.
+So this is this picture of the Bayesian neural network that we had in the model-based RL lectures.
+So P of theta given d is just the product over all of our parameter values of P of theta i given d.
+So i here indexes into the parameter vector.
+So the first number in the model is the variance, the second number is the variance, the third number is the variance, the fourth number is the variance, the fifth number is the variance, the sixth number is the variance, the seventh number is the variance, and so on.
+So we have the variance, the second number is the variance, and so on.
+And each of those independent marginals is just a Gaussian with some mean mu i and some variance sigma i, and that's what phi refers to, either just the mean or the mean and the variance.
+If we have just the mean, then it's a constant variance.
+All right.
+So one very simple method we could use, which I also referenced in the model-based RL slides, is this method by Blundell et al.
+called weight uncertainty in neural networks.
+And that paper describes an algorithm called Bayes by Backprop, which is a very simple method.
+But it's a very simple method for Bayesian neural nets that use the reparameterization trick.
+OK.
+And then when we are given a new transition, s comma a comma s prime, we're going to update phi to get phi prime.
+So we'll simply take that objective, that KL divergence, and we'll minimize it again with the new transition appended to it.
+So now we have two phi parameters, the old one before we saw the transition and the new one after we saw the transition.
+And they both define distributions over parameters, which means that we can compute a KL divergence between them.
+So when we observe a new transition, we update the means and variances of our Bayesian neural network.
+And then we can calculate the KL divergence between Q theta given phi prime and Q theta given phi as our approximate bonus.
+KL divergences between Gaussian distributions have a closed form equation.
+So we just look up the equations and plug it in.
+Intuitively, this equation is a closed form equation.
+So we just look up the equations and plug it in.
+And if you take a better look at the ز and the ϕ derivative, you'll find that the liz and ϕ��게요 our difference destined to happen in this equation is relatively close to 0.
+We show up again that z is equal to X squared over x squared minus defining the<|jw|> further mezz.
+So what we'll Владгогин then do is we'll look at what he has here.
+And here is basically a really straightforward attempt to solve such a problem together.
+What we can do is we canhope make a conclusion, and this is just exactly what you're going to do.
+What you make up is that you would, for instance, go for a simple hit, right?
+Then possibly capture it out of this equation.
+construct a new reward R plus that has this bonus added to it.
+So in the paper, they describe how well this method works.
+They show some evaluations and illustrate that, in fact, adding this information gain bonus does result in some significant gains in exploration performance across a range of reinforcement learning tasks.
+One of the nice things about approximate information gain is that it does provide a very appealing mathematical formalism.
+One downside is that these models are somewhat complex.
+You have to train entire dynamics models just to get your exploration bonuses, and generally it's a bit harder to use these things effectively.
+So if you can estimate densities, maybe it's easier to use something like pseudocounts, even though these methods have some very appealing kind of theoretical formalisms behind them.
+Now, while the scale divergence can be seen as a change in network mean parameters 5, if we forget about information gain, there are many other ways to measure how much your network is changing.
+So here we have this very Bayesian method that actually estimates distributions over parameters and measures the change in the distribution as an exploration bonus.
+But if we forget about distribution and just measure change in some parameter vector, we could essentially recover something that looks very similar to the error-based methods that we had before.
+So for example, we could encode our image observations using an autoencoder, build a predictive model, and then we could use this method to measure the change in the model on the autoencoded latent states, and then use model error as our exploration bonus.
+There's also some related work to this in this paper by Schmidhuber at all.
+You could use your exploration bonus for model error, for model gradient, and so on, and many other variations.
+So in general, this idea of using errors and models as exploration bonuses is a very, very heavily studied one.
+Oftentimes it's not tied directly to information gain, but sometimes it's tied to the information gain.
+So if you're going to do a model, you can't just do a model, you can't just do a model, you can't just do a model, you can't just do a model.
+So for example, if you're going to do a model, you can't just do a model, you can't just do a model.
+Okay, so to recap, we discussed different classes of exploration methods in Deep RL.
+We talked about optimistic exploration, like exploration with counts and pseudocounts, different models for estimating densities.
+We talked about Thompson sampling style algorithms, where you maintain a distribution over models via bootstrapping.
+For example, you could maintain a distribution over Q functions and then sample a different Q function for every episode.
+And then we talked about information gain style algorithms, which are generally intractable, but you can use things like variational approximations to information gain to actually get practical algorithms in this category.
+If you want to learn more about this material, a few suggested readings.
+So this is an older paper by Schmidhuber called The Possibility for Implementing Curiosity and Boredom in Model-Building Neural Controllers.
+While it's a somewhat grandiose title, this paper does introduce some interesting exploration methods based on model error.
+This is another paper that used model error incentivizing exploration and reinforcement.
+Learning with deep predictive models.
+This is the paper on posterior sampling deep exploration by Bootstrap DQM.
+This is the volume paper.
+This is the paper on count-based exploration, pseudocount-based exploration, sorry.
+And this is the hashing paper.
+And this is the EX2 paper that I covered.
+So if you want to learn about exploration in reinforcement learning, maybe some of these papers could be good works to check out.
