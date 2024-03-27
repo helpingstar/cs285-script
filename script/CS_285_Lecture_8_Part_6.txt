@@ -108,7 +108,7 @@ Some deep RL papers for queue learning.
 The Wang and Riedmiller paper that I mentioned.
 The DQN paper.
 This is the paper that introduced double queue learning.
-This is the paper that introduced that approximate maximization with mu theta.
+This is the paper that introduced that approximate maximization with mu θ.
 This is the paper that introduced NAF.
 This is a paper that introduces something called dueling network architectures, which is very, very similar to the NAF architecture, but adapted for discrete action spaces.
 I didn't cover this in the lecture, but it's also a pretty useful trick for making queue learning work better.

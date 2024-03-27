@@ -40,7 +40,7 @@ So that's what we'll talk about next.
 Methods that use state and action-dependent baselines are sometimes referred to as control variants in the literature.
 So the true advantages, the Q value minus the value function, our approximate advantage that we use in policy gradients when we have a state-dependent baseline, is the sum of all future rewards minus the current value.
 So this is nice because it has lower variance, but we can make the variance even lower if we subtract the Q value.
-So this version has no bias, but it has higher variance than the actor critic because of the single sample estimate.
+So this version has no bias, but it has higher variance than the Actor-Critic because of the single sample estimate.
 If we subtract the Q value, this has the nice property that it actually goes to 0 if your critic is correct.
 So if your critic is correct and your future behavior is not too random, then you'd expect these quantities eventually to converge to 0.
 Unfortunately, if you plug in this advantage estimator into your policy gradient, the policy gradient is no longer correct.

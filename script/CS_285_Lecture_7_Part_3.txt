@@ -9,31 +9,31 @@ So intuitively, the main reason that Fittick Q iteration allows us to get away w
 So as our policy changes, what really changes is this max.
 Remember, the way that we got this max was by taking the argmax, which is our policy, the policy in an argmax policy, and then plugging it back into the Q value to get the actual value for the policy.
 So inside of that max, you can kind of unpack it.
-And pretend that it's actually Q ϕ of si prime comma argmax of Q ϕ, and that argmax is basically our policy.
+And pretend that it's actually Q ϕ of s'_i comma argmax of Q ϕ, and that argmax is basically our policy.
 So this is the only place where the policy shows up.
-And conveniently enough, it shows up as an argument to the Q function, which means that as our policy changes, as our action ai prime changes, we do not need to generate new rollouts.
+And conveniently enough, it shows up as an argument to the Q function, which means that as our policy changes, as our action a'_i changes, we do not need to generate new rollouts.
 You can almost think of this as a kind of model.
 The Q function allows you to sort of simulate what kind of values you want to get out of the model.
 So you can simulate the values you would get if you were to take different actions.
 And then, of course, you take the best action if you want to most improve your behavior.
-So this max approximates the value of π prime, our greedy policy, at si prime.
+So this max approximates the value of π prime, our greedy policy, at s'_i.
 And that's why we don't need new samples.
 We're basically using our Q function to simulate the value of new actions.
 So given a state and an action, the transition is actually independent of π.
 Right?
-If si and ai are fixed, no matter how much we change π, si prime is not going to change, because π only influences ai, and here ai is fixed.
-So one way that you can think of Theta Q iteration kind of structurally is that you have this big bucket of different transitions, and what you'll do is you'll back up the values along each of those transitions, and each of those backups will improve your Q value.
+If s_i and ai are fixed, no matter how much we change π, s'_i is not going to change, because π only influences ai, and here ai is fixed.
+So one way that you can think of θ Q iteration kind of structurally is that you have this big bucket of different transitions, and what you'll do is you'll back up the values along each of those transitions, and each of those backups will improve your Q value.
 But you don't actually really care so much about which specific transitions they are, so long as they kind of cover up the value of each of those transitions.
 So you don't really care so much about which specific transitions they are, so long as they kind of cover up the value of each of those transitions.
 So you don't really care so much about which specific transitions they are, so long as they kind of cover up the value of each of those transitions.
-So you can imagine that you have this data set of transitions, and you're just plugging away on this data set, running Theta Q iteration, improving your Q function each time you go around the loop.
-Now, what exactly is it that Theta Q iteration is optimizing?
+So you can imagine that you have this data set of transitions, and you're just plugging away on this data set, running θ Q iteration, improving your Q function each time you go around the loop.
+Now, what exactly is it that θ Q iteration is optimizing?
 Well, this step, the step where you take the max, improves your policy.
 Right?
 So in the tabular case, this would literally be your policy improvement.
 And your step 3 is minimizing the error of fit.
 So if you had a tabular update, you would just directly write those YIs into your table, but since you have a neural network, you have to actually perform some optimization to minimize an error against those YIs, and you might not drive the error perfectly to 0.
-So you could think of Theta Q iteration as optimizing an error, the error being the Bellman error, the difference between Q, ϕ, SA, and those target values Y, and that is kind of the closest to an actual optimization objective.
+So you could think of θ Q iteration as optimizing an error, the error being the Bellman error, the difference between Q, ϕ, SA, and those target values Y, and that is kind of the closest to an actual optimization objective.
 But of course, that error itself doesn't really reflect the goodness of your policy.
 It's just the accuracy with which you're able to copy your target values.
 If the error is 0, then you know that Q, ϕ, SA is equal to RSA plus γ max A prime Q, ϕ, s' A prime.
@@ -41,19 +41,19 @@ And this is an optimal Q function, corresponding to the error of fit.
 And this is an optimal Q function, corresponding to the optimal policy π prime, where the policy is recovered by the argmax rule.
 So this you can show maximizes reward.
 But if the error is not 0, then you can't really say much about the performance of this policy.
-So what we know about Theta Q iteration is, in the tabular case, your error will be 0, which means that you'll recover Q star.
+So what we know about θ Q iteration is, in the tabular case, your error will be 0, which means that you'll recover Q star.
 If your error is not 0, then most guarantees are lost when we leave the tabular case.
 So that's how the error is resolved.
 All right.
-Now let's discuss a few special cases of Theta Q iteration, which correspond to very popular algorithms in the literature.
-So, so far, the generic form of Theta Q learning that we talked about has these three steps.
+Now let's discuss a few special cases of θ Q iteration, which correspond to very popular algorithms in the literature.
+So, so far, the generic form of θ Q learning that we talked about has these three steps.
 Collect the data set, evaluate your target values, train your neural network parameters to fit those target values, and then alternate these two steps k times.
 And then after k times, go out and collect more data.
 You can instantiate a special case of this, of this algorithm with particular choices for those hyperparameters, which actually corresponds to an online algorithm.
-So in the online algorithm, in step one, you take exactly one action, ai, and observe one transition, si, ai, si prime, ri.
+So in the online algorithm, in step one, you take exactly one action, ai, and observe one transition, si, ai, s'_i, ri.
 Then in step two, you compute one target value for that transition that you just took.
-Very much analogous to how you calculate the advantage value in actor critic, in online actor critic, for the one transition that you just took.
-And then in step three, you take one gradient descent step on the error between your q values and the target value that you just computed.
+Very much analogous to how you calculate the advantage value in Actor-Critic, in online Actor-Critic, for the one transition that you just took.
+And then in step three, you take one gradient descent step on the error between your Q values and the target value that you just computed.
 So the equation that I have here, it looks a little complicated, but I basically just applied the chain rule of probability to that objective inside the art min in step three.
 So applying chain rule, you get dq d ϕ at si, ai times the error q ϕ si, ai minus yi.
 And the error in those parentheses, that q si, ai minus yi, is something that you can do in the algorithm.
@@ -106,4 +106,4 @@ So until then, thanks for watching, and I'll see you in the next one.
 the second half of the course, but these simple rules are hopefully going to be enough to implement basic versions of Q iteration and Q learning algorithms.
 All right, so to review what we've covered so far, we've discussed value-based methods, which don't learn a policy explicitly, but just learn a value function or Q function.
 We've discussed how if you have a value function, you can recover a policy by using the arcmax, and how we can devise this fitted Q iteration method, which does not require knowing the transition dynamics, so it's a true model-free method.
-And we can instantiate it in various ways, as a batch mode off policy method, or an online Q learning method, depending on the choice of those hyperparameters, the number of steps we take to gather data, the number of gradient updates, and so on.
+And we can instantiate it in various ways, as a batch mode off-policy method, or an online Q learning method, depending on the choice of those hyperparameters, the number of steps we take to gather data, the number of gradient updates, and so on.

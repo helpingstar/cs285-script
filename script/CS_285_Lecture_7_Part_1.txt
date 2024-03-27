@@ -24,7 +24,7 @@ The intuition for why this should be possible is that the value function tells u
 we simply select actions that go into the better states, maybe we don't need an explicit policy neural network anymore.
 So here's the way to make this intuition a bit more formal.
 a π st at is our advantage.
-That's the difference between our q value and our value.
+That's the difference between our Q value and our value.
 And intuitively the advantage says how much better is at than the average action according to the policy π, where π is the policy for which we calculated this advantage.
 So then arg max with respect to at of a π st at is the best action that we could take from st if we follow π thereafter.
 Which means that the arg max with respect to at of the advantage is going to be at least as good as an action that we would have sampled from our current policy.
@@ -125,15 +125,15 @@ So the argmax gives us the policy, but the max actually gives us the new value o
 So what we can do is we can short circuit this.
 We can actually skip the step where we recover the indices and just directly take the values.
 So we can skip the policy and compute the values directly.
-And this gives us a new algorithm, which is called value iteration, where in step one we set the q values, basically the entries in this s by a table, to be the reward plus the expected value of the value function of the next time step.
+And this gives us a new algorithm, which is called value iteration, where in step one we set the Q values, basically the entries in this s by a table, to be the reward plus the expected value of the value function of the next time step.
 And then in step two we set the value function to be the max over a in this Q function table.
 So we basically take each row in the Q function table and pick the entry with the largest number in it and store that as the value for that state.
 So here explicit policy computation is skipped.
-We don't have our action to present the policy explicitly, but you can think of it as showing up implicitly in step two, because setting the value to be the max over the actions in the q value table is analogous to taking the argmax and then plugging the index of the argmax into the table to recover the value.
+We don't have our action to present the policy explicitly, but you can think of it as showing up implicitly in step two, because setting the value to be the max over the actions in the Q value table is analogous to taking the argmax and then plugging the index of the argmax into the table to recover the value.
 But since taking the argmax and then plugging into the table is the same as just taking the max, we can basically short circuit that step and get this procedure.
-So step one, construct your q value table by setting it to be the reward plus the expected value of the next time step.
+So step one, construct your Q value table by setting it to be the reward plus the expected value of the next time step.
 Step two, set the value to be the max.
-So this yield, slightly modified and simpler procedure, where in the green box you construct your table of q values and the blue box you construct the value function by taking the max.
+So this yield, slightly modified and simpler procedure, where in the green box you construct your table of Q values and the blue box you construct the value function by taking the max.
 Now this procedure can be simplified even further if you actually take step two and plug it into step one.
 So you notice that V of s only shows up in one place, which is inside that expectation step one.
 So if you simply replace that with a max over a of q sa, you don't even need to represent the value function.

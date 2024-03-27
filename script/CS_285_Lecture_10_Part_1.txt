@@ -17,15 +17,15 @@ So the goals for today's lecture will be to understand how we can perform planni
 Okay, so let's start with a little recap.
 In the preceding lectures we learned about algorithms that optimize the reinforcement learning objective.
 And the reinforcement learning objective is given here on this slide.
-The objective is to maximize the expected value under the trajectory distribution p theta tau induced by your policy pi theta of the total reward along that trajectory.
+The objective is to maximize the expected value under the trajectory distribution p_θ tau induced by your policy pi θ of the total reward along that trajectory.
 And we learned about a number of other objectives.
-We learned about the potential of the trajectory distribution p theta tau induced by your policy pi theta of the total reward along that trajectory.
+We learned about the potential of the trajectory distribution p_θ tau induced by your policy pi θ of the total reward along that trajectory.
 And we learned about a number of other objectives.
 We learned about a number of other objectives.
 We learned variance on this basic recipe including methods that use discounts.
-The trajectory distribution is formed by multiplying together the initial state probability the policy probabilities pi theta at given st and the transition probabilities pst plus 1 given st 18.
-And I'm going to use p theta of tau or interchangeably pi theta of tau to denote the trajectory distribution and make it clear that it depends on theta.
-And we learned that the trajectory distribution of p theta of tau could be multiplied So in the algorithms that we've discussed so far, we've assumed a model-free formulation, meaning that we assume that we do not know P of ST plus 1 given STAT, and not only that, but we don't even attempt to learn.
+The trajectory distribution is formed by multiplying together the initial state probability the policy probabilities pi θ at given st and the transition probabilities pst plus 1 given st 18.
+And I'm going to use p_θ of tau or interchangeably pi θ of tau to denote the trajectory distribution and make it clear that it depends on θ.
+And we learned that the trajectory distribution of p_θ of tau could be multiplied So in the algorithms that we've discussed so far, we've assumed a model-free formulation, meaning that we assume that we do not know P of ST plus 1 given STAT, and not only that, but we don't even attempt to learn.
 So these were all algorithms that managed to get away with only sampling from P of ST plus 1 given ST along full trajectories without ever needing to actually know what the probabilities were or ever needing to make predictions about, for example, what would have happened if you had taken a different action from the same state.
 In fact, if you recall our discussion of Q learning, we managed to intentionally avoid this issue by switching over from value functions and policy iteration over to Q functions.
 So, so far we've assumed that the transition probabilities are not known and made no attempt to actually learn them.

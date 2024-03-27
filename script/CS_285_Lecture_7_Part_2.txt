@@ -25,9 +25,9 @@ Jerπ is going to be in theCu and traqn.
 So for the list of operations we could take in too complete an account, we could take as too large an account as people did, we can just stake out a maximum of 1 ут each time taking that capital and having it careers았어요 a maximum of 1 ут would look like this.
 Then our fitted value iteration algorithm would look like this.
 We would take our dataset of states and actions.
-For every sample state, we would evaluate every possible action you could take in that state, and we would take a max over those actions of our q values.
-So what I have in the parentheses here is I have just substituted in the q value.
-So the q values of the reward, plus γ times the expected value of the next state.
+For every sample state, we would evaluate every possible action you could take in that state, and we would take a max over those actions of our Q values.
+So what I have in the parentheses here is I have just substituted in the Q value.
+So the Q values of the reward, plus γ times the expected value of the next state.
 You'll see this is real.
 Here is ourginqu.tm.
 Now we get 5u.
@@ -36,7 +36,7 @@ So I've substituted that into the parameters.
 We don't represent the Q function explicitly here.
 We just compute it as we go to evaluate the max.
 And that gives us our target values y.
-And then we solve for ϕ by doing least squares regression so that v ϕ of si is close to yi.
+And then we solve for ϕ by doing least squares regression so that v ϕ of s_i is close to yi.
 So this is fitted value direction.
 Step one, compute your target values by constructing the Q function for every possible action at each sampled state.
 So you have a finite sampling of states and we still assume that we have discrete action space so we can perform this enumeration exactly.
@@ -86,12 +86,12 @@ So what we did before is we took policy iteration, which alternates between eval
 And we transformed to this other algorithm where step one constructs target values by taking a max over the Q values.
 And step two fits a new value function to those target values.
 So the way that we construct a fitted Q iteration algorithm is very much analogous to fitted value iteration.
-We construct our target value YI as the reward of a sampled state action tuple SI AI plus γ times the expected value of the value function at state s'.
+We construct our target value YI as the reward of a sampled state action tuple s_i AI plus γ times the expected value of the value function at state s'.
 and then in step 2 we simply regress our Q function Q ϕ onto those target values.
 The trick, of course, is that we have to evaluate step 1 without knowing the transition probabilities, so we're going to do two things.
-First, we're going to replace V of SI prime with the max over A at Q ϕ SI prime AI prime, because we're only approximating Q ϕ, we're not approximating V ϕ.
-And second, instead of taking a full expectation over all possible next states, we're going to use the sampled state SI prime that we got when we generated that sample.
-And now all we need to run this fitted Q iteration algorithm is samples SI AI SI prime, which can be constructed by rolling out our policy.
+First, we're going to replace V of s'_i with the max over A at Q ϕ s'_i AI prime, because we're only approximating Q ϕ, we're not approximating V ϕ.
+And second, instead of taking a full expectation over all possible next states, we're going to use the sampled state s'_i that we got when we generated that sample.
+And now all we need to run this fitted Q iteration algorithm is samples s_i AI s'_i, which can be constructed by rolling out our policy.
 So this is fitted Q iteration.
 It alternates between two steps.
 Step one, estimate target values, which you can do using only samples, and step two, estimate target values, which you can do using only samples.
@@ -104,7 +104,7 @@ So this algorithm does not make any assumptions that the actions were actually s
 So this algorithm does not make any assumptions that the actions were actually sampled from the latest policy.
 The actions could have been sampled from anything.
 So you can store all the data you've collected so far.
-It doesn't need to come from your latest policy, unlike actor critic, where we had a non-policy algorithm.
+It doesn't need to come from your latest policy, unlike Actor-Critic, where we had a non-policy algorithm.
 There's only one network.
 There's no policy gradient at all.
 There's no actor.
@@ -119,7 +119,7 @@ So just to put the pieces together, here's the full fitted Q iteration algorithm
 And for each step of the algorithm, there are some free parameters that I'm going to mention.
 Step one, we're going to use a non-linear function approximation.
 So we're going to use a non-linear function approximation.
-So step one, collect the data set consisting of tuples si, ai, si prime, and ri using some policy.
+So step one, collect the data set consisting of tuples si, ai, s'_i, and ri using some policy.
 The algorithm works for a wide range of different policies.
 Now, not all policy choices are equally good, but the principles will apply to any policy, and it certainly doesn't have to be the latest policy.
 And one of the parameters you have to choose is the number of such transitions you are to collect.
@@ -129,7 +129,7 @@ And of course, you also choose the policy that you're going to be rolling out.
 What policy do you use to collect this data?
 A very common choice is, in fact, to use the latest policy, but there are a few nuances about that choice that I'll discuss shortly.
 Step two, for every transition that you sampled, calculate a target value.
-So you calculate the target value, yi, by taking the reward from that transition, plus γ times the max over the next action, ai prime, of the Q value, Q ϕ, si prime, ai prime, using your previous Q function estimator, Q ϕ.
+So you calculate the target value, yi, by taking the reward from that transition, plus γ times the max over the next action, a'_i, of the Q value, Q ϕ, s'_i, a'_i, using your previous Q function estimator, Q ϕ.
 Step three, train a new Q function, which means find a new parameter vector ϕ, by minimizing the difference between the values of Q ϕ, si, ai, and the corresponding target value, yi.
 So you have a Q function, which takes as input s and a.
 It outputs a scalar value, and it has parameters ϕ.

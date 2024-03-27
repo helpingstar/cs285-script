@@ -69,5 +69,5 @@ The policy was never trained on drones, but it can actually control drones in ze
 And you can see that it's using some of the ideas we discussed, it's of course using this goal relabeling trick and it's using a history that is read in, in this case, by just concatenating the frames, although in later work it's also read in with a sequence model transformer.
 The last thing I want to mention here is a paper called hindsight experience replay, which introduced a very similar principle but in the context of off-policy reinforcement learning algorithms.
 We'll talk about off-policy reinforcement learning much more later, I didn't describe what this is yet, but I just wanted to mention this paper because it is something that often comes up in the context of this work.
-It is not doing goal conditioned behavior cloning, but it is applying a hindsight relabeling method to off-policy RL and actor critic methods.
-So we'll talk about off-policy RL and we'll talk about actor critic methods later, but I want to mention this because it is an idea that's also very widely used in current methods.
+It is not doing goal conditioned behavior cloning, but it is applying a hindsight relabeling method to off-policy RL and Actor-Critic methods.
+So we'll talk about off-policy RL and we'll talk about Actor-Critic methods later, but I want to mention this because it is an idea that's also very widely used in current methods.

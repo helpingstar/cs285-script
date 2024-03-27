@@ -87,27 +87,27 @@ So you could equivalently think of this as basically NFQCA.
 This algorithm can also be interpreted as a kind of deterministic after-critic method, but I think it's actually simplest to think of it conceptually as a Q learning algorithm.
 So remember that our max over a of Q phi SA is just Q phi evaluated at the arcmax.
 So as long as we can do that arcmax, we can perform Q learning.
-So the idea is to train another network, mu theta S, such that mu theta S is approximately the arcmax of Q phi.
-And you can also think of mu theta S as a kind of policy, because it looks at a state and outputs the action, specifically the arcmax action.
+So the idea is to train another network, mu θ S, such that mu θ S is approximately the arcmax of Q phi.
+And you can also think of mu θ S as a kind of policy, because it looks at a state and outputs the action, specifically the arcmax action.
 How do we do this?
-Well, you just solve for theta to find the theta that maximizes Q phi at S comma mu theta S.
+Well, you just solve for θ to find the θ that maximizes Q phi at S comma mu θ S.
 So you basically push gradients through your Q function and maximize.
 And you can use the chain rule to evaluate this derivative.
-So DQ phi D theta is just DA D theta, which is the derivative of mu theta, times DQ phi DA.
+So DQ phi D θ is just DA D θ, which is the derivative of mu θ, times DQ phi DA.
 So you can obtain this derivative by backpropagating through the graph, propagating through the Q function and into the mu, and then into the mu parameters.
-So now our targets are going to be given by as Yj equals Rj plus γ times Q phi prime, evaluated at Sj prime comma mu theta Sj prime, which is really an approximation for the arcmax, as long as mu theta is a good estimate of the arcmax.
+So now our targets are going to be given by as Yj equals Rj plus γ times Q phi prime, evaluated at Sj prime comma mu θ Sj prime, which is really an approximation for the arcmax, as long as mu θ is a good estimate of the arcmax.
 So here is what that algorithm will look like.
-Step 1, take some action AI, observe the corresponding transition Si, Ai, Si prime, Ri, and add it to your buffer, just like in Q-learning.
+Step 1, take some action AI, observe the corresponding transition Si, Ai, s'_i, Ri, and add it to your buffer, just like in Q-learning.
 Step 2, sample a mini-batch Sj, Aj, Sj prime, Rj from your buffer, uniformly at random.
 Step 3, compute your target value.
-And now instead of using the arcmax, you're going to use mu theta.
-And in fact, you're going to use mu theta prime.
-So you actually have a target network for Q phi prime and a target network for mu theta prime.
+And now instead of using the arcmax, you're going to use mu θ.
+And in fact, you're going to use mu θ prime.
+So you actually have a target network for Q phi prime and a target network for mu θ prime.
 And then step 4, just like in Q-learning, perform a gradient update on phi.
-And additionally, we'll now perform a gradient update on theta.
-So the gradient on theta uses that chain rule derivation for the gradient that I showed in the previous slide.
-So it takes the derivative of the Q value with respect to the action, and then multiplies that by the derivative of the action with respect to theta, which is just backpropagation through mu.
-Then we're going to update our target parameters, phi prime and theta prime, for example, using polyarcha-aversion.
+And additionally, we'll now perform a gradient update on θ.
+So the gradient on θ uses that chain rule derivation for the gradient that I showed in the previous slide.
+So it takes the derivative of the Q value with respect to the action, and then multiplies that by the derivative of the action with respect to θ, which is just backpropagation through mu.
+Then we're going to update our target parameters, phi prime and θ prime, for example, using polyarcha-aversion.
 And then we'll repeat this process.
 So this is the basic pseudocode for a continuous action Q-learning algorithm.
 In this case, this particular algorithm is DDPG, but there are many more recent variants as well as older variants.

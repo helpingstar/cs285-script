@@ -74,9 +74,9 @@ Process one and process three run at the same speed, which is a slightly arbitra
 And then process two is very slow, and the replay buffer is quite large, so you might store up to a million transitions.
 Part of why this starts looking so weird is that when your replay buffer is large, process one and process three are pretty heavily decoupled, because once it's large enough, the probability that you'll sample the transition that you just collected becomes pretty low.
 It does turn out that it's actually quite important to collect data pretty quickly, because the performance of your Q-learning algorithm can degrade rapidly if you don't collect data fast enough, but nonetheless, process one and process three have quite a bit of buffer space between them, literally.
-And then the Theta Q-duration algorithm that I used for illustrating these concepts can also be viewed as a special case of this.
-In Theta Q-duration, process three is actually in the inner loop of process two, which itself is in the inner loop of process one.
-So in the Theta Q-duration algorithm, you do your regression all the way to convergence, then you update your target network parameters, and you might alternate these a few times, and then in the outer outer loop, you pop all the way back out and collect more data.
+And then the θ Q-duration algorithm that I used for illustrating these concepts can also be viewed as a special case of this.
+In θ Q-duration, process three is actually in the inner loop of process two, which itself is in the inner loop of process one.
+So in the θ Q-duration algorithm, you do your regression all the way to convergence, then you update your target network parameters, and you might alternate these a few times, and then in the outer outer loop, you pop all the way back out and collect more data.
 But these are really not all that different.
 They're just particular choices about the rates at which we run all these different processes.
 And there's something, of course, a little bit deeper about this, because for each of these processes, they each create non-stationarity for every other process.

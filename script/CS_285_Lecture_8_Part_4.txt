@@ -139,7 +139,7 @@ It doesn't totally de-correlate Phi prime and Phi.
 But in practice, it actually tends to work pretty well, and it actually mitigates a large fraction of the problems with overestimation.
 But of course not all of them.
 Alright.
-There's another trick that I should mention that we can use to improve Q-learning algorithms, and it's similar to something that we saw in the actor critic lecture.
+There's another trick that I should mention that we can use to improve Q-learning algorithms, and it's similar to something that we saw in the Actor-Critic lecture.
 And that's the use of multi-step returns.
 So our Q-learning target is, and here I intentionally am writing it out with time steps, is Rjt plus the max at t plus one.
 And where does the signal in this learning process come from?
@@ -149,22 +149,22 @@ If your Q Phi primes are bad, then the only thing that really matters is the rew
 And early on in training, your Q function is pretty bad, so almost all of your learning signal really comes from the reward.
 Later on in training, your reward, you know, your Q function becomes better, and the Q values are much larger in magnitude than the rewards, so later on in training, the Q values dominate.
 But your takeoff, your initial learning period, can be very slow if your Q function is bad, because this target value is mostly dominated by the Q value.
-So this is quite similar to what we saw in actor critic, when we talked about how the actor critic style update that uses the reward plus the next value has lower variance, but it's not unbiased, because if the value function is wrong, then your advantage values are completely messed up.
+So this is quite similar to what we saw in Actor-Critic, when we talked about how the Actor-Critic style update that uses the reward plus the next value has lower variance, but it's not unbiased, because if the value function is wrong, then your advantage values are completely messed up.
 And Q learning is the same way.
 If the Q function is wrong, then your target values are really messed up, and you're not going to be making much learning progress.
-The alternative that we had in the actor critic lecture is to use a Monte Carlo sum of rewards, because the rewards are always the truth, they're just higher variance, because they represent a single sample estimate.
+The alternative that we had in the Actor-Critic lecture is to use a Monte Carlo sum of rewards, because the rewards are always the truth, they're just higher variance, because they represent a single sample estimate.
 We can use the same basic idea in Q learning.
-So Q learning, by default, does this kind of one-step backup, which has maximum bias and minimum variance, but you could construct a multi-step target, just like an actor critic.
+So Q learning, by default, does this kind of one-step backup, which has maximum bias and minimum variance, but you could construct a multi-step target, just like an Actor-Critic.
 Take a moment to imagine what this multi-step target would look like.
 If you have a piece of paper in front of you, consider writing it down, and then you can check what you wrote down against what I'm going to tell you on the next slide.
 Sorry, it's actually on this slide.
-So the way that you can construct a multi-step target is basically exactly analogous to what we saw in the actor critic lecture.
+So the way that you can construct a multi-step target is basically exactly analogous to what we saw in the Actor-Critic lecture.
 So the way that you can construct your multi-step target is by not just using one reward, but making a little sum from (t'=t) to t plus n minus one, and for each of those, you take rj t prime multiplied by γ to t minus t prime.
 And you can verify that if n equals one, then you recover exactly the standard rule that we had for Q learning.
 But for n larger than one, you sum together multiple reward values, and then you use your target network for the t plus n step multiplied by γ to the n.
 So this is sometimes called an n-step return estimator, because instead of summing the reward for one step, you sum it for n steps.
 So this is the n-step return estimator.
-And just like with actor critic, the trade-off of the n-step return estimator is that it gives you a higher variance because of that single sample estimate for r, but lower bias because even if your Q function is incorrect, now it's being multiplied by γ to the n, and for larger values of n, γ to the n might be a very small number.
+And just like with Actor-Critic, the trade-off of the n-step return estimator is that it gives you a higher variance because of that single sample estimate for r, but lower bias because even if your Q function is incorrect, now it's being multiplied by γ to the n, and for larger values of n, γ to the n might be a very small number.
 Okay.
 So let's talk about Q learning with these n-step returns.
 It's less biased because the target, because the Q values are multiplied by a small number, and it's typically faster early on because when the target values are bad, those sums of rewards really give you a lot of useful learning signal.

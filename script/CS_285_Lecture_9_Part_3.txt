@@ -11,14 +11,14 @@ So that's a little bit more of a different thing.
 So this makes the KL divergence very convenient to use.
 So the KL divergence has some very convenient properties that make it much easier to approximate and much easier to use in an actual reinforcement learning algorithm as we'll see in the remainder of this lecture.
 So in practice if we actually want to have a constrained policy gradient method we're going to express our constraint as a KL divergence rather than as a total variation divergence but since the KL divergence bounds the total variation divergence this is a legitimate thing to do and it preserves our bound.
-Okay so then the objective that we're going to want to optimize is our usual important sampled objective with the constraint that the KL divergence between pi theta prime and pi theta is bounded by epsilon and if epsilon is small enough this is guaranteed to improve j theta prime minus j theta because the error term will be bounded.
+Okay so then the objective that we're going to want to optimize is our usual important sampled objective with the constraint that the KL divergence between pi θ prime and pi θ is bounded by epsilon and if epsilon is small enough this is guaranteed to improve j θ prime minus j θ because the error term will be bounded.
 So how can we enforce this constraint?
 Well there's a few ways to do this.
 Let's first look at the constraint of the KL divergence.
 So let's look at the constraint of the KL divergence.
 So there are a number of different methods to do this and you know one very simple one is to actually write out an objective in terms of the Lagrangian of this constrained optimization problem.
 So the Lagrangian for those of you that don't remember your convex optimization is formed by simply taking the constraint, taking the left-hand side of the constraint minus the right-hand side and multiplying it by a Lagrange multiplier and we have one constraint and one Lagrange multiplier which I'm calling lambda.
-So if you want to solve a constrained optimization problem one of the things you can do is you can alternate between maximizing the Lagrangian with respect to the primal variables which are theta and then taking a step on the dual variables, a gradient descent step.
+So if you want to solve a constrained optimization problem one of the things you can do is you can alternate between maximizing the Lagrangian with respect to the primal variables which are θ and then taking a step on the dual variables, a gradient descent step.
 So the intuition is that you raise lambda if the constraint is violated too much otherwise you lower it right because if the KL divergence is much larger than epsilon then you're going to add dKL minus epsilon which is a positive number to the Lagrangian.
 So lambda will get bigger if the constraint is much lower than epsilon you'll add a negative number and lambda will get smaller.
 So you essentially alternate between solving an unconstrained problem and adjusting your Lagrange multiplier to enforce the constraint more or less strictly depending on whether it's being violated or not.

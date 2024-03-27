@@ -64,18 +64,18 @@ And in fact, you could derive the importance sample policy gradient that way als
 I wanted to derive it in this other way on the slide, just so that you could see the equivalence.
 Interestingly enough, if you estimate this gradient locally, so if you use this importance sampling derivation to evaluate the gradient at θ = θ', then the importance weight comes out equal to one, and you recover the original policy gradient.
 So this derivation actually gives you a different way to derive the same policy gradient that we had before.
-But in the off policy setting, θ' is not equal to θ, and in that case, we have to fall back on our importance weights, which we derived before, as simply the ratio of the products of the policy probabilities.
+But in the off-policy setting, θ' is not equal to θ, and in that case, we have to fall back on our importance weights, which we derived before, as simply the ratio of the products of the policy probabilities.
 And if we substituted in all three now the terms in this policy gradient, the importance weights are product overall time steps of π_{θ'}/π_θ.
 The ∇log π part is a sum over all time steps of ∇_{θ'} log π_{θ'}, and the reward is a sum over all time steps of the reward.
-So we have three terms inside of our importance sampled off policy policy gradient estimator, and we just multiply those three terms together.
+So we have three terms inside of our importance sampled off-policy policy gradient estimator, and we just multiply those three terms together.
 Now what about causality?
 What about the fact that we don't need to consider the effect of current actions on past rewards?
-Well, we can work those in too, in which case we, again, distribute the rewards and the importance weights into the sum over ∇log π's, and we get a sum from t=1 T of ∇log π times the product of all the importance weights in the past.
+Well, we can work those in too, in which case we, again, distribute the rewards and the importance weights into the sum over ∇log π, and we get a sum from t=1 T of ∇log π times the product of all the importance weights in the past.
 You can think of that intuitively as the probability that you would have arrived at the state using your new policy, times the sum of rewards weighted by the importance weights in the future.
 So future actions don't affect the correct weight.
 That's fine.
-The trouble is that this last part, you know, this part can be, you know, problematic, can be exponentially large, so can the first part.
-It turns out that if we ignore this last part, if we ignore the weights on the rewards, we recover something called a policy iteration algorithm.
+The trouble is that this last part, you know, this part can be, you know, problematic, can be exponentially large.
+So can the first part, it turns out that if we ignore this last part, if we ignore the weights on the rewards, we recover something called a policy iteration algorithm.
 And you can actually prove that a policy iteration algorithm will still improve your policy.
 It's no longer the gradient, but it's a well-defined way to provide guaranteed improvement to your policy.
 So don't worry about this yet.

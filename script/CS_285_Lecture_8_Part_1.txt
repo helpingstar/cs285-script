@@ -21,7 +21,7 @@ If we choose each of these hyperparameters to be one, meaning one step of data c
 Here I've called online Q-duration.
 This is really Q-learning.
 So if you hear someone say Q-learning, they really mean this method.
-Step one, take one action Ai and observe the resulting transition, Si, Ai, Si prime, Ri.
+Step one, take one action Ai and observe the resulting transition, Si, Ai, s'_i, Ri.
 Step two, calculate the target value Yi for that transition.
 Step three, perform one gradient step on the difference between the output of the Q function and the value that you just calculated.
 And of course, as usual, this algorithm fits into our anatomy of our reinforcement learning method.
@@ -125,7 +125,7 @@ So we can get a gradient, and we can get a gradient.
 So we're going to do that.
 And the diagram you could think of might look like this.
 We have our buffer of transitions.
-We're cranking away on this buffer doing our off policy Q learning.
+We're cranking away on this buffer doing our off-policy Q learning.
 And then periodically, we deploy some policy back into the world.
 For example, the greedy policy with epsilon greedy exploration to collect a little bit more data and bring back some more transitions to add back to our buffer.
 And that will refresh our buffer with a little bit more data.
