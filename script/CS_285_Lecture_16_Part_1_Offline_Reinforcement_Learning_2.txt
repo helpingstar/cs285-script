@@ -133,8 +133,8 @@ So what I can do is I can incorporate the KL divergence into the actor objective
 The log pi beta term simply gets added to the Q values because it doesn't depend on pi, and then I have this additional entropy term.
 Both of them are multiplied by a Lagrange multiplier lambda.
 Remember that if we have a constrained optimization problem, you know, maximize f of x subject to c of x equals 0, we can write it as an unconstrained problem where the constraint is multiplied by a Lagrange multiplier So if we can find the value of this Lagrange multiplier, then solving this problem will actually enforce the constraint.
-And in practice, we can either use the dual gradient descent approach that we covered before to find lambda, or we can even treat lambda as a hyperparameter and just tune the value of lambda directly.
-So here lambda is our Lagrange multiplier and h is the entropy, which is very easy to compute in closed form and differentiate for either Gaussian or categorical policies.
+And in practice, we can either use the dual gradient descent approach that we covered before to find λ, or we can even treat λ as a hyperparameter and just tune the value of λ directly.
+So here λ is our Lagrange multiplier and h is the entropy, which is very easy to compute in closed form and differentiate for either Gaussian or categorical policies.
 So the entropy term is actually very easy to deal with.
 You literally just code up the formula for the entropy and then let your automatic differentiation software compute the gradients.
 And then the log pi beta term is simply added to the Q function.
@@ -186,7 +186,7 @@ So this algorithm, with Qt, the Q function estimation goes under the name of adv
 If you use Monte Carlo returns, which is also possible, you get an algorithm called advantage-weighted regression.
 And the citations, if you want to read more about this, are shown at the bottom of this slide.
 Now, the trouble with this kind of approach, well, let me rewind a little bit, the trouble with this kind of approach is that in order to estimate those advantage values, you do still need to query out-of-distribution actions, because there's no guarantee that at intermediate stages in training, your policy pi theta will perfectly respect the constraint.
-If you choose lambda appropriately, the constraint will be respected at convergence, but over the course of training, the constraint may not be respected.
+If you choose λ appropriately, the constraint will be respected at convergence, but over the course of training, the constraint may not be respected.
 Which means that you can still get out-of-distribution actions with this.
 So there's actually two places where you end up querying out-of-distribution actions.
 One is in the target value, where you're computing the expectation under pi theta.

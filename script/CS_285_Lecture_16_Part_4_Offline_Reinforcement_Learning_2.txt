@@ -8,12 +8,12 @@ And there has been extensive...
 ...verification in many different papers showing that conservative Q-learning does work decently well in pure offline mode.
 Implicit Q-learning is also a good choice.
 It's a bit more flexible because it also works well for both offline and online, but it has more hyperparameters.
-If you want to only train offline and then fine-tune online, then advantage-weighted actual critic is a good choice.
+If you want to only train offline and then fine-tune online, then advantage-weighted Actor-Critic is a good choice.
 It's widely used and well tested in exactly this regime.
 Conservative Q-learning is actually not a good choice because conservative Q-learning, while it works very well offline, it doesn't fine-tune very well because it tends to be too conservative.
 Implicit Q-learning is a good choice for offline training followed by online fine-tuning.
 Empirically, that seems to work pretty well.
-And it actually seems to perform better than advantage-weighted actual critic, although it hasn't been around for as long and it's not as widely validated.
+And it actually seems to perform better than advantage-weighted Actor-Critic, although it hasn't been around for as long and it's not as widely validated.
 If you have a good way to train models in your domain, then you can opt for a model-based offline RL method.
 Now, this is rather domain-dependent.
 So basically, depending on the particular model, you can train models in your domain.

@@ -97,7 +97,7 @@ So this algorithm is not going to work the way I described.
 It's actually quite broken, and we have to do a bunch of things to fix it.
 One thing that I would recommend as an exercise here is to pause the video, look at this algorithm, and try to guess where it's broken.
 I'll tell you right now it's broken in at least two places.
-Meaning that in at least two places in the pseudocode there's something that doesn't make sense.
+Meaning that in at least two places in the pseudo-code there's something that doesn't make sense.
 Try to pause the video and find it, and then you can resume and I'll tell you what it is.
 Okay.
 So the first problem is that when you load these transitions from the replay buffer, remember that the actions in those transitions were taken by older actors.

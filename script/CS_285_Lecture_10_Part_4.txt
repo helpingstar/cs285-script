@@ -37,23 +37,23 @@ So if we have some current sequence of states and actions, maybe the best states
 And similarly, you can express the cost with a linear term depending on the gradient and a quadratic term depending on the Hessian.
 So now we've approximated our dynamics and our cost as linear and quadratic in the neighborhood of some sequence of states and actions denoted by x hat and u hat.
 And if you do this, then you can express this linear quadratic system, I'm going to call it f bar and c bar, in terms of the deviations of x from x hat.
-So this delta x and delta u represents x minus x hat and u minus u hat.
+So this δ x and δ u represents x minus x hat and u minus u hat.
 So these are deviations, these are differences from x hat and u hat.
-And now we're back in the linear quadratic regime, which means that we can simply plug in this thing into the regular LQR algorithm and solve for the optimal delta x and delta u.
-So delta x and delta u are the deviation from x hat and u hat.
-You can use LQR to solve for the optimal delta x and delta u and then add them to the old x hats and u hats to find new x's and u's.
+And now we're back in the linear quadratic regime, which means that we can simply plug in this thing into the regular LQR algorithm and solve for the optimal δ x and δ u.
+So δ x and δ u are the deviation from x hat and u hat.
+You can use LQR to solve for the optimal δ x and δ u and then add them to the old x hats and u hats to find new x's and u's.
 So here is the, here is the iterative LQR algorithm based on this idea.
 We're going to repeat the following process until convergence.
 For all the time steps, we're going to calculate the dynamics matrix as the gradient of the dynamics around x hat and u hat.
 And we're going to calculate a linear quadratic term for the cost.
-Then we're going to run the LQR backward pass using delta x and delta u as our state.
+Then we're going to run the LQR backward pass using δ x and δ u as our state.
 And then we're going to run the forward pass, but for the forward pass, we're actually going to use the original nonlinear dynamics.
 So we're not going to actually use the linearized dynamics to get x t plus 1, we're going to use the original nonlinear dynamics.
 And the reason that we do this is because we want to get the x t plus 1 that will actually result from taking that actual ut, not just an approximation to that.
-So we'll do the forward pass with linear dynamics and u given by capital K times delta x plus lowercase k plus u hat, which we just get from substituting in the delta x and delta u equations.
+So we'll do the forward pass with linear dynamics and u given by capital K times δ x plus lowercase k plus u hat, which we just get from substituting in the δ x and δ u equations.
 And then we will update x hat and u hat by simply setting them to be the x's and u's that we got from our forward pass.
 And then repeat this process.
-So essentially the backward pass computes a controller expressed in terms of delta x and delta u that will give you better costs than we had so far.
+So essentially the backward pass computes a controller expressed in terms of δ x and δ u that will give you better costs than we had so far.
 The forward pass checks how good that controller actually is and checks which states you'll get from running it and then updates x hat and u hat to be those new states and actions.
 Alright, so why does this work?
 Well, let's compare this procedure to a well-known optimization algorithm, which is Newton's method.

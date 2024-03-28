@@ -2,7 +2,7 @@ Okay, let's talk about what we'll cover in the class.
 So this course goes through a variety of deep reinforcement learning methods construed very broadly.
 We'll start with some basics.
 We'll start by talking about how we can take a journey from supervised learning methods to decision-making methods, provide some definitions, and generally come to understand the reinforcement learning problem.
-Then we'll have a unit on model-free reinforcement learning algorithms, where we'll cover Q-learning, policy gradient, and actual critic methods.
+Then we'll have a unit on model-free reinforcement learning algorithms, where we'll cover Q-learning, policy gradient, and Actor-Critic methods.
 And you'll have some homeworks where you'll implement each of these.
 Then we'll have another unit on model-based algorithms.
 We'll talk about planning, optimal control, sequence models, images, and things like that.
@@ -13,7 +13,7 @@ We'll talk about inverse reinforcement learning, which deals with inferring obje
 And then we'll have a few advanced topics like meta-learning and transfer learning, maybe hierarchical RL, and a set of research talks and invited lectures.
 So that's the overall overview of the class.
 You're going to have five assignments.
-There will be an assignment on imitation learning, policy gradients, Q-learning and actual critic algorithms, model-based RL, and the last one will be on offline RL.
+There will be an assignment on imitation learning, policy gradients, Q-learning and Actor-Critic algorithms, model-based RL, and the last one will be on offline RL.
 And there will be a final project.
 The final project.
 The final project is a research-level project of your choice.

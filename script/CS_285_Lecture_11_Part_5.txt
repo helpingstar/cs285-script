@@ -80,7 +80,7 @@ And then using those samples, maximize log p of st plus 1 given st and log p of 
 But a very simple special case of this, if you believe that your problem is almost fully observed, is to actually use a deterministic encoder.
 So instead of outputting a distribution over st given ot, we would just output a single st for our current ot.
 The stochastic case requires variational inference, which I'll discuss next week, but the deterministic case is quite a bit simpler.
-So the deterministic case can be thought of as a delta function centered at some deterministic encoding g psi of ot.
+So the deterministic case can be thought of as a δ function centered at some deterministic encoding g psi of ot.
 So that means that st is equal to g psi of ot.
 And if we use this deterministic encoder, then we can simply substitute that in everywhere where we see an s in the original objective, and we can remove the expectation.
 So now our objective is to maximize, with respect to 5, the total number of steps we want to do.

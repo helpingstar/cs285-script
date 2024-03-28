@@ -100,10 +100,10 @@ I'll present it first intuitively, and then discuss a little bit more mathematic
 What if instead of training one neural network to give us the distribution over the next state given the current state in action, we instead train many different neural networks, and we somehow diversify them so that each of those neural networks learns a slightly different function?
 Ideally, they would all do similar and accurate things on the training data, but they would all make different mistakes outside of the training data.
 If we can train this kind of training, if we can train this kind of ensemble of models, then we can get them to essentially vote on what they think the next state will be, and the dispersion in their votes will give us an estimate of uncertainty.
-Mathematically, this amounts to estimating your parameter posterior, p of θ given d, as a mixture of Dirac delta distributions.
+Mathematically, this amounts to estimating your parameter posterior, p of θ given d, as a mixture of Dirac δ distributions.
 So you've probably learned about mixtures of Gaussians.
 A mixture of Dirac deltas is like a mixture of Gaussians, and instead of Gaussians, you have very narrow spikes, so each element has no variance.
-It's just a mixture of delta functions, where each delta function is centered at the parameter vector for the corresponding network in the ensemble.
+It's just a mixture of δ functions, where each δ function is centered at the parameter vector for the corresponding network in the ensemble.
 So intuitively, you can train multiple models and see if they agree as your measure of uncertainty.
 Formally, you get a parameter posterior, p of θ given d, represented as this mixture of Dirac deltas, which means that if you want to integrate out your parameters, you simply average over your models.
 So you construct a mixture distribution where each mixture element is the prediction of the corresponding model.

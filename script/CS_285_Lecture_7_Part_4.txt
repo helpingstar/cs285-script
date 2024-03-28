@@ -161,7 +161,7 @@ They're non-differential because of the max, but there are some technical ways t
 The bigger problem is that the resulting algorithm, which is called a residual algorithm, has very, very poor numerical properties and doesn't work very well in practice.
 In fact, even though this kind of Q learning procedure that I described is not guaranteed to converge, in practice it actually tends to work much, much better than residual gradient, which, though guaranteed to converge, has extremely poor numerical properties.
 Okay, so short version, Q learning and Fitted Q iteration are not actually doing gradient descent, and the update is not the gradient of any well-defined function.
-There's also, unfortunately, another sad corollary to all this, which is that our actual critic algorithm that we discussed before also is not guaranteed to converge under function approximation for the same reason.
+There's also, unfortunately, another sad corollary to all this, which is that our Actor-Critic algorithm that we discussed before also is not guaranteed to converge under function approximation for the same reason.
 So there we also do a Bellman backup when we use a bootstrap update, and we do a projection when we update our value function, and the concatenation of those is not a convergent operator.
 So Fitted bootstrap policy evaluation also doesn't converge.
 And by the way, one aside about terminology, most of you probably already noticed this, but when I use the term V π, I'm referring to the value function for some policy π.

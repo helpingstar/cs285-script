@@ -5,22 +5,18 @@ So on this slide, I have the equation for the Actor-Critic that we discussed in 
 The Actor-Critic consists of the ∇log π term multiplied by the reward plus γ times the next value minus the current value.
 The policy gradient consists of the ∇log π term times the sum of the rewards to go minus a baseline.
 So the sum of the rewards to go is an unbiased single sample estimate of the Q value at s_{i,t} a_{i,t}.
-Now, the Actor-Critic policy gradient estimator.
-Has the advantage that drastically lowers the variance because the function approximator in the critic integrates in all those different possibilities for what might happen instead of relying on a single sample.
+Now, the Actor-Critic policy gradient estimator has the advantage that drastically lowers the variance because the function approximator in the critic integrates in all those different possibilities for what might happen instead of relying on a single sample.
 Unfortunately, the Actor-Critic gradient estimator also has the disadvantage that it's no longer unbiased.
 The reason for that is that if your value function is slightly incorrect, which it might be because it's a function approximator trained on a finite number of samples.
-Then you can't do that.
-Then you can't do that.
-You can't show anymore that in expectation, this gradient will actually converge to the true policy gradient.
+Then you can't show anymore that in expectation, this gradient will actually converge to the true policy gradient.
 The original policy gradient is unbiased.
 So even though it might have high variance, even though each individual evaluation might be off, in expectation, it'll come out to the right value.
 But it has much higher variance, which means that you typically need to use more samples or smaller learning rates.
-So one question we could ask is, could we get a policy gradient that's unbiased?
-Could we get a policy gradient estimator that is still unbiased, but uses the critic in some other way to lower the variance?
+So one question we could ask is, could we get a policy gradient estimator that is still unbiased, but uses the critic in some other way to lower the variance?
 And the answer is that we can.
 We can actually construct a policy gradient estimator that has slightly higher variance than the Actor-Critic version, but no bias like the policy gradient version.
 And the way that we can do this is by using what's called a state-dependent baseline.
-So it turns out that we can prove by extending the proof from the previous lecture that not only does the policy gradient, not only does the policy gradient, remain unbiased when you subtract any constant b, it actually still remains unbiased if you subtract any function that depends on only the state and not on the action.
+So it turns out that we can prove by extending the proof from the previous lecture that not only does the policy gradient remain unbiased when you subtract any constant b, it actually still remains unbiased if you subtract any function that depends on only the state and not on the action.
 It's actually a very easy proof to construct.
 It follows almost exactly the proof that we had in the previous lecture.
 And I would encourage those of you that are interested to go back and re-derive that to show that that is true.
@@ -34,8 +30,6 @@ Now, some of you might be wondering at this point, well, okay, we used the value
 What if we make the baseline depend on the state and the action?
 Will we get an even lower variance that way?
 And the answer is yes, but at that point things get much more complicated.
-So what if we make the baseline depend on the state and the action?
-Well, that's a little complicated.
 So that's what we'll talk about next.
 Methods that use state and action-dependent baselines are sometimes referred to as control variants in the literature.
 So the true advantages, the Q value minus the value function, our approximate advantage that we use in policy gradients when we have a state-dependent baseline, is the sum of all future rewards minus the current value.
@@ -56,7 +50,7 @@ So the first term is just your policy gradient with your baseline.
 The second term is what's left over.
 It's the expected value...
 It's the gradient of the expected value under the policy of your baseline.
-Now, some of you might be looking at this and thinking, well, have we really bought ourselves anything?
+Now, some of you might be looking at this and thinking, well, have we really bought ourselves anything? 
 Yes, the first term is going to be small because it's going to go to 0.
 But the second term looks a lot like the original policy gradient.
 So is this really any better?
@@ -68,17 +62,17 @@ So it doesn't require actually interacting with the world, which means that you 
 And furthermore, in many continuous action cases, if you make a careful choice of the class of distributions and the class of Q functions, this integral also has an analytic solution.
 For example, the expected value of a quadratic function under a Gaussian distribution has an analytic solution.
 So in many cases, the second term can be evaluated in such a way that its variance is 0 or very close to 0.
-And the first term has low variance because ^{Q} minus Q π is typically going to be a small number.
+And the first term has low variance because ^{Q} - Q^π is typically going to be a small number.
 So this kind of trick can be used to provide a very low variance policy gradient, especially if you can get a good Q function estimator.
-If you want to read more about these kinds of control variants and how you can use a critic without incurring bias, provided the second term can be evaluated, then check out this paper by Shixiang Gu called QPro.
+If you want to read more about these kinds of control variants and how you can use a critic without incurring bias, provided the second term can be evaluated, then check out this paper by Shixiang Gu called Q-Prop.
 Okay, so so far we talked about ways that we can use critics and get policy gradient estimators that are unbiased.
 But can we also use critics and get policy gradients that are still biased but only a little bit biased?
 So next we're going to talk about eligibility traces and end-step returns.
-First, let's take a look at the advantages of the Montecarlo advantage estimator in an actual critic algorithm.
-I'm going to denote this as A hat C.
-So A hat C is the current reward plus the next value minus the current value.
+First, let's take a look at the advantages estimator in an Actor-Critic algorithm.
+I'm going to denote this as ^{A}_C.
+So ^{A}_C is the current reward plus the next value minus the current value.
 And this, as we saw, has much lower variance than the policy gradient, but higher bias if the value is wrong, and it's always at least a little bit wrong.
-We can also take a look at the Montecarlo advantage estimator that we use in policy gradient algorithms, which I've written out here using the value function as the baseline, to keep things consistent so that both of them have a minus V term.
+We can also take a look at the Monte-Carlo advantage estimator that we use in policy gradient algorithms, which I've written out here using the value function as the baseline, to keep things consistent so that both of them have a minus V term.
 So here we have a sum of future rewards minus our baseline, which in this case is the value function.
 This has no bias, but it has much higher variance because of the single sample estimate.
 So at this point you might wonder, well, can we get something in between?
@@ -100,15 +94,14 @@ So that means that if you're going to use your single sample estimator for a chu
 And the value function will then account for all these different possibilities but potentially with some bias.
 So the way that you can do this is by constructing what's called an n-step return estimator.
 So in an n-step return estimator, you sum up rewards until some time step n and then you cut it off and replace it with the value function.
-So here's the answer.
-So this is the equation for the n-step return estimator.
-The first part looks a lot like AMC.
+So here's the equation for the n-step return estimator.
+The first part looks a lot like A_{MC}.
 So you sum up your rewards, but now you don't sum them up until infinity.
 You sum them from t until t plus n.
 You still subtract off your baseline, but then you have that remaining chunk, everything from n plus 1 until infinity, and that you replace with your value function.
-So you evaluate your reward function at st plus n and you multiply it by γ to the n.
+So you evaluate your reward function at s_{t+n} and you multiply it by γ^n.
 And that's an n-step return estimator.
-And oftentimes, the greater than 1 works better than n equals 1.
+And oftentimes, choosing n greater than 1 works better than n equals 1.
 So n equals 1 is kind of the limiting case of this.
 Generally, the larger n is, the lower the bias, because the coefficient in front of the value function gets smaller and smaller, but the variance is higher because you're summing over more time steps with that single sample estimator, which is the first term.
 So the first term contributes variance.
@@ -120,26 +113,26 @@ So do we have to choose just one n?
 Do we have to make this hard slice at a particular point in time?
 What if we want to actually construct all possible n-step return estimators and average them together?
 So here's the equation for the n-step return estimator.
-We can construct a kind of fused estimator, which we're going to call A-G-A-E for generalized advantage estimation, which consists of a weighted average of all possible n-step return estimators with a weight for different n.
+We can construct a kind of fused estimator, which we're going to call A_{GAE} for generalized advantage estimation, which consists of a weighted average of all possible n-step return estimators with a weight for different n.
 And the way that you can choose your weight is by utilizing that insight that you'll have more bias if you use small n, more variance if you use larger n.
 So you mostly prefer cutting earlier because then you have less variance, but you want to keep around some of those traces that go further in the future.
 So a pretty decent choice that leads to an especially simple algorithm is to use an exponential falloff.
-It's to set the weight, wn, to be lambda to some power n-1.
+It's to set the weight, w_n, to be λ^{n-1}.
 And if you think this is reminiscent of a discount factor, it's because it really is.
-So if you use an exponential falloff, which means that wn is lambda to the n-1, then it turns out there's a very convenient way to evaluate this infinite sum over all possible n-step returns.
-If wn is lambda to the n-1, then you can write out A-G-A-E as the current reward, plus γ times one minus lambda of the next value, plus lambda of the next reward and its next value, and so on.
-So at every time step, you have one minus lambda times the value function at that time step, plus lambda of the G-A-E estimator from there on out.
+So if you use an exponential falloff, which means that w_n is λ^{n-1}, then it turns out there's a very convenient way to evaluate this infinite sum over all possible n-step returns.
+If w_n is λ^{n-1}, then you can write out A_{GAE} as the current reward, plus γ times (1-λ) of the next value, plus λ of the next reward and its next value, and so on.
+So at every time step, you have (1-λ) times the value function at that time step, plus λ of the GAE estimator from there on out.
 And that gives you this weighted sum of all possible n-step return estimators.
-This gives you a formula to calculate A-G-A-E recursively, but it turns out that we can collect the terms and get an even simpler form by expressing the G-A-E estimator as simply γ times lambda to the power of (t' - t) times a quantity that I'm going to call delta t prime.
-And delta t prime is just the reward at t prime plus the value at t prime plus one minus the value at t prime.
-It's kind of like that single step advantage estimator at time step t prime.
+This gives you a formula to calculate A_{GAE} recursively, but it turns out that we can collect the terms and get an even simpler form by expressing the GAE estimator as simply (γλ)^{t' - t} times a quantity that I'm going to call δ_{t'}.
+And δ_{t'} is just the reward at t' plus the value at t' plus one minus the value at t'.
+It's kind of like that single step advantage estimator at time step t'.
 So this is pretty cool.
-If you just construct a weighted sum of these one-step advantage estimators at every time step, weighted by γ times lambda to the (t' - t), you recover exactly the sum of all possible n-step returns.
-So this is going to allow you to trade off bias variance just by choosing this lambda, which acts very similarly to a discount.
+If you just construct a weighted sum of these one-step advantage estimators at every time step, weighted by (γλ)^{t' - t}, you recover exactly the sum of all possible n-step returns.
+So this is going to allow you to trade off bias variance just by choosing this λ, which acts very similarly to a discount.
 So the larger lambdas look further in the future, smaller lambdas use value functions closer to the present.
 So it has a very similar effect as the discount, which also maybe sheds some light on the role that discounts play in policy gradients.
-So this suggests that even if we didn't have lambda, the role of γ would be a kind of bias variance trade-off.
+So this suggests that even if we didn't have λ, the role of γ would be a kind of bias variance trade-off.
 And that's in fact what's the case.
 So the discount can also be interpreted itself as a kind of variance reduction because smaller discounts will result in your Monte Carlo single sample estimator putting lower weight on rewards far in the future, which are exactly the rewards that you'd expect to have high variance.
 Just using a discount, of course, introduces more bias if you use a small discount as opposed to the correct higher discount value.
-But using the lambda mitigates that by replacing it with a value function.
+But using the λ mitigates that by replacing it with a value function.

@@ -23,19 +23,19 @@ From there you can figure out how to get a better policy.
 So what does it mean to evaluate the policy?
 Well, it really means computing this quantity, the expected value over the distribution of initial states of the value of the policy in those states.
 And the value can be defined, I have it defined here, it's the sum of the value of the policy in the initial states.
-The value at some state s is the sum over all future time steps, gamma to the t prime minus t, times the expected value over the next state under the policy, times the expected value over the action at the next time step of the reward at that next state in action.
+The value at some state s is the sum over all future time steps, gamma to the t' minus t, times the expected value over the next state under the policy, times the expected value over the action at the next time step of the reward at that next state in action.
 And for simplicity in this discussion, I'm going to just switch entirely to only state-dependent rewards, so I'll do all the derivations with rewards that depend only on state and not on action.
 That's just for simplicity, so the notation doesn't get too cluttered.
 It's very easy to put in the action-dependent rewards at the end, because the actions are always just obtained from the policy.
-But just to keep it simple, let's just say that we're talking entirely about state-dependent rewards, in which case the value function can be written like this, as a sum over all future time steps, gamma to the t prime minus t, expected value under the probability of getting s t prime, given that you started in s t and then followed your policy of the reward.
+But just to keep it simple, let's just say that we're talking entirely about state-dependent rewards, in which case the value function can be written like this, as a sum over all future time steps, gamma to the t' minus t, expected value under the probability of getting s t', given that you started in s t and then followed your policy of the reward.
 And keep in mind that this probability, p , given s t, that probability depends on your policy.
-So that's the probability that for all the time steps in between t and t prime, you followed your policy and then landed in s t prime.
+So that's the probability that for all the time steps in between t and t', you followed your policy and then landed in s t'.
 Okay, so long story short, if we can evaluate this quantity, we can evaluate our policy.
 So the perspective that we're going to take in this part of the lecture is, we're going to ask, what is kind of the bare minimum model that will allow us to evaluate this quantity?
 So we'll keep it simple, we can re-derive it for, everything I'm going to talk about we can re-derive for action-dependent rewards, but for now we'll make them action-independent.
 Okay, so let's do a little bit of manipulation here.
-This expectation over s t prime, I'm just going to write it out as a sum over all possible states, assuming discrete states, right?
-So I've just replaced the definition of the expectation, sum over all future time steps, sum over all states, probability of landing in that state at time t prime, given that you started in s t, times the reward at that state.
+This expectation over s t', I'm just going to write it out as a sum over all possible states, assuming discrete states, right?
+So I've just replaced the definition of the expectation, sum over all future time steps, sum over all states, probability of landing in that state at time t', given that you started in s t, times the reward at that state.
 And now what I'm going to do is, I'm going to rearrange the terms a little bit, and I'll put the sum over s on the outside.
 So now what I have is a sum over all possible states, and then in parentheses, I have the sum over all future time steps, times the probability that you'll land in that state, multiplied by the discount.
 Okay?
@@ -52,7 +52,7 @@ So s future is a random variable, and the distribution here is basically the pro
 Now, as a little detail, the quantity in parentheses there doesn't actually sum to one.
 In order for it to sum to one, you have to multiply it out front by one minus gamma.
 And if you want an intuition for what p of s future really represents, you can kind of think of it like this.
-Select a future time step at random from a geometric distribution with parameter gamma, and then evaluate p of st prime equals s, and then you can calculate the probability of s future for the time step t prime that you sampled.
+Select a future time step at random from a geometric distribution with parameter gamma, and then evaluate p of st prime equals s, and then you can calculate the probability of s future for the time step t' that you sampled.
 And that's a perfectly valid way to interpret the probability of s future.
 So it's the probability that you will land somewhere in the future where what future means is this gamma discounted distribution over time steps.
 Another way you could think about it, which is actually equivalent, is that at every time step, you have a probability of one minus gamma of terminating.
@@ -85,13 +85,13 @@ And that's actually fairly straightforward to note, just from looking at the def
 It becomes pretty clear that probability that you will land in a particular state is basically 1 minus gamma times the probability that you're in that state right now, which is just 1 if you're in that state and 0 otherwise, because ST is not random, ST is an input, plus gamma times the probability that you will land in it in the future from the next state.
 So the expectation here is over the action you will take now and the state that you will land in at time t plus 1, and within the expectation is just the same mui evaluated as t plus 1.
 So this is a kind of Bellman equation.
-You can think of it as a Bellman backup with a pseudo-reward given by this delta function.
-So the pseudo-reward is 1 minus gamma times delta ST equals i.
+You can think of it as a Bellman backup with a pseudo-reward given by this δ function.
+So the pseudo-reward is 1 minus gamma times δ ST equals i.
 And remember, the 1 minus gamma is just a constant out front.
 So really the important thing is that the reward is just 1 for the state i, basically for the dimension of mu that you're learning, and 0 everywhere else.
 And in practice, since you would want to learn every entry in mu, you would use a vectorized backup.
-So for the 0th entry, it would be delta ST equals 0.
-For entry 1, it would be delta ST equals 1, etc., etc.
+So for the 0th entry, it would be δ ST equals 0.
+For entry 1, it would be δ ST equals 1, etc., etc.
 So you would learn that whole vector all at once.
 So you would have these vector-valued Bellman backups.
 And you can do things like value iteration with this and recover these mus.
@@ -106,7 +106,7 @@ So we've, in some sense, simplified the kind of model we need, but we might have
 The second issue is that it's not clear how to scale this to large state spaces.
 So as I've described this, this vector mu needs to have one entry for every possible state.
 And if your states are like images in an Atari game, the number of possible states could be enormous.
-It's also not even clear if this is well defined for continuous state spaces, because for continuous state spaces, that delta function, st equals i, will always be zero.
+It's also not even clear if this is well defined for continuous state spaces, because for continuous state spaces, that δ function, st equals i, will always be zero.
 Your probability of randomly landing in a very specific state is always zero.
 That's why you use densities rather than probabilities for continuous variables.
 So for continuous state spaces, we'll need to have kind of a density version of this rather than a probability version, and that will also be a little bit more elaborate.
@@ -150,8 +150,8 @@ And of course the key to this is that the dimensionality of phi and psi can be a
 So if the number of features is much less than the number of states, learning this is much easier.
 So if you have let's say 10 million states, maybe doing vector valued backups on mu with 10 million dimensions is much easier, because it's less impractical, but maybe you summarize them with 100 features, and doing the backups on 100 features is much more tractable.
 So this is the Bellman backup equation for mu, the Bellman backup equation for psi is basically exactly the same.
-The only difference now is instead of this delta function s equals i, we just put in the feature phi j.
-And you can almost think of mu as a special case where phi is the delta function.
+The only difference now is instead of this δ function s equals i, we just put in the feature phi j.
+And you can almost think of mu as a special case where phi is the δ function.
 So basically mu, the successor representation, is a special kind of successor feature where the phi's happen to be canonical vectors, vectors that are one in one state and zero everywhere else.
 But in general you can construct other bases including much smaller bases and recover much more tractable successor features.
 You can also construct a Q function like version.
@@ -205,7 +205,7 @@ So if you take the policy with the largest q value, you'll take the policy that 
 And we take the policy that gets the largest reward independently in every state.
 So if you want to learn more about this, I would encourage you to check out this paper called Successor Features for Transfer and Reinforcement Learning.
 But meanwhile, I'm going to talk about the last topic, which is how to extend all this to continuous state spaces.
-So, of course, in continuous state spaces, the problem you have is that this delta function is always 0 for any sampled state.
+So, of course, in continuous state spaces, the problem you have is that this δ function is always 0 for any sampled state.
 Basically, the probability of landing in any state becomes 0 as the states become more numerous.
 That's why with continuous variables, we tend to talk about probability densities rather than probabilities.
 But it's difficult to train successor representations classically, as we discussed, for densities.

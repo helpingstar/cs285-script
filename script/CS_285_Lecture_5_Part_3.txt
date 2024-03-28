@@ -20,7 +20,7 @@ I've simply rewritten it.
 And what I've done here is I used the distributive property to distribute the sum over rewards into the sum over ∇log π.
 So you can think of this as taking that first set of parentheses over the sum of ∇log π's and taking the outer parentheses and wrapping it around the rewards.
 So this gives me the sum over all of my samples from i=1 to N times the sum over time steps from 1 to T of ∇log π at that time step multiplied by another sum over another variable t' from 1 to T of the rewards.
-So that means that at every time step, I multiply the grand log probability of the action at that time step t by the sum of rewards over all time steps in the past, present, and future.
+So that means that at every time step, I multiply the ∇log probability of the action at that time step t by the sum of rewards over all time steps in the past, present, and future.
 Now at this point, you might start imagining how causality fits into this.
 We're going to change the log probability of the action at every time step based on whether that action corresponded to larger rewards in the present and in the future, but also in the past.
 And yet we know that the action at time step t can't affect the rewards in the past.

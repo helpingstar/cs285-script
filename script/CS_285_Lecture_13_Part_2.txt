@@ -100,20 +100,20 @@ So when you observe a reward, you don't actually know what distribution that rew
 So what you want to learn about is the parameters for that reward, for that action, and what you observe is a sample from that distribution.
 So they define information gain about theta i from observing r a given the action a.
 So this is the information gain of some action a.
-And they define this quantity called delta a, which is the expected sub-optimality of some action a.
+And they define this quantity called δ a, which is the expected sub-optimality of some action a.
 So this is saying, under your current belief about the MDP, what is the difference between the optimal action, for what you think the model might be, and the action that you're currently considering.
-So this is called delta a.
-Now crucially, you don't know a star, so delta a is an expectation, but the expectation is in expectation over your model distribution.
+So this is called δ a.
+Now crucially, you don't know a star, so δ a is an expectation, but the expectation is in expectation over your model distribution.
 So g a is saying, how informative is this action?
 Delta a is saying, how sub-optimal do you think this action might be?
 And the intuition will be that you want to take actions that are informative, but you don't want to take actions that are highly sub-optimal.
-So the particular decision rule that they analyze in this paper, and they show this to be quite good, is delta a squared divided by g of a.
+So the particular decision rule that they analyze in this paper, and they show this to be quite good, is δ a squared divided by g of a.
 And then you take the min of this.
 So intuitively, you want to choose the least important, least sub-optimal action, but you divide by the information gain.
 So if the information gain is very, very large, then because you're dividing, you would have a small value, which means that might be the min, even if its sub-optimality is large.
 So don't bother taking actions if you know that you won't learn anything.
 So if g of a is very small, then this will blow up this value.
-But don't take actions if you're sure that they're sub-optimal, because if delta a is extremely small, then you won't take this action either.
+But don't take actions if you're sure that they're sub-optimal, because if δ a is extremely small, then you won't take this action either.
 Okay, so if you want to learn more about this strategy, check out the paper by Russo and Van Roy, called Learning to Optimize via Information-Directed Sampling.
 But the short versions that they show this strategy is also very, very good, although it's a bit more mathematically involved.
 All right, so the general themes that we learned about, we learned about upper confidence bound or optimistic exploration, which is when you take the average expected reward for some action, and you add a bonus to it.

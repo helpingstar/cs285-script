@@ -66,11 +66,11 @@ So we could talk about just the other term.
 Um, so the other term naively, you would estimate q hat by just summing up the rewards from pi beta.
 But what you want is you want to sum up the rewards from pi theta.
 Uh, so you could think about breaking up this, uh, these importance weights even further.
-Uh, you could say that the, this, this sum q hat is really a sum from t prime equals t to capital T of the reward that you actually saw at t prime, uh, multiplied by that, that whole importance weight.
+Uh, you could say that the, this, this sum q hat is really a sum from t' equals t to capital T of the reward that you actually saw at t', uh, multiplied by that, that whole importance weight.
 So I didn't change anything here.
 That's just the distributive property.
 Um, but you know that actions in the future don't affect rewards in the past.
-So one of the things you could do is, for any time step t prime, you could sum up only the, um, the actual probabilities from t to t prime, not from t to capital T.
+So one of the things you could do is, for any time step t', you could sum up only the, um, the actual probabilities from t to t', not from t to capital T.
 Right.
 So essentially I have the reward at the current time step.
 That thing doesn't affect, that thing is not affected by the actual two time steps from now.
@@ -89,7 +89,7 @@ But first, let's conclude our discussion of importance sampling with a few other
 So one idea that is worth discussing because, you know, it has served to inspire quite a few more more recent techniques is the idea of the doubly robust estimator.
 You can think of the doubly robust estimator as a little bit like a baseline, but for importance sampling.
 So, this is just the important sample value estimate from the previous slide, and it's still exponential in the time horizon.
-So notice that it's multiplying together the action probabilities from little t to little t prime and little t prime goes from, you know, goes all the way up to capital T.
+So notice that it's multiplying together the action probabilities from little t to little t' and little t' goes from, you know, goes all the way up to capital T.
 So at the very last time step, you're still multiplying together O of capital T probabilities.
 Um, I will for simplicity, I'll just drop the indices and I will turn my T primes into T just to keep it simple.
 So before notice that I was writing V of ST.
@@ -201,7 +201,7 @@ So that's the idea behind the doubly robust off-policy evaluation.
 Now, this is an off-policy evaluation method.
 This is an OPE method.
 It is not a reinforcement learning method.
-So this will give you estimates of values, and you could use those values just to evaluate which policy is better, or you can plug them into an important sampled policy grading estimator.
+So this will give you estimates of values, and you could use those values just to evaluate which policy is better, or you can plug them into an important sampled policy gradient estimator.
 Okay.
 There is one more topic that I want to very briefly cover.
 I'm not going to go into the technical details for this, but I just want to describe this so that all of you are aware it exists, which is marginalized importance sampling.
@@ -213,7 +213,7 @@ But if you can recover these state action importance weights, then it's very eas
 So doing off-policy evaluation is true.
 Okay.
 So you can do off-policy evaluation, but it's also trivial if you can recover these WSAs.
-And of course, if you can do off-policy evaluation, then you could also plug those value estimates into policy grading as well, if you prefer.
+And of course, if you can do off-policy evaluation, then you could also plug those value estimates into policy gradient as well, if you prefer.
 But typically, marginalized importance sampling in the literature has been used just for off-policy evaluation.
 I haven't seen it used very much for policy learning, although I think that, you know, should be possible.
 So the biggest challenge with this is, of course, how to determine WSA.

@@ -3,7 +3,7 @@ One of the main challenges with implementing policy gradients is that we would l
 If we wanted to implement policy gradients naively, we could simply calculate ∇log π (a_{i,t}|s_{i,t}) for every single state action tuple that we sampled.
 However, typically, this is very inefficient because neural networks can have a very large number of parameters.
 In fact, the number of parameters is usually much larger than the number of samples that we've produced.
-So let's say that we have N parameters, where N might be on the order of a million.
+So let's say that we have n parameters, where n might be on the order of a million.
 And we have...
 100 trajectories, each with 100 time steps.
 So we have 10,000 total state action pairs, which means that we're going to need to calculate 10,000 of these 1 million length vectors.
@@ -17,23 +17,23 @@ So how do we compute policy gradients with automatic differentiation?
 Well, we need a graph such that its gradient is the policy gradient.
 The way that we're going to figure this out is by starting with the gradients that we already know how to compute, which are maximum likelihood gradients.
 So if we want to compute maximum likelihood gradients, then what we would do is we would implement the maximum likelihood objective using something like a cross-entropy loss, and then call dot backward or dot gradients on it, depending on your automatic differentiation package, and obtain your gradients.
-So the way that we're going to implement policy gradients to get our auditive package to calculate them efficiently, is by implementing a kind of pseudo loss as a weighted maximum likelihood.
+So the way that we're going to implement policy gradients to get our auto-diff package to calculate them efficiently, is by implementing a kind of pseudo loss as a weighted maximum likelihood.
 So instead of implementing J maximum likelihood, we'll implement this thing called tilde{J}, which will just be the sum of the log probabilities of all of our sampled actions, multiplied by the rewards to go, ^{Q}.
 Now critically, this equation is not the reinforcement learning objective.
 In fact, this equation is not anything.
 It's just a quantity, chosen such that its derivatives come out to be the policy gradient.
 Of course, a critical portion of this is that our automatic differentiation package doesn't realize that those ^{Q} numbers are themselves affected by our policy.
 So it's just dealing with the graph that we provided it.
-So in a sense, we're almost trying to trick our auditive package into giving us the gradient that we want.
+So in a sense, we're almost trying to trick our auto-diff package into giving us the gradient that we want.
 Okay, so here log π is, you know, would be for example our cross-entropy loss.
 If we have discrete actions or squared error if we have normally distributed continuous actions.
-All right, so I have some pseudocode here.
-This pseudocode is actually in TensorFlow because I taught the class in TensorFlow in past years.
+All right, so I have some pseudo-code here.
+This pseudo-code is actually in TensorFlow because I taught the class in TensorFlow in past years.
 You're going to be doing the the policy gradients assignment in PyTorch.
 The basic idea is very much the same.
 It's just the particular terminology is going to be a little different.
-But hopefully the pseudocode is still straightforward for everyone to parse.
-So the pseudocode that I have here is the pseudocode for maximum likelihood learning.
+But hopefully the pseudo-code is still straightforward for everyone to parse.
+So the pseudo-code that I have here is the pseudo-code for maximum likelihood learning.
 This is supervised learning.
 Here, actions is a tensor with dimensionality (N*T) along the first dimension.
 So number of samples times the number of time steps and the dimensionality of the action along the second dimension.
@@ -50,11 +50,11 @@ So I'm going to assume that the reward-to-go values are all packed into a tensor
 And then after I calculate my likelihoods, I'll turn them into weighted likelihoods by pointwise multiplying them by the `q_values`.
 And that's the only change that I make.
 Then I mean reduce those and then I call their gradients.
-So this will essentially trick your auditive package into calculating a policy gradient.
+So this will essentially trick your auto-diff package into calculating a policy gradient.
 So in math, what we've implemented is this.
-We've basically turned our maximum likelihood loss into this modified pseudo loss tilde{J} where we weight our likelihoods by hat{Q}s.
+We've basically turned our maximum likelihood loss into this modified pseudo loss tilde{J} where we weight our likelihoods by hat{Q}.
 And of course it's up to you to actually implement some code to compute those Q values, which you could do simply in NumPy.
-You don't really need to use your auditive package to compute those.
+You don't really need to use your auto-diff package to compute those.
 All right a few general tips about using policy gradients in practice.
 First, remember that the policy gradient has high variance.
 So even though the implementation looks a lot like supervised learning, it's going to behave very differently from supervised learning.
@@ -67,5 +67,5 @@ Adaptive step size rules like ADAM can be okay-ish, but just regular SGD with mo
 We'll learn about policy gradient-specific learning rate adjustment methods later when we talk about things like natural gradient, but for now, using ADAM is a good starting point.
 And in general, just expect to have to do more hyperparameter tuning than you've usually had to do for supervised learning.
 So just to review, we talked about how the policy gradient is on policy, how we can derive an off-policy variant using importance sampling, which unfortunately has exponential scaling in the time horizon, but we can ignore the state portion, which gives us an approximation.
-We talked about how we can implement policy gradients with automatic differentiation, and the key to doing that is setting it up so that AutoDiff back-propagates things for us properly by using the pseudo-laws.
+We talked about how we can implement policy gradients with automatic differentiation, and the key to doing that is setting it up so that auto-diff back-propagates things for us properly by using the pseudo-loss.
 And we talked about some practical considerations, batch size, learning rates, and optimizers.

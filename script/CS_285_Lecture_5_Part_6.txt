@@ -108,7 +108,7 @@ REINIFORCE was introduced in this paper by Williams in 1992.
 This paper by Baxter and Bartlett introduced the, what I call the causality trick in the lecture.
 They call it GPOMDP.
 This is actually not the first paper to introduce it.
-I'll actually mention the first paper when I talk about actual critic in the next lecture.
+I'll actually mention the first paper when I talk about Actor-Critic in the next lecture.
 And this paper by Peters and Schaal describes the natural gradient trick with some very nice illustrations.
 Deep RL papers that use policy gradients.
 The guided policy search paper that I mentioned before, which uses important sampled policy gradients.

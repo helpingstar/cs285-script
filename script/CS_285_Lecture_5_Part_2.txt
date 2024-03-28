@@ -33,7 +33,7 @@ All right so that maybe gives us some intuition for what these ∇log π terms a
 In both cases they correspond to a kind of weighted version of the maximum likelihood gradient, if it's helpful for you to think about it that way.
 And you can compute them by basically using the formula for the log probability of whatever distribution class you choose to use.
 Now what is the policy gradient actually doing intuitively?
-So I'll collect some of the terms and and use slightly more concise notation to make this a little clearer so you can equivalently write it as ∇log π_θ(τ) r(τ) where this ∇log π_θ(τ) is just the sum over the individual ∇log π_θ.
+So I'll collect some of the terms and use slightly more concise notation to make this a little clearer so you can equivalently write it as ∇log π_θ(τ) r(τ) where this ∇log π_θ(τ) is just the sum over the individual ∇log π_θ.
 The maximum likelihood gradient is given here so it's just the same thing only without the r term.
 So intuitively what that means is that if you roll out some trajectories and you compute their rewards and some of them have big positive rewards represented with green check marks and some of them have big negative rewards represented by the red x and some are kind of neutral like that middle one what you'd like to do is you'd like to take the log probabilities along the good trajectories and raise them and take the log probabilities along the bad trajectories and lower them.
 So the policy gradient makes the good stuff more likely, and makes the bad stuff less likely.

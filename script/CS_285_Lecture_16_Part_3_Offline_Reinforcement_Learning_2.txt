@@ -40,7 +40,7 @@ So the uncertainty penalty basically has to quantify how wrong the model is.
 If the model goes into an erroneously wrong situation, the model will be mistaken for the model right there.
 So the value of the model is a particular choice of the uncertainty penalty that we can use in a second, erroneously good-looking state, then the model must have done something wrong, and if we have a good uncertainty penalty, it should be able to catch that.
 So essentially, the uncertainty penalty is supposed to punish the policy enough that exploiting is not worth it.
-And that's why we have to choose the multiplier lambda carefully, but if we choose it carefully so that the penalty always costs the policy more than it gains by cheating, then the policy will change its behavior and avoid those crazy out-of-distribution states.
+And that's why we have to choose the multiplier λ carefully, but if we choose it carefully so that the penalty always costs the policy more than it gains by cheating, then the policy will change its behavior and avoid those crazy out-of-distribution states.
 Technically, the condition on u that we need to satisfy is that u should be at least as large as the error in the model measured according to some kind of divergence.
 Now, this is not an easy quantity to quantify because, in general, you don't actually know how right or wrong your model is.
 So the way that we would do this in practice is we would use one of those model uncertainty techniques that we discussed in the model-based RL lectures, something like an ensemble.
@@ -63,18 +63,18 @@ Epsilon u is the expected value under the model of this error metric of u.
 So what the above equation is showing is that if we train a policy pi hat using our model, then the true reward of that policy will be at least as large as the best possible policy.
 So we can find the best possible policy, but optimize against a different objective against the reward minus the error.
 And we can guarantee that our learned policy will be at least as good as that.
-Another way to interpret this is to introduce this symbol pi delta, and pi delta is the best policy that exists according to the true return, not the model, but according to the true return.
-So pi delta is the best policy under the true return for which the expected value of the error, the expected value of u, is bounded by delta.
+Another way to interpret this is to introduce this symbol pi delta, and pi δ is the best policy that exists according to the true return, not the model, but according to the true return.
+So pi δ is the best policy under the true return for which the expected value of the error, the expected value of u, is bounded by delta.
 So it's basically the best policy that doesn't visit states where the model might be incorrect, where that latter phrase is quantified as the average error.
 So we can see that the best policy under the model is less than or equal to delta.
-What this equation 12 is saying is that the model that we learn, so the policy that we learn under our model, will be at least as good in terms of its true return as the best policy whose average error is bounded by delta minus an error term that depends on delta.
-So if we choose delta to be very small, then we will actually improve on this.
+What this equation 12 is saying is that the model that we learn, so the policy that we learn under our model, will be at least as good in terms of its true return as the best policy whose average error is bounded by δ minus an error term that depends on delta.
+So if we choose δ to be very small, then we will actually improve on this.
 Okay, this might seem a little cryptic, but this theorem has a few interesting implications.
 One implication is that the error is less than or equal to delta.
-So if we choose delta to be very small, then we will actually improve on this.
-Another implication is that the error is less than or equal to delta base.
+So if we choose δ to be very small, then we will actually improve on this.
+Another implication is that the error is less than or equal to δ base.
 So a really cool realization is that if we substitute in pi beta the behavior policy, and here we have Iceberg's equation, as well as some of the other models, great implementation of the 41st one, well we would expect that the error of the model under the states visited by the behavior policy will be very low, close to zero because those are the states that are actually used to train the model.
-So if delta for that is very low.
+So if δ for that is very low.
 It's a close to zero.
 Then we would expect that this equation 12 would essentially guarantee that the learned the behavioral policy, or at least we don't do worse.
 The other thing that this can quantify is the optimality gap.

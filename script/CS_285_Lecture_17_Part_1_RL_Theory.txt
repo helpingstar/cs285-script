@@ -10,7 +10,7 @@ Well let's say we're doing Q-learning.
 We might ask how much does the learned Q function, Q hat k after k iterations, differ from the true optimal Q function?
 Could we for example show that Q hat k differs from the optimal Q function Q star in some norm by at most epsilon?
 Now typically these algorithms have some kind of randomness in them, for example randomness in how we generate the samples.
-So we can't really guarantee that we'll always have a difference less than or equal to epsilon, so typically we would have a guarantee that it's less than or equal to epsilon with at least some probability 1 minus delta, where delta is a small number.
+So we can't really guarantee that we'll always have a difference less than or equal to epsilon, so typically we would have a guarantee that it's less than or equal to epsilon with at least some probability 1 minus delta, where δ is a small number.
 So typically we would want to show that we have a randomness in the randomness of the samples, and we can show that this is true if we have at least some number of samples where the number of samples depends on some function of epsilon and delta.
 And typically we would want some well-behaved function, for example we might want n to increase logarithmically with delta.
 Another question we could ask, which is a slightly different question, is how does the policy induced by the Q function at the kth iteration differ from the optimal policy in terms of its Q value?
@@ -26,7 +26,7 @@ And there are other questions we could ask too.
 Another kind of question we could ask is, if I use a particular exploration algorithm, how high is my regret going to be?
 This is a little bit more elaborate, but typically, you know, we might want to show that, for example, some kind of exploration procedure gives you regret that is logarithmic in T.
 So what I have here is actually the bound, the full version of the bound for an upper confidence bound exploration.
-And you can see that it has a linear term multiplied by delta, but delta is a very small number.
+And you can see that it has a linear term multiplied by delta, but δ is a very small number.
 And then most of the bad stuff comes from this first term, which goes as the log of T.
 But there are, of course, many other questions we could ask.
 So these are just a few examples.
@@ -193,7 +193,7 @@ So this describes how quickly your estimate x bar n concentrates around the true
 Now this has a few implications.
 So if we estimate mu with n samples, the probability that we're off by more than epsilon is at most the thing on the right-hand side of this inequality.
 And we can equivalently reinterpret it to say that if you want this probability to be delta, so if you want the probability to be off by more than epsilon to be at most delta, meaning that you are an error less than epsilon with probability at least 1 minus delta, then you can simply solve for delta.
-So you can say I want delta to be less than or equal to 2 times e to the negative 2 n epsilon squared over b plus plus b minus squared.
+So you can say I want δ to be less than or equal to 2 times e to the negative 2 n epsilon squared over b plus plus b minus squared.
 The reason the 2 is there is because you can be off either in the positive direction or in the negative direction.
 And then you can just solve for delta.
 So you can take the log of both sides, and then you can do a little bit of algebra, rearrange these things.
@@ -201,7 +201,7 @@ So here in the first step what I did is I divided both sides by 2 and took the l
 Then in the next step what I did is I divided both sides by 2 and took the log.
 So I divided both sides by b plus minus b minus squared over 2 n and negated both sides.
 So that changes the less than or equal to into greater than or equal to.
-And then you take the square root and you see that you need b plus minus b minus over square root of 2 n times the square root of log 2 over delta to be greater than or equal to epsilon.
+And then you take the square root and you see that you need b plus minus b minus over square root of 2 n times the square root of log 2 over δ to be greater than or equal to epsilon.
 So if you want some error epsilon with probability delta, or you want the error to be less than epsilon with probability 1 minus delta, then the number of samples you need scales as the square root of n.
 Or you can also write down a function for n in terms of epsilon and delta, same thing.
 Just do a bunch of algebraic manipulation to get n on one side.
@@ -210,7 +210,7 @@ So one of the conclusions that you can get from this is that error scales with 1
 That's pretty convenient.
 So hopefully this gives you some idea of how these concentration inequalities work.
 You write down some equation for the probability that you'll be off by epsilon.
-And then you can manipulate that equation to solve for the probability delta or to solve for the number of samples.
+And then you can manipulate that equation to solve for the probability δ or to solve for the number of samples.
 Now, in a lot of the analysis that we do in reinforcement learning, we're concerned with the fact that we're concerned with estimating probabilities of categorical variables.
 So p of s prime given sA is a distribution over a categorical variable, not a real valued variable.
 So Hoeffding's inequality applies to estimating the mean of a continuous valued random variable.
@@ -237,7 +237,7 @@ And the thing that we are greater than or equal to is not epsilon.
 It's now this root d 1 over root n plus epsilon thing.
 But we can do all the same stuff.
 We can take this quantity and we can solve it for delta, for example.
-And we know that delta is less than or equal to e to the negative n epsilon squared.
+And we know that δ is less than or equal to e to the negative n epsilon squared.
 We can solve it for epsilon.
 And we get epsilon is less than or equal to 1 over root n times the square root of log 1 over delta.
 And we can solve it for n.
@@ -255,7 +255,7 @@ And that's what we do.
 We just multiply the number of states times the number of actions.
 So just important to keep in mind some of the constants here.
 And if I do a little bit of symbolic manipulation on this, just basically distribute the square root of S into the parentheses, I get this.
-And roughly, I can say that this is bounded by some constant times the square root of the number of states times log 1 over delta divided by n.
+And roughly, I can say that this is bounded by some constant times the square root of the number of states times log 1 over δ divided by n.
 So it actually is 1 plus 1 over delta.
 So that's the number of states.
 And then I can write the square root of log 1 over delta.

@@ -109,7 +109,7 @@ So the gradient on θ uses that chain rule derivation for the gradient that I sh
 So it takes the derivative of the Q value with respect to the action, and then multiplies that by the derivative of the action with respect to θ, which is just backpropagation through mu.
 Then we're going to update our target parameters, phi prime and θ prime, for example, using polyarcha-aversion.
 And then we'll repeat this process.
-So this is the basic pseudocode for a continuous action Q-learning algorithm.
+So this is the basic pseudo-code for a continuous action Q-learning algorithm.
 In this case, this particular algorithm is DDPG, but there are many more recent variants as well as older variants.
 So for classic work on this, you can check out an algorithm called NFQCA.
 For more recent variants, you can check out TD3-NSAC.

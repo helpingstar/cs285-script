@@ -159,7 +159,7 @@ Take a moment to imagine what this multi-step target would look like.
 If you have a piece of paper in front of you, consider writing it down, and then you can check what you wrote down against what I'm going to tell you on the next slide.
 Sorry, it's actually on this slide.
 So the way that you can construct a multi-step target is basically exactly analogous to what we saw in the Actor-Critic lecture.
-So the way that you can construct your multi-step target is by not just using one reward, but making a little sum from (t'=t) to t plus n minus one, and for each of those, you take rj t prime multiplied by γ to t minus t prime.
+So the way that you can construct your multi-step target is by not just using one reward, but making a little sum from (t'=t) to t plus n minus one, and for each of those, you take rj t' multiplied by γ to t minus t'.
 And you can verify that if n equals one, then you recover exactly the standard rule that we had for Q learning.
 But for n larger than one, you sum together multiple reward values, and then you use your target network for the t plus n step multiplied by γ to the n.
 So this is sometimes called an n-step return estimator, because instead of summing the reward for one step, you sum it for n steps.

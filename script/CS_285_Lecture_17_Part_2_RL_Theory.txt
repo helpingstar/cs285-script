@@ -78,7 +78,7 @@ And by the triangle inequality as usual we can bound this the norm of this sum w
 Now the first value here is exactly the estimation error of a continuous random variable.
 What did we learn about that allows us to bound the approximation error of a continuous random variable?
 Well this is exactly Hoeffding's inequality.
-So if we just directly plug in the formula for Hoeffding's inequality we get that the difference between r hat and r is just going to be less than or equal to 2 times the max of impossible reward, that's basically the range of rewards of the b plus minus b minus, times the square root of 1 over delta over 2n.
+So if we just directly plug in the formula for Hoeffding's inequality we get that the difference between r hat and r is just going to be less than or equal to 2 times the max of impossible reward, that's basically the range of rewards of the b plus minus b minus, times the square root of 1 over δ over 2n.
 So our familiar bound, the error will scale as 1 over root n.
 For the second part this is just the sum over all next states of the difference of p hat and p times the maximum over the action of qs prime a prime.
 And we can bound that by a replacing the max over a prime with a max over s prime and a prime.
@@ -90,7 +90,7 @@ And in particular that constant quantity is just the infinity norm of q.
 So this is exactly equal to the total variation divergence between p hat and p times the infinity norm of q.
 And we already had a bound for that so that's basically going to use that concentration inequality for estimating categorical distributions and therefore this is bounded by some constant times the infinity norm of q times the square root of the log of q.
 And we can literally dec огромal divide the past PETER by d seldom, okay?
-So π plus q times the of rho times the valor of change of neutral Hello the answer is 1 or delta 0.
+So π plus q times the of rho times the valor of change of neutral Hello the answer is 1 or δ 0.
 Alright, so it's 100 billion unit vector times the base sale over d integral is 0.
 And for where does this巨 fun this struggling argument or v hors there's some constant that comes for the optimality and so on and the infinity norm of q.
 So write that statement.

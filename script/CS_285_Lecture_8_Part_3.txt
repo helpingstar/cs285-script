@@ -51,7 +51,7 @@ And process two is typically a very slow process.
 So it typically runs very infrequently.
 And then you have process three, which is kind of the main learning process.
 And what process three does is it loads a batch of transitions from the replay buffer.
-So that's step three in the pseudocode above.
+So that's step three in the pseudo-code above.
 It loads in the target parameters, phi prime.
 It uses the target parameters to calculate target values for every transition in the batch that was sampled.
 It uses that to update the current parameters, phi.
