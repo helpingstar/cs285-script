@@ -1,0 +1,453 @@
+In the next part of today's lecture, I want to take things up a level and discuss a little bit of philosophy about different perspectives we can take about what Deep IRL actually is.
+And I think that something that has been a little bit implicit over this course, but that I think I should make explicit, is that reinforcement learning really can be thought of as a few very different things.
+And depending on how you view reinforcement learning, some methods are more relevant to you than others.
+So the three perspectives I'm going to discuss, although I'm sure there's more than this, are the perspective that reinforcement learning is at its core really an engineering tool.
+The perspective that reinforcement learning is a way for AI agents to discover behaviors in the real world.
+And then a third perspective, which is my favorite, but is perhaps a little weird, is that reinforcement learning is truly the most universal and fundamental.
+Learning framework that subsumes all others.
+And of course, that's my favorite because I am a reinforcement learning researcher.
+So I'm going to take the most RL centric perspective.
+But I think the other two perspectives are really important to discuss because they might actually be much more relevant, perhaps for you, if you view reinforcement learning more as a tool to accomplish some goal that you have.
+So let's start with the first one.
+Reinforcement learning as an engineering tool.
+In the beginning of this class, I talked a lot about somewhat lofty philosophical ideals.
+About how we want universal learning methods that can acquire the kind of general intelligence that we associate with humans and animals.
+But let's forget all that for a second and think about engineering problems.
+We think that RL is a model of agents interacting with the world in the same way that animals learn through reward and punishment.
+Perhaps our agents can learn through reward and punishment and have these very naturalistic real world learning processes.
+And there's elements of psychology in there and elements of neuroscience and elements of CS.
+All tangled together.
+And that's cool.
+But how about some very pragmatic sort of bread and butter engineering problems?
+Like let's say you want to fly a rocket and you want that rocket to fly really well on a really optimal trajectory.
+Now, traditionally, this is not the kind of problem that we associate with reinforcement learning.
+We associate this problem with difficult calculus.
+Like you would write down a bunch of complicated equations that describe the physics of your rocket.
+And you would solve those equations.
+You would get some solution.
+The way the rocket is at every point in time.
+You would linearize it.
+You would do all sorts of stuff that you learn about in linear systems and control theory.
+And out comes a feedback controller that you would use to fly that rocket.
+And that's how we went to the moon.
+And it's great.
+And it's unrelated to RL.
+However, I would posit that one perspective on RL is that it offers us simply another tool for doing this.
+If we view traditional control problems as simply the problem of inverting physics, RL simply offers us a way to do that.
+RL is another tool in the toolkit for doing exactly that.
+Now, what do I mean by inverting physics?
+This process for flying the rocket that I described.
+The way it works is somebody understood the physical processes of how the system evolves through time.
+Wrote down equations that describe that physical process.
+And then, using those equations, derived a control law.
+Meaning an equation that describes how the rocket should actuate and throttle its motors to reach a desired configuration.
+So, you write down the process.
+You write down physics.
+And then, you essentially invert that physical process to determine the controls that lead to the desired boundary condition or outcome.
+This is extremely similar to what we do when we simulate something.
+So, typically, when we say equations of motion, we're imagining something relatively more self-contained.
+Where we can write down the equations on a piece of paper and maybe even solve them.
+But a simulator is essentially just a really fancy version of that.
+Where we wrote down a bunch of equations.
+And we can numerically integrate those equations to figure out how some complex system will evolve in time.
+How the stress and strain on the airplane wings will affect its flight through the air.
+So, if we run reinforcement learning in a simulator, essentially what we're doing is we are using machine learning to invert our physical model.
+So, instead of interacting with the world, let's say that we're interacting with our own understanding of physics.
+This provides a very powerful engineering tool.
+That is, not that different from the conventional engineering approach.
+So, before, we would characterize our system by writing down equations of motion.
+We would treat that as a kind of simulator.
+But then we would derive the equations on paper for how to control the system given those equations.
+Now, we would characterize the system by implementing code for a simulator.
+Running that simulator.
+And then using RL to figure out the control law.
+The RL is just replacing the more manual way of doing things.
+The manual process we had before, where we would do a bunch of calculus to figure out a controller for that rocket.
+So, the main role here that RL plays is essentially a more powerful inversion engine.
+A way to take a simulator and turn it into a control law, which we would previously do by hand.
+Of course, the main weakness of this perspective is that someone still needs to characterize a system.
+So, viewed in this way, this is hardly even a learning process.
+It's really more of an optimization tool.
+But, it's a really, really powerful optimization tool.
+And this really powerful optimization tool, has a lot of potential.
+And this really powerful optimization tool, has a lot of potential.
+And this really powerful optimization tool, has a lot of potential.
+And this really powerful optimization tool, has led to tremendous advances for things like, for example, robotic locomotion.
+Where we have quadrupedal robots that can walk very effectively on rough terrain, where we have quadrupedal robots that can walk very effectively on rough terrain, by leveraging extensive simulation.
+And I think that, in general, we'll see a lot more progress going forward, as this tool of reinforcement learning is applied to invert more and more simulators for various control problems.
+And as RL methods get more reliable, and more capable, And as RL methods get more reliable, and more capable, long run if we want to control any system like an airplane, a vehicle, or a walking robot, if it's a system that we understand well enough to characterize and simulate it, RL would be the standard go-to tool to build controllers for it.
+Now I should admit that this perspective is in some ways very different from the psychology roots of RL that deal with it more as a model of learning in the real world.
+This is much more of a computational process and the kind of direction this leads to is developing faster simulators, developing algorithms that can make use of extensive simulation.
+A very different perspective we could take is reinforcement learning as a tool for learning in the real world and that leads to some other conclusions.
+So one of the things that to me is a very motivating perspective for studying RL in the real world is something called Moravec's paradox.
+So just to set this up a little bit, in 1996 there was a major AI milestone.
+This was the first time that a computer had defeated the world champion at chess.
+This is a computer called Deep Blue and it defeated Guy de Gasparov at chess.
+And then 20 years later there was another major AI milestone where a computer for the first time defeated a human champion at the game of Go.
+Now the game of Go turned out to be more than just a game of Go.
+It was a game of Go that was played by a computer.
+It was a game that was written by RL.
+It was a game that was performed by a computer.
+And the game of Go is a game that is a lot more complex for AI than the game of chess because the kinds of tree search style methods that could master chess really couldn't handle Go but RL methods could.
+So that's great.
+But something we can notice in both of these pictures from both of these matches separated by 20 years is that in both cases there's no robot playing the game.
+So in both cases there's this other person sitting on the other side of the board from the human champion and that person seems to be moving the pieces.
+So where is the computer?
+Well look, this is a robot.
+It's just a robot.
+This is a robot that's sitting on the other side of the board.
+the computer is telling them how to move the pieces.
+So the human is essentially a human robot.
+Like usually we would think of a human controlling a robot through teleoperation.
+Here it's a computer controlling a human, which means that the human is just used for the ability to move their body.
+Why is that?
+Why couldn't we get a computer to actually move the pieces even when the computer could beat the human champion of the game?
+Well, this epitomizes something called Moravec's paradox.
+The original statement of Moravec's paradox written here is, we are all prodigious Olympians in perceptual and motor areas, so good that we make the difficult look easy.
+Abstract thought, though, is a new trick, perhaps less than 100,000 years old.
+We have not yet mastered it.
+It is not all that intrinsically difficult.
+It just seems so when we do it.
+Let's unpack this statement.
+What Hans Moravec is saying here is that abstract thought of the sort that you need to be a master at chess, might not actually be all that hard.
+We are just not very good at it.
+On the other hand, we're extremely good at moving our bodies and perceiving the world.
+Why?
+Well, because we have to be.
+If we weren't good at moving our bodies and perceiving the world, we'd be dead, and evolution would get rid of us and replace us with other creatures that are better at moving their bodies and perceiving the world.
+So perhaps moving our bodies and perceiving the world is much, much harder than beating the world champion at chess.
+It's just that biology has made us all extremely good at it.
+We're not good at it.
+We're not good at it.
+We're not good at it.
+We're not good at it.
+So it feels effortless.
+This was restated more succinctly by Steven Pinker more recently.
+The main lesson of 35 years of AI research is that the hard problems are easy, and the easy problems are hard.
+The mental abilities of a four-year-old that we take for granted, recognizing a face, lifting a pencil, walking across the room, answering a question, in fact, solve some of the hardest engineering problems ever conceived.
+So what this means is that getting those physical capabilities might actually be a lot harder than we think.
+And so I think that's a really good point.
+And I think that's a really good point.
+And I think that's a really good point.
+It might actually be the harder end of the AI problem.
+Now, Morvick's paradox might seem like a statement about AI.
+Literally, it's saying this is hard for AI to do, this is hard for computers to do.
+But it's actually a statement about the physical universe.
+So it's saying that in our physical universe, motor control and perception are difficult.
+You could imagine other universes where motor control and perception are less difficult.
+For example, if you're playing chess or flying a rocket, there's really no perception challenge and no motor control challenge.
+In chess, an action is a command to move a piece to another location.
+Dropping the piece from the board is not within the rules of the game of chess.
+That's not part of the chess world.
+So that is an easy universe, at least with respect to Morvick's paradox.
+That's not to say that playing chess is easy.
+It's just that motor control and perception in that universe are easy.
+Hard universes are the ones that we inhabit that are messy, that have physics, that have perception, that have lots and lots of real-world diversity and variability.
+And perhaps the other thing that we need to do is to understand the world.
+And I think that's a good point.
+Perhaps these are the things that we have to learn in a way that is analogous to how people learn them.
+Perhaps these are the things that we have to actually learn through experience, because these are difficult things for us to write down and characterize through simple rules and equations.
+And that's really a motivation for real-world learning.
+To give maybe a more realistic example of this, let's take a hard engineering problem.
+Let's say the problem of taking an oil tanker and getting it to sail from one end of the world to another.
+Now, the abstract thought part of this problem is like plotting a route through the oceans.
+And that's actually something that is very easy for computers to do today.
+You don't even need machine learning for it.
+Like planning a route using GPS and basic search algorithms, quite straightforward.
+But if something on the oil tanker breaks and someone has to go down to the engine room and fix something, that's something that our current AI systems can't do.
+So if you have a crew on board the oil tanker, they're vital for solving the unexpected problems.
+They are not vital for actually solving the unexpected problems.
+They are not vital for actually navigating the oil tanker.
+And it's really the variability, the fact that you can encounter very unexpected situations that make the real world so hard.
+So what does this all have to do with RL?
+Well, perhaps RL can offer us an answer to the question, how do we engineer a system that can deal with the unexpected?
+And my claim is this question is actually at the core of Moravec's paradox.
+Because what makes the real world so hard is the variability and diversity, and the fact that unexpected situations, outcomes, and outcomes are not always the same.
+And that's why we're talking about the RL problem.
+And that's why we're talking about the RL problem.
+And that's why we're talking about the RL problem.
+And that's why we're talking about the RL problem.
+And what kind of problems, outside of your training set, can arise all the time.
+Imagine the story of Robinson Crusoe.
+This was a person that was stranded on a desert island.
+And what makes that story so compelling is that he had to figure out all of these ingenious ideas to survive on the island to build shelter, to get food, and so on.
+Imagine an AI agent placed in that situation where it has to improvise and discover solutions to problems using the resources at hand, with minimal external supervision about what to do and unexpected situations that might result in unexpected situations.
+require adaptation, where it has to discover solutions autonomously, and it has to also stay alive long enough to discover them.
+So it's not like an Atari game where you have multiple trials.
+Humans are extremely good at this, and of course because we have to be, that's what evolution selects for.
+But our current AI systems are very bad at this.
+Even the most impressive AI systems that can ingest billions of documents from the web and learn to answer any question, they would not be able to survive on a desert island, right?
+Because there you really have to deal with the unexpected.
+Just relying on your training data is not good enough.
+My claim is that in principle, RL can actually do this, and more or less nothing else can, although mostly by definition, because RL is the framework for solving this kind of problem, right?
+RL is the framework for learning in the moment, for going to that world, experiencing what happens, getting feedback from things that are going well or going poorly, and adapting.
+Now, that said, we rarely study the challenges associated with these kinds of situations in RL research.
+So easy universes might be universes that look like those control problems from before, where success is equated to getting high reward, there's a closed world with known rules like the game of Go, lots of simulation, and the main question is really can RL optimize really well?
+The hard universes are the ones where success is basically equivalent to survival, basically doing well enough, and you have to be able to do it.
+So either survive or you don't.
+It's open world, where everything has to come from data, so there's no prior knowledge baked into a simulator necessarily.
+And the main question is really can you generalize and adapt?
+Can you handle the variability and unpredictability of the environment?
+Learning from reward feedback in principle should allow you to do that, but it does introduce lots of challenges that are outside of the kind of RL benchmarks that we typically study.
+So RL should be really good in these hard universes, but there are a bunch of questions that come up in the real world that I kind of want to give you a taste of.
+So first, how do we tell our RL agents what we want them to do?
+The real world doesn't necessarily have a score, and if your feedback is like, did you survive or not?
+That feedback is too delayed, so we need more proximate supervision.
+How do we learn fully autonomously in continual environments?
+So the real world is not episodic like an Atari game.
+You can't just reset the world and try again.
+How do we remain robust as the environment changes around us?
+And what's the right way to generalize using experience and prior data?
+And also, what's the right way to bootstrap exploration with prior experience?
+So, since this is the last lecture, I'm going to kind of indulge myself a little bit and tell you guys about some research from my lab and from colleagues that I've worked with that maybe touches on some of these problems, just to give you a taste for what these problems really look like.
+But I will say, I'll give lots of examples that have to do with robots.
+This challenge is not just about robots, though.
+Robots are just the most natural for us to think about because they're embodied like we are, so it's very intuitive for us to imagine what is hard or easy for a robot.
+But the same thing is true for robots.
+The same kinds of problems I think apply to any system that interacts with the real world, whether it's managing inventory or writing medical prescriptions, or if it's a chatbot on the internet, these are all at some level systems that are interacting with real world settings just through a different medium, rather than necessarily a body like ours.
+But we'll talk about robots because they do have a body a little bit like ours, and that maybe makes them a little easier for us to empathize with.
+So how about other ways to communicate objectives?
+Well, I mentioned before a number of possibilities, one that I want to zoom in on is the idea of learning from preferences.
+That's something that has been very significant in recent years.
+So this is a framework that was developed originally by Paul Cristiano in 2017, where instead of having a ground truth reward function, the agent actually shows trials to a human and asks them to select which one they prefer better.
+And a human can select different trials and guide the agent in this way towards performing some tasks, like doing a flip in this case, for which it's very difficult to write down a reward function in closed form.
+So this is an example of an algorithm that maybe uses other kinds of supervision that are easier to get in the real world than a reward score.
+How do we learn fully autonomously?
+Here's an example, a story about this.
+My former student Anusha Nagabandi had been doing some interesting work on controlling multi-fingered hands, and she could get multi-fingered hands, in this case with model-based RL, to do some cool stuff like manipulate objects, write, and so on.
+But when it came time to do this in the real world, in order to get the hand to actually practice the skill, she needed to build an entire separate robotic system to reset the environment so that the hand could try again if it dropped the objects.
+We could imagine that maybe there are some ideas that could make this much easier, for example by turning the learning problem into a multi-task problem.
+Here's an example.
+Let's say that the robot needs to make coffee.
+Well, if it has just one task, which is to put the cup in the coffee machine, and it messes up and drops the cup, then maybe a person needs to come in and put the cup back so the robot can try again.
+But what if it has a second task, which is to pick up the cup?
+So now if it fails at task one, it can do task two.
+Essentially that failure is an opportunity to practice something new.
+And if it succeeds at task one, then it can have another task, which is to replace the cup, and if it fails at that and spills the coffee, maybe that's an opportunity to clean up the spill.
+So if we're learning multiple tasks at the same time, then each failure can give us an opportunity to try to learn something new.
+And this is something that we could actually try.
+So here's an example of a robot that's doing a experiment with a robotic hand that is trying to learn multiple tasks simultaneously.
+Now the tasks here are a little bit more basic than what I described.
+The tasks are to move this object to the center of the bin, pick it up, reorient it in the palm, and if it drops it, then try picking it back up again.
+So there's these four tasks, re-centering it, in-hand manipulation, lifting and flipping.
+And the set of these tasks is chosen such that whatever failure the robot has, there's some other task that can practice from that failed state.
+So the robot can actually train fully automatically, in this case for about 60 hours, to practice this task.
+Now the other challenge, if we think back to that desert island example, is that we might really want our agents to learn efficiently enough that they can actually survive.
+Meaning that if they experience too many failures, maybe just the structure of the real world will prevent them from practicing anymore.
+So if they fail too badly, if they actually damage themselves, maybe that's no good.
+So it's important to actually use prior knowledge, and the agent does have available to it.
+It might not know exactly what it will encounter in a particular environment, but it can build up priors that should help it explore new settings.
+In the same way that Robinson Crusoe knew something about making fire and shelter and so on, even though he also had to discover a lot of things as he went.
+So here is a particular setting in which we can provide an example of this.
+Let's say that we want a robot that learns to pick up objects and put them on this little block.
+And the idea is that we're going to need to, you know, pick up objects, and put them on this little block.
+And the idea is that we're going to need to pick up objects and put them on this little block.
+And then have it learn new tasks, maybe interacting with objects that it's not seen before.
+And then have it learn new tasks, maybe interacting with objects that it's not seen before.
+If for each task we explore entirely from scratch with random actions, then at the beginning the robot will do something like this.
+And the thing is, like, if you see this video, even if you have no idea what the robot is supposed to do, you'll immediately know that whatever it's doing here is not right.
+Like, this is not a solution to any task.
+So, here's an idea.
+What if the robot had lots of experience of other tasks that it has solved before, and it uses that experience to build a kind of behavioral prior?
+behavioral prior.
+Essentially a policy that doesn't do any task in particular, but performs random tasks that were useful before.
+Perhaps that can be used to bootstrap exploration, so that when it's placed in a new environment, what it will do is it'll essentially attempt random tasks that could be useful.
+So now if you watch this video in the bottom left, even though the robot, maybe it's supposed to do a very particular thing, maybe it's supposed to put that yellow object on the cube, on many trials it does not do the correct task, but it's still doing things that might be useful, and it seems like a clearly better exploration strategy.
+So this notion of building up exploration strategies from prior experience is potentially really important if you want to get real-world learning right.
+So this thing works, it does lots of useful stuff, but the main point I want to make is that just because we want to do real-world learning doesn't mean that prior knowledge doesn't exist, it just means that prior knowledge needs to be of an appropriate type, so it's really priors, not a simulation of the thing that you're actually going to be doing, and it needs to be acquired.
+Perhaps from prior experience.
+Okay, so all this stuff seems hard, like it seems like we're just adding even more challenges after having described other challenges before, so what's the point?
+Why is this interesting?
+Well, I think it's really exciting to see what solutions intelligent agents can come up with, and the most exciting solutions are the ones that we didn't really expect, and this requires them to inhabit a world that is rich enough to admit novel solutions.
+So that means that the world has to be complicated enough.
+And to see interesting emergent behavior, we have to train our agents in environments that actually require interesting emergent behavior.
+So perhaps if we're constrained to only use simulation, like in the engineering approach I described before, there's sort of no room for the agent to discover things that are too different, they'll only discover things that are within the confines of that simulated world that we designed.
+So perhaps if we can build real-world learning systems, they might discover really interesting new solutions, and they might have this adaptability and flexibility that would address the central challenges in more of a paradox, one of the biggest things holding back deployment of AI systems in the real world today.
+All right, there's one more perspective I want to tell you about, which maybe is a little bit weird, but I think it's interesting to ponder, and maybe we'll give you some ideas.
+And that's the idea that maybe the real power of reinforcement learning is really as a more universal learning framework.
+Perhaps it's not just a way for us to learn to interact with the real world or to learn to solve control problems, but it's a way, and it's something that perhaps eventually will subsume all of machine learning.
+So why does deep learning work at some very basic level, supervised deep learning?
+Well, at its most basic level, deep learning works because you can take a large model trained with lots of compute and lots of data that you spend lots of money on, combine it with a large data set, which is typically a label data set, and get something that solves interesting problems like being a good chat bot, recognizing speech, classifying images, and so on.
+So deep learning, deep learning works because you can take a large step to indicate why deep learning works.
+You can get things that work, and then you can do it on the Internet.
+And that's a very good thing.
+But if that's the formula for making machine learning today work, then everything that we can do that allows us to use more data will be a good thing.
+And increasingly, the kind of recipe that we're seeing be more and more successful, for exactly this reason, is one where we have a small amount of data that actually tells the model what to do, and then a large amount of unlabeled, kind of low-quality garbage data, like for example, all of the Internet.
+This is how language models work.
+Language models are trained on huge amounts of data from the web.
+And then we might define a task by fine-tuning them on a little bit of data or even by few-shot prompting them.
+But when we're doing this kind of unsupervised or weakly supervised training, where does the knowledge that the model actually requires actually come from?
+Well classic unsupervised learning is basically doing density estimation, it's modeling the distribution in the data.
+That's for example what large language models do.
+When you're doing the next token prediction, you're modeling the process that produced the data.
+And if you're learning for example self-supervised representations from images, the distribution is the distribution of photographs that people took.
+If you're learning from natural language text on the internet, you're learning from the buttons people press on keyboards.
+And as an aside, this is perhaps why prompting large language models is such an art, because if you are learning the distribution of the data and the data is weakly labeled garbage data, that you just scraped from everything on the web, you're learning a really weird distribution.
+And perhaps a lot of the reason why it's so hard to coerce for example language models to do what we want is because you're taking this thing that is fundamentally trying to model a low quality distribution, meaning all the stuff on the web, and you're trying to coerce to do something that is of high quality.
+So can there be a better way?
+And what I'm going to try to argue is that RL actually gives us a better way to utilize this low quality data.
+So stepping back a bit, let's ask a very fundamental question.
+Why do we need machine learning?
+We can step even further back and ask an even more basic question, why do we need a brain?
+Daniel Wolpert, who's a neuroscientist that studies motor control, had this to say.
+He said, we have a brain for one reason and one reason only, and that's to produce adaptable and complex movements.
+Movement is the only way we have of affecting the world around us.
+I believe that to understand movement is to understand the whole brain.
+Now, this is perhaps a somewhat reductive way of understanding movement.
+Now, this is perhaps a somewhat reductive way of understanding movement.
+Now, this is perhaps a somewhat reductive way of understanding movement.
+This is perhaps the most reductionist perspective, but I think it's a very valid one that fundamentally the value of a computational system is really determined by its outputs.
+and we could apply the same logic to machine learning.
+We could postulate that we need machine learning for one reason, and one reason only, and that's to produce adaptable and complex decisions.
+Again, it's a little bit reductionist, but I think there's a good argument for this being true.
+Obviously, if you're controlling a robot, the movements of that robot are the only outputs that matter, if you're steering a car, et cetera.
+but the same is actually true for Director Jason Dupe.
+And once you start watching a robot since we studied hell in New Jersey, civilization is a family thing, it's a family thing to deal with.
+And our problem is just understanding movement because there is no mg as usual that we acknowledge in our computers and даже in social media.
+you're steering a car, et cetera.
+But the same is actually true if you have some other disembodied model.
+Maybe you have an image classifier.
+It's making decisions.
+The decision is not actually the image label.
+It has to do with what happens afterwards.
+Like, do you detect somebody in a security camera?
+And do you make a decision to call the police?
+Do you make a prediction about traffic?
+Well, that prediction is going to affect where people drive, which in turn has consequences in the real world.
+If you're a language model, what you say has long-term consequences across multiple episodes of interaction.
+So the outputs of machine learning systems really are fundamentally decisions, even if they're trained with supervised learning.
+So if machine learning systems are really all about making decisions, perhaps reinforcement learning gives us a better way to use data to make better decisions.
+Because with reinforcement learning, we could say that this kind of garbage data that we scrape from all available sources is really telling us what could be done in the world rather than what should be done.
+And then a limited amount of supervision can specify the tasks that the agent should perform.
+So then our big data set from past interactions isn't necessarily something that we're going to learn to copy.
+We're not going to learn P of X the way the language model does, but instead we'll use it to understand the possibilities available to us.
+And then among those possibilities, we'll select the ones that are most optimal at accomplishing the tasks that we want to do.
+So this perspective is perhaps a little bit abstract.
+What it's arguing for is using data within an RL loop, whether it's a model-based RL loop or an offline RL loop or something like that.
+And then we can use it to understand the possibilities available to us.
+And then we can use it to understand the possibilities available to us.
+And then we can use it to understand the possibilities to support a kind of a basis for decisions, and then make the most optimal decisions given what your data tells you is possible.
+And if machine learning is all about making decisions, this should be a better framework than one where we run unsupervised learning and try to model the entire data distribution.
+So the trouble is that with naive RL, this is a costly process because you have to actually interact with the world to collect this data.
+But self-supervised learning is all about using cheap data.
+So perhaps you can use it to understand the possibilities available to us.
+So perhaps offline RL or model-based RL or something of that sort might be a better building block for this kind of philosophy.
+But at a high level, the recipe could be something like take large amounts of diverse but low-quality data, run some kind of RL-like process on it, whether you learn a model or you learn a value function or something, and it should really be self-supervised at that point, maybe human-defined skills or goal-conditioned RL or even self-supervised skill discovery, and use that to essentially run self-supervised learning of decision-making.
+Learn how to make decisions that lead to particular outcomes.
+And then with a modest amount of supervision, figure out how to achieve the outcomes that the human actually wants.
+And at some level, I would actually posit that a lot of the excitement that we've seen with language models with things like ChatGPT is actually because some version of this pipeline is starting to emerge, where we're seeing that an RL-like process for actually specifying human preferences is providing a more useful agent.
+But I think there's a lot more to unlock from this than just the basic basic building blocks that we actually want.
+So I think that's a good example of how we can actually use RL as the basic building block for the entire training process, actually running unsupervised RL training to discover how to achieve any outcome and then specialize that to the outcome that we actually want.
+Now, to bring this back down to earth, I'll tell you about a few experiments that maybe get at some primitive version of this.
+Here's an experiment that we did at Google a couple of years back on self-supervised learning of robotic behaviors, where we ran goal-conditioned RL.
+So here there's no reward function, but we ran a lot of RL training on RL.
+So we ran a lot of RL training on RL.
+So this is a little bit like BERT, but for robots.
+So BERT does unsupervised pre-training on text.
+This does self-supervised RL pre-training on goals, and then fine-tunes RL-tuning on text.
+And then we ran a lot of RL training on RL, and then we ran a lot of RL training on RL.
+So this is a little bit like BERT, but for robots.
+So this is a little bit like BERT, but for robots.
+So we ran a lot of RL training on RL, and then we ran a lot of RL training on RL.
+So this is a little bit like BERT, but for robots.
+So we ran a lot of RL training on RL.
+So this is a little bit like BERT, but for robots.
+So we ran a lot of RL training on RL.
+We can also apply RL to language models.
+To my knowledge, it hasn't been used as a pre-training procedure, but as a fine-tuning procedure, it can work really well.
+Here's a recent work that was done by Joey Hong, who's actually one of the TAs this year, where Joey wanted to get an agent that was much more interactive.
+Perhaps you want a teacher agent, and you don't want it to just be a teacher agent.
+You want to get an agent that's more interactive.
+And you don't want it to just give you a big, long response.
+What you want is to have it actually clarify with you whether you understand certain concepts, and then tailor the lesson accordingly.
+So if the user asks, can you teach me about the behavior cloning?
+Maybe what the agent should do is say, of course, I'd be happy to explain behavior cloning to start.
+Could you tell me if you've ever come across the terms artificial intelligence or machine learning before?
+So you see that question will help the agent tailor its explanation.
+Of course, if you ask GPT-4 this question, it doesn't ask you lots of clarifying questions.
+It just gives you this kind of wall of truth.
+And then you can ask the agent, can you explain behavior cloning to me?
+And that's because that's what it was trained to do.
+Now, why is RL a good choice for getting this kind of more interactive agent?
+Well, the reason is that a language model trained on lots of internet data might actually be a really good predictive model of human behavior.
+So perhaps if we use something that looks more like model-based RL, we can have a language model essentially simulate plausible human responses and then optimize for the kinds of questions that might lead to the responses that are useful to us.
+Basically, treat the whole thing as a POMDP and optimize for a better performance.
+For better policy with short questions that very quickly get us the necessary information.
+So the way that we could approach this is we could actually prompt a language model to basically provide a bunch of dialogues, essentially act as a human simulator, generate data.
+And that data might not be very good.
+It might not actually teach humans optimally, but it might show the RL algorithm the kinds of responses that humans might produce.
+And that huge data set can then be used with RL to figure out more optimal behaviors that could actually produce a better teaching agent.
+So RL with language models is great for tasks that are easy for language models to simulate, but hard for them to perform optimally.
+So then with RL, instead of emulating humans, the language models can learn to achieve desired outcomes using their understanding of how humans might behave.
+So again, it's kind of using RL as inversion, but not inversion of simulator, instead it's inversion of a language model.
+And these are the kinds of dialogues that you could get.
+So this is the baseline with a version of ChatGPT that was specifically asked to produce lots of clarifying questions.
+So this is kind of giving it the best possible shot.
+And you can see it has these very verbose responses.
+And this is the agent that was trained with RL.
+And you can see the RL agent actually asks very short, very targeted questions.
+I'd be happy to explain behavior calling to start.
+Could you tell me if you've ever heard the term artificial intelligence or machine learning?
+The person says, yes, I've heard this term, but I'm not exactly sure what they mean.
+The agent says, no problem at all.
+Let's take it step by step.
+And asks, have you used the computer or smartphone?
+So the point of this is that once we start treating these problems as decision-making problems, we can get much closer to the behaviors that we want in a much more natural way.
+Okay, so that's maybe a little bit of research, and hopefully you can humor me on that point since this is the last lecture in my class.
+But the last thing I want to end on is to bring this back to the bigger picture, some of the bigger picture that we had actually in the very first lecture.
+So in the very first lecture, I had this big picture of the big picture of the big picture.
+And I was saying, well, I want to do a lot of research about it.
+And then I was saying, well, I don't think there's much else you could do about it.
+And I'm saying, well, So in the very first lecture, we talked about the possibility that learning might be the basis of intelligence, and that if that's the case, then perhaps deep RL should be a central part of that, because reinforcement learning allows us to reason about decision making, and the deep part allows our algorithms to learn complex input-output mappings.
+So perhaps deep models are what allow reinforcement learning to solve complex problems end-to-end.
+So if that's true, then what is it that's missing?
+One perspective that I think is pretty interesting, I don't think I fully agree with this myself, but I think it's worth mentioning, is a perspective that Professor Jan LeCun often brings up that has come to be known as Jan LeCun's cake, where he talks about how at a very high level, you can characterize the effectiveness of different learning problems by how many bits of supervision they get from every data point.
+So the idea is that if you're learning an image classifier, and you have, let's say, a thousand classes, log of a thousand is ten, so you're really getting ten bits of supervision.
+So if you're learning an image classifier, you're getting ten bits of supervision for every data point.
+If you're doing unsupervised learning, like, for example, predicting the next image in a video, then there are many, many pixels, so there's a huge amount of supervision for every data point.
+And if you're doing RL, then perhaps you're learning from fairly sparse rewards, so you're not getting as much supervision.
+So this is an argument for a fundamentally unsupervised learning approach to use lots of data with reinforcement learning as a mechanism to adapt such a model to solve a particular task.
+But this gets us thinking, like, what is really the role of RL in this bigger picture question of how to build intelligent systems?
+So Yann LeCun's cake would be an argument that unsupervised or self-supervised learning should be at its core, where things like model-based learning or model-based RL should be really important, and RL as a mechanism then specializes those systems to accomplish a goal.
+But there are other perspectives.
+For example, maybe a lot of the learning signal should come from imitation understanding other agents.
+Humans are social animals, and we have culture, and you could argue that a human that grows up without other humans' learning signals should be at its core.
+So this is a very simple example of how RL can be used to build a system that is actually very smart, but that is not the case.
+So perhaps imitation is much more central to this general vision of a general-purpose AI system.
+But I think there's also another very reasonable perspective that is very defensible, which is actually maybe RL is enough.
+Because even though in RL you're learning from a fairly sparse reward signal, that reward signal is modulated by a very complex system dynamics.
+So the actual supervision for something like a value function is much more elaborate than just asking whether the reward is 1 or 0, because once the dynamics interacts with that reward signal, it modulates in very complex ways.
+And you can always run multitask learning and other things that give you a lot more supervision even with standard RL methods.
+And it could be that the real answer is a combination of the above.
+Maybe we need self-supervised learning methods.
+Perhaps those self-supervised methods can look more like RL methods insofar as they facilitate optimal decision-making to achieve desired outcomes.
+And perhaps we need elements of interaction with imitation to get this.
+I don't know what the answer is.
+I have no idea.
+But I think it's a very interesting question.
+And I think it's a very interesting question.
+And I think it's a very interesting question.
+And I think it's a very interesting question.
+And I have my own beliefs about what's more likely.
+But I think the higher order bit that I want to get you all thinking about is that these questions actually matter.
+And if we are going to explore reinforcement learning as a powerful general purpose tool, then it helps to think about these possibilities.
+So how should we go about answering these questions?
+Well, we need to pick the right problems to work on.
+And maybe here it's very important to ask yourself the question, if you're choosing a research problem, does it have a chance of solving some really important problem?
+So work on research problems where the upper bound on success is really high.
+Take into account the bigger picture philosophy, but then try to reduce it down to concrete actionable things, falsifiable hypotheses where you can measure your success, but that are plausibly on the path towards the big questions.
+Optimism in the face of uncertainty is a great strategy, not just for exploring embedded problems, but also for research.
+Don't be afraid to change the problem statement.
+Many of these challenges will be met by iterating on existing benchmarks.
+Perhaps these standard assumptions of classical RL are not good enough to answer these questions, and we need to change something.
+And that's okay.
+And lastly, applications matter.
+Sometimes applying methods to realistic and challenging real-world domains can teach us a lot about the important things that are missing, and we need to take them seriously.
+So don't be afraid to work on more applied things, because it might actually reveal which problems are more important and which solutions are more promising.
+RL has a long history of disregarding this fact and working on overly simplistic tasks.
+Don't fall into the same trap.
+And lastly, think big, but start small.
+Think about the big picture questions.
+Don't be afraid to be ambitious and think about what would really allow us to achieve the goal.
+What kind of innovation is the solution?
+How would we achieve theか сидеть в грантере в กentalе иногда в dai не слова?

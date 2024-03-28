@@ -1,0 +1,112 @@
+All right, in the last part of today's lecture, we're going to talk about a deeper relationship between these kinds of approximate inverse reinforcement learning methods and another class of algorithms that also learn distributions called generative adversarial networks.
+And we'll see that exploring this connection actually gives us a lot of clarity on other ways that we design IRL and imitation algorithms.
+So one of the things that some of you might have recognized is that the structure of the algorithm that I described in the previous part of the lecture looks a bit like a game.
+We have this initial policy.
+We produce samples from that policy.
+We have human demonstrations, and we get samples from the human demonstrations.
+We combine these samples to produce some kind of reward function that makes the human demonstrations look good and the policy samples look bad.
+And then we change the policy.
+So that the policy actually optimizes that reward function, making it harder to distinguish from the demos.
+So you can kind of think of it as the reward function is trying to make human demos look very different from policy samples according to the current reward, because it's trying to give high reward to the samples and low reward, sorry, the other way around, high reward to the human demos and low reward to the policy samples.
+And the policy is trying to make the opposite.
+It's trying to do the opposite.
+It's trying to make its samples look good.
+According to the reward.
+Ideally as good as the human samples.
+So you can almost think of it as a kind of a game being played between the policy and the reward function, where the policy is trying to fool the reward function to thinking that it's just as good as the human, and the reward function is trying to find a reward that will allow it to distinguish the human from the policy.
+In fact, this connection is not just superficial.
+The connection between inverse RL and games can be made formal, and inverse RL can be related.
+So you can think of it as a kind of a game being played between the two.
+So the third method is something called generative adversarial networks.
+So a generative adversarial network, it's many things.
+It's a method for turning horses into zebras, a method for producing very realistic faces, a method for turning line drawings into cats.
+What it really is, is an approach to generative modeling.
+It's an approach to learn a neural network that captures a particular given data distribution, such as the distribution of realistic faces, or realistic zebras.
+For those of you that are not familiar with generative adversarial networks, they consist of two neural networks.
+A generator network, which takes in a random sample, random noise Z, and turns it into some sample X, which ideally should correspond to samples that resemble the data distribution.
+So if you train this system on faces, the sample X's should look like realistic faces.
+The data consists of samples from the true unknown distribution P star of X.
+And the discriminator, there's a second network called the discriminator, which is a binary classifier that tries to assign the label true to all of the samples from the data, to all the samples from P star, and the label false to all the samples from the generator P theta.
+So here d psi of X is the binary classifier that represents the discriminator.
+And here d psi of X is basically the probability that this sample is true, meaning the probability that the discriminator thinks the sample is a real sample from P star, rather than a fake sample from the generator.
+So the objective for the discriminator is to maximize the log probability of the samples being true on P star, and minimize the log probability, or equivalently maximize the log of 1 minus the probability for all the samples from P theta.
+So it's trying to make the P theta equal to 1 minus the probability of the sample being true on P star.
+So it's designed to have the P theta and the P theta samples look fake.
+The P star samples look real.
+So it's just another neural network that takes in X and outputs the probability of a Bernoulli variable.
+And then the generator is trained to fool the discriminator.
+It's trained to produce images X, for which the discriminator gives a high probability of them being real.
+Now this is very much like the inverse RL procedure that I outlined before.
+In fact, you can frame inverse RL as a kind of GAN.
+So one choice you have to make is what kind of discriminator should you use.
+So in GANs we can actually show that the optimal discriminator, the Bayes optimal discriminator, at convergence should represent the density ratio between P star and P theta.
+Now in practice we usually don't have an optimal discriminator, but if we were to train the discriminator at convergence we would expect it to converge to a network that for every X gives the probability as being P star of X divided by P theta of X plus P star of X.
+Now you might say okay this is like this seems kind of weird like shouldn't the discriminator at convergence just give probability of 1 to all the samples from P star?
+Well not necessarily because if P theta generates some images that are identical to images that P star might produce, that are identical to images that might come from the real data distribution, then the discriminator can't give them a probability of 1.
+So if you have a discriminator at convergence and you're going to have a discriminator at convergence and you're going to have a probability of 1.0 because they might actually be fake.
+So it has to produce probabilities according to this ratio.
+If P theta is very bad this is not a problem because usually in that case the realistic images will all have very low probability of P theta and the fake images will have very low probability of P star.
+But as P theta gets better and better the discriminator is going to produce values other than 0 and 1.
+In fact at convergence when P theta of X is actually equal to P star you would expect the discriminator to produce probabilities that are always 0.5.
+Okay this may be a little bit of an academic exercise.
+We can actually use this inference to cast inverse RL as a kind of GAN with a very peculiar kind of discriminator.
+So for IRL the optimal policy is going to approach P theta which is proportional to P of tau times the exponential of R psi of tau.
+So what we're going to do is we're going to choose this parameterization for our discriminator.
+We're going to say that the discriminator is equal to P of tau times 1 over Z times the exponential reward.
+So that's just the optimal policy distribution divided by P theta of tau plus P of tau times 1 over Z times the exponential reward.
+So we've basically just directly used the formula for the optimal discriminator replacing P star with P of tau times the exponential reward which is reasonable because that's what we would expect to get at convergence.
+And if we expand the equation of P theta of tau just as before the trajectory probabilities which contain all those initial state and dynamics terms will cancel out leaving us with a discriminator that has the form 1 over Z times the exponential reward divided by the product of the policy's probabilities plus 1 over Z times the exponential reward.
+And something to note here is that this discriminator will only be equal to 0.5 when the policy probabilities are equal to the exponential reward, which means that the policy is converged.
+And then what we're going to do is we're going to optimize this discriminator, this ratio, with respect to the parameters of the reward with respect to psi.
+So we'll basically pick the reward such that this ratio is largest for the human samples and smallest for the policy samples.
+So the objective for training psi will be to obtain P times P over Z times the exponential reward which is equal to the exponential reward.
+will still be exactly the same as the GAN, maximize the expected value of log d psi under the data distribution p star, and maximize the log of one minus d psi under the current policy samples, except that d psi now is not just a neural network that outputs a binary probability, but it has the form of this ratio inside of it, and what we're optimizing are the Rs.
+And it turns out that this actually works if you actually optimize z with respect to the same objective as psi.
+So you don't actually have to calculate the partition function z, you can actually optimize it as part of the same R max, because that turns out to actually yield the correct answer.
+The derivation of that is a little bit more involved, but you can find that in the paper at the bottom called the connection between generative adversarial networks, inverse reinforcement learning, and energy-based models.
+And the interesting thing about this derivation is that we don't actually need importance weights anymore.
+They're actually subsumed into the partition function z, which we optimize along with our reward function parameters.
+And then the policy is optimized just like the generator in a GAN to maximize the reward.
+So we have our generator slash policy, we generate samples from that policy, we have our data slash demonstrations, which are samples from p star of t of tau.
+We train our discriminator with respect to the standard GAN objective, but the discriminator has this funny form that we had on the previous slide, which is, we train our discriminator with respect to the standard GAN objective, but the discriminator has this funny form that we had on the previous slide, and we optimize the policy to maximize the expected reward and entropy.
+So the policy changes to make it harder to distinguish from the demos.
+All right.
+Now, if we actually instantiate this kind of idea in a practical algorithm, which was done among other papers in this paper linked at the bottom called Learning Robust Rewards with Adversarial Inverse Reinforcement Learning, one of the things we can do is we can study whether the rewards that we recover can actually generalize in meaning.
+So we can take that function and convert it into some kind of reward function.
+And that's what we find in a very useful and useful method, which is called Enversarial Inverse Reinforcement Learning.
+And if we take this function, we can actually recover the reward function in some kind of meaningful ways.
+So if, for example, we have a demonstration for this angry-looking quadrupedal ant, and then we recover the reward function from it and then apply that reward function to a modified ant where maybe two of the legs are disabled, what it will figure out is that it can still maximize that reward function, new conditions and get meaningful behavior, whereas just copying the actions would not have resulted in meaningful behavior.
+So what can we learn from the demonstrations to enable better transfer?
+Well, what we need to do is we need to decouple the goal, the reward function, from the dynamics, and that's exactly what inverse RL does.
+All right.
+Now, one question we could ask at this point is that in order to connect GANs and inverse RL, we have to use this very funny type of discriminator.
+Now, using that funny type of discriminator was actually advantageous to us because it allowed us to recover a reward function, which could then generalize to new situations.
+But if we don't need the reward function, if we just want to copy the expert's policy, can we just use a regular discriminator?
+So just like before, we have samples from the policy and samples from the data, but now D is just a regular binary neural net classifier, just like in regular discriminators.
+So we can use a regular discriminator to copy the expert's policy.
+So we can use a regular discriminator to copy the expert's policy, just like in regular discriminators.
+And then the policy maximizes the expected value of log D to make it harder to distinguish from demos.
+This idea was introduced in a paper by Ho and Ehrman called General Adversarial Imitational Learning.
+This algorithm is no longer an inverse reinforcement learning algorithm because it doesn't recover a reward function, but it does recover the expert's policy.
+So it's a well-defined imitation learning method.
+So there are a number of trade-offs.
+It's often simpler to set up the discriminator at convergence, but the discriminator at convergence doesn't really know anything.
+So here at convergence, the discriminator will just be 0.5, and you generally can't re-optimize the reward in new settings.
+So you can't guarantee that you will recover the expert's reward function, but you can guarantee that if everything works correctly, you will recover their policy.
+So just to summarize this, we can cast IRL as adversarial imitation in classic deep IRL methods like added cost learning.
+We have a number of methods that we can use to recover the expert's reward function, but we can't guarantee that we will recover their policy.
+So we can't guarantee that we will recover their policy.
+The policy's attempts in the human demonstrations and the reward function tries to minimize the reward of the policy samples and maximize the reward of the human demonstrations.
+And it learns the distribution p of tau such that the demos have maximum likelihood.
+The generative adversarial imitation learning approach instead uses a classifier, which tries to assign the label false to all the policy samples and true to all the human demonstrations.
+And d of tau is the probability that tau is as a demo basically and then you use log d of tau as your reward.
+They're basically the same thing except that for one of them you can recover a reward function whereas for the other one you don't recover the reward but you do recover the policy.
+So the difference is that the discriminator for guided cost learning and other IRL methods just has this particular special form whereas for the Jaron-Van Ressera limitation learning approach the discriminator is just a binary classifier.
+Now these things have been used in a number of different settings so you could for example combine it with a kind of clustering approach and recover multiple different behavior clusters from heterogeneous demonstrations.
+You can even perform inverse reinforcement learning or imitation from images and copy simulated locomotion gates and things like that.
+If you want to read more about inverse reinforcement learning here are some suggested readings.
+So these are some of the classic paperless and some of the classic paperless and some of the classic paperless and some of the modern papers in inverse RL apprenticeship learning via inverse reinforcement learning and maximum entropy inverse reinforcement learning.
+And here are some of the more modern papers.
+So guided cost learning that's the paper that I discussed that proposes a method to actually scale up max and IRL to the high dimensional deep learning setting.
+This next paper deep maximum entropy inverse RL performs inverse RL in small tabular domains but with deep networks.
+Jaron-Van Ressera limitation learning doesn't perform inverse RL but it does recover the policy and then learning robust rewards with adverse RL inverse RL instantiates the GAN method and studies transfer.

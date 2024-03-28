@@ -1,0 +1,772 @@
+All right.
+Well, this mic is sort of doing something, so I might just end up yelling, but I guess we'll see.
+Okay, cool.
+Were we?
+Are we good?
+Okay, we're good.
+Yeah, so thanks a lot for having me.
+It's fun to be here.
+Like Kevin said, I'm here from Stanford.
+I hope you don't hold it against me, but I managed to make it just in time through the Bay Area traffic.
+Today, I'm going to talk about RLHF, something that people are probably a little bit familiar with, but if not, that's okay.
+We'll try to cover it more or less, not quite from zero, but give some background.
+I tried to leave a little bit of time for questions.
+I do want people to actually learn from this.
+If you have questions, let me know.
+I might have to start ignoring.
+If we get crunched for time, but feel free to raise your hand and I'll do my best as we go without further ado.
+So, okay, if you're in this class, I guess a lot of people maybe are not in the class, but you're probably familiar with reinforcement learning.
+And if you're a human being these days, you've probably heard something about language models, but why are we talking about reinforcement learning for language models?
+And there are a lot of ways, I think, to do this slide.
+I thought about doing some like long timeline of like MLP and like RL and showing them converging.
+But I think really the main idea here is like GPT-3 was cool.
+All of your researcher friends were like, whoa, have you seen this new model?
+Then Chachi PT came around and it was like your grandma was like, yo, have you seen this new model?
+And these are just totally different levels of permeation in kind of the public consciousness.
+And yeah, so the question is kind of what was between these two things?
+What was added?
+And it really is this sort of kind of like, oh, I don't know, I don't know.
+I don't know.
+I don't know.
+I don't know.
+I don't know.
+More or less one weird trick, which is RL from human feedback.
+And that's what we're going to talk about today.
+As just a little bit of background, so that we're all a little bit more on the same page.
+If people are not as familiar with language models, what is a language model?
+For our purposes today, you can just think of a language model as an auto-aggressive model over tokens.
+And in tokens, you can really just think of as words.
+Sometimes there'll be sub words or word pieces, but for the most part, it's basically just an autoregressive model over words.
+We'll have some vocabulary, which is the set of possible tokens.
+And in sort of modern large language models, this will be something like 50,000, but can vary quite a bit.
+And basically your language model, your policy, here maps token sequences to a distribution over the next token.
+Pretty simple stuff.
+And when we start thinking about reinforcement learning, we'll think of states as being sequences of tokens.
+And actions can be either individual tokens or actually quite commonly, they will also be sequences of tokens.
+So although you might think of it sort of naturally to think of like each token is an action, in a lot of the work that's out there, people tend to actually think of this as sort of a contextual bandit setting where you get some context, some prompt sequence of tokens, and you emit a single action, which is your sort of, your response sequence.
+And so to make this very concrete, if you're using chat GPT, in this sort of bandit problem, you have like your first state, which is whatever you type in, and your action is the model's response.
+And now if you have sort of multiple turns of dialogue, your state just becomes the first input, first response and the next input, and your action is just your next response.
+There's a paper here.
+I noted at the bottom, this contrastive preference learning, learning from human feedback without RL, which is a very recent preprint.
+But if you're interested in more of this discussion about sort of the contextual bandit versus per token MDP kind of formulations of how we do RL on language models, that paper has some good discussion of this, both in the main text and the appendix.
+So if you're really hungry for more, I invite you to check it out, but I'm gonna stick to this sort of bandit formulation, cause that's what most of the work so far has used and sort of the basis of the algorithms we're gonna talk about.
+Okay, so with that out of the way, the sort of what we're gonna cover today is basically three main sections.
+So I'm gonna do kind of a primer on RLHF for people who are not familiar with it.
+This is sort of the algorithm, at least as far as we know it, cause we don't really know, but as far as we know what was done to give us chat GPT, I'm gonna talk about a newer algorithm that simplifies some of the complexity in this original formulation of reinforcement learning from human feedback on language models, which is called direct preference optimization.
+And then I'm gonna talk about some applications and one in particular to prove that it was worth coming to listen to this monologue.
+Hopefully it's not a monologue.
+Hopefully we'll have some good questions.
+Okay, so part one, reinforcement learning from human feedback.
+I'm gonna just give you the first couple steps of this pipeline.
+The way that RLHF is done on these big language models basically has four main steps and the first two are pretty straightforward.
+So the first one is just unsupervised pre-training.
+And this is actually just GPT-3.
+So if you stop after step zero here, you get GPT-3, you take a ton of texts from the internet and we're talking trillions of words of texts from the internet.
+You just do unsupervised generative modeling condition on a sequence, predict the next token, do this a lot on a lot of A100s for a lot of hours and you get out this unsupervised pre-trained model.
+And this is this pure auto-regressive generative model over text.
+After we do that, we're actually going to, I'm gonna go back to the first slide, but I'm gonna go back to the first slide.
+We're actually going to, we're actually going to, we're actually going to, do some supervised fine tuning first on human demonstrations.
+And so this basically gets the behaviors that we're interested in, in really learning and refining in distribution for the model.
+We can talk a little bit more later about why this is so important, but basically you can think of these first two steps as kind of learning the background knowledge about the world in step zero.
+And then step one is doing just a little bit of fine tuning on some human written demonstrations of, you know, what would be a good way to respond to this example prompt, like write a poem about jazz or whatever.
+And so we find that there's a lot of things that we can do.
+So we find that there's a lot of things that we can do.
+We fine tune that original unsupervised pre-trained model, and we get this SFT model.
+And then the question is, what do we do next?
+And I think, you know, a question here is also like, why do anything next?
+I mean, why not just stop at step one?
+You know, supervised learning works really well.
+And there are a couple of reasons for this.
+Two in particular, one is that, we'll talk about this a little more, it's kind of hard to scale this annotation of human demonstrations.
+It's really laborious, right?
+If you, you know, want to come up with demonstrations of like, how am I supposed to respond to queries?
+Like write me, you know, a sassy poem in the style of Snoop Dogg about quantum mechanics, like it's going to be difficult.
+And it's going to take time to collect those annotations.
+And also if you want to actually exceed human performance on a lot of these tasks, you know, obviously imitating human behavior is not likely to give you a policy that's actually going to do better than humans.
+And so these are some of the reasons, both from the perspective of scaling up the annotations and also just getting a really strong model that we might want to do this.
+Okay, so hopefully you're somewhat convinced we want to try to train these sort of general purpose language agents using RL.
+And I think, you know, probably the most obvious question then is, well, okay, like what are we going to optimize?
+What is the reward and what properties should it have?
+Now, ideally, like we want a reward that's going to assign high reward to stuff humans like, and lower reward to stuff that humans don't like.
+Now, this is a big oversimplification, as I noted in the bottom of the slide.
+But the point is that knowing what should have high reward really requires knowing something about humans.
+So it's probably not enough to use something sort of simple and hard coded or some sort of closed form reward.
+We probably really are going to need to elicit some sort of, you know, particular annotations or behaviors from humans to learn in sort of like an inverse RL kind of setup, except we might not be taking demonstrations from humans.
+We might be getting some other kinds of data from them that we can use to infer this sort of reward function that's actually worth optimizing.
+And so the question is, where do we get this mysterious reward function?
+Fortunately, I'm going to tell you.
+So maybe the first thing we might think of is like, all right, like let's just ask humans for a reward, right?
+Like I'm going to show you model behaviors and if you really like it, you'll give me a big number.
+And if you don't like it, you're going to give me a small number.
+And you could do this, but I'm curious, like, what, you know, what number would you give this response, right?
+Like, can we just like raise hands and people give like one through five?
+I know I said one through 10, one through five.
+Like what do people give this?
+We got a five, we got an eight out of five.
+That's pretty good.
+Three.
+Okay, so yeah, I mean, this was a silly exercise, but I hope it makes it clear that it's sort of an underspecified task here and you can have different people that rank different responses the same way, but they might sort of differ in a monotonic transformation of the rewards.
+And so you might have high disagreement among your labelers that becomes annoying to model.
+And so maybe we can do a simpler task, right?
+Maybe instead of just giving rewards directly, it's a lot easier to say which two of these responses is more helpful, right?
+Like who thinks the response on the left is more helpful?
+Right, so we're going to see much higher agreement a lot of the time, at least, when we ask for responses this way.
+And also, you know, I think that's a good way to say, you know, a lot more people raise their hand, right?
+Because it was a lot easier to make that judgment than it was to give me a number.
+And so this sort of gets at this point of, the first point before of, it's easier to scale annotation this way because it's much easier to put two responses in front of a person and say, what do you like better than it is to say, write me a good demonstration response or come up with a number that you think captures how good this response is.
+And so this is exactly how we're going to collect feedback from humans in order to learn this reward function.
+So this feedback that we're going to get is going to come as preferences over model samples.
+So you remember we did that supervised fine tuning step.
+So our model will roughly do the sort of things that we care about.
+And what we do then is we have some data set of unlabeled prompts.
+We collect two model samples from each prompt, and then we put them in front of humans.
+And the human says that one's better.
+And then we end up with this data set of these triples, X, YW and YL, where the YW is sort of the preferred or the winning response and YL is the loser.
+And then the question is, okay, we have this data.
+It sort of feels like this is helpful for learning a reward, but how exactly do we do that?
+And this is where some older models from the economics literature, in particular with the one that's widely used is this Bradley-Terry model that relates some score function or utility function, maybe a reward function to preferences.
+And so in particular, the Bradley-Terry model is built for discrete choice, and in particular binary choice settings where a human has to decide between two choices.
+And we're modeling the probability that they're gonna prefer choice A to choice B.
+And we model it as this sort of Boltzmann distribution of the difference in their scores.
+And this score function is sort of this unobserved, implicit sort of latent scoring function that we sort of hypothesize exists, but we only get to observe the human's choices.
+All right, so now we have a probabilistic model that relates discrete binary choices, which is what we have in our data to some scoring function.
+And we can just turn this into a loss function on a reward model.
+And do maximum likelihood, right?
+So we just replaced S here with R phi, which is our reward model that's got some parameters.
+And we're just going to do maximum likelihood here on our data set of preference data, and out pops a reward model that we can then optimize.
+Okay, so this is sort of the human feedback part of the RLHF.
+Are we good?
+Okay.
+Okay.
+So we're a little stuck here, but now we figured it out.
+Good for us.
+So we got these new prompts.
+And again, we're going to use the human, but this time we're going to use the human to give us these preference pairs over model samples from the SFT model.
+You know, one of my office mates told me this figure is too overwhelming for a lecture.
+And I hope he was wrong.
+So step two, we fit this reward model, right?
+With this preference data we have over the SFT samples.
+All right, so we're almost there.
+You know, we have this like SFT model that like kind of does what we want.
+We now have this reward model, which allegedly like assigns high reward to good stuff and low reward to bad stuff.
+So like now, you know, we need to actually just fine tune this policy.
+And I say allegedly here because, you know, it's sort of silly, right?
+Like we have a single reward function that gives you an input and an output, and it gives you one number that says how good it is.
+Like if you think even a little bit about this, it doesn't make any sense at all, right?
+Like people have different opinions on what's good and what's bad.
+And so, in some ways it's almost surprising RLHF works as well as it does, because like the fact that we can make this unbelievably restrictive assumption that there's like a single like reward function for all of humanity that's like worth optimizing is a little bit silly.
+And that's an interesting direction for future research.
+So please, please figure that out.
+We want to represent all sorts of value systems.
+Okay, so we have this reward function and now we want to learn a policy, right, that achieves high reward.
+So this is just RL, right?
+Which, RL, right?
+So this is the RL that we've been told you know something about.
+Now that's the obvious bit.
+I mean, do people have any thoughts of what can go wrong if we just optimize this?
+And I don't, I kind of glanced through the lectures that you guys have had, but I'm curious if people have any guesses on this.
+It's not rhetorical.
+If you have a thought, you can actually raise your hand and say what you think.
+You don't have to, but you could.
+Or not.
+Oh, yes.
+I would say that the training data could be dis-poisoned by sub-ultimate responses from the training, perhaps on purpose to that training data.
+Yeah.
+Yeah, so that's definitely a problem.
+So one thing you'll find actually, if you fit these reward models on real data, is like, this reward model is basically a classifier, right?
+If I have some data that's like binary preferences over responses, if I fit my reward model and then measure how accurately it actually, essentially, is going to work, and then it actually assigns higher reward to the thing that the human says is better, it'll be like under 70%.
+So these preferences are super noisy, and that can be a problem.
+I'm thinking of something else though.
+It's a good point though.
+Any other guesses?
+We got one in the back.
+Yeah, so I mean, that's, I don't wanna give you full credit for that, because like, in any machine learning lecture, if someone's like, okay, so we do this thing, well, what can go wrong here?
+You can always say distribution shift, and it like, will kind of sound right.
+Unfortunately, it is sort of right here, so I have to give you some credit.
+But I wanna talk about a specific kind of distribution shift, which is that, if you recall, right, well, the answer, sorry, is that we wanna add some term here to keep our policy that we're fine tuning from the SFT model close to the SFT model.
+And the reason for this, right, is our reward model was trained on pairs of trajectories or responses from our SFT model, right?
+So sort of by definition, our reward model is probably gonna be most accurate around things that the SFT model assigns high likelihood to.
+And so if we optimize this without this constraint to oblivion, we're probably going to end up in some area of the action space where our reward model is giving us totally garbage rewards, and we're going to sort of over optimize our reward model.
+So it's gonna look like we're getting higher and higher and higher reward, but when you put those responses in front of humans, they're gonna say that's garbage.
+Okay, so that is what I mean.
+So yes, it is distribution shift.
+And now that we have this whole objective, we're just gonna optimize this whole thing with PPO.
+I don't know if people are familiar with PPO.
+It's an RL algorithm.
+You don't have to use PPO, but that's what John Schulman decided.
+And therefore that's the world that we live in.
+It's a PPO world out there.
+So that basically finishes out our pipeline for RLHF here.
+So we do unsupervised pre-training, we do SFT, we fit this reward model.
+And then finally, we take our data set of just unlabeled, unlabeled prompts.
+Again, we might have a new data set of unlabeled prompts and we do RL with this reward model.
+And we ended up with a policy.
+And that's basically ChatGPT.
+Another view of this process, which I've included here, cause it's even more complicated than my figure.
+And I think it kind of makes me look better for that reason.
+So I've included it here, but the point here really pedagogically is that this pipeline is really, really complicated.
+This is if you include all of the actual pieces of PPO rate, we have the sort of the old policy, we have the SFT model that our KL constraint is computed from, we have a reward model.
+We also have a value function that we're fitting sort of online as we're training the model.
+We also have our policy.
+And then we have a replay buffer as well.
+It's very complicated.
+And this is non-trivial.
+Nonetheless, the recipe really does work.
+So this is from the quote unquote, unstructured GPT paper.
+The paper that came out when OpenAI released DaVinci 003, which was the immediate predecessor to ChatGPT.
+And there are a couple of things to point out here.
+I mean, first of the thing is we're evaluating win rates here.
+Okay, so the Y axis is basically how often a human prefers the response of that model to the response of the 175 billion parameter SFT model.
+Okay.
+Which is why on the SFT curve, right, it ends up .5.
+And what's sort of interesting here, right, is humans like the 1.3B RLHF model better than the 175B SFT model.
+And like, if you haven't worked with language models, these numbers are just numbers flying through the air.
+But like 1.3B is like, I can run it on my like 2070 TI.
+175B is like, I pay an engineering team to like fine tune this model.
+And so that's a really interesting kind of difference in scale.
+And also importantly, like the gains continue, like the gains continue to show up even as the model gets really big, right?
+So it's not like this just helps us maybe do better when we have a really small model, even when we have a really big model with a lot of capacity to work with, this is still helpful.
+And, you know, GPT-4 allegedly is like out here.
+That could be misinformation.
+So take that with a grain of salt.
+Okay, so RLHF works.
+I wanna mention just a couple quick variations that I think are kind of neat here.
+So this is a really recent paper that talks about quality diversity from human feedback.
+And here what they do is they use human feedback not to learn a reward function, but to learn sort of a diversity metric, basically a latent space that captures what humans find more or less similar.
+So here they'll show human three images and they'll say for image A, let's compare this to image B and C, which one do you think is more similar to image A?
+And they use this type of feedback to learn this latent space.
+And what they've shown here then is, they've really, you know, they've really, you know, they've really, you know, they've written some prompt like an astronaut riding a horse and they've used Clip.
+Do you know what Clip is?
+Oh, some nods.
+Okay.
+So Clip is a model that jointly embeds text and images into a joint embedding space.
+So you can sort of write texts and find images that are similar or embed images and caption them.
+So what they've done is they embedded this caption like an astronaut riding a horse.
+They found on the left, that's just the eight images that are closest to that label, right?
+They're all correct, but they're all really similar.
+What they've done on the right here is they partitioned the space that they learned from human feedback into 16 cells.
+And then they found the nearest image in each cell.
+And what is interesting is that you still get good matches to the prompt for all of them, but you have clearly higher diversity by constraining your images in this way.
+Okay.
+So this is another thing that we can learn from human feedback.
+It's not just about learning reward models.
+Another thing that's new is RL and AI feedback.
+So this is how Claude works, which is a very interesting as anthropics sort of offering in a similar sort of chat bot space.
+And basically the deal here is we wanna learn dialogue models that are not just helpful.
+It's not just that they will tell you whatever you want, but we also want them to have some sort of guardrails.
+We don't want them to tell you how to do bad things.
+I'm not even gonna give examples because everybody disagrees on what is a bad thing, but there are certain queries we want these models to refuse.
+And one way to do this is to just ask humans, like here's a pair of responses, which is more harmful.
+But another thing you can do is you can do the normal RLHF thing with just the helpful data.
+So just where you have data where humans say, which is like a better response.
+And then you actually use the model you get out of that to give you the harmlessness annotations.
+So instead of having to ask humans, then what's more harmful you just show this purely helpful model, pairs of responses, and it'll give you those labels.
+And this works.
+Okay.
+So wrapping up the RLHF section here, one of the key points here is humans can provide more scalable feedback with comparison than they can through demonstration.
+And this is a special case of a more general phenomenon or general question, which is like, what is the best way to do scalable oversight on powerful models?
+And it seems like this is one useful way.
+And I say it's scalable, both in terms of collecting a lot of the data, but also quality too.
+It's probably more scalable in terms of, if we wanna get the model better than humans, it's gonna be easier to do that with comparisons than with demonstrations.
+The next big thing is we use this theoretical preference model or choice model to drive this objective for reward learning.
+And that's really where the meat of the work is.
+And once we do that, we just fine tune with more or less off the shelf RL with this learning reward and we get a great model.
+Yay.
+Okay.
+RLHF is over.
+Any questions?
+Okay.
+So now we're gonna talk about DPO.
+So, oh, I'm sorry.
+It's just not aggressive model.
+So it's just a language model.
+It takes a sequence of words.
+It takes a sequence of tokens and gives you a distribution over the next token.
+And then when you like roll out your policy, you get a prompt sequence of tokens.
+You predict the next one, you sample from that distribution.
+You- So like an episode is like a whole sequence that you would like take an action at every time step?
+Yeah.
+So it kind of depends on what we call an action here.
+You can call an action an individual token, or you can call it an action a whole output sequence until your model outputs sort of a special, like end of sequence token basically.
+So yeah, either a trajectory or an episode is like a single action if you take that view, or it's yeah, a sequence of actions if you take the per token view.
+Yeah.
+Have they experimented with preference models?
+Like this seems like it's always a dichotomy between two options.
+Uh-huh.
+Have they experimented with the same rank system?
+Yeah.
+So there are pretty straightforward generalizations of Bradley-Terry to rankings over many responses, which is a general family called Plac-It-Loose models, which is, it looks very similar to the Bradley-Terry model.
+Yeah.
+And there are also a lot of questions about when we pick this preference model, what are we actually assuming is the underlying parameter?
+And we've sort of assumed that this preference model is relating rewards to preferences.
+It's actually not obvious that should be the case.
+It could be something else like advantages.
+And there's really recent work looking into that.
+Like in that paper I mentioned earlier, the contrast of preference learning, where they talk about per token versus per sequence, they get into that.
+Okay.
+Let's talk about DPO.
+I love these questions though.
+So what's not ideal about RLHF with PPO, as I've described it?
+Well, there's this implementation complexity issue.
+There are the resource requirements.
+So again, we have all these different models flying around.
+We have the reward model, the value model, the policy, the reference model, and just ability of training.
+So the rewards actually have this extra degree of freedom when we fit them, right?
+Because this loss function only cares about the difference between rewards.
+I can shift my rewards for a particular prompt, right?
+If we fix X, I can shift the rewards by an arbitrary concept that doesn't change loss.
+And the real issue is that the constant can be different for every prompt.
+And so what we could conceptually at least end up with is a reward function that for a particular prompt, the relative rewards make sense, but you can't even compare rewards across inputs.
+So this would make it really, really difficult to like fit a value function when we're doing RL.
+So let's get rid of all of these issues.
+I'm gonna talk about this algorithm direct preference optimization, which basically simplifies the pipeline we've talked about.
+And the punchline here is that if we parameterize the reward model in a special way, if we pick sort of a particular architecture for our reward model, we can just extract the optimal policy for that reward model in closed form.
+We don't actually have to do any RL, which is good.
+And the main idea here is that there is a sort of one-to-one correspondence between optimal policies and reward models.
+So given a particular reward model or reward function, there's a closed form expression for the optimal policy, which is intractable, but we can actually use that still, at least in our training objective, to make it a lot easier to train the policy.
+And I'm gonna show you how.
+Okay, so we have this RLHF objective.
+We already talked about this.
+This isn't new.
+So we have our data set of prompts here, and then we have this expectation over responses from our model.
+We want high reward and we want low KL.
+And nothing new.
+And this is for any reward function.
+And what you can show, and this is like a couple of lines of algebra, it's in the DPO paper and several other papers, is that there's a closed form optimal policy.
+And there's a closed form optimal policy here, which is this.
+And hopefully it's actually somewhat intuitive.
+Not that you immediately would have pulled this out, but basically the probability we're assigning to a particular response is the product of the probability that our original like SFT model, the reference model assigns to that response and the exponentiated reward.
+Right?
+And so we basically are going to end up assigning high probability to stuff that both our reference model assigns reasonably high probability and gets high reward.
+Okay.
+So, so kind of not crazy, right?
+Since we're originally, our objective function is literally high reward, low KL.
+It kind of makes sense.
+We would see something like this.
+We just have this one over Z because we need to normalize.
+So it's a, so it's a probability distribution.
+Now, again, this is, this is intractable because this is going back to this idea that actions are entire like responses.
+This is a sum over all possible, not next tokens, all possible sequences.
+Can't compute this.
+But nonetheless, we don't need to.
+And the only other thing we're going to do is just literally algebra.
+Okay.
+We're just going to take the second line and we're just going to rearrange it.
+So we get the reward function as a function of the optimal policy.
+And this might be like, why are we doing this?
+But you'll see very soon.
+Now, now hopefully this sort of makes sense a little bit, right?
+Like we have basically this, this idea now that we can parameterize a reward function as a log probability ratio between some policy and the reference model.
+Here's the optimal policy.
+You can actually do this for, for any function.
+You can actually do this for any policy.
+And when we put this all together to, to show sort of what, what this actually lets us do, because so far, right?
+We've really just kind of done some silly algebra.
+You know, we took our objective, we wrote down an intractable closed form solution for it.
+And then we did some algebra that doesn't seem to really be useful.
+How is it useful?
+Well, originally what we're starting out with is a loss function on reward functions, right?
+This is this Bradley Terry loss that we use in RLHF to turn our, you know, preference data into a reward function that hasn't changed.
+What we're going to do is we're going to add basically a transformation between reward functions and policies to turn that loss function over reward functions that we used before into a loss function directly on policies.
+So we can skip out the sort of stage where we actually learn a reward model and then distill that into a policy.
+We can just directly train on the preference data and optimize our policy directly, which is why it's called direct preference optimization.
+So again, we have this loss function on reward functions.
+Okay.
+This is, this is the same.
+Okay.
+This is, this is the same.
+Okay.
+This is, this is the same.
+This is just from, from RLHF.
+This is just from that Bradley Terry model.
+Does that, I mean, people remember this, right?
+Okay.
+So, so this is this, this loss function.
+We stick in a reward, right?
+For the, for the, for the chosen thing and for the rejected thing.
+And, and the, the probability of this model, right?
+Is just the sigmoid of the difference between these two rewards.
+And then we train our reward function so that it, so that it, with maximum likelihood.
+So this is just the same loss function.
+And what we're going to do is we're going to use this transformation I just showed on the last slide, right?
+So we showed that for a particular policy, the reward function for which it is optimal takes this form.
+Okay.
+So, so we can stick in any policy here and we get back.
+And if we, if we sort of compute this quantity, again, this is intractable, but assuming we could, this is the reward function for the reward for a response.
+Why, which is, you know, evaluated by the reward function that this is the optimal policy for.
+Okay.
+So, so here we have this, this, you know, this, this, this transformation between policies and reward functions.
+It goes both directions.
+And this is just from doing algebra on the form of the optimal policy.
+And the key is if we stick this form, so now we have sort of a reward function that is no longer just a general transformer that you take a sequence and it gives you a scalar.
+Now it has a special form where we have actually an autoregressive model and we compute the log probability of a response and we subtract the log probability of that same response according to the reference model or the SFT model.
+And the difference there is the reward.
+Okay.
+So high reward stuff, right, is stuff where your policy assigns higher probability than the SFT model.
+Lower reward stuff is stuff where your model assigns lower probability.
+Now if we stick this parametrization of the reward, so again, this is basically just a specific choice of how to parametrize the reward function.
+The Zs cancel, right?
+Because we're assuming we have the same prompt for both the chosen and the rejected example.
+And so when we stick this intractable parametrization of our reward into this just normal Bradley-Terry loss that we use to learn our reward functions, we actually get out this totally tractable objective that we can use to directly train our policy.
+And that's DPO.
+So, you know, this loss function here is really just the reward model loss.
+It's just that since we have this identity that relates a policy to a reward function, we can just, turn this loss function on reward functions to a loss function on policies directly.
+Another way of thinking about this is instead of training a reward model and then training a policy to get high reward under that reward model, we are training a policy, pi theta, which is the optimal policy for a reward function that satisfies the Bradley-Terry model for the preference data that we have.
+That's sort of the other direction to think about this.
+Okay.
+So that was a little bit overwhelming, but that's pretty much DPO.
+And so again, substituting in the log Z term cancels.
+And so we end up with this simple thing that we can, this is just a classification objective.
+We don't need to do any rollouts during training.
+We can just compute this.
+And what's kind of interesting is that I mentioned there's this extra degree of freedom earlier.
+We've lost a degree of freedom here because this thing is normalized, but we don't actually lose any expressiveness in terms of the set of reward functions we can compute, right?
+So we had this, this, this, this, this, this, this, this, this, this, this, this, this, so, so we had this issue before that, okay, I have some reward.
+And now let's say I've parameterized my reward function this way.
+So say I, you know, I assigned some X, Y pair reward five.
+Well, we had this issue earlier that you can just shift up all the rewards for that prompt by, you know, some constant and your reward function, your optimal policy doesn't change at all.
+That's not true anymore because this is normalized.
+This is a probability distribution.
+So in order to.
+Shift up the reward for all responses by some amount, that means we have to increase the log probability.
+Speaker 3 for all responses.
+We can't do that, right?
+You can't increase the log probability of everything.
+It's not a probability distribution anymore.
+It's not going to add up to one.
+So this is how we sort of get rid of that extra degree of freedom.
+And you can see in the paper why it doesn't lose expressiveness, but it's not super important.
+Okay, this is the most overwhelming part.
+So I want to...
+How do we feel?
+Concerned?
+Yes.
+So, PyREF, is that just the model of the previous batch?
+I'm sorry.
+This is bad.
+This is the SFT model.
+So this is not ever updated.
+PyREF is fixed here.
+The only thing we're ever changing here is pi theta.
+There's no previous batch thing like in PPO.
+You can drain that from your mind forever.
+We just have one policy that we're learning.
+There's no value function here.
+There's no sort of trust region from the policy we had in the last year.
+In the last batch.
+Yeah.
+So I see that the expectation is over x, y, w, y, l.
+Yes.
+From the data set.
+It seems to mean that you are still doing...
+You're still training on supervised stuff.
+Does this get rid of the advantage of RL producing better than human responses from before?
+No, it doesn't.
+So first off, the y, w, and y, l are sampled from your model.
+So they're not human written.
+But they're sampled from the SFT model, which is just trained with imitation on humans.
+So they're not necessarily going to be better than humans.
+But the idea is that you do get a little bit of exploration when you sample from that model, because you're...
+I mean, it's just random, right?
+You sample like a response, you're sampling token by token, there's noise.
+And so in your data set, there are going to be examples where you did worse than humans and some examples where you did a little bit better.
+And basically, by getting this, you're going to be able to do a lot better.
+So you're picking this preference data over those, you're picking out the ones that were, oh, that one was actually really good.
+And so you're sort of, you can do some sort of extrapolation in this like behavior space.
+And especially what you can do is you could iterate this, right?
+So you do one round of this, you get a model that's a little better than your SFT model, and then you repeat, you sample trajectories from this model, you get preferences on those, you train again, and so on and so forth.
+And so in this way, you can also make a little bit of progress each time and keep improving your model.
+Is that okay?
+No, it's not okay.
+I mean, like, I can see why that would certainly help.
+It's a bit strange that it's no longer seemingly on policy without doing that.
+Though I guess on the other hand, figuring out a reward model and then doing on policy rollouts that potentially optimize that can also, as you said, get stuck in like weird language.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+So I do want to correct one thing.
+I think this is really subtle.
+I don't want to get bogged down in it.
+But although we're not doing any rollouts, I don't think it's totally right to say that DPO is off policy in the sense that we think of sort of off policy or offline learning as we're sort of, we're fitting our policy with some offline data that's not from our policy, and we're going to hopefully improve upon it.
+Obviously, this is offline in the sense that we're not sampling from our policy, but PPO is online.
+in the sense that we're only finding an approximate optimal policy for our reward model using policy samples.
+Here, we're guaranteed to find the exact optimal policy for the reward model that we fit, right?
+If we call this term here, this log ratio, our implicit reward, we are guaranteed to get the thing that is optimal for that reward under the expectation of that policy.
+So it's not on policy in the sense that we're not sampling from it, but it's easy to think of that as maybe a disadvantage when actually it's an advantage here.
+We're not giving anything up by not sampling from the model.
+It's just that we happen to have a closed form solution for the optimal policy.
+So if anything, this should give you something better than what DPO gives you.
+Okay, I'm going to try to move on, but thank you for the questions.
+So to go back to this big picture, what is DPO actually doing?
+Well, if we kind of look at the four main steps here, it's really in this bottom right side where the action's happening.
+So you're going to see that compared to the PPO-based approach, we're basically just skipping these two steps.
+We don't have to optimize the policy anymore.
+And instead, we just fine-tune this particular parametrization of the reward, and we do this trivial transformation that doesn't require any training to get out the policy that's optimal for that reward.
+Right.
+Yes.
+So DPO doesn't use new problems at all.
+Yes.
+Can you talk a little bit about that?
+Yeah.
+So this, so you're totally right.
+So there's, when you look at the PPO graph here, so we have this line going from our new prompts to the policy optimization process.
+We don't do that anymore with DPO because we only use the prompts that we use when we fit the reward model.
+And it's very natural to wonder if PPO is getting anything by using these unlabeled prompts.
+Are you going to have a policy that generalizes better or something like this?
+As far as we can tell, no.
+Because the thing is that, the thing that's a little bit circular about it is, although you're using new unlabeled prompts, you're still bottlenecked by the accuracy of your reward model on responses to those prompts.
+Right.
+And so, so if new prompts are going to be useful, it's because your reward model gave you accurate rewards.
+But the thing is, DPO is using the exact same prompts that you're using to fit your reward model in PPO.
+And so if that reward model is generalizing well, the DPO policy should also generalize well, you might argue.
+So this is a hand-wavy argument, but that's sort of the thought process.
+And at least when we've done some evaluations of this empirically, it doesn't seem like PPO clearly generalizes better than DPO.
+If anything, the models we've evaluated, it's the other way around.
+So it's a very interesting question.
+It's not at all been satisfyingly evaluated, but in some anecdotal experiments, I would say, although there's reason to worry, there doesn't seem to be a big generalization issue.
+Yeah.
+It's a great question.
+Okay.
+So yeah, we get rid of this picture, which is great.
+Get rid of a lot of complexity.
+Cool.
+One thing I think that is sort of useful to look at is what does the gradient of the DPO loss look like?
+Because I think this basically tells you like how it works other than this long, silly derivation that I did.
+So, so what is this gradient when we differentiate with respect to the policy parameters?
+Again, PyGraph here is fixed.
+This is just your frozen SFT model.
+I should have done SFT.
+Ref is what's used usually.
+I'm so sorry.
+So, so the gradient looks like this.
+And that's, you know, there's a lot going on there, but it's actually not that complicated if we go step by step here.
+So, so really on the inside here.
+So again, we just have our expectation over our data set.
+That's not different.
+They're really just two things going on here, right?
+We have one term that is doing maximum likelihood on the chosen stuff.
+We have another term that's doing minimum likelihood or unlikelihood on the dispreferred stuff.
+So all DPO is doing is push up the preferred thing, push down the dispreferred thing.
+But you know, if we, if we exclude that in effect, that would just irgendwie just have a different way to actually change your prediction.
+So if you also try to present this data as an expression ofSeq CI and like kind of perimeter quantity of Bag already in some way, the thing you're going to do is essentially you're going to trapped theіч Energi elements of the algorithm and first come in again at the very least, you know, when you left a 자�.
+You come out.
+They now all can be annulled.
+So you're giving me the equal in the pressure band if you sayز.
+Well, the only way to assume that an DRN cause scratch cinbl vectors because it'sbroke if you really do have 18 feet on the scale so the Cooler Key database of realities maybe when it was conseq-eshifted to a negative error, provincial% where the regions, per min I mean.
+implicitly where our KL constraint comes in, right?
+Because once we've gotten the reward on the chosen thing to be a little bit better than the reward on the dispreferred thing, we're just going to stop training on that example altogether because this scaling factor is going to go to zero.
+And in the next slide, I'll show you a comparison between just using this thing without that per example weight and using sort of the full DPO loss.
+Does this make sense?
+Okay.
+Yeah, I think this is maybe the more intuitive way to see what DPO actually does, honestly.
+And this is great.
+Archit, who's one of the authors of the paper originally did this analysis, which I think was really great and insightful.
+And yeah, so the beta pops out, which is just the strength of our KL constraint, which is essentially a learning rate.
+Okay.
+So a quick experiment, and then we'll go on to an application.
+So what we're going to do is we want to look at how DPO and other methods trade off reward in KL.
+Because again, our objective here, we haven't changed the objective.
+We're still doing reward maximization with the KL constraint.
+And so the thing that we might want to know, right, when we compare algorithms is how efficiently do they make this trade off?
+If you have a particular budget of KL, how much reward can you get from that?
+And so that's what we're going to do in a relatively simple setting.
+We're going to do this kind of stupid task where we want to maximize the sentiment of our generative model.
+So we're going to get like the beginning of a movie review, and we just want to complete it in the most like positive way possible.
+So we're going to generate a synthetic data set.
+We generate pairs of movie reviews using GPT-2 prefixed with like the beginning of a movie review.
+So it generates the rest of one.
+We're going to use a ground truth reward.
+And then we're going to use a function, which we do not usually have in the real world, but so that we can do the study, we're going to have it.
+This is just a sentiment classifier.
+And this is what we're going to use to get our preference data.
+So we're just going to take the pair of reviews, evaluate the sentiment classifier, which everyone has more positive sentiment.
+That's the preferred one.
+Then we're going to train using DPO, RLHF with PPO and some other methods.
+And then we're going to see, since we have the ground truth reward function, we can actually plot this curve where the X axis is KL and the Y axis is reward, and we can see what it looks like.
+Does this make sense?
+So, yeah, so some baselines we'll just see like, and actually, do we actually have the base model?
+Good question.
+So we're going to have preferred fine tuning, which is just, this is just, if you fine tune on just the chosen completion, just, you might think maybe that will do something.
+It's, we have it in there.
+We have unlikelihood.
+So this is where you do DPO, but we don't have that per example importance weight.
+So you're just doing maximum likelihood on all the preferred stuff, minimum likelihood on all the dispreferred stuff.
+Maybe this will work.
+Spoiler, it doesn't.
+So then we have DPO.
+We have PPO using the learn reward.
+So this is like the normal full RLHF pipeline.
+We also have PPO using the ground truth reward function.
+So we don't even worry about the HF part where we learn the reward and we just do PPO on the true reward function, what happens.
+And this is what happens.
+So what's sort of interesting is DPO does provide kind of the strongest reward KL frontier here.
+And PPO doesn't actually end up giving sort of optimal reward, even when it's using the ground truth reward function to optimize.
+Right.
+And so that's kind of interesting and non-obvious.
+I mean, based on the fact that we have this KL constraint to our reference model, right, it makes sense.
+We might not actually achieve the maximum possible reward, but there is some gap here.
+And this preferred FT sort of method really doesn't work so well in case you were worried about that.
+What's also sort of interesting is this unlikelihood thing, right?
+This is where we get rid of that, for example, importance weight in DPO.
+You can get a couple good policies here.
+Oh, and what I should say, I'm sorry.
+I should have explained this in the beginning.
+Each dot here is a model checkpoint.
+So we did like lots of training runs of each of these methods with different hyper parameters, different like KL constraints.
+And we just evaluated the reward in the KL for each one of those checkpoints and just plotted them all together.
+And up into the left is where we want to be here.
+Does it make sense why like this DPO curve is the good one here?
+That's very important or else the slide was a waste of time.
+Yes.
+So the ground truth reward function makes it a lot easier.
+Yeah.
+Yeah.
+So it's more information than the random data that we start with.
+Yeah.
+So how can you use that?
+Yeah, it's a great question.
+So it does and it doesn't.
+I mean, the thing about the ground truth reward function in this case is it's sparse.
+So you either get a one or a zero.
+So if the response is sort of like above some threshold of positivity, the classifier is totally uncalibrated.
+It basically just gives you like one.
+And if it's below some threshold, it gives you a zero.
+And so there's actually some on some earlier RLHF work.
+So it's a little bit more interesting results along these lines where you can actually by doing human feedback by using human feedback to learn a reward function, you can actually end up with a reward function that's better shaped than the true reward function and easier to learn from.
+So in principle, that's sort of how this kind of result could end up is you might have the ground truth reward function, but it's actually very difficult to learn from.
+And so the thing that you end up with human feedback is easier.
+So the noisy preferences are like smoothing over the ordinary reward function.
+Well, here are our preferences are not noisy.
+It's just that you might end up with a reward function because your model sort of is like has constrained capacity or it's pre trained.
+So it has some good inductive biases.
+It might end up you might end up with a smoother reward function that's easier to learn from than the sparse thing that always gives you one or zero.
+Okay.
+Okay, we're running low on time so I'm going to speed a little bit but but one thing that I think is worth looking at is how does changing that coefficient beta in our original loss or original objective.
+How does changing that coefficient beta in our original loss or original objective.
+How does changing that coefficient beta in our original loss or original objective.
+How does this actually change the KL that we end up with.
+And unfortunately changes it very predictably.
+So this is like four or five different training runs and we're just plotting the log of beta with the log of the KL.
+And this is really worth mentioning because when we do PPO beta doesn't really fully define what KL we're going to end up with.
+So if you run PPO twice with the same beta you can get two policies with very different KL just because it's very noisy and a little bit unstable.
+And so, people use this like dynamic beta controller in practice where they actually get a lot of data.
+And so, people use this like dynamic beta controller in practice where they actually measure the policies KL during training and increase beta or decrease beta on the fly to try to get the KL in a particular area and that's, you know, just kind of annoying.
+You don't have to do that.
+Okay, one other thing, when does DPO fail.
+So let's let's look at this example so so say we have some input that's like some long Reddit post, we have like our chosen and rejected response which are both summaries their TL DRS.
+And then this this is what the samples from the model look like.
+From our reference model.
+DPS not going to learn to generate the TL DR token here.
+And this was really annoying and frustrating to us for a while when we were like doing this experiment.
+And I would ask non rhetorically why, but we don't have time so I'm going to ask only rhetorically why.
+And if we look at the gradient of the loss.
+We can see sort of why we can ignore most of it and we just look at these two, these two maximum and minimum likelihood terms in the loss.
+We can just break these up because it's just just some of log probabilities for each conditional.
+For every time step in the sequence.
+And the key thing here is the first token in the chosen and rejected is TL DR.
+Right, so this this term for time step zero is going to be the same for both of these and it's just going to cancel out.
+And so you just never learn anything about the first token sucks, but, you know.
+So that's why it's important to do this SFP stage as well.
+So right when you do SFP, you're going to learn the TL DR bit.
+And then when you do RLHF, you're just learning the delta between the good and the bad stuff.
+Okay, but, but, but although this is kind of a silly example, this is how we originally sort of discovered this and, and it does make you wonder like, what is the more general version of this problem what other maybe degenerate symmetries or kind of equivalences are there between our, our chosen and rejected thing that we might not learn, since we're only focusing on the difference between them.
+It's worth thinking about.
+Okay, so takeaways from DPO.
+We can remove the RL training loop from RLHF.
+Yay.
+DPO is simple, stable and it's and it's cheaper to run.
+Yay.
+It does optimize the same objective so so it's not an approximation, that is cheaper it's you can more or less think of it as kind of the same thing that's cheaper.
+Very small asterisks.
+And there's a lot of ongoing work still understanding DPO and generally improving RLHF.
+I mean DPO is not the end story here right like it's just another idea and there will be new ones and better ones probably in the next like six months, knowing how the field moves.
+And so, you know, I think it's important to think about that.
+Okay.
+So, so for our last five minutes I'm going to briefly talk about one application of DPO and it's going to go kind of quick because we only have five minutes.
+But I want to talk about factuality briefly so so we know that language models just cannot be trusted so there's this infamous Bard demo, where after you know much fanfare Bard just like said false things about James Webb Space Telescope.
+And it wasn't just Bard so even in the Bing demo which was much acclaimed.
+They did this nice demo where they analyze gaps quarterly report this is not my analysis this is this guy's analysis I have a link up there so I don't want to claim credit for this, but it's great analysis.
+So it's like okay the first thing that Bing says great it's like got it right that's so true wow it's so smart.
+And then the next section it's like okay well, it gave the it said they were the adjusted numbers they were actually unadjusted numbers.
+That's very subtle fine.
+And the next one is like okay that earnings per share per share is just not in the doc, you just made that one up.
+And turned out that's true for the last paragraph too so the expected growth is not right in the future.
+So it's like, okay, that's true for the last paragraph too so the expected growth is not right in the future.
+So it's like, okay, that's true for the last paragraph too so the expected growth is not right in the future.
+So it's like, okay, that's true for the last paragraph too so the expected growth is not right in the future.
+So, so that's really disappointing.
+There's another example with my advisor here, where if you ask chat GPT where did Chelsea get her PhD will say Berkeley, that's true.
+If you say where did you get her PhD answer in one sentence, Berkeley, that's true.
+If you say, give me just the name of the university but not a full sentence, it'll say Stanford and this is not a quirk of sampling it is reproducible.
+I did it this morning.
+So like what the hell man, like, you know so this is just a little bit of a joke.
+You know so this is just a little bit of a joke.
+I'm just telling you though how weird and mysterious sort of when the models going to say something true or false is.
+And this alone is I think a starting point for like a research project if you're interested in this problem, but nonetheless is tempting to use these models anyway which is problematic CNET got kind of burned by this.
+And there have also been some lawyers using chat GPT to come up with some very interesting case law.
+So can we like our LHF our way to better factuality.
+Well, I mean if you go back to this big picture this is the DPO picture, like where would we even hope factuality to come from and what's the point of that.
+Well, I mean if you go back to this big picture this is the DPO picture, like where would we even hope factuality to come from and I'll basically bucket these into parts we have the pre training where we see trillions of tokens lots and lots of data.
+Maybe we'll say this is roughly where we learn what's true and what's false, and we might hope it in these lighter weight fine tuning phases where we'll see three orders of magnitude less data.
+We don't really have enough data to learn what's true and what's false here but we can learn.
+Okay, I just want to say the true stuff.
+Okay.
+So this is sort of roughly how I'll break it down and there's actually research out there to suggest that this is not a totally imaginary way of thinking about this.
+So this is sort of roughly how I'll break it down and there's actually research out there to suggest that this is not a totally imaginary way of thinking about this.
+One other thing that's important is okay we already do RLHF, why do we actually need to do anything special to get factuality.
+Well the answer is that RLHF encourages behaviors that make humans happy, right, and and doing fact checking does not make humans happy, let me tell you.
+And so, deciding you know is this actually correct is a lot harder than deciding do I like it.
+And I'm not just saying this because it sounds good.
+Anthropic did a nice study of this just a few months ago and they, they ranked, which attributes of, you know, attributes of, of a response made it most likely to be the preferred thing, and being truthful did not really end up on the top of the list in fact, if it agrees with your beliefs, surprise, surprise is the most predictive feature in whether someone is going to prefer something.
+So we have to be really careful when we do RLHF because it's not even sure what is not even clear what reward we're going to end up optimizing.
+Okay, so we basically want preference data that tells us what's more factual than when, than each other.
+Okay, so we basically want preference data that tells us what's more factual than when, than each other.
+Okay, so we basically want preference data that tells us what's more factual than when, than each other.
+And we can get a little bit of information out of this.
+Okay, so we've got a couple of questions.
+Humans are bad at this.
+Okay, this is a good opportunity for all with AI feedback.
+We're really running out of time here but the point is that we can basically do some truthfulness scoring automatically by using existing language models and using some reference like Wikipedia, and we can get this preference data set where we have an input, and then two responses one is more factual than the other.
+We can train this with DPO we can evaluate it we evaluated on bio generation and medical question answering.
+And it turns out this works.
+So if we compare to the SFT model right here, doing this factuality tuning significantly reduces the number of incorrect facts per response on average, and it increases the number of correct facts per response.
+It's the only method, you know, if we look at RLHF here, RLHF does not give this strict improvement.
+Okay, some other things that aren't that important.
+Takeaways on training on more factual LLMs.
+This is really important, it's really hard.
+RLHF alone doesn't really solve the problem because humans are not good at this.
+And we can do RL sort of without human feedback with DPO and sort of AI generated labels to improve factuality.
+So to wrap this up here in my last 30 seconds, RLHF lets these generic LLMs be a lot more useful with just a little bit of RL.
+Picking this reward function is really important, but it's also really difficult for humans and we can use an implicit reward that we infer from preference labels, these discrete choices to learn this reward.
+Classical RLHF works well but it's very complex.
+So DPO is a lot simpler without any approximations, and we can use DPO to reduce things like hallucinations.
+And this is with only automated preference generation, we don't need any humans to do this.
+There are a lot of other possible applications and problems that were often bottlenecked by data.
+I want to give a big thank you to my collaborators because this is not just my work, this was really incredible work done by a lot of people, and I appreciate you all coming today.
+All right.
+So, so we're out of time.
+I'll hang out after we're done.
+So, so we're out of time.
+I'll hang out after we're done.
+So, so we're out of time.
+I'll hang out after we're done.
+And so kind of talking about the rewards outside if people have questions.
+This is my email and Twitter.
+If you also want to follow up with me and separate has of course on machine learning from human preferences that the slides are online so you can take a look at those if possible.
+possible.
+Oh.
+Oh, I know.
+Fording to me, I guess,

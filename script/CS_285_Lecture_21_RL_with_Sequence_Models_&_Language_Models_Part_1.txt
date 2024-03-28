@@ -1,0 +1,280 @@
+All right, today we're going to talk about RL with sequence models.
+Let's start with a discussion of what happens when we go beyond regular MDPs.
+So in the beginning of the course we saw that beyond fully observed MDPs we can start thinking about partially observed MDPs where we only get limited observations of the environment, and that's going to get us started thinking about sequence models in RL.
+So the trouble with observations is that unlike the Markovian states that we've been using in, for example, most of our value-based or model-based algorithms, the observations don't obey the Markov property, which means that simply from observing the current observation you don't necessarily have enough information to infer the full state of the environment, which means that previous observations can actually give you more information.
+In contrast with states that is never the case.
+If you observe the current state, also knowing the previous states, never gives you more information for predicting the future because the current state de-separates the future from the past.
+So when you when you're operating on partial observations, the state is not known and actually in most cases you don't even have a representation of the state.
+So not only do you not know what the current state is, you don't even know what sort of the data type of the state is.
+So to recap something that we discussed at the beginning of the course with partial observability, let's say that the environment is this cheetah chasing this gazelle, but your observation is an image of the scene.
+Now underlying that observation is the state.
+So what we want to do is to find out how the current state is going to predict the future, and if it's a predetermined state, what would the state be?
+So what we can do is to take the current state and we can use this as the starting point.
+So we can use some true state, let's say the position and momentum and the body configuration of the animals.
+Now that state fully describes the configuration of the system, in the sense that if you know the current state that tells you everything that you need to predict the future.
+It doesn't mean the future is deterministic, it could be the future is still stochastic, it just means that previous states won't help you in so you can't see it.
+The state hasn't really changed, but the observation now doesn't contain enough information to infer the current state.
+If you look at the previous observation, you might get more information.
+Now the trouble is that most real world problems are like this.
+So a lot of the algorithms we discussed kind of assume that you have a full state, not all of them, and we'll get to that in a second, but most real world problems don't actually give you a full state.
+And in reality, in the real world, it's really kind of degrees of partial observability in the sense that all problems are really partially observed and that you never are really given the full configuration of the system, but sometimes the partial observability is so minor that in effect you can just pretend that the observation is a state and everything would work out fine.
+So Atari games, for example, are like this, where in a lot of Atari games, even though they are technically partially observed because the state of the system is like the RAM of the Atari emulator, in reality the image contains almost all that information.
+But in some cases they are very partially observed.
+For example, if you're driving a car, you might have another vehicle in your blind spot for example, for this red car, you might not see the blue car or the truck, but they're very relevant to its future state.
+So these are situations where partial observability really matters.
+If you're playing a video game with first person observations, there might be a lot in the video game that is very relevant, maybe things you've seen in the past that are very important to remember in order to play the game effectively, but that you can't see in the current observation.
+Another example of a setting where partial observability is extremely important is interaction with other agents.
+If you have a robot that is supposed to interact with humans, the mental state of the human is actually the unobserved part of the state.
+So you might observe what they say or do, but you don't necessarily get to observe what is in their mind, what is their desire, what is their preference, what do they want to get out of the interaction?
+And that's a very complicated instance of partial observability.
+Another example of partial observability is dialogue.
+If your observations are textual strings, they could be for human interaction, it could also be that, you have a robot, you have a robot, you have a robot, you have a robot, you have a robot, you have a robot, you have a robot, you have a robot, you have a robot, you have a robot, you have a robot, you're interacting with, let's say, a text-based game or something, or even a tool like a Linux terminal.
+In that case, the history of the interaction really matters, and just the current phrase, like the last word that you saw, doesn't really convey all that much information by itself.
+So these are all examples of partially observed settings.
+Now, partially observed MDPs can be really, really weird.
+We can make them less weird with a little simplification, but if we just approach them naively, there are a lot of things that happen in partially observed MDPs that simply cannot happen in fully observed MDPs.
+One example is information gathering actions.
+So under partial observability, it can be optimal to do things that don't actually lead to higher rewards by themselves, but give you more information about where the rewarding things might be.
+For example, if you're traversing a maze, if you just treat it as a fully observed task, maybe your state is the position in the maze, and you just have to run RL on this maze until you solve this one maze, then everything is perfectly fine, and the optimal action is always to move towards the exit.
+But imagine that you are trying to solve a distribution of mazes.
+So you're trying to get a single policy that can solve any maze.
+Now, this is a partially observed problem if you don't get to see the entire maze right from the start, if you just get, let's say, a first person view, because now the unobserved state is the configuration of the maze that you're in.
+So in that situation, it might actually be optimal to like peek over the top of the maze and try to observe, where all the intersections are, even though that information gathering action by itself doesn't actually get you closer to the exit.
+So information gathering actions are something that emerges in optimal policies in PUMDPs that never emerges in fully observed MDPs.
+Another kind of weird property is that partially observed MDPs can lead to stochastic optimal policies.
+Whereas in fully observed MDPs, there always exists a determination of a deterministic policy that is optimal.
+It doesn't mean that all optimal policies are deterministic.
+There could be an equally good policy that is stochastic, but in fully observed MDPs, you will never get into a situation where only stochastic policies are optimal.
+Whereas in partially observed MDPs, that's actually possible.
+Here's a really simple example.
+Let's say that you have a three state MDP, where you can be in state A, B, or C.
+The reward is always in the middle.
+So the state B has a reward of plus one.
+And your probability of starting in each state is 0.5 in state A and 0.5 in state C.
+So you're 50% likely to start on the left and on the right.
+And let's say that now you make this partially observed, where your observation contains no information.
+So essentially in a partially observed MDP of the sort, since you get no observation at all, you basically just have to commit to an action either left or right.
+And a deterministic policy would have to choose to either always go left or always go right.
+Now, if it chooses to always go left, then if it starts in state C, it'll eventually arrive at the good state B.
+If it starts in state A, it'll never arrive at state B.
+If it commits to always going right, then if it starts in state A, it'll get the reward, but not if it starts in state C.
+And since the deterministic policy here would have to be a function of the observation, and the observation has no information, the only choice for deterministic policy is to commit to always going left or always going right.
+But if you have a policy that goes left or right with 50-50 probability, then whether it starts in A or C, it'll eventually get to B.
+So this is an example where a stochastic policy's actually better, than any deterministic policy.
+Okay, now, at this point we could ask, which of the RL algorithms that we learned about before, can actually handle partial observability correctly?
+Now we have to be really careful with this question, because what does it mean to handle it correctly?
+So we'll get to that in a second, but first let's go over the different methods, and then we'll discuss this.
+So, I'll discuss three methods, three classic methods really.
+Policy gradients, the first one that we discussed, which constructs an estimator of the policy gradient using some kind of advantage estimate, using this familiar Grad Log Pi formula that we saw before.
+So could we, in policy gradient, simply replace the state with the observation, just feed in the observation to the policy, and just use exactly the same gradient estimator?
+That's a good question.
+Value-based methods.
+Could we simply take, let's say, the Q, and then just use the same gradient estimator?
+That's a good question.
+Value-based methods.
+Could we simply take, let's say, the Q, learning equation, and simply replace S with O?
+Is that a valid thing to do?
+And model-based RL methods.
+Let's say the simplest kind of model-based RL method, where we train a model that predicts the next state, given the current state in action, and then plan through that model.
+Can we simply replace S with O in this case?
+And of course, this is a little bit of a trick question, because before we can even begin answering this for each of these three methods, we have to understand what does handle actually mean?
+What does it mean to handle partial observability correctly?
+Now, take a moment to think about this.
+What would you want out of a method like this?
+Like, let's say that it was valid to simply replace the state of the observation.
+What would you hope to get out of a method that works correctly, versus what could go wrong with a method that does not work correctly?
+So, in all of these cases, we're going to be trying to get a policy that looks at an observation rather than a state, and produces an action.
+And what we would hope to get, if the method is working properly, is the best policy that is possible, given that we only get to see the current observation.
+So, in the example with the three states, that best policy would be one that goes left or right with a 50 probability, and this is the best reactive policy.
+Now, of course, you can do a lot better if you get a policy that is not reactive, if you get a policy that has memory, But for now, we're just asking, the question can we get the best possible policy under the representational constraints we're under meaning that under the constraint the policy only gets to look at the current observation so it's the best policy in the class of memoryless reactive policies we can't hope to do better than that unless we actually change the policy class for now we're not changing the policy class we're just changing we're just varying the algorithm and trying to replace the states of observations directly so handle means find the best policy in the class of memoryless policies so for this notion of handle take a moment to think about whether we would get the best policy in the class of memoryless policies with naively replacing states with observations for policy gradients value-based methods and model-based startup well let's start our conversation by talking about policy gradients so it's very tempting to just say well if we're going to do this we're going to have to do it and we're going to have to do this we're going to have to do it if we want a policy that takes in the observation and outputs the action let's use the same grad log pi equation and just naively swap out s for o is this correct well interestingly enough our derivation of the policy gradient going back to the beginning of the course never actually assumed the markov property it assumed that the distribution factorizes meaning that the chain rule of probability can be actually assume that the state that was going to the policy de-separates the future from the past.
+So it's actually totally okay to use the this grad log pi equation.
+However, the advantage estimator takes a little bit of care because there are multiple ways to estimate the advantage in policy gradients and some of them can get us in trouble whereas others are totally fine to use.
+So the key point is that the advantage is a function of the state st.
+The advantage is not necessarily a function of the observation ot.
+So the advantage does not depend on st minus 1 but if you don't have the state then you might get in trouble.
+So that's why it's totally okay to use rt plus the next value minus the current value as your advantage estimator with some function approximator for v because when you're training a function approximator for v as a function of state you're basically leveraging the property that every time you see the state s you're going to expect to get the same value.
+So you're going to get the same value for the function of the observation ot.
+So that's why v hat only needs to be a function of the present state.
+It doesn't need to take past states into account because of the Markov property.
+The Markov property tells us the value is only going to be a function of the current state not dependent on how you got to that state.
+But of course that's not true for observations.
+So you can't simply swap out the argument to v hat and replace st with ot.
+So it's not okay to train v hat of ot because the value depends on might depend on past observations.
+Because the current state might depend on past observations.
+So what this means is that if you're going to use policy gradients, if you use the regular Monte Carlo estimate, if you just simply plug in the sum of rewards, that is okay because that derivation did not actually use the Markov property.
+But if you try to put in a value function estimator that is no longer okay because that value function estimator for the advantage function is not a function of the observations, a function of the state and the state depends on past observations.
+So this type of estimator is not okay.
+Now as a pop quiz, something that I might suggest that you all think about for a second is we learned before we started talking about value function estimators and baselines and all that, we learned that we could simply take those rewards that multiply the grad log pi and use that causality trick to multiply grad log pi with the state.
+So we could simply take those rewards that multiply the grad log pi with the sum of rewards from t to the end rather than from one to the end.
+So is it okay to use this causality trick when you have partial observability?
+Take a moment to think about this.
+Okay, so I'll give away the answer.
+The answer is that this is actually totally fine because the causality trick did not use the Markov property either.
+It simply used the property that the future doesn't influence the past.
+Now the future doesn't influence the past even if we're acting under partial observability so this is actually okay to do and in fact it's possible to prove it by showing that the expected value of grad log pi multiplying the rewards from past time steps actually averages out to zero just like it does with states.
+What is not okay to do is use v-hat as the advantage estimator.
+You might also consider whether it's okay to use v-hat as a function of observations as a baseline.
+That's also an interesting question.
+It turns out that that is actually also okay for the kind of simple reason that we could use anything we want as a base.
+baseline and the estimator is still unbiased.
+It could be that using a value function that only depends on the observation as a baseline might not reduce variance as much as we would like, but it's always unbiased simply because all baselines are unbiased regardless of what they are.
+Okay, so that's policy gradients.
+The short version of policy gradients is they are okay to use, but you have to be careful with that advantageous estimator.
+What about value-based methods?
+Can you simply take, for example, the Q-learning update rule and naively replace states with observations?
+Would that actually give you the best memoryless policy?
+Well, the answer here follows the same logic as on the previous slide.
+For the same reason that it was not okay to make the value function a function of only the observation, that same thing makes it not okay to make the Q function a function of only the observation.
+Basically, Q-learning relies on the assumption that every time you visit the state S, regardless of how you got there, your value is going to be the same for all the different attributes.
+That's the difference between the two.
+You would always know, whether the student had Q or not, the difference between the two is the function of the particular state in any is a function of the particular state.
+It also means that, as a whole, the Q when I look at a skewed state changes.
+The answer to this is that it makes it impossible to make it as a lot probl- friction n° 2.
+Yay!
+How do you actually make this phonetically come into practice?
+Well, looking at those한다 illOOOOOOW it's kind of absurd, because the statement reader some knows that the hue and the separated возвmțms arefsqZZ chain, anês this can be close enough and the results might be fine.
+But in general, the more partial observability you have, the worse this will work.
+And a very obvious way to see this would be to note that the way you extract a policy from the Q function is to take the action with the largest value.
+That will always be a deterministic policy, but we saw before that POMDPs can sometimes have stochastic optimal policies.
+Since Q-learning never yields a stochastic policy, there's absolutely no way that it could yield the optimal policy, for example, in that three-state MDP, where a stochastic strategy was more optimal.
+Okay, what about model-based RL methods?
+Could we simply substitute O in place of S in our predictive model and then get the correct answer?
+Turns out the answer is very much no.
+And here's an example to illustrate why this is such a bad idea.
+Let's say that we have the following environment.
+We have two doors, and we start off in a state where we're going to approach one of these two doors.
+And we're going to try that door, and if it's locked, what we should do is we should try the other one.
+And which door is locked or unlocked is going to be random.
+So part of the state is which door is locked or unlocked.
+You don't get to observe that state.
+You just see that you're in front of the left door or in front of the right door.
+So it's a partially observed problem.
+You don't observe the state of which door is locked or not until you try it.
+Now, there is an optimal strategy here, even a memoryless strategy, which is that if you're in front of a door, you should try it first and then move on to the next one.
+Or if you have to be memoryless and you're not allowed to remember if you tried the door, just randomly decide whether to switch to a different door or try the lock, just like in the three-state example.
+So there is a way to actually solve this, even if you don't get to remember what you did before, nor do you get to remember, nor do you get to observe whether the door is locked or not.
+So let's say that you have an observation for being at the left door.
+And if you're in front of the left door, you should try an observation for being at the right door, an observation for when you pass through the door, and then you want to train the model.
+So the model is going to be predicting what's the probability that you get to the pass observation, the one where you pass the door, given that your current observation is the left door and your action is to open.
+And let's say that on every episode, each door is 50% chance, so 50% chance that the left is unlocked, 50% chance that the right is unlocked, and they're exclusive.
+So you always just flip a coin and unlock either the left or the right door.
+So in half the episodes, you'll pass, in half the episodes, you won't pass.
+So that means that if you try to actually estimate these probabilities, if you try to train the model, you'll get a probability of 0.5.
+But what's a good strategy if the probability of unlocking the door is 0.5?
+Well, if you have a 50% probability to open the door each time you try, which is what this model is actually trying to represent, then you could just get through the door by trying repeatedly.
+If it's 50% each time independently, if you just keep trying the door, eventually you'll get through it.
+But that's, of course, not how the world works.
+If you tried the left door and it didn't unlock, it's because the door is locked.
+No matter how many times you try it, it'll remain locked.
+But this Markovian model simply cannot represent that.
+It cannot represent the fact that if you tried the door before, it'll not unlock if you try it again.
+Because the probability of O' is only a function of the current observation and the current action that you are taking.
+It is not dependent on previous actions in this model.
+So this Markovian model simply cannot be used with non-Markovian observations because it will lead to these ridiculous, ridiculous conclusions that if you keep trying to lock the door, eventually it will unlock.
+The problem is that the model simply, the structure of the model simply does not match the structure of the environment.
+In reality, the probability that you'll pass is actually zero if the door didn't open before, but you can't represent it with this model because the model doesn't take in past observations and actions as input.
+Okay.
+Now so far we talked about memoryless policies, but of course that's a pretty artificial restriction, especially the door.
+And the door example hopefully illustrates this.
+In reality, if you try the door, you'll remember that you tried it before and that it did not unlock, so you'll know to do something different in the future.
+So of course in practice, if we want to get good solutions to partial observed Markov decision processes, we really should employ non-Markovian policies that get observation histories as input.
+And there are a few ways that we could approach this.
+One simple way to approach this is to use what is called a state-space model.
+Okay.
+So.
+So with state-space models, what we're essentially doing is we are learning a Markovian state space given only observations.
+And we saw this before when we talked about variational inference.
+So if we train, for example, a sequence VAE where the observables are sequences of observations and the hidden states are sequences of latent states where we have dynamics of latent space with maybe a zero mean unit variance prior on the initial state and some learned transition probability, which is Markovian.
+And an observation probability that models the distribution of an observation given the current hidden state and an encoder to encode a history of observations into the current hidden state, then these Zs will actually represent a Markovian state of the environment.
+And this can actually work quite well.
+So if you can learn the sequence VAE, just like we discussed in the variational inference lecture, if you don't remember how this works, go back to the variational inference lecture and recap that.
+If you can learn this, then you can actually directly substitute Z in place of S.
+So you can't do the S thing because you don't have states.
+Okay.
+Okay.
+You can't do the observation thing because that's incorrect, but you can do it with Zs as the state input into the Q function.
+That's actually valid because we train the Zs to obey the Markov property because they have Markovian dynamics.
+Now, why might this by itself not be a good enough solution to all POMTPs?
+So this is correct.
+It's valid.
+But why might it not be good enough?
+Well, the reason that it's not good enough is because in some cases, actually training this predictive model is very hard.
+And in fact, in many cases, it's not necessary to be able to fully predict all observations in order to run RL.
+So if you could predict all observations, for example, as in the papers that we discussed in the variational inference lecture, where you could directly predict the images of these Mojoko environments, then you can actually use the underlying hidden states as Markovian state spaces.
+But this is a harder problem potentially than solving the RL problem.
+Like actually generating these images, generating all those pixels might be more difficult than recovering the optimal policy.
+So maybe we don't need good predictions.
+We can just use the predictions to get high rewards.
+Here's what we could do.
+What we could do instead is we can observe that the state space model, when it runs inference, actually uses a history of observations to infer z.
+So the encoder takes all the previous observations and figures out distribution over the current z.
+That's how the sequence VE worked.
+Well, if we're going to take a history of observations, what if we just take note that the zt is a function of an observation?
+But we're going to take a look at our observation history, so it can contain more information than the observation history.
+So if we use the observation history itself as our state representation, it will contain just as much information as the zt that we're inferring from the sequence VEs.
+So what if we just define our state that way?
+What if we say that our state ST is just all the observations O1 through OT.
+If it was good enough before to infer zt from O1 through OT.
+That means that O1 through OT contains all the information we need to get a Markovian should be a Markovian state itself.
+So does that work?
+And does that work basically amounts to asking does a history obey the Markov property?
+So the Markov property just says that the state st plus one is conditionally independent of state st minus one given the current state st.
+And now the current state st is all the observations up to t, the previous state st minus one is all the observations up to t minus one.
+And what this shows us is that the previous observations tell us nothing that we can't infer from st itself, right?
+Because st contains st minus one inside of it.
+The observations O1 through O t minus one are contained inside the sequence O1 through O t, which means that if you already know st, which means you know O1 through O t, finding out st minus one, meaning finding out all the previous observations, doesn't tell you anything new because that sequence already contains all those observations.
+And that's basically the argument for why history states do obey the Markov property, meaning that the sequence of observations up to time t, d separates the sequence of observations up to time t plus one from the sequence of observations of the time t minus one, because the sequence up to t minus one is contained inside the sequence up to t.
+Which means that if we apply Q-learning on these history states, meaning that our Q function is a function of all the observations O1 through O t, then we can see that the sequence of observations up to time t minus one is contained inside the sequence of observations O1 through O t.
+This actually will work.
+So of course we need to design model architectures that can utilize these history states.
+So how do we represent a Q function that takes an entire history of observations?
+Well, if we have a conventional Q function like the ones you have for homework 3 for DQM, which take in a single image, you could simply concatenate a whole bunch of images and feed them into the Q function.
+This is actually not as terrible of an idea as it seems.
+Now you can only do this if you have a very complex set of observations.
+Let's say you're going to use four observations as input.
+That is not the full history of observations, but it might in some cases be good enough, heuristically, in the sense that if the previous four observations tell you most of what you need to know, it might be Markovian enough to work.
+But is this bad?
+Well, it is kind of bad sometimes because you could get pathological settings like that maze example where you observe the maze, you have to remember the whole maze after you peeked over the top, and then remember it for the entire episode.
+In that case, a short history won't do.
+You really need to remember the whole maze.
+So in the most general case, we need to use a sequence model that can take in a variable-like history of observations as part of our Q function, and then upload the Q values at the end.
+And this can be done with any sequence model like an RNN, an LSTM, or a transformer, in which case our Q function, our policy, or our dynamics model has to be represented with an RNN, LSTM, or transformer.
+And that's a perfectly reasonable thing to do, and you can train it in kind of directly the obvious way, the same way you train sequence models anywhere else.
+So, this is a little bit of a practical detail that we need to keep in mind with this.
+The practical detail has to do with computational efficiency.
+So let's just work through an example of a deep Q learning algorithm with histories.
+Regular Q learning would collect a transition, add it to the replay buffer, sample a batch from the replay buffer, update the Q function on this batch, and then repeat.
+If you want to use history states, what you would do is you would collect a transition, which now is a tuple over the previous one, and then you would add the new one to the new one.
+So, this is a very simple way to do this.
+So, let's just say you have a new adopted equation and you want to design it a little bit.
+But if I had to make sure that they are all supposed to be treatable at the same time, you'd just normally make the chances never beщy, always calling for least too many of these conditions, because for every horizon, let's say your horizon is T.
+You have T times steps, and each one of those has T observations inside of it.
+So, this is very expensive.
+You get a quadratic blowup in memory cost.
+It's still correct, it's just computationally and memory-expensive.
+740 00RNN1LSTM 1311 00RNN1LSTM measuring of RNT, strain, m ZigGov one of the things you could do, let's say that you're using an RNN or LSTM where the neural network for Q inside of it has some hidden state how to use theภPные albums to use the institutions store the RNN states themselves.
+So instead of actually storing entire histories, you could say, well, the observations O1 and O2 are fully summarized by the hidden state of the RNN H2.
+And the observations O1, O2, O3 are fully summarized by the RNN state H3.
+So what you could do is you could just reuse the RNN hidden state.
+Essentially, every time you load up a history, you don't load up an entire sequence, you load it up starting from some intermediate point, and then you actually store the RNN hidden state at that point.
+And you can do this with RNNs and LSTMs.
+I won't go into great detail about this method.
+Its basic idea is to essentially use RNN states as though they were Markovian states of the system, which they are, except for a little caveat, which is that the RNN states change as the RNN itself is updated.
+If you want to learn more about this, check out the paper Recurrent Experience Replay in Distributed Reinforcement Learning.
+You can use this trick with RNNs and LSTMs, and it works very well for getting very long histories.
+It actually gets really great performance, for example, on a time-based learning.
+And it's very, very useful for getting very long histories.
+So if you want to learn more about this, check out the paper Recurrent Experience Replay in Distributed Reinforcement Learning.
+You can use this trick with RNNs and LSTMs.
+It's not clear how to do this with transformers, because transformers don't have a single hidden Markovian state.
+So to my knowledge, no one has figured out how to do this with transformers.
+But for RNNs and LSTMs, this is a very effective strategy.
+So I encourage you to check it out if you want some practical details.
+So to recap, POMDPs are weird.
+There are things that happen with POMDPs that never happen with MDPs, like stochastic policies and information-gathering actions.
+Some methods just work in the sense that they recover the optimal memoryless strategy, which is the way that we're going to do it.
+Some methods are very easy to use, like the value-based methods, which are very easy to use, but the most efficient ones, like value-based methods, don't, because they require using value functions.
+And even those that do work, they still get memoryless policies, which might not be as good as the best policy with memory.
+We could learn a Markovian state space with models, like sequence VAEs, and that is a valid thing to do.
+We could also just use history states, which just means using a sequence model to read and observation histories.
+And that can be an efficient way to do things, except you need to use sequence models then to represent your value functions, policies, and models.

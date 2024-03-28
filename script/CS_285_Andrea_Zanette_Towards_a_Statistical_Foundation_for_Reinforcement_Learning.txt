@@ -1,0 +1,538 @@
+Kevin.
+Yeah, so this is going to be a lecture with a different flavor than the ones that you've seen before.
+In particular, it will be much more focused on understanding the theoretical foundations of some of the reinforcement learning algorithms and protocols that you've seen in class.
+Now, if we take a big step back and try to take a look at all the algorithms that you've seen in class and think about potential applications to the real world, you will see that there are still some challenges.
+One challenge is, for example, designing stable reinforcement learning algorithms.
+In particular, these might require some designing of certain tricks to ensure stability of the reinforcement learning algorithms.
+And often, it translates into a lot of tuning some hyperparameters to achieve a certain performance.
+Now, another key issue about applying reinforcement learning paradigms to the real world is data efficiency.
+In general, reinforcement learning algorithms are extremely data hungry.
+And they do require much more data than, for example, algorithms that we commonly use in supervised learning.
+Then there is the issue about generalization, often, where a specific algorithm is tuned and it learns on a specific task.
+But it is much more difficult to design general class, general purpose algorithms that can perform well across completely different tasks.
+And another issue is computational efficiency.
+If you try to do some of the homeworks in the class, you will see that sometimes it takes quite a long time to train.
+Now, all these issues are kind of specific to reinforcement learning.
+But they are issues that sort of prevents reinforcement learning from being applied more broadly in real world problems, where issues like stability, convergence, and sample efficiency becomes really fundamental.
+In particular, if you're interacting in the real world, somehow you would like some predictability for what the algorithm is going to do.
+So you can do some of these things.
+So you can do some of these things.
+And also, samples are generally quite expensive, because they amount to interaction with the real world.
+And so in this talk, we will try to take sort of a step back and try to understand some of the foundations for the reinforcement learning algorithms.
+And why do we want to develop sort of a theory for reinforcement learning?
+Well.
+Perhaps the most basic motivation is that really the key basic protocols that people use in reinforcement learning are really algorithms that are motivated by theory.
+For example, value iteration, policy iteration, upper confidence bound exploration, reinforced policy gradients.
+Those algorithms are all algorithms that at least they are somewhat inspired by theory.
+And oftentimes, they come with guarantees, at least, in the way that they are used in their simplest form.
+There are also some success stories of translating algorithms that were developed from theory into something more practical.
+One example is randomized least square value iteration, which you might know as bootstrap DQN.
+Moreover, theory can give you some consideration that apply not just to a specific problem, the one that you're trying to solve, but maybe more broadly, to a wide class of problems.
+And I would say more broadly to the field of error.
+And also, they help uncover fundamental limits, for example, things that you cannot do.
+And we will see an example of that today.
+Now, what question would we like to ask from a theoretical point of view?
+Well, ideally, we would like to have some form of guarantees for an algorithm that we are studying.
+For example, if you are proposing a new algorithm, you would like to understand whether it converges.
+And that's kind of the primary concern that you might have when you go ahead and you want to apply it to a real problem.
+You would like to understand how to choose the hyperparameters, whether there is any sort of ways or formula or trade-off that you need to make.
+Another question is how much data does the algorithm need to collect in order to achieve a certain, I don't know, a certain, I don't know, a certain, I don't know, a certain, I don't know, a certain, I don't know, a certain, a certain, I don't know, a certain, level of performance.
+So how many interactions?
+And also you might be concerned with things like computational complexity, and so running time of the algorithm.
+This is what you would like to study, but in reality, answering those questions is extremely challenging, it's extremely difficult.
+For example, for most of the DeepL algorithms, it's not even possible to prove convergence, because at the end of the day, the basic temporal difference scheme, or TD with experience replay and target networks, they are not always guaranteed to converge.
+And so immediately, we have sort of a challenge.
+And it turns out that answering those questions is generally extremely difficult.
+And so what you will see today is that there is kind of a huge gap right now between the practical algorithms that you've seen in the class, and some of the consideration that we will go through today.
+But at any rate, I will focus mostly on understanding the statistical aspects of RL, and so how many samples do you need to learn a certain problems.
+And I will look into sort of three different macro topics.
+One is about trying to understand what reinforcement learning problems are easy and harder, and whether we can learn faster on easier problems.
+And then I will focus on understanding the interplay between RL algorithms and function approximation, so the issue of generalization.
+I will talk briefly about statistical limits, what you can do with reinforcement learning algorithms, and also briefly about offline reinforcement learning.
+Now, let's get to sort of the first part, understanding what problems are easy and what problems are hard.
+The setting that we consider here is the exploration problem.
+I think most of the class that you've gone through is about exploration algorithms.
+Think about the standard online setting, DQN, all these.
+And so in this setting, you have reinforcement learning agent that is starting with an empty data set, and there is an interaction for H steps until the end, for example, of a game.
+And this interaction is ongoing, and it continues for a number of episodes.
+And you would like to measure how quickly a reinforcement learning agent is learning.
+Now, intuitively, the reinforcement learning agent starts with a policy that might be suboptimal.
+If it is playing Atari, the first policy is going to be bad if you start with an empty data set.
+But then progressively, it is going to learn and play policies that are better and better.
+What we would like to do is to measure the performance, the performance of the algorithm, and the standard way to do it, let me try to move this thing on.
+The standard way to do it is to define a quantity that is called regret, which you might have seen in class.
+And it's really the sum of the suboptimality gaps of the policy played by the agent.
+Intuitively, at least if the problem is easy, an algorithm that is learning will approach, in terms of performance, the value of the optimal policy.
+But it will start in a way that it doesn't know much.
+And so, the initial value of the policy that be placed are going to be low.
+And if we sum all the suboptimality gaps as a function of the episode, well, that would amount to computing the integral of this curve, so the area shaded out, and the integral of this curve, which is said to be not OD兩個 shaded in orange.
+And that's what we call regret of the algorithm.
+Our goal will be to try to design an algorithm that minimizes the regret.
+Now, in most cases, you can do that.
+For example, in DeepREL, it's not so clear that you can do that.
+And so we will focus on problems that are for the first part of today with small state and action spaces.
+So problem where we have a tabular representation.
+And if we go back to maybe 2010, 2011, and subsequent years, in the foundations of ARAD, there was a huge push to try to design algorithms that could be as efficient as possible on tabular problems.
+In particular, several algorithms have been proposed.
+And these, they had some form of regret bound that there was a function of the state and action spaces.
+In particular, its cardinality, the horizon, and the number of episodes.
+Those are the great bounds of useful because they apply broadly to any problem that is a macro decision process.
+You don't need to worry about the specific of the problem.
+As long as you have, you know, final state and action space, you have a guarantee on this algorithm.
+And this is also their limitation in the sense that it is not clear whether a certain algorithm would perform better or worse if the problem had a certain structure.
+And this is what we see in practice that the performance of reinforcement learning algorithms varies greatly even for the same algorithm on problems that are quite different.
+And so we would like to start and try to derive some systematic understanding of the problem.
+And we would like to start and try to derive some systematic understanding of what problems are difficult and what problems are easy to explore in reinforcement learning.
+Now, from an historical point of view, there has been a lot of effort into improving those regret bounds until essentially we got one algorithm that in terms of worst case performance, it was unimprovable, meaning that it had a performance guarantee.
+And so we have a very good probability across all problems that was as good as possible given the lower bound that we need, meaning that the performance is not improvable without any limit.
+There is a fundamental limit that you cannot surpass.
+At the same time, we know that there are classes of problems that are very different from the type of contrived construction that creates the lower bound.
+One example is a problem that has no dynamics or weak memory.
+A problem that has weak memory is a problem where the action that you took in the past, they have really little impact on your state.
+Think about a recommender system, which is a type of contextual bandit problem.
+Well, that is a situation in which this weak memory sort of arises.
+In a recommender system, it's a problem that is not a problem.
+It's a problem that is not a problem.
+It's a problem that is not a problem.
+In a recommender system, think about a customer coming to Amazon.
+If you make a bad recommendation, intuitively you might make a certain customer unhappy, but this won't affect the next customer that you see.
+And so that's a problem of weak memory.
+And for bandit problems, we do know that there are specific bandit algorithms to take advantage of the structure, and they are able to learn much faster than classical Markov decision processes.
+Likewise, problems that are deterministic are generally much easier.
+It's essentially a search problem.
+Likewise, problems where you can only move locally in the state and action space are generally problems that are easier, because if you make a mistake, you can still recover somehow.
+One example is mountain car.
+Now, the question that we ask, is if we treat these problems as tabular problems, where we have an explicit representation of the state and action space and the dynamics, what do these easy problems have in common?
+Can we identify some common characteristics and try to measure how hard they are?
+And can we learn faster if the problem belongs, if the actual problem instance that we face belongs to some of these subclasses?
+Well, we gave a positive answer to this.
+And we proposed first a problem-dependent complexity, and then an algorithm based on that, that had certain specific properties.
+First of all, we proposed some problem-dependent complexity measure that characterizes the complexity of different reinforcement learning problems.
+In particular, it is defined by the interaction of the system dynamics, and the value of the optimal policy.
+It is defined as the variant of the next state optimal value function.
+And this is not something that the algorithm can compute if you do not know the actual mark of the system process, because the optimal value function is unknown, and the dynamics are also unknown.
+But nonetheless, you can design an algorithm that has a performance bound, that scale with this quantity, which is generally unknown.
+And the algorithm doesn't need to know that.
+As a result, the algorithm is able to match the best performance for tabular mark decision processes, meaning that it is minimax optimal, it is unimprovable, but compared to the state of the art, it can also attain the optimal performance if the problem belongs to a certain class of easier problems.
+For example, if it is a contextual problem, it is a problem.
+If it is a contextual bandit problem, then the algorithm automatically matches essentially the performance of basic UCB on contextual bandits.
+And in addition to being analytically small on certain problems of subclasses, you can evaluate the quantity numerically.
+And it's gonna appear here, is on problems that people have considered before, and it's gonna appear here, it's on problems that people have considered before, it takes a value that is much smaller than sort of a worst case value that was suggested by prior bounds.
+So essentially it is a quantity that it is bought analytically small on problems that we care about, but also numerically smaller on problems that have been considered before.
+Now I want to pause one second and ask if there is any technical question on this part before I move on.
+Before I move ahead.
+The intuition, well, it really depends on the type of problem.
+So for example, if a problem has weak memory, it's a contextual bandit problem, what happens is then a mistake that you might make, and you're gonna have to fix it.
+So you might have to fix it.
+So you might have to fix it.
+So you might have to fix it.
+So you might have to fix it.
+And so the next state value function, it wouldn't be too much different across different states.
+And so essentially this quantity has to be small.
+You might make an error, but you only lose with the current customer, right?
+You don't mess up the entire long-term plan, right?
+And so this quantity end up being smaller.
+Think about this being some challenge in estimating the effect of transitions, but the transitions can be highly stochastic.
+For example, again, in bandits, they are highly stochastic, but still there is not much variability in the value of the state that you end up with.
+In that case, it's gonna be small.
+Yeah.
+So I think that's a good question.
+I think that's a good question.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+Yeah.
+In the supremum, you can have a lasik as expectation over trajectories.
+It is supremum in the actual work, but you can have a lasik.
+OK.
+I want to give one slide that is perhaps a bit more technical about how do we go about achieving something like this.
+Well, exploration generally is typically achieved, at least for probably efficient algorithms, by adding an exploration bonus to the experience reward.
+Think about DQN.
+Exploration there is done with epsilon greedy, at least in the most basic format.
+But if you want more sophisticated schemes, think about UCB in embedded algorithms.
+Normally what's done is a bonus is added.
+Now the bonus can take different forms.
+The most basic one that prior art was using is something that scales with the inverse of the number of samples.
+It comes from often inequality.
+But this type of exploration bonus is essentially problem independent, meaning that it's not tied to any particular feature of the MDP.
+And so the algorithm would explore in the same way regardless of the problem.
+And this won't give rise to problem dependent bounds.
+Now the ideal choice that one would like to make is to use some form of Bernstein based concentration inequality, which does indeed contain some of the most complex problems.
+And this is the problem that we're going to explore today.
+So the problem that we're going to explore today is the problem that we're going to explore today.
+So the problem that we're going to explore today is something very similar to the quantity that we want.
+It would give rise to problem dependent bounds, but there is one issue that in general, the optimal action value function, you don't know what it is.
+And the transition dynamics, you also don't know what it is.
+So although this choice of the bonus would be ideal, it would not practically give rise.
+It's not something that you can do in practice.
+And the way around it is sort of intuitive, is to try to use the empirical dynamics and some empirical estimate of the optimal value function.
+But there are several challenges that arises if you try to do that.
+The main challenge is that generally those quantities, they are unknown.
+Think about when you start initially, you know very, very little about the dynamics.
+And so you have essentially no way to guess what these quantities are.
+And if you take the wrong, the wrong, the wrong, the wrong, the wrong guess, essentially the algorithm might not be optimistic enough.
+It might not explore enough.
+And it would just not find a good policy.
+So what you have to do is rather to introduce some correction terms.
+Thankfully, those correction terms that try to correct for your wrong estimates, they decay very quickly.
+So they decay at a faster rate.
+And so it is, it is a as if the agent was applying sort of the correct Bernstein based concentration inequality, but with one correction term that is decaying very quickly.
+And the challenge here lies in estimating the size of the correction, in particular because we have to correct some value function that is different from the optimal one.
+And estimating those errors, it requires estimating how error propagates.
+And so it's a very, very complicated problem.
+And so it's a very, very complicated problem where we need, in any sense, how to predict N號 MAC, right.
+So it's really quite difficult and difficult outside ofELI greys, right.
+But luckily, you know, you can have the nfl here.
+And you canBrokey space these Tutajsants out of the ships point, but for these databases.
+And so you have to have first a nice very BMC unison and then the Ramsins outside of the ideζ from states there perhaps When he eating the obesity tteokbokki Now This is good, because it does give you these these them from states and these choices essentially gives rise to positive and unison versus frontiering toDAOs problem We're gonna do two more memory modeling webinars, we're gonna arise to show two names first, put them in more detail because I think, whether it's possible to adapt to the problem difficulty, and whether it's possible to be at the same time minimax optimal, but also instance optimal on a variety of problem classes that we are interested in.
+But the big limitation here is that, of course, this thing applies only to small state and action spaces.
+In practice, we would like to tackle problems that have a very large, potentially continuous state and action space.
+And to be clear, what you've seen in the class is always in the second category.
+As soon as you start using any form of function approximation, you are in this category.
+And so the next question that we will try to understand is, what can we say about reinforcement learning with function approximation?
+And the answer will turn out to be a bit more negative than it is.
+And then here, we made some sort of positive progress.
+But here, we will see that when you start to talk about reinforcement learning with function approximation, even problems that seem to be easy, they might be very challenging.
+And so to do a quick recap, practical problems, they always have a state space that is extremely larger.
+Most states have never visited.
+What we would like to do is, we would like to do is to introduce some form of function approximation that can add generalized knowledge from the states that we have seen to states that we have not yet observed.
+And the hope is that we do not need to learn what to do in every state.
+Rather, we need only a number of samples that is roughly of the same order as the number of parameters in our model.
+Now, the observation that the full-cluar observation, if you want, that we have is that reinforcement learning algorithm, they use function approximation.
+They still need a lot of samples compared to supervised learning.
+And so we would like to ask a very basic question, whether reinforcement learning is, for example, fundamentally more difficult than, for example, than classical supervised learning?
+And in order to study this question, we consider a setting that is very similar to the offline reinforcement learning setting that you have seen in the second part of the class.
+In the offline reinforcement learning setting, you have some data set that is available.
+And it consists of state, actions, reward, and success of states.
+And we try to ask.
+Questions about, for example, policies that might be different from the one that generated the data set.
+You may, for example, want to try to identify the optimal policy.
+Or you may try to do off policy evaluation.
+The specific setting that we consider is one in which we allow some sort of data collection with a static distribution before.
+And the reason to do that, to allow for something like this flexibility, is because if the data set is poor, intuitively we cannot do much.
+And that's not the algorithm pose.
+It's just the data set.
+Maybe I have just data on a single state.
+So we do consider a case in which you can do some form of data collection with a static policy beforehand.
+And then we try to understand whether we can successfully predict the value of a different policy, for example, or extract the value of the optimal policy.
+OK.
+Now, our expectation is that if the action value function has a simple representation, for example, if the action value function has a linear expansion, and perhaps we even know the feature extractor, then this should be an easy problem.
+Why?
+Well, it's just by analogy with linear regression.
+If you are solving a regression problem, and I give you a function.
+I give you a feature map.
+And I promise that the problem is realizable.
+So the target do have some linear expansion, perhaps with some noise.
+Then you can open a textbook in statistics.
+And you will see that standard linear regression can learn this problem very quickly.
+However, in reinforcement learning, even problems that are linear, they don't seem to be so easy.
+OK.
+So in particular, there have been examples of divergence of classical TD and fitted Q, even on problems that are linearly realizable.
+And in fact, if you take a look at the analysis that are available for some of the basic algorithms and protocols, you will see that they all make some assumptions that seem to be much more stronger than just realizability.
+And so it's a matter.
+But in fact, we don't know in 2020, 2021, whether even the simplest linear setting is something that we can provide stable algorithms for.
+Can we provide an algorithm that, for example, converges?
+And converges, yes, because you can use LSTD.
+But can we have any guarantee about, for example, the amount of samples that are required to learn, even in this simple setting, which is the first step after tabular problem?
+And so we have to do some research to see if we can provide some sort of a more stable algorithm.
+And really, to understand what's happening, you need to compare supervised learning with reinforcement learning.
+And the key difference is whether you're trying to make predictions for one time step or for many time steps.
+This is because if you're trying to make predictions for one time step, and you start with a data set that you might be able to predict, well, if you're trying to just predict the first reward and you have the promise that the reward function is linear, then we know that linear regression solves this problem very, very quickly.
+So we know an algorithm.
+And we know guarantees as well.
+And this is the most basic machine learning algorithm that you can think of.
+However, our question is, what happens if we want to predict the value of a policy?
+And what are the steps?
+With the problem, with the guarantee that that value is actually realizable, meaning that we have a feature extractor that correctly predicts the value of the target policy for some data parameter.
+It turns out that this problem is, in the worst case, extremely difficult, meaning that as opposed to supervised learning.
+You can find problems where you have this beautiful linear model.
+And yet, any algorithm would take a number of samples to make the correct predictions that is exponential in the dimensionality of the feature extractor.
+And when I say predictions, you can intend this broadly, meaning that the answer would remain the same.
+If you were trying to, for example, identify an optimal policy, I want a policy that does better than random.
+You still need a number of samples that, in the worst case, might be exponential in the dimensionality of the feature extractor.
+And so we see that there is a strong separation between what is achievable in supervised learning, which is concerned with making predictions.
+And so if you want a one-step prediction, and the reinforcement learning, which considers sequential processes, as the horizon becomes longer, the problems can become exponentially harder.
+This doesn't mean that all problems are exponentially harder, but it does tell you that even problems that appear to be simple, the problems that should be linear, and so they should be easily learnable, you will not be able to find an algorithm that has guarantees, even on those problems.
+And so for you, in order to learn, for an algorithm to learn, there has to be some additional special structure.
+And indeed, this is something that we sort of see, that in the poor sample complexity is a major issue in RL.
+And this issue is also related to divergence.
+But the contribution here is really to identify that those issues are algorithm independent.
+They have information theoretic, meaning that there some fundamental hardness in the reinforcement learning problem that applies broadly to all algorithms that you can come up with.
+You will not be able to find an algorithm that is able to solve all problems, even if they are as simple as linear.
+And this issue has been studied more broadly by some other important papers, and some have similar results.
+And if you want to sort of reinterpret this second section, you can also take a look at that from the point of view of online RL.
+I might have an action value function.
+Think about what you have in DQN.
+And instead of having a deep neural network, you just have a simple linear map.
+And I promise to you that the problem really does have a linear action value function.
+Still, it will not be able.
+You will not be able to find an algorithm that can learn polynomially faster in a problem that is linear.
+And so the main takeaway here is that linear regression is easy to start, but the equivalent in reinforcement learning from a Model 3 point of view is already out of reach.
+And so we have to be sort of not too optimistic about the type of problems that we can solve.
+And there has been, indeed, a big effort trying to understand what additional conditions are necessary in order to have polynomial sample complexity as we have for many statistical algorithms in statistics.
+Now, before we move forward, is there any question on sort of this second section?
+Yeah.
+Yeah.
+This is kind of an batch чист.
+And starting to think about the high level Telnet models.
+AMARVAN emergencies are also three different levels of high etiquette here.
+The first thing is pay attention to the take place andล This is not a long term analysis.
+AMARVAN immediate mitigation attempts andival point of view, right?
+So we're looking at whether we have enough information on the Q values.
+But somehow you can have problems that are extremely complex.
+But the action value function ends up being simple.
+It ends up being sort of linear.
+So the actual content example has essentially a reward function that is very complex.
+It's like a value, novel networks, that is non-zero only in a very hidden area of the state space, which is exponentially larger.
+The dynamics are very complex.
+And the dynamics are sort of engineered in a way that they linearize the reward function in the sense that once you do many steps of the Bellman backup, you end up with an action value function that looks linear.
+And so it looks like the problem is easy because that thing is really linear.
+But what you're really trying to do is to identify the problem.
+And you can identify where the reward function is non-zero in a sort of an exponentially larger sphere.
+I don't know if I can say much more than this, but it's really related to the high dimensionality that you have.
+There's a lot of space in high dimension.
+If you take random vectors in high dimension, they will almost always be orthogonal.
+And so you can sort of hide information in very high dimension.
+It's not something that, it's obvious in 2D or 3D, you really have to go high dimension.
+Yeah, the policy pi is fixed.
+It could be, you know, think about predicting the value of the optimal policy.
+It could be fixed or it could be, you know, the optimal one.
+So I do want to spend one slide talking about, indeed what happens with more general function approximation in terms of positive result.
+Well, if you open some book about statistics, high dimensional statistics, at least for regression, you will see that there are performance guarantees that are a function of the very function class you're using.
+So if you're using kernel methods, convex methods, you're using the kernel method, convex method, you're using the kernel method, convex method, convex functions or other things, you will have some performance bound, some trade off between approximation error and statistical complexity.
+And the statistical complexity is normally expressed in sort of more in notions like about the market complexity, VC dimensions and other things.
+But the same is not sufficient in a REL.
+So it looks like the interplay between Bellman operator and the function, the function, the very same function class that you use to model the action value function for TD methods.
+But the interplay is really kind of important.
+And so what people are focused on, on to understand some foundations of REL, it's not just about the complexity of the function class.
+This is not sufficient.
+Like we saw before, we have a linear map and that is already too hard.
+Well, there has to be something that makes the problem sort of learnable.
+And that's really the interaction between Bellman operator, and the action value function.
+The reason why that's essential for TD method is that you're taking an action value function, you created the Bellman backup out of it, and you're fitting sort of the same, and you want that to be zero.
+And so the interaction becomes critical.
+And so many notions have been proposed to try to understand in what cases can you do this sort of learning in a way that is stable and statistically efficient.
+But I won't go into that.
+Instead, I'm going to jump to some offline reinforcement learning.
+Offline reinforcement learning, you've seen it already in the class, but just to do a quick recap, there's already a lot of data out there, so we would like to leverage them.
+How can we do so without collecting further data?
+And the setting is the same as that you've seen in class.
+We have an historical data set, which is a little bit more complicated.
+So we have an historical data set.
+of state actions were rewarding success of states.
+And the task is, how do we find the policy with the highest value?
+What does it even mean to find the policy with the highest value given a data set?
+Well, the highest value, of course, is the policy that is the optimal policy.
+But your data set may contain no information about the optimal policy.
+And so we have to make some best effort in trying to identify a good policy and lower our expectation and perhaps not find the optimal policy.
+The main challenge, I think you have discussed this in class as well, is that of distribution shift, meaning that the data set.
+Well, the best case scenario, which never happened, is one in which your data set has uniform samples all over the state and actual space, in which case you could just try to evaluate policy by 1, by 2, and by 3 and pick up the best.
+But normally, what you've given is projectors that they might be, for example, from humans.
+And so they're generally narrowly concentrated.
+And the best case scenario is that you have a data set that's not the best.
+And that's what we call problem of partial coverage.
+And in the example here, the data set may have a lot of information about pi 1, no information about pi 2, and some information about pi 3.
+And somehow, you have to come up with and choose between the three and figure out which policy is the best.
+And the thing that they want to sort of highlight today is how do we even measure this coverage, how much information the data set contains to find a good policy.
+And intuitively, the way to solve this problem is precisely what you've seen in class.
+Or actually, there are two ways, if you want.
+One is to try to stay close to the policies that generated the data set, some form of behavioral cloning.
+Another way is to attempt to find the best policy.
+And the other way is to attempt to find the best policy.
+And the other way is to attempt to estimate the uncertainty about your predictions.
+Generally, your data set is generated by policies, certain policies that are sort of narrowly concentrated.
+And they give you data about state actions, reward, and transitions.
+And you would try to sort of fit some form of model and try to use the model to make predictions about the value of other policies.
+Now, the model doesn't actually need to be a model.
+You might do this in a model-free way.
+But you're still using some data that has been generated by some policies and make predictions about other policies.
+Now, of course, what you would like to do is to pick up the policy that has the highest value, but that's not known.
+Instead, you would like to return a policy that looks like it has good value, but that you're also reasonably confident about.
+And so one way to look at the offline array is as a procedure that tries to find some optimal trade-off between value of the policy that is returned and the uncertainty about this policy.
+Think about some bias-variance trade-off in statistics.
+You would like to have an algorithm that has sort of an optimal bias-variance trade-off.
+The bias is generally unknown.
+The variance, you can try to estimate.
+In offline array, there is sort of a similar notion, if you want.
+You would like to balance the value of the policy that you return, which is unknown to you, with its uncertainty.
+And so guarantees for offline reinforcement learning algorithm, they generally look something like this.
+One algorithm should return.
+.
+And so you would like to have a policy that is very high probability.
+The best trade-off between the value of the policy that you return and its uncertainty, which essentially amounts to finding the point with the highest lower bound.
+In a sense, offline reinforcement learning, the one that you've also seen in the class, in some way, they try to get to this optimal trade-off.
+Now, one big question is, what is this sort of constant C, that depends on the policy?
+Well, if you have seen concentration inequalities in statistics, you might be already familiar with the term 1 divided by square root of n.
+It's what arises from, for example, often inequality.
+But here, there is an extra coefficient that depends on the policy, which should encapsulate the distribution shift.
+Now, this coefficient depends on the actual algorithm.
+And it depends.
+For example, on the function classes that you're using and the interaction with the Bedman operator.
+And as a concrete instantiation, you can take, for example, softmax policies.
+Think about those that arise from a natural policy gradient.
+And again, for simplicity, linear action value functions.
+And those are two distinct parameters.
+And you can design algorithms that, again, .
+And essentially, try to solve this offline reinforcement learning problem.
+And they will have some guarantees that are precisely of this form, where these coverage coefficient has a certain analytical expression.
+And the analytical expression highlights really the interplay between the information that is contained in the data set and the target policy that you're trying to estimate, in particular, the information contained in the data set is reflected in the covariance matrix, which is a somewhat familiar object from statistics.
+Linear regression, you compute some covariance matrix.
+The covariance contains the amount of information that you know about the problem.
+And these interact with a certain norm in its inverse with the expected feature over the target policy that you are considering for the optimization.
+And this quantity you know, but this one is generally not computable.
+So this tells you how the two interact to create confidence intervals of policy evaluation that you can use to find a good policy.
+What is surprising and perhaps not surprising, but important about this is that this coverage, which is also called concentrability.
+.
+.
+It doesn't really, it doesn't have an expression in the state and action space.
+If you open some of the papers that do statistical analysis, you would often find a ratio between this distribution, this counter distribution of the target policies versus the behavioral policy.
+And that is a ratio in the state and action space.
+This one has none of that.
+It's all projected down to a lower dimensional feature space.
+Where coverage can indeed be sort of much larger.
+Think about having a covariance matrix that is the identity that would certainly make the coverage coefficient be very small.
+I don't think I want to talk about sort of how we achieve this and sort of the technicalities.
+I think the important part is how would.
+For example, a guarantee in offline RL look like in terms of actual statement, which is what you saw in the prior slide.
+But if you want at a very high level, we're trying to avoid penalizing actions directly.
+And we want to retain a very sort of low statistical complexity.
+And we operate in the parameter space to compute these confidence intervals.
+And all this is put into a big.
+After critic algorithms, they use this natural policy gradient and some pessimistic version of TD with target networks where the parameters are moved in a way that computes a pessimistic solution.
+I'm going to keep the algorithm.
+Now, one limitation of this study that you've seen, is that it applies to the linear setting.
+Of course, the question is what happens if I use a richer set of functions, for example, offline reinforcement learning with more general function approximations, such as the ones that you've seen in class.
+Can we give any guarantees for those?
+The answer is, unfortunately, there is a huge gap in the sense that the type of algorithms that you've seen in the class is very difficult to prove guarantees for them because they may not converge.
+There are variants that are sort of, in a sense, that you can provide guarantees for.
+But the big problem is that it's not clear how you would implement them.
+And that is kind of an issue of all over L with general function approximation.
+If you want guarantees, it's not clear how you would come up with an algorithm that you can actually implement.
+And so oftentimes, what is another?
+And the reason why I'm saying that is, the reason why I'm saying that is, is that the way that the algorithm is analyzed is sort of a conceptual version that is not the same as the actual algorithm that is implemented in practice.
+Now, before we head to the conclusion, any question on this sort of third part?
+Yeah, of course.
+So, what is the covariance?
+What is the covariance of the features?
+What is the covariance of the features?
+Well, the covariance, if this is a finite horizon problem, the covariance can really change through time steps.
+It's the covariance of the features.
+So sum of phi, phi transpose.
+Feature extract.
+Yeah.
+Same as linear regression.
+The same object appears.
+What do you mean by epsilon optimal ?
+This won't be optimal, right, because it's a fluid.
+It's a linear rel.
+So it really depends on your data set.
+The policy that you find may be very crappy if your data set doesn't have good information.
+Suppose your data set is just from a policy that is narrowly concentrated, and the behavioral policy is bad.
+And this feature matrix is like rank one.
+It's so concentrated in one direction.
+Then that doesn't really tell you much.
+Yeah.
+Yeah.
+And so you won't be able to find a good policy.
+But somehow this is sort of reflected in precisely that statement, right?
+Because policies that are very good, they would have a coverage coefficient that is very large.
+And so you will not know their value.
+And no algorithm would return that.
+So you can't really tell that.
+Yeah.
+No.
+I think if you want, this is the epsilon that you're talking about, right?
+This is the policy that we will return.
+You can always think about the optimal policy in the supremum.
+I want to evaluate this expression at the optimal policy.
+I can do that.
+But then this guy will become the value, the sort of optimal policy.
+And so this is your epsilon, right?
+This is epsilon suboptimal compared to the optimal policy.
+But epsilon can be huge.
+Basically, I'm telling you the value of epsilon, given the data set that we have.
+This is really a way to measure how much information are contained in the data set.
+And as a result, what's the performance that you can expect?
+At the initial state, I would say.
+The value of the policy at the initial state.
+That's sort of the one that you care about.
+And your estimates may be more often in states that, for example, you don't visit, or even in states that you visit, but they might compensate.
+What you really care is performance at the starting point.
+OK.
+Yeah.
+Right, right, right.
+So I think you have seen something similar with CQL, I think.
+Basically, on X, let's plot, let's put different policies.
+To be clear, you're going to have, uncountably many, but let's put them on a graph.
+And on the Y.
+We're going to plot the value of the policies.
+Yeah, yeah, yeah, yeah.
+Expecting this can be some of the world.
+Now, what you wish you knew is the actual value of the policies, right?
+The green line is the value of the policy.
+So if you know the actual MDP, you do value iteration, and you will find this guy, the optimal policy.
+Unfortunately, what you have is a data set.
+Now, how to use the data set is up to you.
+Intuitively, if you're doing model-based RL, you can try to fit some model, and try to use that to make it.
+So you can do it.
+You can do it.
+And try to use that to make predictions.
+So your model may be good, it might be bad.
+It might generally be good to make predictions about value of policies that generated the data set.
+It might be very bad to predict value of different policies.
+You might not use a model-based version, and you may do something different.
+For example, you may adopt a model-free approach, like CQL.
+And intuitively, if you could, what you would do is the following.
+Try to come up with an estimate.
+Try to come up with an estimate.
+Try to come up with an estimate.
+Try to come up with an estimate.
+For the value of different policies.
+And try to measure also the uncertainty.
+The uncertainty is really sort of this band here.
+And this curve may move up and down, depending on the data set.
+But you would like to try to estimate the uncertainty about your predictions.
+Intuitively, the uncertainty will be smaller for policy evaluation, for the very policy that's generated the data set.
+You have a bunch of data.
+Just take the average.
+And you can see that the data set is very, very different.
+But it will be very bad for a policy that is very, very different.
+It visits completely different areas of the state and action space.
+Your data is narrowly concentrated.
+You have no idea about the policy that does something in a completely unknown area of the state and action space.
+So even if that policy, by doing fit and kill, it looks good, you have to take into account that you're extremely uncertain about this value.
+And so somehow, you would like to penalize it.
+And so you would like to say, oh, this policy, I'm too uncertain.
+I'm going to assign it a very low value.
+And if I do this procedure, the optimal trade-off is to maximize this lower bound, a lower bound on the performance of the policies.
+And this gives you sort of abstractly this expression here, which will become concrete as soon as you consider a specific algorithm and a specific type of function class and MVP.
+And that will determine the CPI.
+But yeah.
+Yeah, yeah.
+Yeah.
+Yeah, yeah, yeah.
+Yeah.
+Of course.
+Thank you.
+I think what's important here, if you want one takeaway, is really how would a guarantee of an offline algorithm look like?
+It would look something like this, some trade-off between values.
+Of course, you want the highest value.
+But policies that have high value, you might be very uncertain about them.
+And so there's going to be some trade-off.
+And just to make it, if you want, more clear, for the policy, that have in the data set, generally have a lot of hope data, and so this CPI is going to be something, like, one.
+You have a lot of that.
+So n is bigger.
+But this quantity is smaller.
+And so with this expression tells you is that you should do better than the policies that generate in the dataset.
+If you design the algorithm correctly, this is sort of the minimum that you would expect.
+You want to do better than the behavior of clone.
+Right and and this expression says exactly that if I put pi as Behavioral policy that generated the data set C.
+Pi will be smaller It's gonna be one this expression will be smaller and this tells me I do better than Behavioral cloning which is what we would expect Okay Time to sum up We have seen sort of three things One is most problems in RL.
+They're not worst case.
+They belong to a much easier class of problems We have seen that as soon as we move to function approximation RL is much more difficult than standard supervised learning and then we have seen what type of guarantees we can obtain for offline reinforcement learning algorithms and to conclude I think After the presentation this is much more clear.
+There is a huge gap between sort of theory and practice I think working at intersection Is of course difficult right because you have to sort of please both communities, but in my head make reinforcement learning More applicable in the sense that there are going to be compromises to be made you won't sort of beat any benchmark or you know top any benchmark but you might be able to come up with some algorithm that has some Sort of analysis and at least in simple cases some ability guarantees and this will be kind of critical in order to apply reinforcement learning to Very different problems you would feel much more confident to apply an algorithm if it is backed by some form of guarantees that apply even in a restricted set And generally theory you will not tell you how to sort of tune hyper parameters and know that so they will not necessarily will not necessarily inform you on the specific of any given application, but it can give you sort of more broad insights and foundation that apply more broadly to the field that we have seen some fundamental lower bounds before and Yeah, I think with this I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I Thank you for your attention.
+Thank you.
+I'm going to ask you if there is any final question.
+Thank you for coming here.
+Thank you.

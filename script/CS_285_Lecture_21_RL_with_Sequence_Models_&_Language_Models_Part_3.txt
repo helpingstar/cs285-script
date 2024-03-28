@@ -1,0 +1,219 @@
+All right, in the third part of today's lecture, we're going to talk about multi-step reinforcement learning with language models, where we'll combine some of the ideas from the PungDP discussion, as well as the language model discussion from before.
+So here's an example of a multi-turn RL problem with language models.
+This is an example of a task called visual dialogue, which is a benchmark introduced in a paper from 2017.
+The idea here is that there is a questioner who is the bot, and the answerer, which is considered part of the environment.
+And the answerer has a particular picture in mind, and the questioner has to ask the questions to try to guess which picture it is.
+So this is purely a language task for the questioner.
+And the questioner needs to select appropriate questions to gather information so that at the end, they can figure out what image the answerer was thinking.
+Now, you could imagine structuring this as a PungDP, where the observations are the things that are said by the answerer, and the actions are the questions that the questioner selects.
+And this is now a sequential process.
+There are multiple time steps, and at the end, there's a reward.
+So the action is what the bot says.
+It's a sentence, like any people in the shunt.
+The observation is what the answerer or simulated human says, like they aren't.
+The state now would be a history state, just like in our discussion in the first part.
+So that would be the sequence of past observations and actions.
+And the reward is the outcome of the dialogue.
+Did the questioner guess the correct?
+Did the answerer guess the correct?
+Did the answerer guess the correct?
+And the answerer would then have to guess the answer at the end.
+So the multi-step nature of this task is very important.
+Now, we're back in the full RL setting, because the questioner isn't just going to ask questions that greedily get them the answer.
+They're going to ask questions to gather information so that they can guess the right answer at the very end.
+Obviously, they shouldn't ask the same question multiple times.
+They should think about what information they've already gathered, what information remains open, and proceed accordingly.
+They, of course, show up in dialogue systems, where you might be interacting with a human to achieve some final delayed goal.
+Assistant chatbots, where you might have multiple turns of interaction to arrive at a solution.
+Tool use settings, where instead of talking to a person, you might be outputting text that goes into some tool, like a database, a Linux terminal, a calculator, something that uses that tool to then produce an answer to a given query.
+Playing text games, maybe you produce actions, and then you can then use that to create a text adventure game, which then responds with programmed observations.
+So these are all examples of multi-turn RL problems.
+Now, this is not the same as RL-HM from before.
+RL from human feedback, RL from human preferences that we saw in the previous section, learns from human preferences.
+Here, we're learning about the outcome of the entire multi-step interaction.
+The reward only appears at the end after multiple turns.
+The episode in the previous section, was a single answer.
+So it was a one-turn bandit problem with a state and an action.
+Here, we have multiple turns, multiple observation and actions.
+The partial observability now matters, because we need to pay attention not just to the latest response from the human, but perhaps all the previous responses and all the questions we asked before.
+So this is now putting us into a different regime.
+How can we train policies to handle this?
+Well, we could use policy gradients.
+Like just like before, policy gradients are a viable way to train multi-turn policies.
+That's what we introduced them for.
+And we also learned in the first section that policy gradients can actually handle partial observability.
+We can give the policy a history of observations.
+So we can also use those history states.
+That is quite feasible.
+One issue that we run into, however, with policy gradients is, if we are training a dialogue agent that talks to a human, then we need to get samples from the human for every rollout.
+This is different from the human preferences setting that we were in before.
+Before.
+Because we had that reward model, we could optimize against the reward model with multiple iterations consisting of sampling and optimization and only occasionally get more preferences.
+But if we're using policy gradients for a dialogue task where every single episode requires talking to a human, now we need to interact with human a lot more.
+So even though with the preference we still need a human input, we need a lot more of it if we want to optimize a dialogue agent with policy gradients.
+So it could work, but it's expensive.
+Of course, it's a lot easier if you're not interacting with a human.
+But instead, we're interacting with a tool, such as a database.
+Value-based methods, however, are a very appealing option because with value-based methods, you could use offline RL techniques, like the ones that we learned about before in the course, and actually train your dialogue agent directly with data of, for example, humans talking to other humans or past deployments of a bot.
+So value-based methods are actually a very appealing option for dialogue.
+So in this part of the lecture, I'll actually focus on discussing value-based methods, though I will say.
+I think that policy gradient methods could be used directly.
+There's not much more to say about that, however, because they would work exactly the same way as they did before.
+So let's talk about value-based methods.
+And for value-based methods, we have to make a choice, which is what constitutes a time step.
+So in the very beginning of the previous section, I discussed how there are design choices to be made about how to turn the language problem into an MDP.
+And here, there is a particularly delicate choice that we can make, which could go either way.
+So the first choice is to make a choice.
+And the second choice is to have every utterance be a time step, meaning that the first thing that the human says, like two zebras are walking around their pen in the zoo, that's observation one.
+The first sentence that the questioner says, like any people in the shot, that's action one.
+So actions and observations are entire sentences.
+This is perhaps most directly analogous to the setting that we had in the previous section.
+This is a natural choice, because we go in alternating between action, observation, action, observation.
+The observation is always outside of the agent's control.
+The action is always entirely under its control.
+The horizons are typically going to be relatively short.
+So if the dialogue involves 10 back and forth questions and answers, then we're going to have 10 time steps.
+The problem is that the action space is huge.
+The action space is the entire space of utterances that the bot could say.
+An alternative choice is to consider each token to be a time step.
+So in this case, for an entire action space, every utterance from the bot, for example, any people in the shot, every single token in this utterance is a separate action time step.
+And this is a little bit peculiar, because of course, each of those actions is under its control.
+So after action one, it immediately gets to choose action two.
+There's no additional observation.
+We would still concatenate action one to our state history, and the next action would be selected given the entire history.
+And then every single token in the response is a separate observation.
+Now, this has a very big advantage, which is now at every time step, we have a simple discrete action space.
+So the action space at any time step is just a set of possible tokens.
+It's a large set, but it's quite easy to enumerate.
+Whereas the set of actions in the per utterance setting is the set of all possible sequences, which is exponentially large, exponentially on the horizon.
+The problem when we use per token time steps is that our horizon now is much, much longer.
+So whereas before our horizon might be on the order of 10 steps, now it's going to be possibly thousands of steps, even for a relatively short dialogue.
+Both options have been explored in the literature.
+There's no single established standard as to which one is better.
+So I'll discuss both of them and maybe tell you a little bit about their pros and cons.
+So let's start with value-based RL with per utterance time steps.
+Here is an example, a slice of our dialogue.
+And let's say that we're at this step.
+Let's say that we're at the stage where the bot is saying, are they facing each other?
+What we're going to do is we're going to take the history of the conversation up until this point, which constitutes the state.
+That's the entire dialogue history, ST.
+And we're going to pass it through some kind of sequence model.
+So it could be a pre-trained language model.
+It could be something like BERT.
+There are a variety of choices.
+And this sequence model is going to output some sort of embedding.
+And then we're also going to take our candidate action.
+Are they facing each other?
+And we're going to also pass it through a sequence model.
+And this could be a separate model.
+It could be a separate sequence model.
+Or it could be the same one.
+And we're going to get embeddings of both of these things that are going to be fed into some learned function that outputs the Q value.
+It's perhaps most straightforward to actually have two separate encoders for the state and the action.
+But they could also be encoded with the same encoder.
+And at the end, we have to predict a single number for them, which is the Q value.
+So this is the critic.
+Now, typically in this design, we could use either an active critic architecture, where we would have a separate actor network that is trained to maximize this critic.
+And that could be trained with a separate actor network.
+And that could be trained with, for example, one of the algorithms in the previous section, treating this Q in place of the reward as the one step objective.
+Or we could directly decode from the Q function to find the action that has the highest Q value.
+And it's a little tricky how to do that.
+We could do that with something like beam search.
+We could also sample from a supervised train model and take the sample of highest Q value.
+And then we would train this Q function, using our estimate of the maximum for the next time step.
+So that maximum for the next time step could come from doing beam search.
+It could come from using an actor.
+It could also come from sampling from a supervised train model, and then taking the sample of the largest Q value as an approximation to the max.
+So all of those are valid options.
+And different methods in literature have explored different choices for that.
+So I'll summarize a few previous papers at the end of this section and tell you what the concrete papers actually did.
+So there's no one way of doing this.
+There's a variety of choices.
+And I'll give you a few examples.
+For per-token time steps, things are perhaps a little bit simpler.
+So let's say that we're at this point in the decoding process.
+We're generating the token corresponding to facing.
+And remember, of course, in reality, words aren't tokens.
+Tokens actually correspond to multiple characters, but not entire words.
+But let's pretend that tokens are words.
+And let's pretend that we're at the word facing.
+So we're going to want to do this backup, the Bellman backup, over individual tokens.
+Now things work much more like the way that we're doing it in the paper, and that's because we're not doing it in a way that's going to do it in the actual way.
+So we're going to do it in a way that's going to do it in a way that's going to be more like supervised language models.
+So we have these tokens.
+And we have a number for every possible token at this time step.
+Except instead of that number corresponding to the probability of that token being the next token, the number is actually its Q value.
+So the number associated with the token for facing is the Q value you would get if your history is the token facing at the next step.
+Maximize over the possible tokens at the next time step if the agent chooses that token, or simply take the data set token if it's chosen by the environment.
+Add the reward to that, and then use that as the target value in the loss.
+So this essentially implements per token Q-learning.
+So to explain that again, at the token for they, the output is the Q value of every possible token being chosen at the next time step.
+And to compute the target for that Q value, we would actually input that token at the next time step, see all of our possible next token values, and take a max over them if the agent gets to choose the next one.
+Or take the value of the data set token if it's chosen by the environment, add the reward, and then treat that as our target.
+So in some ways, it's simpler.
+But remember that our horizon gets to be a lot longer.
+So we have simple discrete action.
+The rule is arguably less complex than it is for per utterance because we don't have to deal with actors.
+We don't have to deal with all that other stuff.
+But our horizon is very long.
+So putting it all together, the usual value-based details apply.
+So we would typically need a target network for either the per utterance or the per token version.
+We would typically use a replay buffer.
+We would typically do things like use the double Q trick and so on.
+So all the same considerations apply as they did for regular value-based methods.
+And we could use this with either online or offline RL.
+To my knowledge, these methods have primarily been studied for offline RL, in which case you would use something like CQL or IQL to make it work properly.
+And the details basically require handling distributional shift in some way.
+So you could use policy constraints.
+If you have an actor, then you would use a KL divergence on the actor.
+If you are just using value-based methods, you could use a CQL-style penalty on the Q values, which conveniently for the per token version amounts to basically putting the standard supervised cross entropy loss.
+If it's not clear why that's the case, you can work that out.
+Just write down the CQL objective.
+And with discrete actions, you'll see that it actually works out to be the same as a cross entropy loss.
+You could also do an IQL-style backup, and that's also a decent option.
+But there's no single best answer yet as to which of these is the better choice.
+So this is very much kind of at the bleeding edge of current research as of 2023.
+So this was a little bit abstract.
+To see concrete algorithms as a whole, you'd need to have a lot of data.
+And to see what you could actually implement to make this work, let's go through some examples.
+So one example, which is a somewhat older paper by Natasha Jakes called Human-Centric Dialogue Training via Offline Reinforcement Learning, uses an actor critic plus policy constraint architecture.
+So there is an actor network which has a KL divergence penalty to stay close to the data distribution.
+The rewards for this come from human user sentiment analysis.
+So the chatbot is actually trying to optimize the sentiment elicited from humans.
+The reward is automatically computed using sentiment analyzer applied to the human responses.
+And this uses the per utterance time step formulation.
+Another example, Chai, a chatbot AI for task-oriented dialogue with offline reinforcement learning by Siddharth Verma.
+This one uses a Q function with a CQL-like penalty.
+And it uses rewards from the task, in this case, the greatest negotiation task.
+So the reward just comes from the total revenue made by selling an item.
+And a time step here is a little bit more complicated.
+So the reward is one utterance.
+So the way that the maximization is done over the next time step is actually by sampling multiple possible responses from a supervised trained language model, in this case, a GBT2-style model, and then taking the max over the Q values of the sampled utterances.
+So this is not an exact max.
+It's an approximate max by using samples from a pre-trained language model.
+Another more recent example is Offline IRL for National Language Generation with Implicit Language Q Learning by Snell et al.
+This one uses a Q function train with actually a combination of both IQL and CQL.
+So it uses an IQL backup with a CQL penalty.
+And then the policy is actually extracted by, again, taking a supervised train model, sampling from that supervised train model, and then taking the sample with the largest Q value.
+And the rewards, again, come from the task.
+This one is evaluated on the visual dialogue task from before, where the reward corresponds to whether the agent gets the correct answer or not.
+So if you're interested in learning more about this, you can go to the website at the end of this video.
+And if you want to learn more about specific value-based algorithms, I would encourage you to check out these papers and see the particular details they chose.
+So my description of the methods was a little bit abstract and generic.
+The particular instantiation is covered in these papers.
+And the Snell et al.
+formulation uses each token as a time step.
+So to recap, multi-step language interactions, like dialogue, are PUMDP, which means that we need to do something like using history states as our state representation.
+Time steps can be defined as either per utterance or per token.
+And they have their pros and cons.
+In principle, any RL method could be used once we switch to using history states.
+But in practice, especially if we have dialogue agents that need to talk to humans, we might really prefer an offline RL formulation, because otherwise we would have to interact with humans every time we generate more samples.
+Of course, that's not necessarily the case, because if we're doing something like text games or tool use, then online methods are actually quite feasible.
+Value-based methods either treat utterances or tokens as actions.
+And they build Q functions with history states.
+And we have to apply the same details and tricks as regular offline value-based methods.
+So that includes things like target networks.
+It includes tricks like double Q learning.
+It includes the various offline regularization methods, like policy constraints, CQL, or IQL.
+There's no single established standard for what is the best method of this sort.
+And there are a variety of different choices with different pros and cons.

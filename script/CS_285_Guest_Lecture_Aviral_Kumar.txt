@@ -1,0 +1,671 @@
+He brings to this speaking here with us at UC Berkeley and actually a lot of the materials that we covered in our offline RL lectures was work that was done in part by Aviral.
+And also pretty much all the materials in our RL theory lecture was just copied from a lecture that Aviral made.
+So he's contributed to a very large portion of this class.
+And today he'll tell us about preach training and utilizing large models with offline RL.
+Thank you.
+Yeah.
+So today I'll talk to you about offline reinforcement learning for pre-training and utilizing large models.
+And these are large models, not in the context of an LP or language, but for robotics, for many decision making problems down the line.
+So, yeah.
+So, you know, you guys have all studied offline reinforcement learning.
+I think there are two lectures on this now.
+The idea behind offline RL is simple.
+You don't want to learn by online trials.
+You don't want to learn by an RL interaction with the environment, but rather you existing interaction data for learning policies that can maximize the one.
+So this is the standard paradigm.
+You looked at many algorithms for doing this model based algorithms, Q learning, et cetera, et cetera.
+But I'm not going to those algorithms here, but this is the general paradigm that all of those algorithms try to follow.
+Now, what this kind of reminds me of sort of when I think about this in the context of general machine learning is the standard ML pipeline of taking some training data.
+In this case, it was a training data.
+It was existing offline data training a model on this data and then deploying this model down on the real task.
+So this is this kind of a paradigm of offline RL against the standard or typical machine learning pipeline of data model with some objective and then deploying one.
+But if you look at what currently we do in machine learning, what is becoming more and more popular and more and more utilized out there is this slightly different paradigm where the picture changes quite a bit.
+So rather than going from data directly to a model, data to rather than data to train a model and then deploying the model.
+Now we want to do something called pre-training, which is take lots and lots of data, which is probably not very related to your downstream task.
+But you want to train a general model in all of this data.
+And then when it comes to using this model, you want to run this model not directly in the real world or directly on your real problem, but rather we want to fine tune this model to a downstream task that we care about.
+So we want to learn generalist models via pre-training and then utilize these generalist models.
+Why are some kind of fine tuning on the downstream task?
+And, you know, the classic example of this is large language models, you know, all sorts of foundation models.
+So what I want to talk about today was, you know, how can you move to a similar paradigm when you think about offline RL, when you think about decision making problems?
+How can offline reinforcement learning give you a way to realize this sort of a paradigm for decision making and control type of tasks?
+So what I want to do now is go away from this paradigm of taking exercise.
+I want to go back to the idea of producing data and producing policies that maximize reward.
+But rather think of offline RL as this other paradigm, which can take not just your given task data, but all possible relevant data for your problem.
+So this could include like, you know, any kind of robot data that exists out there, any kind of gameplay data that exists out there, any kind of data from hospitals for hospital decision making problems, etc.
+So all of that data put together now to now not just produce policies that are good at maximizing reward, but rather good pre-trained initializations, good features, good representations, good whatever you can think of, which is useful for now fine tuning to a downstream scenario that you care about.
+So what I want to talk about in today's talk is how can you realize such a pipeline?
+How can you think of offline RL methods and how you can extend all those recipes you have learned about in this class to enable something like this in a picture instead of that picture above?
+So more specifically, let's, you know, we will dissect RL.
+This sort of high level goal into three different parts and to motivate those three different parts, we look at what different components in this picture look like.
+So if I want to go from this picture of taking some data, training a model on that and producing a downstream policy to the second picture, what do my components look like?
+The first component is being able to learn from arbitrary sources of data.
+So if I want to realize this picture, I want to take not just data from a given task, but arbitrary data sources and train on it.
+So that's the first component.
+So if I want to realize this picture, I want to take not just data from a given task, but arbitrary data sources and train on it.
+And so one concrete institution of this that we talk about today is this setting of using human video data for robotics.
+So if I want to train a robot, but I don't just want to use robot data, but lots and lots of internet based video data, how can I use it for learning good policies?
+I'll talk about that there.
+I also talk about scaling up.
+So, you know, when there's more and more data, you want to use bigger and bigger models.
+So how can you enable these offline reinforcement learning methods to scale up to be able to do that?
+So I'll talk about some stuff in that along that axis.
+And I'll talk about some initial stuff you've done for building fine tuning algorithms.
+So algorithms that can allow us to take general initializations and then train them with limited amount of data for your given downstream problem to make your initialization be better and better at that given task that you care about.
+So data scaling and algorithm.
+These are the three topics that we'll talk about today.
+So let's get started.
+I decided to switch the order a bit.
+So I'm going to start with scaling first and then we will talk about data and fine tuning at the end.
+So scaling up, right?
+So if you look at scaling in reinforcement learning, here's a plot that I copied from the Synthreater paper, which at this point is super, super old.
+And these are all these numbers, all these dots that you see up on this plot are basically the data that I'm going to be using for my reinforcement learning.
+So this is basically a number of self-supervised learning methods, which were back, which were out there state of the art at the time when the Synthreater paper came out in 2020.
+If you look at most of work in reinforcement learning community, all of them usually train models that are very small.
+So they train models that all lie within this gray colored little box out there on this plot.
+Whereas supervised learning or just normal self-supervised learning has gone way beyond this particular box.
+So what I'm going to talk about today is, you know, I'm going to talk about the data.
+So this is obviously not that revolutionary.
+It doesn't move this box all the way from here to massive models.
+But it does allow us to go from whatever we had back in the RL community at that time to models that are much bigger, about double the size of the models that we could trade off.
+And remember that this was all done on not that much compute.
+So we did not obviously have compute to train the very, very big models.
+But it is something better than what existed out at the time that we were doing this work.
+So.
+So before I go into this, I want to say that I'm going to talk about the data.
+So before I go into the technical content, I'll just quickly set up some notation and then we'll discuss the technical content.
+So remember that here we are dealing with this offline data set of this interaction data that already exists.
+We assume that the data consists of two groups of four elements.
+So here the four elements are the observation, the state that is visible to your learning algorithm.
+AI, which is an action that was taken by the behavior policy.
+So the data collection policy in your learning algorithm.
+So the data collection policy in your data set.
+RFXAI is your instantaneous reward value.
+So this is the reward value in your data set for this particular transition.
+And XI plus one is the next observation or the next state, which was obtained when you executed this action at that particular state in XI.
+So this is just a transition that exists in typical replay buffers and off policy Q learning style algorithms.
+So we have access to a data set that is organized in the form of these transition tools.
+And XI, AI, R, and XI plus one.
+Okay.
+So back to scaling up.
+So to start motivating why or, you know, what is even the thing to do in scaling, like, should I just throw more data in a bigger model and the method would work?
+To understand if that simple recipe just works, what we did was we tried to run a simple experiment where we said, okay, rather than doing the standard domain of Atari games, which you guys must have for sure done in a homework assignment, we're going to do a simple experiment.
+Okay.
+So this is like the first step.
+Just like the first step.
+And this is less than a homework assignment.
+I believe.
+So rather than training policies for one single Atari game, what if we try to just make the problem harder?
+Such that it requires larger models to be able to perform effectively.
+And we made the problem harder by now, instead of training one single policy on one game, we are training one single policy to play multiple games together.
+This is just a simple, like, you know, baby step instantiation of scaling up the problem by simply trying to play in one policy to play multiple games together.
+Now, just this last step.
+Now, just this sensation actually gives you quite a bit of complexity.
+So you now need a method that can deal with or that can train on about 2 billion data points because you can concatenate all these data sets that exist for each game and you'll get 2 billion data points easily.
+And all this data is quite suboptimal.
+So you want to be able to take this data and produce a good and a better policy, hopefully, than anything that you've seen in this data.
+So it's a challenging problem.
+So that if you take this problem and benchmark some very simple sort of RL and control methods, you do find that when you simply do imitation learning or filtered imitation learning style approaches, there's actually quite a bit of benefit that you had when you scale up your model.
+So this plot is plotting the performance increase that happens when you go from a smaller model to a larger model for the learning algorithm.
+And the blue bar that you see here is a super-wide model.
+And the blue bar is learning style algorithm.
+It's based on imitation learning.
+So you see that when you go from a smaller model to a large model, there's a huge boost in performance with imitation learning style methods in this particular scenario.
+But if you take off the shelf offline RL methods, in this case, it's preserved at Q-learning.
+I did not put the equation for it here, but because I know you guys have covered this in the lecture, you find that actually with offline RL methods, the amount of performance increase as a result of scaling your model capacity is quite low.
+And in fact, if you do this a lot, your performance might even start to degrade when you use a larger model.
+And for those of you who are interested in the details, the model here is basically going from a smaller ResNet to a larger ResNet because these games require you to train on pixel images and convert that into discrete action.
+So you can use the ResNet architecture in this case that's what you do.
+So clearly, you know, the thing that is visible here is the performance of the training algorithm or performance of the policy that you create starts to decrease when you scale up model capacity.
+For offline RL methods, whereas that's not quite the case with just imitation learning methods, as you see up there.
+So this was kind of a counter intuitive finding and we didn't know what to do about it.
+So we tried to sort of ask some basic questions that can help us understand why supervised learning methods can scale up well, but RL methods may not be able to.
+So in particular, you know, rather than thinking about like absolute reasons for why RL or RL methods are not scalable, we tried to sort of ask some basic questions that can help us understand why supervised learning methods can scale up well, but RL methods may not be able to.
+But if you look could be extremely hard to work with if you fulfill those questions, for most of you the RL methods are generallyножend.
+So if we ever launch skills Melanie RL method based on a Banff S and we learn some material that don't dry out here.
+We try to.
+I joined this project recently.
+Women really seem double sits.
+This is why I call videos nothing's more.
+in learning literature, they proposed an explanation for why with very large models, with very large or very overparameterized models, meaning having many, many more parameters than the intrinsic dimensions of the data, why even in such cases supervised learning methods can work pretty, pretty well.
+And this is this theory of what's called implicit regularization.
+So the idea is if you are training a model with supervised learning that's called, let's say, that the model has parameters theta and you're minimizing some loss function l theta.
+And the biggest assumption here is that theta is very, very big.
+So you have many, many more parameters, meaning you have a very large model and you're training this model on your data.
+Turns out that if you do this with gradient descent and more particularly stochastic gradient descent, in supervised learning, it turns out that you end up finding solutions that don't just minimize this loss, l theta, but that minimize a regularized version of this loss.
+So you end up finding solutions that minimize l theta plus this r theta.
+And this r theta is not something that you added during training, but it's just what's called an implicit regularizer.
+It's a regularizer that comes up because your learning procedure, in this case, stochastic gradient descent, ends up preferring certain solutions in your parameter landscape.
+So think of it in this way.
+There are many possible solutions you're learning and can work to, but you end up finding solutions that minimize this regularizer because your optimizer, in this case, SGD, ends up finding those solutions over other possible solutions.
+So one of the sort of intuitive characterizations of this implicit regularizer term is the preference towards simple solutions.
+So if you take an extremely hugely parametrized linear regression problem, let's say, so it's a supervised learning problem, what ends up happening typically is you would end up finding solutions with a low parameter norm, with a low norm of the parameter, the linear regression parameters that you're training.
+And that's an example of this implicit regularization phenomena.
+So you're finding solutions that are in some way simple, and these simple solutions tend to generalize well, even though you have a lot and a lot of parameters in your training, in your model that you're training.
+So this is one of the explanations for why you can still find good solutions with supervised learning, even though you have a very large model, without overfitting, without running into any other spurious issues, because this implicit regularizer ends up finding good solutions.
+Any questions here, by the way?
+I realize that this is a very long talk, but I'm going to go on.
+Thank you.
+This might be something that's probably not covered in this class.
+So any questions here, actually?
+OK, great.
+So yeah, so there's one answer for why supervised learning methods can work pretty well with large models, which is that this implicit regularization phenomena ends up preferring solutions that perform well.
+So what we tried to do in this line of work was to kind of go back now and see what this theory says for the case of offline reinforcement.
+So I hope, as I said earlier, was that if you can figure out the delta between offline RL and supervised learning, we can hope to sort of address this problem with offline RL and scaling by taking insights from what has made supervised learning work pretty well with large models.
+So what we did was we tried to kind of theoretically derive what this implicit regularizer looks like for the case of offline RL.
+And in particular, we are considering these methods that train Qt.
+So we're going to take Q functions in this case.
+So you have a neural network that produces a few functions as output, taking as input these k and the action.
+And one piece of notation I'm going to define here, I'm going to consider the last but one-day features of this network, the last but one-day activations of this network as phi theta of xk.
+So they are the features that you learn.
+And this is sort of maybe somewhat ad hoc.
+You can define features in different ways as well.
+But for the context of today's talk, for simplicity of understanding, let's stick to that definition, as what we will call phi.
+So it turns out that in the case of reinforcement learning, there's a major difference between supervised objectives and Q learning objectives that cause this regularization to be very different.
+This regularization effect to be very differently manifested for RL and supervised learning.
+And to understand where that difference comes from, I'm going to write down a few equations here.
+So typically, when you train with Q learning, you take a Q function, a network Q theta there.
+And you train it with Q learning.
+You take a Q function, a network Q theta there.
+And you train it with Q learning.
+And you try to regress it to some targets, what?
+These are target values of your net.
+In supervised learning, these target values are just constants.
+They are just like, imagine a regression problem.
+You're just going to regress to some constant values.
+Let's say in this case, it's just the reward for a given problem.
+But for Q learning or for offline RL, these values are actually computed with a previous copy of your own Q function that you're training out there on the left-hand side of that, or which is present in that.
+So you can get a very good objective out there.
+So in some ways, your target value depends also on the Q function that you are training.
+And the Q function that you're training affects the subsequent target values, creating a cyclic loop that's going to make things very different from the learning dynamics of supervised learning, where you are trying to regress to fixed targets.
+Because of this difference, actually, if you write down or if you calculate this regularizer that I was talking about, it ends up being very different for Q learning, and the standard supervised learning.
+So for standard supervised learning, one example, under certain modeling assumptions, you can show that the regularizer will end up preferring solutions with a low norm, with a low feature norm.
+So your regularizer is a function that penalizes the norm of the feature as phi theta for them that way.
+This is actually good, because if you think of things like weight decay, they are very similar in motivation.
+This is kind of like weight decay, but not on weights, but on features instead.
+On the other hand, for offline RL now, you have a much more complicated regularizer.
+And in particular, there are two terms which we'll go over just in a bit.
+But this regularizer is not the same as supervised learning, and the reason is because of this regression to target.
+So the first term of this RL regularizer is actually the same.
+It's a term that tries to penalize the norms of the features that you're saying.
+So that's a good term in some ways, because you're trying to learn low norm features.
+You're not trying to overfit in weird ways to your data.
+But this second term now, it's a term that actually, if you look at it a bit more carefully, it looks like a dot product between phi theta at xi, which is your state at the current step, and phi theta at xi plus 1, which is your state at the next step.
+So it's something that kind of combines together features that are given state action x comma a with x prime, or the next state, xi plus 1 in this case.
+And if you think about it, while the derivative is not here, if you think about it, this is precisely why this is precisely something that you would get from a target value like thing, because the target value has xi plus 1 under your two function, whereas the q theta xa up there in the objective is graded on your current state and current phi.
+So that's sort of the intuition for why this term comes from.
+But now, if you look at what this term does, it is actually a term that looks like a dot product between two vectors, dot product between phi theta of xi ai and phi theta of xi.
+So you have the other two vectors, which are the two functions of the term, the first and the second.
+And the second is a dot product.
+And at the end of the dot product, you have a negative sign in front of this.
+Remember that if you recall the equation from before, here you are trying to minimize the regularizer when you run SVD on that loss.
+So equivalently, here you will be trying to minimize the other regularizer.
+Minimizing that regularizer with what does that mean for the second term, it basically means, I'm me?
+That basically means I'm going to maximize the dot product of features at Xi ai and Xi plus 1 ai plus 1, which means I'm going to actually try to increase the lengths of these vectors.
+Because an easy way to maximize dot product of two vectors is to increase their lengths if the lengths are not bounded.
+So in some ways, the second term has an effect of conflicting with the first term, where the first term is trying to reduce magnitude of features.
+The second term is trying to increase the magnitude of those features in this case.
+Because Xi ai, phi theta of Xi ai appear in both the terms in this case.
+So there's some clear difference that happens with this RN regularizer in comparison with the supervised learning regularizer, which you see up there.
+Any questions here?
+So I think I did a bunch of derivation orally.
+So any questions?
+Yes?
+Is it just like what's the implicit regularization approximately equals?
+Or is this like actually grounded in?
+That's a good question.
+So you should check out the paper.
+It's actually grounded in.
+So remember that here we're dealing with a stochastic range.
+So there's some noise specifically.
+So you can't write down the exact precise regularizer.
+But you can say that the overall regularization effect is in a band around the solution that you would get if you were to minimize that regularizer.
+But that band depends on the volume of that band depends on the learning rate and lots of other things that are dictated by the noise .
+Thank you.
+Yeah.
+OK, great.
+So the TLDR of this is basically the RN regularizer has two terms where one term now starts to conflict with the learning that you would have gotten with supervised learning.
+OK, so this is what is happening.
+And we have clear reason to see that OK, the supervised learning regularizer actually is not that harmful because supervised learning methods clearly do scale.
+Whereas in RL, we find that these are not.
+These methods are at least are very clear that these methods did not scale.
+So what can we do about it?
+So we took a very empirical approach here.
+So this part is actually not something that I can provably show.
+But the empirical approach was very simple.
+It said, well, if this second term is the only other term that exists in the case of RL and not in supervised learning, and somehow this is correlated with the fact that RL does not scale very well at least so far and supervised learning does, then what if we simply try to undo this term?
+What if we simply try to remove this term by, adding an explicit loss to my training algorithm that undoes the second term?
+So if I were to just simply add this term back such that my regularization, the net regularization, looks the same in supervised learning and reinforcement learning.
+We did exactly that.
+So what we did was we simply took a few learning algorithm, in this case, any offline RL algorithm, and added the second term as a regularizer to my training method in this case.
+Turns out that just doing that on this particular example that you're talking about.
+It helped us improve the scalability of our learning.
+So while these methods, while these offline RL methods initially were reducing in performance as they scaled up model capacity, now if you added this regularizer to the training and ran the same offline RL algorithm, you can actually benefit from model capacity increase.
+So this is performance increase in performance, sorry, percentage increase in performance by scaling up model capacity.
+And you can clearly see it kind of now looks very similar to how the performance of super wise learning scales in this case.
+And not just that, but if you look at absolute performance of different methods.
+So these are methods which include imitation learning, the best prior method based on decision transformers, which is some sort of filtered or fancy imitation, as well as just literally replaying trajectories from the data.
+So the average performance of the behavior policy.
+Compared to all of this, we found that combining this idea of regularization with conservative Q-learning, which is an offline RL approach we based off of, it helped us get much better performance on this particular benchmark.
+In fact, this was sort of the first offline RL-based approach, which is based on Q-learning to surpass the performance of the behavior policy using a larger model on this particular task.
+So the high level intuition here is like even such simple looking tasks like Atari games, right, which are so standard for RL, even they can be very hard when you think about scaling if you just combine them together.
+And it was very surprising to us that no existing method was able to train large enough models, even with all the best tweaks that people have discovered on this domain in the single game setting with offline RL.
+But with just this regularizer and the same exact other setups, we were able to get much better performance with large enough models in this setting.
+OK, any questions here?
+Yes.
+Was having this turned both with small-time RLs?
+That's a good question.
+So we did try.
+We did try some small models.
+I would say that it depends on how small you're going with.
+So if you take one single game and you take a regular network, I think it does help.
+But then if you take many games and a regular network, it doesn't quite help.
+So like a regular network meaning a small enough model, basically.
+So I think it's a little hard to say exactly.
+And the reason is because it's hard to quantify precisely when a model capacity is big enough.
+So the capacity is bigger than the intrinsic capacity of the data.
+So I think this is much more reliably helping when you have a large enough model.
+But it's hard to quantify.
+If I were to do the counterfactual, I think it's hard for me to draw the line between where the model capacity exceeded the data or not.
+So that's the thing.
+Yeah.
+But how would it be harmful to performance?
+That's a good question.
+So I don't think we ever found it to be harmful to performance.
+There's also, so I did not cover one of the details here, which is, well, if you're adding back this term, you probably have a waiting term on that hyperparameter.
+It's a regularizer.
+You can also do it in a way where you use it as a normalization there in your model, which is something that I did not cover here and have you discuss later.
+In that case, you don't have a hyperparameter, and it won't help.
+It won't hurt your performance.
+So it's going to be pretty neutral if nothing happens, or it only improves if things work better.
+OK.
+OK, sounds good.
+So OK, let's move on.
+So the takeaways of this section are that large models, if you just instantiate offline NARL naively, they can actually hurt.
+But then these simple sort of regularization schemes or equivalent schemes that undo these bad parts of, in this case, implicit regularization, or more generally, I think, anything that explains the difference between supervised learning and offline NARL-style objectives, undoing bad parts of resulting terms from such an analysis can already help us get methods that can scale up pretty well in this sense.
+OK.
+So that's the end for this part.
+Let's go on to the next part now, which is about, so far, we talked about scaling.
+So we were in a setting where we were thinking about Atari games.
+We still had all the data that kind of looks like transitions and actions and rewards.
+Everything was given to us.
+But now we want to talk about a different question of what can you do when you have arbitrary data out there.
+So if you're learning algorithm does not just see data that is organized in the form of transitions, but something else.
+So we're going to talk about the And for this, I'm going to talk about one special case of using human videos for robots.
+So how can you pre-train robots with human videos?
+So before I go into human videos, let's look at what does an offline NARL-based pre-training or pre-training scheme for robots, how could it even look like?
+So you can take this data, which is already collected in various labs.
+And this data could just come from human teleoperators collecting rollouts for you.
+You can take this data.
+You can simply annotate the last state of every trajectory or every rollout as having a plus 1 reward.
+Because remember, these are demonstrations.
+A human actually showed how to solve a task.
+And you can simply now take this data and run offline NARL on it.
+So this is just giant multitask data.
+You can put it into a replay buffer.
+You know, it's not a big deal.
+It's not a big deal.
+It's not a big deal.
+You can do task ID conditioning.
+So you can define for each particular transition what task it comes from as a one-hot vector and run offline NARL on it.
+Once you have this, you'll have a general network, potentially, general policy such that now when you are given some amount of data for a target domain, for a target task that you care about.
+So these are probably not tasks that you care about.
+These are tasks that just exist in your data set.
+When you have some limited amount of data for your task that you care about, you can now mix some batches from pre-training and this new data and simply fine-tune this model.
+So this is a very simple offline NARL-based recipe for pre-training robot policies.
+Take some broad robot data, pre-trained by offline NARL on that data, and simply keep running the same offline NARL algorithm or input.
+You can also do online fine-tuning if you want to, although that's not quite relevant for this section of this talk.
+You can take this offline NARL method and run that now on your task-specific data at test time when you are supposed to utilize this pre-trained initializer.
+So this is a very general-purpose recipe for pre-training via offline NARL.
+This only uses robot data so far.
+It has data which shows you actions.
+It has data which shows you rewards.
+It's organized in the form of projectors.
+But for this part, what we want to do is we want to take these recipes and extend it to use human videos.
+Why do we want to use human videos?
+Well, if you think about all the data that exists out there, even if you include multitask robot data or data from other robots, it's much, it's very tiny compared to human video data that exists out there on YouTube or in well-curated data sets such as .
+So it makes sense to utilize human video data because it shows how humans interact with the real world, and that would be useful for robots .
+But the challenge that comes up now is most of the video data that exists out there has no actions in it.
+And more so, humans are not robots.
+Humans have, or robots are not humans.
+Humans have five fingers.
+Typical robots mostly operate on parallel jaw grippers.
+So there's a huge difference in capabilities and embodiments that exist out there.
+So what can we do?
+If I'm given such data, can I still keep running offline RL on this data?
+The answer is not quite clear.
+But in this line of work, what we did was we showed that you can still keep running offline RL methods for not learning policies at this point, but rather for learning useful representations or features.
+So it runs out the very same Q-learning, value learning sort of algorithms that we talked about so far.
+They can still give you.
+Useful features or representations for now doing robot control if you are willing to pre-train on videos and then keep running the same scheme on robot data.
+So what does this look like?
+So here's a general pipeline that you can follow.
+You can first start with all video data that exists out there, train some kind of value function on the data, and I'll talk about what value functions can you train.
+This value function will give you a useful encoder of images or frames of video.
+So a useful encoder that compresses information and images into useful vectors.
+You can now take this encoder and use it to initialize an off-the-shelf offline RL algorithm for pre-training robots.
+So you can take this.
+You can have Q values and policies on top of this encoder such that the policy that you obtain now by training on robot data can then be fine-tuned on your desired task.
+So remember that pre-training recipe I showed you?
+Train on broad robot data and then fine-tune on target data?
+You can just add a new before it, which now trains this visual encoder part of your network with videos.
+And the last function here is just simply training a value function, which does not require actions.
+Because a value function is just a function of your state or your observation and not the action.
+It's not a Q function in this case.
+OK, so now the question is, well, why should this give you good features?
+Why should this give you useful and useful encodings?
+Well, the answer is if you train your visual encoder with value functions, you are implicitly accounting for the dynamics of the world.
+The value functions, when you train them with Bellman and Backhoff, so the Bellman equations, they are accounting for the dynamic structure, the sequential structure of the world, which is presumably useful because you're training a similar kind of an object, a Q function, or a policy in the second and the third case.
+So that's why we would hope that training with value functions will give you a useful representation, useful feature for downstream policy learning, even though you don't have any actions out there on the data.
+OK, so before I go into how can you train these value functions, I want to just pause and see if there's any questions.
+Yes, yeah.
+.
+That's a good point.
+I'm going to cover that just in a second.
+Yeah.
+OK, so yeah, so now the point is, well, OK, I talked about all this intuition for value learning.
+But what can you do?
+What kind of value functions can you even train on the data?
+A simple value function technically looks like a function of the state, which tells you some cumulative reward that you would get by executing a given policy, in that case, pi, for a given reward function.
+Because a value function sums up the cumulative reward for a given reward.
+Now, in this case, I can choose to define some kind of a reward function, potentially.
+I can just say, well, my reward function is whenever the human hand is close to a particular object, some specific function like that.
+But that's not quite good here, because it will still give me policies, or it will still give me value functions that are very specific to the particular reward function I define.
+I can just define arbitrary reward functions here, but they are going to be very specific to one particular capability, whereas in the downstream, my robot would be required to do many other tasks that are not quite powered by the robot function.
+So somehow, I want to go away from this particular way of defining values.
+And I want to not have a reward function out there at all.
+So for doing that, what I can do is, I can instead try to take a general formulation of value function, such as goal-reaching value.
+I can say, well, I want to train a value function on video data that tells me what's the total value I would get if I were to execute a given policy, pi, for reaching arbitrary frames, or reaching arbitrary goals in the video, as well.
+This is a very general reward function, because it's a goal-reaching reward function.
+I can define goals as any arbitrary frame in the video that I have seen.
+It's pretty simple.
+It's even across frames, across not appearing in the same video clip at all.
+But that also ends up being quite specific.
+And the reason why this is quite specific is because it only considers one policy.
+I'm only training the value function for one policy, which means I'm only learning features that can represent values for one particular policy, pi, even though it's for a multiple-reviewed function in this case.
+So well, I also don't want to do this, because this is too specific.
+So the obvious next step is, well, I can say, OK, what if I train value functions, these goal-reaching value functions, that can work well for all policies?
+So I want to train a value function that can, I want to train this network that can represent value functions for all possible policies, pi, and for all possible goals in this case, so for all possible goal-reaching reward functions.
+This ends up being overly broad.
+And the reason is because when you think about robots, they're not going to operate, and they're not going to run any arbitrary sequence of random actions out there.
+All they're going to do is they're going to run some very specific kinds of actions, that are going to accomplish tasks out there, not arbitrary random actions, which is what this particular formulation will still consider, because it's training value functions for all possible policies.
+So what we ended up doing in this case was a slightly different form, where we now model a value function that only models the value that robot will get for reaching a particular goal G, when your policies are optimal policies, optimal policies for some subset of tasks.
+So imagine if you only had optimal goal-reaching policies, meaning given a goal, these policies could reach that goal as efficiently as possible.
+You're only modeling value functions for those particular policies for all goal-reaching reward functions.
+So in this case, the choice of reward function is every goal-reaching reward function.
+And the choice of policies are only optimal policies, which are useful in some way, rather than just arbitrary random policy.
+So this strikes the right balance, or at least empirically, this strikes a good balance between breadth and depth.
+Or breadth and specificity of the value function that we're training.
+I would encourage you to check out some more works.
+So this is actually inspired from this work, the first one here, which actually models this as an intent condition value function.
+But you should check that out for more detail.
+And there's many other related works as well out there.
+But the high level idea is you want to choose a family of reward functions and a family of policies for which you model values, such that you can get good features that are useful for a breadth of downstream tasks.
+But then they're not.
+They're not too broad.
+They're just arbitrarily wide and not super useful.
+Does that answer your question?
+Yeah.
+OK.
+So what we did was we simply used this value function.
+We put that into this pipeline.
+So your value function now is this value function for the on-goal reaching tasks for certain optimal policies.
+You get your visual encoder, throw it into an offline RL pre-training scheme.
+So now you initialize your offline RL method with this visual encoder you've got.
+Train a few functions and a policy.
+In this case, it was conservative Q-learning.
+And now you're ready to take that initialization, find it on your target task on which you will measure performance.
+OK.
+So yeah.
+So before I go into some robot videos and quantitative evaluations, it turns out that this scheme actually gives you useful features.
+So if you were to plot, if you were to take trajectories in your data set and trajectories which are out of distribution on your data set.
+If you have a robot data set, you can take some trajectories from it and take some trajectories that are not in it.
+And if you plot the values that you learn as a function of the time step of particular state of your in the trajectory.
+So think of this as essentially the time step at which a particular state appears in your rollout in your data, in your robot data.
+And the y-axis is plotting the value function for that state or the Q function for that state.
+You would, in this case, we find the Q values are much better.
+So how do you read this plot?
+In this case.
+So the Q values, the ground truth Q values, should actually increase as you go further in the trajectory.
+So they should always have an increasing trend, more or less increasing as you increase the x-axis on the time step.
+And in this case, what we found was, you know, our approach to video, which is the first column for the VPDR, it ended up learning the value functions, which are very consistent with this more or less increasing trend.
+Even on 4D data or out of distribution data, there are some spikes here and there, but it's much better than.
+So you can see that the value of the value function is not training on video data at all, which is this place, and other methods for training on video data, which is this other part.
+So here you see the values have this non-monotonic shape as we would be the x-axis value.
+But in this case, with our methods, it's only increasing ..
+So it does learn useful features, which are good for representing downstream values on the robot data.
+You can also quantitatively measure this.
+So you can actually measure some kind of mean squared error between the ground truth value function and the values that you can see.
+And again, you find that using this sort of an approach with videos actually works and gives you the smallest mean squared error compared to other approaches in this case.
+So overall, these features are quite useful for learning downstream value functions.
+And when we actually ran some experiments with it on real robots, when we took these policies, finding them on a given target task, you can actually find that these policies generalize pretty well into, you know, generalize pretty well in terms of object and zipper variability.
+Well, I think.
+I think I need to play these videos.
+Oh.
+I think I need to probably play this from here.
+Yeah.
+So I mean, the policies end up performing much better, much more robustly than prior ways of ..
+OK.
+I think I ..
+Yeah.
+So these other approaches here, the first three are basically different ways of training on video.
+PDR is just not using video, just using robot data.
+And this is our approach, which uses videos and robots.
+And you can see that this approach is, in general, much more smooth and robust compared to sort of these other approaches that exist for either training on video or not using video data at all.
+And the same thing is true with distractor objects.
+When you have other distractor objects in the scene, the same thing is true in that case as well.
+So quantitatively, you can ..
+We did a comprehensive evaluation.
+And we found that actually using videos with our approach, with training these value functions, is actually better than either not using videos, which is this column, or doing other ways of using videos, which are all of these different methods from prior work.
+These different methods use like self-supervised learning on video.
+So you train like a master autoencoder to get some useful representations.
+By just simply compressing and trying to reconstruct back the images in your video frames.
+Or you could do some sort of contrastive learning.
+And all of those actually perform much worse than what our approach does.
+OK, any questions here?
+Great.
+OK, so I think I have nine minutes.
+Let's see how much we can cover in this third section, which is about fine tuning.
+So we're utilizing these pre-trained initializations from offline RL.
+This is going to be a little bit more algorithmic.
+So I'm happy to just talk about things at high level.
+And then I can take questions after 6, because I think we need to leave the room at 6.
+But this part is based on this paper called CalQL, which is going to be presented in Europe next month.
+OK, so the setting here that we care about is online improvement, which is the improvement of offline RL policy.
+So if I gave you some data, you can run offline RL on it.
+This is giant pre-trained data.
+So you can get a pre-trained policy initialization.
+Now I want to improve this policy via limited amounts of online interaction with the given task of interest.
+So I want to specialize this policy on that task with limited amount of online actively collected interaction.
+So in this setting, if you were to take a first step and say, well, a simple approach to tackling this setting is to simply take the same offline RL method I was running.
+And continue running it with new online or on policy data coming into the replay buffer.
+If I were to do this, you'll find that most classes of methods out there will show two different kinds of trends in their results.
+So just to understand what this plot means, I'll explain some of the decisions.
+I'm plotting on the x-axis.
+I'm plotting the number of environment samples collected during online fine-graining.
+So the offline pre-training is done already.
+And now you're simply collecting new online data to improve your policy, which is a fine-grained problem.
+So the y-axis is plotting the performance.
+In this case, it's score or return.
+They're both the same.
+And the performance at 0 starts off quite high because you've already done offline pre-training.
+And your policy gets some success.
+So your policy gets about 50% success.
+And I'm plotting two algorithms, IQL, implicit Q-learning, CQL, conservative Q-learning.
+I think both of these algorithms have been covered here.
+And these algorithms are simply being run as you start collecting online data.
+And the online data is put into the replay buffer of the offline algorithm.
+So it's a predictor of the data set that you're training.
+So what you can see clearly is that there's two sort of things happening here.
+First, with CQL or conservative Q-learning, you see there's a big dip in performance right when fine-graining is written.
+Your model initially was getting 0.5 roughly.
+It ended up suffering a big dip and then recovers back to get an overall improvement eventually.
+Whereas with IQL.
+You find that the improvement is consistent, but it's much more slow.
+Or it's much more sort of does not have a high slope.
+It's like a lower slope than CQL eventually.
+So clearly, something seems kind of not quite right here.
+Because ideally, what I would expect is a curve that sort of surpasses both of these curves, improves quite quickly, reaches the optimal performance of one as quickly as possible.
+But then it's also not very slow and does not have any .
+So with this.
+So with this observation, we said, well, something was wrong here.
+And we wanted to dig deeper into understanding why this happens for these different metrics.
+And what can we do about this to build a better fine-graining algorithm?
+So specifically, when you restrict yourself to the case of CQL, what we did was we tried to understand this unlearning phenomenon.
+We tried to understand why this performance dip happens right in the middle.
+And for that, we plotted a bunch of metrics, which includes many, many metrics.
+Not all of them are plotted here.
+But one metric that we found quite correlated with performance dip was the average Q value.
+So if you take your data set, which includes the offline and online data now, you plot the average Q value of the Q network on that data.
+You find that this Q value has the sharp correction phase, where it changes in magnitude, precisely at the same time when the return has this dip and the return .
+So this was sort of an initial signal that something about this unlearning is related to, and it shifts in magnitudes of these two values .
+This is precise.
+This is pretty much like an adjustment in scale.
+So your values are negative 40, and now your values become minus 10 as you train for the .
+So what we did is we tried to understand now why this happens.
+And I want to first give you some intuition.
+And this is a bit imprecise, but it does the job of the intuition.
+And then I'll show you some concrete evidence of it.
+So if you think about what CQL does, and if I want to explain why these Q values are super low and why they adjust in scale.
+So first question, why are these values super low?
+If you look at what CQL does, it basically trains your Q function to fit the target Q values, which is this 10-point indifference error term, Bellman error.
+And it pushes down the high Q values on out-of-distribution .
+The TD term in this case is a relative loss.
+All it says is your Q values must fit the target Q values.
+.
+And this is a very simple example of this.
+So if you look at the data set, you can see that the Q values are coming from a previous snapshot of the same function.
+Whereas this and this particular expectation is computed only over your data set.
+It's not computed over all possible state action pairs such that minimizing that loss will give you the unique, clean optimal Q function.
+It's only computed over a limited set of samples.
+So if you were to plot, let's say, the Q value at a particular state as a function of actions, assume 1D actions for now, and assume 1D actions for now, and assume 1D actions for now, then you're seeing that many different Q functions, many different learned Q functions shown in red, can attain the same .
+They'll all attain a similar relative loss because relative to their own target values, they have a similar difference.
+But seeing even in this case, because of this absolute term which minimizes the Q value magnitude, is not going to find any of this.
+It's going to find the smallest Q value possible.
+The Q function with the smallest Q value possible, which attains the same .
+And that's because this regularizing that you're adding minimizes .
+So the high-level takeaway here is the reason why these Q values are super low is because of many solutions which can all be of a similar shape, meaning the Q values across actions look similar, CQL or any pessimistic algorithm is going to find the one with the smallest absolute value in this case.
+So it's the smallest one here.
+When you have this smallest possible Q value now, and you, let's say, do online data collection, so you're going to, let's say, query a new action and run this action in the real world, you're going to, now when you collect data, you're going to see the actual reward for this particular action.
+And when you update your Q function on this data, what will happen is you'll end up inducing erroneous peaks, which look super high under your Q function.
+And this is because this, when you execute this action during expiration, you see its actual ground truth reward value that you hadn't seen in your offline data set because your offline data set did not show you any of that action.
+So with that Q function.
+in mind now, your bad action supposedly appears very good under your Q function, such that now if you were to run your policy optimization, find a peak in this Q function, you're going to find a wrong action, a bad action, which is actually not super good and degrades your policy.
+So earlier, your policy was finding the peak in this red curve, which is the peak in this blue curve, which is the ground truth Q function.
+Now your policy is going to find the peak in this red curve, which is not the peak in the blue curve, which is the ground truth Q.
+So clearly, some kind of unlearning happened.
+You were already pretty good.
+Now you are not going to be asked to run this case because you will see an error in this Q function.
+I think I'm super short on time.
+OK, one more minute.
+Yeah.
+OK, any question here, by the way?
+OK.
+Great.
+So yeah.
+So basically, what we did.
+Our method was very simple.
+It said, well, what if we can somehow prevent such peaks from occurring by simply making sure that my training procedure, my offline training procedure, never finds such a low Q value function.
+So never find such a function which attains the smallest Q value as I saw here.
+If I were to find a function that looks like this particular curve, this first red curve, then none of this will happen because my Q values are not that small such that seeing what value here will update my Q function error.
+So that's precisely what we did.
+We said, well, rather than training with CQL, we can train with something that prevents the Q values from being so low.
+And the way we did this was to say that we took the same CQL algorithm and imposed a constraint that said that the Q values that you're learning should never be lower than some reference Q function that you could specify exactly.
+You just constrain your lower boundary Q values to always be above that orange line in that case, in which case, now, none of this issue happens because even when you update your Q values on those actions, you're going to have a small little dip and coming back up there.
+But that's still going to be lower than the highest point in this Q function that you train, which is shown in red here.
+So the bad action does not appear any more optimal as it was in the earlier part.
+And it turns out that a very simple choice for this Q function, this reference Q function, is simply the Q function of the behavior policy.
+So the Q function of your data server, data generating, and rating policy, and then you can compute with relative ease without the need for any Q learning altogether at all.
+You simply compute the return to go estimates and use them to lower bound your Q function in that picture.
+And that works pretty well.
+OK, I think I just had results here.
+Yeah, so the idea of the results is that this kind of alleviates this issue.
+So now you get curves here and there that improve over the course of training that don't have this dip as much.
+And I'd bet you that you'll see some of these results.
+So that's the first thing.
+So that's the first thing.
+So that's the first thing.
+So that's the first thing.
+So that's the first thing.
+So that's the first thing.
+So that's the first thing.
+And faster than other methods, including these methods, such as L2L that I described the first time.
+Yeah, and then you can utilize more gradient steps here.
+I guess I'm going to skip the details, but that will further improve efficiency.
+And in fact, this gives you the smallest regret, the smallest cumulative regret over the course of training, which is a standard measure for measuring sample efficiency of different algorithms.
+And if you're also interested, you should check out some other recent work that came out from Stanford.
+And it's a very interesting work.
+And it's a very interesting work that takes this approach and uses this in conjunction with VLMs and so on for actually doing this on a real robot.
+We also did something on a real robot where we took this microwave door open task.
+And we tried to online fine tune it.
+So the offline policy is kind of OK.
+It reaches the gripper, but then is unable to open it.
+And if you now do things with CalQL in this case, you can slowly restore and then eventually sort of opens the door fully in 20k steps.
+So this is fully online.
+The policy is running online, collecting its own data and improving over it.
+But you start from the offline initialization.
+So here, unlearning matters a lot because if you unlearn, then within 20k steps, you would not be able to recover and get back a good solution.
+But now you can.
+There's no unlearning because you're constantly improving.
+That kind of shows the point that this method was designed to address.
+Yeah.
+OK.
+So that's sort of the end.
+So the challenge in fine tuning typically stems from slow policy improvement or this initial unlearning.
+A simple way to address this and to get a curve that does not look like slow or unlearned, but rather looks like this blue curve is to calibrate the scale of these Q values by simply saying they should not be as low as what you can get from CQL.
+And that kind of gets you the best of all sort of an algorithm like this blue curve here.
+Yeah.
+So that's basically it.
+I think I was a bit fast, but happy to take any questions off the list.
+Yeah.
+I don't see my .
+Yes.
+That means we have some final questions.
+Yes.
+Through the first part of the lecture, what do you think the state-guided scaling gives you for implicit regularization?
+Does that apply in general for state-guided state optimizers?
+And do we have to do that?
+Or are there any specific optimizers for RL that would have to be better ?
+That's a great question.
+So I'm not entirely sure about.
+So it applies in general to stochastic optimizers, yes.
+I personally am not very sure about exact work on stochastic optimizers for RL.
+But I think that could be a great direction to work on.
+Yeah.
+I think the bigger question that I would have personally there would be.
+Yeah.
+So first of all, I guess you need a characterization of what exact terms matter.
+And I think RL was one of the very few first works probably which characterized something like that in any setting for RL.
+It was still in a simpler setting.
+There were some assumptions made.
+But I think you need that to be able to then derive the right optimizer.
+But yeah, I think there's some work now on characterizing implicit regularizers.
+So you can start off by building your optimizer ..
+Yeah.
+Thank you.
+Any other questions?
+Yes.
+Is it just a coincidence that the two parts of the implicit regularization are weighted the same?
+That's a good question.
+So yeah, I think I was probably a bit emphasized there.
+So there's a gamma discoloring there, which probably makes sense now, I think.
+So yeah.
+So I didn't put it up here because I did not introduce gamma rotation at all.
+So there's a gamma in there.
+But basically, what ends up happening is, if you had a gamma here.
+And then you get a gamma here.
+And then you get a gamma here.
+And then you get a gamma here.
+And then you get a gamma here.
+Any other questions?
+Excellent.
+Let's give a round of applause.
+Thank you.
+Thank you.
+Thank you.
+Thank you.
+Thank you.
+Thank you.
+Thank you.
+Thank you.
+And see you all for our final guest lecture this Wednesday, when Professor Dorsey-Siddiq from Stanford will be speaking about interactive learning.

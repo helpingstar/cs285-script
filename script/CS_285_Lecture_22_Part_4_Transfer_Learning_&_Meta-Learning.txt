@@ -1,0 +1,91 @@
+Okay, next I'm going to talk about gradient-based meta-reinforcement learning.
+Let's kind of rewind a little bit and think back to what we discussed before about pre-training and fine-tuning.
+So a very standard way to use pre-training in regular supervised learning is to simply learn some representations and then fine-tune from those representations for a new task.
+So a particular question we could ask is, is pre-training and fine-tuning really just a type of meta-learning in some way?
+And if that's so, can we make this actually precise?
+Can we actually meta-train in such a way that pre-training and fine-tuning works well?
+And that's basically the idea behind gradient-based meta-learning.
+Essentially, if we have better features, then we can do faster learning of a new task, and we can actually optimize our features so that learning of the new task is faster.
+So here's how we could fit this into...
+into the framework of meta-learning that we've developed so far.
+So this is that view of meta-learning, meta-reinforced learning from before, where you are meta-training f-theta so that f-theta produces phi's that lead to high reward on the meta-training tasks.
+And in order for this to work, f-theta needs to be able to use the experience seen so far in the MDP-MI to produce this phi-i.
+So what if f-theta is itself...
+an RL algorithm?
+So it's not some kind of RNN that just reads in all the experience.
+It's actually like a reinforcement learning algorithm, like a policy gradient algorithm.
+And the parametrization of f-theta is really just the initial parameters of the policy that is fed into it.
+So standard RL would take the objective, what's called j-theta, and maybe we'll do standard RL with policy gradient.
+So it will take the current task, compute the gradient of...
+j with respect to the parameters, and then update the parameters.
+So let's say that f-theta does the same thing.
+f-theta takes the parameters theta and adds to them the gradient of j-i, the objective for the MDP-MI, evaluated at theta.
+So that's f-theta.
+This is the definition of f-theta, this equation.
+And you could extend this of course to several gradient steps, but for now let's just say one gradient step.
+Okay, so f-theta updates the parameters theta with one gradient step.
+Can we find a theta so that this...
+achieves high reward on all of the meta-training tasks?
+Now keep in mind that computing the gradient of j-i theta requires interacting with the MDP-MI.
+It turns out that we can actually do this optimization.
+This is called model agnostic meta-learning.
+So model agnostic meta-learning is basically just a kind of meta-learning where f-theta has this funny parametrization that matches the structure of a reinforcement learning algorithm, or if you're doing supervised learning, it matches the structure of a supervised learning algorithm.
+Basically a gradient update.
+So let's think about this visually in pictures.
+So let's say that you have your neural network that reads in the state and outputs the action.
+Let's just think about policy grading for now to keep it simple.
+And instead of training on a single task and updating with policy grading on that, we would have a variety of different tasks.
+So maybe for each task this ant needs to run in a different direction.
+And then for every task we will update the policy pattern.
+So we can look at these parameters theta with the gradient of the task theta evaluated at theta plus the gradient of the task theta.
+So we're essentially trying to optimize theta so that applying a gradient step on this task increases the reward on this task as much as possible.
+So it's a kind of a second order thing.
+Find the theta so that applying a gradient step increases the reward maximally.
+And then we can do this.
+So we're going to do the same thing again.
+And if you do this for one gradient step, you can kind of visually think of it like this.
+That you have your space of parameters theta and you're finding a point in that space where the optimal solution for each task, theta one star, theta two star, theta three star, etc.
+is one gradient step away.
+Now, of course, you don't have to do one gradient step.
+You can do multiple gradient steps and it's a little bit more cumbersome to write out the algebra, but it's quite doable.
+The calculation requires second derivatives, which is a little tricky to implement for policy gradients, but it's quite possible.
+So I'll have some references at the end that have the math.
+I don't want to bombard you with a wall of math for this, but it's quite possible to do that calculation.
+And this is basically the idea.
+But let's unpack a little bit what this method does.
+And we'll unpack it using the same tools for studying meta-learning that we discussed before.
+So supervised learning maps x to y.
+Supervised meta-learning maps d train in x to y, where x is a test point.
+So supervised learning maps d train in x to y, where x is a test point.
+So supervised learning maps d train in x to y, where x is a test point.
+Model agnostic meta-learning, at least in the supervised setting, can also be viewed as a function of d train in x, except that the function has a special structure.
+So f-mammal applied to d train in x is just f theta prime of x, where theta prime is obtained by taking a gradient step.
+So what this makes clear is that this is really just another computation graph.
+It's just another architecture.
+It's just another architecture.
+It's just another architecture.
+So it's a function f.
+So it's a function f.
+So it's a function f.
+Even though it has gradient descent inside of it, you can just think of that gradient descent as part of the neural network.
+And you can implement it with automatic differentiation packages.
+For policy gradients, it's a little bit more complicated.
+For policy gradients, you do need to be careful because computing second derivatives of policy gradients requires some care, and regular autodiff like TensorFlow and PyTorch won't do it for you.
+But for supervised learning, it's pretty straightforward.
+But for supervised learning, it's pretty straightforward.
+You could also ask, though, why do we do this?
+You could also ask, though, why do we do this?
+So why do we want to do this, then, if it's just another architecture?
+And the reason that you might want to do this is that it does carry a favorable inductive bias, in the sense that insofar as gradient-based methods like policy gradients are good learning algorithms, you would expect this to lead to good adaptation procedures.
+And in fact, in practice, one of the things that people tend to find with model-agnostic meta-learning is that you can take many more gradient steps at meta-test time than you actually meta-trained for.
+So the network tends to generalize and allow you to take more gradient steps, which is not something that you can do with an RNN-based meta-learner, because with an RNN or a transformer, it just reads in the training set, produces some answer, and that's it.
+There's no notion of training it for longer on the test task, because the learning process there is just a forward pass of the network.
+So to give you a little bit of intuition for what model-agnostic meta-learning does in practice, let's say that we have this distribution of tasks, which is for the ant to run either forward or backward or left or right.
+If we visualize the pattern, we'll see that the ant runs in place.
+But if we then give it one gradient step with a reward for going forward, it'll go forward.
+And if we give it one gradient step with a reward for going backward, then it will happily go backward.
+So if you want to read more about gradient-based meta-learning, these are papers that describe various policy gradient estimators.
+These are papers that talk about improving exploration with model-agnostic meta-learning.
+And if you want to read more about policy gradient estimators, these are papers that talk about improving exploration with model-agnostic meta-learning.
+And these are a few papers that describe hybrid algorithms that are not necessarily gradient-based, but have a similar kind of structure where they optimize for initializations, such that some other optimizer can make good progress.
+So these are good references to check out if you want to learn more about this topic.

@@ -1,0 +1,443 @@
+Today we're going to talk about transfer learning and meta-learning.
+This deals with the question of how you can use experience from some source domains, from some source RL problems, to get into a position where you can more efficiently or more effectively solve new downstream tasks.
+Let's start with a bit of motivation.
+Let's think back to this example that we discussed in the first exploration lecture.
+Some of the MDPs that we work with, some of the Atari games for example, are fairly straightforward to solve, even with relatively simple methods like the ones that you implemented for homework 3.
+But some other games, which might not look all that different, seem to be a lot harder to solve.
+So if you try to learn a policy for Montezuma's Revenge with your homework 3 Q-learning algorithm, you'll find that it really struggles to get past even the first level.
+So why is that?
+Well the trouble has to do with the fact that these games look deceptively straightforward to us, are very difficult for the computer, because the computer doesn't come equipped with prior knowledge that we have.
+So in this game the reward structure doesn't provide very good guidance on how to solve the tasks.
+Like you get a little bit of a reward for picking up the key, you get a little bit of a reward for opening the door.
+Getting killed by a skull is bad but you don't actually get any negative reward for it.
+So the only reason that it's bad is because if you get killed by the skull enough then you lose the game and then you can't keep picking up keys and opening doors.
+So this reward structure doesn't really provide you with a great deal of guidance about how to make progress in the game.
+And besides that, picking up the key and opening doors isn't necessarily the right thing to do to win the game, because in later levels you can go to different places and so on and maybe you don't need to do all the steps that are rewarding to get to the finish.
+But for us, all these things don't pose a huge challenge.
+In fact when we're playing the game we might not even be paying attention to the score, we might just be using our prior knowledge which informs us about how we should be making progress in the game.
+Like this there's a visual metaphor at play here.
+This is some kind of explorer exploring an ancient cursed temple and we kind of have this belief both from our knowledge of video games and from our general physical common sense that, you know, skulls denote bad stuff, keys are good for opening doors, ladders are things that can be climbed, and also we know from kind of basic knowledge of video games that progressing through different levels, entering new rooms and so forth is a good way to make progress.
+So our prior understanding of the problem structure can help us solve complex problems.
+So we can make progress in the game and we can make progress in the game.
+And we can do complex tasks very quickly when something about these tasks accords with our expectations, which is to say that it accords with our prior knowledge.
+What we're doing when we learn to play Montezuma's Revenge is we're essentially doing a kind of transfer learning.
+We're transferring what we know about the world into this new MDP.
+So while before we talked about Montezuma's Revenge as an example of a domain in which to study transfer— in which to study exploration, now we're going to talk about these things as transfer learning problems, as problems where maybe our knowledge of the world is outside the realm of the human world.
+To explain that, the right thing to do is not to devise a good de novo exploration algorithm, but rather an algorithm that can transfer what you know from other tests that you've solved to solve this new test more effectively.
+Okay, so can reinforcement learning use this prior knowledge the way that we do, perhaps?
+So could we, for example, build an algorithm that can watch lots of Indiana Jones movies and use that to figure out how to solve Montezuma's revenge?
+Well, that's perhaps a very lofty goal, so we're realistically not quite there yet, but we can start thinking about the transfer learning problem, and we can actually devise some pretty clever algorithms to address it.
+So the idea is that if we've solved prior tasks, prior MDPs, we might acquire useful knowledge for solving a new task.
+How can this knowledge be encapsulated?
+How can it be represented?
+Well, there are actually quite a few choices to be made here.
+We could say that, well, the Q function is good to transfer because the Q function tells us which actions are state-centered, so if you somehow had an Indiana Jones as a Q function for, you know, stealing the treasure, maybe that would be a good Q function to initialize Montezuma's revenge.
+But maybe not, like, you know, in the video game, you don't move around by moving your legs and arms, you move around by pushing buttons, so perhaps the Q function doesn't transfer that well in this case.
+The policy tells us which actions are potentially useful that can transfer really well.
+Some actions are never useful, so as long as you can rule those out, then maybe you can make more progress.
+Or maybe you could transfer models.
+Maybe the laws of physics, the laws that govern how the world works, are the same in both domains, even though some other factors of the task are different, and transferring models can also be a very effective strategy.
+It could also be that in more abstract settings, transferring some kind of feature or some hidden state might provide you with a good representation.
+So perhaps you don't have good actions for playing Montezuma's revenge, you don't even have good models because things don't quite line up, but the visual features might help.
+Maybe from watching some videos, you figured out that skulls and ladders and keys are important things, and the game is a game, and you can't even easily get out of it without finding a good skull, ladder or key detector that might already give you some mileage.
+For this last one, don't underestimate it, and it may actually be that a little bit of visual pre-training can actually go a long way.
+But before we go into the particular techniques, and I won't cover techniques for doing all of these things, I'll cover just a sampling of influential ideas in this area.
+Before we get into that, let's nail down some definitions.
+So, formally, transfer learning deals with the problem of using experience from one set of tasks for faster learning and better performance on a new task.
+Now when we talk about transfer learning in the context of RL, a task is of course an MDP.
+So you can also read this as saying use experience from one MDP or from a set of MDPs for faster learning and better performance on a new MDP.
+So the MDP that you train on, the one where you're getting the initial experience, that's called a source domain or source domains because that's the source of your knowledge.
+And then the MDP that you want to solve, the new task, that's the target domain.
+So that's the one where you want to get good results.
+Classically transfer learning is concerned with the question of how well you can do in the target domain, although it's closely related to things like lifelong learning or continual learning where the aim is to do well on both the source and target domains.
+Okay.
+So of course typically you would, you know, it's pretty unusual to do well in a target domain without also doing decently well in the source domains.
+But you know, there's a little bit of terminology where people will refer to things like backward transfer as the question of whether after training on the target domain are you still good on the source domain.
+But for now we won't concern ourselves with that.
+We'll just say our goal is to do well in the target domain regardless of what happens in the source domains.
+People will use a little bit of terminology to refer to how quickly you learn in the target domain.
+And the term shot is sometimes used to refer to this.
+Like how many shots do you take at trying the target domain?
+So you could say, well, maybe my algorithm transfers in zero shots.
+Zero shot means that without even trying anything in the target domain right away, right after trading on the source domains, you immediately get good performance in the target domain.
+So zero shot would be that if you interacted with some MDPs that involve, you know, Indiana Jones stealing the treasure, right away you'd get a policy that you could simply deploy on the Montezuma's Revenge game.
+And it would immediately play the game.
+Okay.
+So that would be called zero shot transfer.
+One shot transfer means you try the task once.
+What that means is somewhat domain-dependent.
+So maybe for Montezuma's Revenge it would mean that you play it for one episode, basically until you run out of lives.
+Or maybe if it's a robot interacting with the world, maybe the robot will make one attempt.
+Few shot means you try the task a few times.
+And many shot means you try the task many times.
+So these are not necessarily very precise terms, but it can provide, you know, good indication.
+So you can see that you're not just going to read a paper and you see one shot or zero shot to get a sense for what's going on.
+All right.
+So how can we frame these transfer learning problems?
+Well I'll start off by saying that there isn't really any one single problem statement here.
+So a lot of what we discussed so far in the course has been, you know, fairly foundational material with fairly well understood theory and guidelines on how to do this.
+A lot of transfer learning is a little bit ad hoc because it's so dependent on the nature of the domain that you're transferring from and the one that you're transferring to.
+So if you want to pre-train on Indiana Jones videos and play Montezuma's Revenge, you might use a very different algorithm than if, for example, you wanted to train a robot to grasp lots of objects and then deploy it to grasp a new object.
+But there are still a few ideas, a few common ideas that people use, and that's what I'll try to cover in today's lecture.
+So keep in mind that I'll only cover a smattering of the ideas, not everything.
+And I'll try to kind of cover the main kind of central hub ideas that can be used in the course, but I'll try to cover the main kind of central hub ideas that can be used in a variety of settings.
+So I'll talk about forward transfer.
+So forward transfer deals with learning policies that transfer effectively, where you might train on a source task and maybe you just run something on a target task, or maybe you fine tune on a target task.
+Conventionally this relies on the task being quite similar, and a lot of work on forward transfer deals with finding ways to make the source domain either look like the target domain or make it so that the policy you recover from the source domain is more or less the same.
+So it's more likely to transfer to the target domain.
+The other big area is multitask transfer, where you train on many different tasks and then transfer to a new task.
+And that could work really well because now instead of relying on the source domain, on a single source domain being close to the target domain, you could get many source domains so that the target domain is sort of within their convex hull intuitively.
+So if you want a robot to grasp a new object and you've only ever trained on one other object before, it might be very hard for that to transfer.
+But if you train on many different tasks, you can get a lot of results.
+So if you train on many different objects, then this new object might look kind of similar to the range of things you've seen.
+So multitask transfer tends to be easier.
+There are a variety of ways to do it, sharing representations and layers across tasks, or maybe simply just training a policy that is conditioned on some representation of task and generalizes to the new one immediately.
+It does typically require the new task to be similar to the distribution of training tasks, but that's often easier to achieve than ensuring that your single source task is similar to your single target.
+And then, for a large chunk of today's lecture, we're going to actually talk about something called meta-learning.
+And meta-learning you can think of as the logical extension of transfer learning, where instead of trying to simply train on some source domain or domains and succeed in the target domain, either in zero-shot or with naive fine-tuning, in meta-learning we're actually going to train in a special way in our source domains in a way that is aware of the fact that we're going to be adapting to a new target domain later.
+So I'm going to talk about the meta-learning now, and then I'm going to talk about the meta-learning later.
+So meta-learning is often framed as the problem of learning to learn.
+Essentially you're going to try to solve those source domains, not necessarily in a way that gets you a really great solution on all of them, but in a way that prepares you to solve new domains.
+So it accounts for the fact that we'll be adapting to a new task during training.
+So we'll talk about each of these things, and I'll actually spend most of the time today on meta-learning, but I will briefly go over forward transfer and multitask transfer.
+Part of the reason why I like to spend more time on meta-learning in this class is because I think it's a really good way to get the most out of the process.
+So I'm going to talk about the meta-learning and the process of meta-learning.
+So the meta-learning and the process of meta-learning are two things that I think are really important in these lectures, is that in some ways that's the area where there's a little bit more in the way of principles and common themes, things that we can learn that we can use in many different settings.
+A lot of the non-meta-learning transfer work, it's very deep, there's a lot of interesting work there, but it tends to be a little scattered, so it's a little hard to nail down a small set of principles.
+But I'll do my best to nail down those principles that appear to be broadly applicable, and hopefully that'll give you some idea for where to go.
+And then I'll also have lots of references that you could read.
+If you want to dive deeper into this.
+But keep in mind that these things really are at the frontier of research, and there isn't sort of one set of algorithms that you could just take and use for whatever transfer learning problem you might encounter.
+Okay, so let's talk a little bit about pre-training and fine-tuning in RL.
+So outside of reinforcement learning, if you were to think about addressing just kind of general transfer learning problems.
+And then you would have to think about how to do that.
+And then you would have to think about how to do that in a more complex way.
+So let's talk about the pre-training part of this.
+So pre-training is a very popular approach.
+And it's a very popular approach to train some kind of representation on a large dataset.
+Like maybe you train a convnet on a large dataset of images, or you train a language model on a large dataset of text, like something like the BERT model.
+And you use that to basically extract representations.
+These could be representations of images, representations of text, something like that.
+And then you can also use them to actually create a very complex task that you want, for which you have a comparatively more limited amount of data.
+And this is a pretty standard workflow across a range of supervised learning domains.
+And you could imagine employing something like this in reinforcement learning too.
+In some cases, this will actually work out of the box.
+So you could learn representations with reinforcement learning, and then take those representations and use a reinforcement learning algorithm to fine-tune an additional few layers on top of those for solving your task.
+You could also learn representations with supervised learning, and then fine-tune a few layers on top of those for solving your task.
+And then you could also learn representations with reinforcement learning to solve your reinforcement learning task.
+So these things are all fairly straightforward.
+I won't go into them in too much detail, because these are kind of the standard techniques that we would imagine inheriting from supervised learning.
+So you can learn about that in your favorite deep learning class.
+And it's not really all that different.
+But I will talk about a few peculiarities and a few tools that, to me at least, have proven to be especially useful when applying this kind of pre-training and fine-tuning schema and stuff like that.
+So I'm going to go ahead and start with the first one, which is the standard learning algorithm.
+And I'm going to start with the standard learning algorithm.
+And I'm going to start with the standard learning algorithm.
+And I'm going to start with the standard learning algorithm.
+Okay.
+And I'm going to start with the standard learning algorithm.
+Okay.
+So this is the standard learning algorithm.
+And you see here that it has a lot of dates in which you can change the structure of your thing, so you can get the features that you're looking for in the algorithm.
+And then you just sort of leave it like that.
+Now, it's also possible to make changes to an algorithm that you think is more than exactly what your traditional algorithm is, or your favorite deep learning class, and it's not really all that different.
+But I will talk about a few peculiarities and a few tools that, to me at least, have proven to be especially useful when applying this kind of pre-training and fine-tuning schema in RL.
+So before we do that, let's talk about what issues we're likely to face when we do this.
+And these are not necessarily issues that are exclusive to reinforcement learning, but they tend to come up in reinforcement learning pretty often, from my experience.
+One issue is domain shift.
+This is a fairly obvious one.
+Basically representations learned in the source domain might not work well in the target domain.
+This happens very often if you imagine, for example, learning a task in some kind of simulator that simulates visual observations or other kinds of high-dimensional observations like sounds and so on, and then transferring the resulting policy to some maybe real-world environment where the observations are structurally similar but not exactly the same.
+So if you trained a driving policy to drive a car in a video game and then you wanted to drive a real car, things are not that different.
+Things basically line up.
+The physics are similar.
+The mechanics of the environment are similar.
+But things don't look exactly the same.
+So there's a little bit of a gap.
+Now it could be that the gap is even larger.
+It could be that the gap is not that big.
+It's not merely perceptual.
+It could be that there's actually some things that you can do in the source domain that are not possible in the target domain at all.
+And this is actually a big difference.
+So the first category just deals with things being different visually, but not necessarily different mechanically.
+The second category deals with things actually being different in a physical sense, but still structurally similar enough that you feel like there is something from the source domain that you can inherit.
+This is much harder, but there are also tools that we could use to deal with this.
+And then there's also some issues that we get with just applying the notion of fine-tuning in general to RL.
+For example, the fine-tuning process may need to explore in the new target domain.
+But remember that the optimal policy in any fully observed MDP can be deterministic.
+So you might end up with a deterministic policy after running, let's say, a policy gradient in your source domain.
+You deploy the target domain, and it doesn't explore anymore because it has become fully deterministic because that was the optimal solution in the target domain.
+So there are a few of these kind of low-level techniques.
+I'm going to go back to the first one.
+I'm going to go back to the first one.
+I'm going to go back to the first one.
+There are some technical issues that you might need to deal with.
+Let's talk about the first issue, the domain shift problem.
+There are a number of tools that have been developed, principally in the computer vision community, for dealing with these kinds of problems.
+And I should say that I'm going to discuss these issues as they relate to visual perception.
+But these are not things that are exclusive to visual perception, and they're kind of general issues with high-dimensional observations, of course.
+Those high-dimensional observations often do tend to be visual.
+because that's where we often want to use simulation, for example, and we encounter the most challenges.
+So let's think about this example of learning to drive in simulation.
+So we want to train in the images in the simulator, and we want to do well when the policy is presented with images in the real world.
+So we're going to, of course, be training our network in the simulator, and then we'll use that network in the real world.
+And let's imagine that we have some small number of real-world images.
+We might not even have real-world experience.
+We might simply have a few images that kind of anchor us to the real world.
+So we might not even know anything about the actions.
+They're just examples of real-world photographs.
+We can supervise the simulated experience with the correct answer.
+This could be supervised learning or it could be reinforced learning, so it could be the correct answer here means a target Q value.
+That kind of doesn't matter.
+It's just some kind of loss that you put on top of your network.
+But, of course, when we then evaluate that model on the real-world image, we might get an incorrect answer because the real-world image looks different.
+So one assumption that allows us to deal with this is something called the invariance assumption.
+The invariance assumption says that everything that is different between the two domains is irrelevant.
+Let's pause for a minute to think about what this means.
+Everything that is different...
+Everything that is different between the domains is irrelevant.
+So maybe the simulator doesn't simulate rain, but the real-world images might have rain in them.
+The invariance assumption would imply that whether or not it's raining is irrelevant for how you should drive.
+On the other hand, the positions of the cars on the road would match in the simulation in the real world.
+Statistically, of course.
+So that is not irrelevant.
+That is relevant to you.
+Now, is this assumption reasonable?
+Well, sort of.
+So, in reality, the rain might actually affect how you drive.
+But it's not a bad assumption to make in many cases if you believe that most of the discrepancies don't have to do with the physics or the dynamics, but they really have to do with how things look.
+So if you subscribe to the invariance assumption, you can write it out formally.
+So let's say that the images are denoted with x.
+Formally, what this means is that p is different.
+So you have a different distribution.
+So you can write it out formally.
+So let's say that the images are denoted with x.
+Formally, what this means is that p is different.
+So you have a different distribution.
+So you have a different distribution.
+So you have a different distribution of images in the source domain and in the target domain.
+But there exists some representation.
+Let's call it z equals f .
+Basically, there's some way to featurize x with a featurizer f.
+So that the probability of the output y given z is the same as the probability of the output given x.
+So that means that, essentially, if you featurize x using f , you retain all the information needed to predict the label, or to predict the Q-value, or to predict the action.
+So that just means that the representation is not lost.
+So that means that the representation is not lost.
+So there's some way you could use that to predict the y-value.
+Let's call it f .
+But p is the same in the source and the target domain.
+So just to unpack this statement again, p , the distribution of inputs, is different in the two domains.
+But there exists some featurization z equals f , so that p is the same in the two domains.
+and p is equal to p , meaning that z contains everything you need to predict y if you can find such a representation.
+and invariance assumption holds then you will be able to transfer perfectly.
+Okay we can pause for a minute and think about the implications of this more.
+For example if this assumption doesn't hold perfectly but it holds mostly you could imagine that you would be in a situation where you find a z where p is the same in the source and target domain but perhaps p is not exactly the same as p , perhaps something was lost and that might happen in the example with the rain.
+So if you neglect the rain you can still solve the task mostly but maybe your solution will not be as good as what you would have gotten if you had held on to that but of course you can't hold on to it because there's no rain in the simulator.
+So there are a number of ways to acquire these kinds of invariant representations.
+One of the most common is to use the invariant representation of the invariant.
+So the invariant is a commonly used techniques.
+It actually goes under a variety of different names domain confusion, domain adversarial neural networks and so on but the idea is basically the following.
+We're going to take some middle layer in these neural networks.
+People often take the layer right after the convolutions and then we add an additional loss to force that layer to be invariant.
+Invariant means that if the activations in that layer are denoted with z it means that p is the same in the source of target domain and that's where we need a few of those target domain images.
+So what we're going to do is we're going to train a binary classifier that gets to look at the activations at that layer so the classifier d phi of z and it's going to predict true if it is in the target domain and false if it's in the source domain and then we'll compute the gradient of that classifier with respect to z and we'll reverse the gradient and back that up into the network.
+So we'll basically teach the network to produce such a z such that a classifier can't tell whether it came from the source or the target domain.
+Now of course there are a variety of details on how to do this right whether you reverse the gradient or whether you train the classifier to output the opposite label or you train the classifier to output a probability of 0.5 there's a bunch of these details that do actually matter in practice but this is the high-level idea and that's why in order to do this you do need some examples from the previous video.
+So let's go ahead and do that.
+So for example you do want to run a static situation on the target domain.
+So let's say you run a static situation where you run rl on the target domain but you don't necessarily need to have to run rl on the target domain you just need some example images you do want to be a little careful with this idea and there are some ways in which you could go wrong.
+For example if you have bad data from the target domain data let's say very bad human drivers and then you run be invariant to whether you're in the simulator or in the real world, it'll also try to be invariant to whether you're good or bad, and you really don't want that, right, because that will really mess up your Q-learning algorithm.
+So you have to be a little careful about this, and the nature of the data that you get in the target domain actually really does affect how well this trick works, but it can be a very effective trick in practice.
+Now I mentioned that sometimes you could also get into a situation where it's not just the images that differ, it's actually the dynamic themselves that are different, in which case simply forcing invariance like this might not be a good idea.
+So can we do some kind of domain adaptation if the dynamics change?
+So invariance is not good enough if the dynamics don't match, because you don't actually want to ignore the functionally relevant differences, but what you could do is you could actually change your reward function to punish the agent from doing things in the source domain that would not be possible in the target domain.
+So here's a little illustration of this.
+Let's say that in the target domain, in the real world, you want to get from the start to the goal, and there's a wall in between, so you have to go around the wall.
+But in your source domain, in your simulator, this wall is not present.
+So if you train in the source domain, you'll get this behavior that goes straight to the goal, which of course doesn't work in the target domain.
+So what we can do is, if we have a little bit of experience from the target domain, is we can change our reward function to provide a really big negative reward for doing things in the source domain that would not be possible in the target domain.
+This is a very similar idea to domain adaptation, except that instead of changing your representation of the input to make it seem invariant, you're actually changing your behavior to make your behavior seem invariant.
+Intuitively what such a technique would do is it would punish the agent for doing those things that sort of violate the illusion, that make it apparent that the agent is not present.
+So what we can do is we can do this by changing the representation of the input to make it seem invariant.
+Intuitively what such a technique would do is we can change the representation of the input to make it seem invariant.
+Intuitively what such a technique would do is we can change the representation of the input to make it seem invariant.
+Intuitively what such a technique would do is we can change the representation of the input to make it seem invariant.
+So this is a clip from a film that some of you might recognize.
+So this man thinks that he's sailing on a boat, but then he gets to the edge of the green screen and goes through the green screen and realizes that it's not actually a clear sky, it's actually the wall of a film studio.
+So you don't want to violate the illusion, and what this additional reward term will do is it'll prevent you from violating the illusion.
+Or for example, if you want to train the ant to run around the world, you can train the ant to run on an infinitely large flat plane, and it has a limited arena in which to practice, then when it gets to the edge of the arena, it will violate the illusion and incur some negative reward.
+It turns out that concepts very similar to that invariance technique from before can actually be used to compute this reward function.
+Essentially the reward function that optimally leads to the desired behavior here is going to be the difference between the log probability and the invariance.
+So the invariance is going to be the difference between the log probability of a transition happening in the target domain minus the log probability in the source domain.
+And this is very intuitive, it's just saying take those transitions that are likely in the target domain, that are no less likely in the target domain than they are in the source domain.
+There are a variety of ways to approximate this quantity without training a dynamics model.
+One of the ways to do it is to train a discriminator for it.
+Now since you're estimating a conditional probability, you actually need two discriminators.
+So you have a discriminator for a joint S A S prime and a discriminator for a joint S A, and you actually take the difference of the two.
+I won't go into the details for why this works.
+For the details of the method, I would encourage you to read the paper, but the high level idea I want you to take away from this slide is just that you can use invariance-based ideas to handle changes in dynamics.
+What that leads to is agents that are trying to behave in the source domain in such a way that they don't do anything that would be impossible in the target domain.
+And it can be instantiated by adding a term to the reward function based on a discriminator, but it's a little more complex than just the standard image-based setting from before, and you need actually two discriminators and you take the difference of them.
+So to learn more about the technical approach, I would encourage you to read the paper.
+Now you could also consider well, when might this not work?
+Right, so, let's say you have a group of people in a group of people who are trying to do something that's not going to work.
+And you're trying to do something that's not going to work.
+And you're trying to do something that's not going to work.
+And you're trying to do something that's not going to work.
+A technique like this would prevent you from doing things in the source domain that would not be possible in the target domain.
+But it might also be that the source domain doesn't permit you to do certain things that are needed in the target domain.
+And this wouldn't do anything to fix that.
+So in a sense, you would be learning intuitively like the intersection of the two domains.
+And if the intersection is big and you have good behavior there, then you're in good shape.
+But maybe it isn't.
+Now, if you further fine-tune in the target domain, you might be able to do things that are not going to work.
+But maybe it isn't.
+Now, if you further fine-tune in the target domain, just basically by writing more RL, that can also make the transfer learning process work a lot better.
+But there are a few issues that make fine-tuning in RL a little bit harder than fine-tuning with supervised learning.
+First, RL tasks are generally less diverse.
+So, pre-training and fine-tuning, for example, in computer vision or natural language processing, typically relies on scenarios where your pre-training is done in extremely broad settings.
+Maybe you pre-train in a setting where you have millions of ImageNet images.
+Or you pre-train in a setting where you have billions of lines of text for BERT.
+And then you fine-tune on a much more narrow domain.
+In RL, that's usually not how it works.
+In RL, you might have much more narrow tasks to pre-train on.
+Although, of course, if you're lucky enough to have a very broad task distribution, then things will go better.
+But if you pre-train on more narrow tasks, then the features are generally less general, and the policies and value functions can become overly specialized.
+The other thing that's important to note is that, in RL, you can't just pre-train on a single task.
+The optimal policies in fully observed MDPs tend to be deterministic.
+The longer you train, the more deterministic your policy will become.
+And, combined with problem number one, this can be a big issue, because as your policy becomes more deterministic, it explores less and less.
+So you have loss of exploration and convergence.
+And low-entry policies will adapt very slowly to new settings because they're not exploring enough.
+This, combined with having features that are less general and overly specialized policies and value functions, can lead to fine-tuning extremely slow in reinforcement learning.
+So for that reason, simply fine-tuning naively often is not very effective.
+And we often have to do a variety of things to ensure that our pre-training process results in solutions that are more diverse than what we ordinarily would have gotten with regular RL pre-training.
+Now, there isn't any one technique for doing this, but we actually discussed techniques that would provide some degree of this in the Exploration 2 lecture, or the Exploration 2 lecture, when we talked about unsupervised skill discovery, and in the Control as Inference lecture, when we talked about maximum entropy reinforcement learning methods.
+And both of those classes of techniques can be effective as pre-training methods, because they can get you more diverse solutions.
+So, in Exploration 2, we talked about how you could run, for example, the Diverse-Seize-All-You-Need algorithm, or other information theoretic methods, that would discover a variety of different behaviors, a variety of different skills.
+You could either use those techniques directly, or you could use them in combination with a class of techniques, like the conventional reward function, to learn to solve a task in a variety of ways.
+You could also use the maximum entropy RL methods that we talked about in the Control as Inference lecture, to avoid this loss of exploration and convergence.
+And both classes of techniques can be more effective for transfer than just naively pre-training and fine-tuning.
+I won't go into this in more detail, though, because unfortunately, to date, there aren't really very general and broadly applicable principles here.
+There's a lot of research, but so far the best I can tell you is, that the most common principle is to use the the basic intuition behind a transfer.
+The basic intuition behind a transfer is that the source domain is a particular simulator that you're training in that you don't get to change.
+But if you do get to have some control over the source domain, the basic intuition behind a lot of these things is that the more varied the training domain is, the more likely we are to generalize in zero-shot to a slightly different domain.
+Basically, if you train in a video game, where you're driving a car and it's always sunny and bright out, and it's always in a city, that is less likely to transfer to the real world than if the game simulates different times of day and maybe different urban environments.
+The more variety you have in the source domain, the more things will transfer.
+The way that this often shows up in practice is through randomization, where people will intentionally add more randomness to the source domain, perhaps a lot more than they would expect in the real world, to increase the robustness of the policy to variability in various physical parameters.
+So, for example, if you'd like to train the hopper to hop, and it has some physical parameters, maybe it has friction and mass, so these are two parameters, and the real world system is over here, so it has these values of parameter 1 and 2.
+If you train on a narrow range of parameters, you might not generalize to the kind of parameters that you will see in the target domain.
+But if you train on a broader range of parameters, then it's kind of more likely that the target domain will sort of be within the set of parameters that you've trained on.
+So that's the basic idea, and this idea has shown up in the literature in various ways, both for randomizing physical behavior and for randomizing visual appearance.
+One of the earliest papers to apply this in Deep RL was this paper by Rajeshwaran et al.
+called EP-Opt, which studied randomization of physical parameters.
+So the idea is that maybe you want to train on one kind of hopper and test on a different hopper, maybe a hopper with different mass parameters.
+But if you do that with a single setting, that might not work, so you train on a variety of different parameter settings, and maybe then transfer will be more effective.
+So in this paper, there is some analysis of how this works or doesn't work, this is some very basic analysis.
+So here, the mass of the torso of the hopper is being varied.
+On the x-axis, you can see the mass at test time, the y-axis performance, and the three different plots correspond to three different training masses.
+So the left one is trained with a mass of 3, the middle one a mass of 6, and the right one with a mass of 9.
+And you can see that training with a mass of 3, of course, performs best with a mass of 3, and then rapidly falls off as the mass gets bigger.
+And training with a mass of 6 performs best with a mass of 6.
+If the policy is trained on a range of masses, then this is the performance.
+So you can see the performance is very high across all masses.
+And for your reference, the distribution of training masses looks roughly like this.
+So it's kind of a normal distribution centered at a mass of 6.
+It's not too surprising that training on a variety of physical parameters results in a policy that is more robust.
+What was perhaps a little bit surprising about this paper, is that it worked very well with comparatively little degradation in overall performance.
+So you would think that there would be a trade-off between robustness and optimality, meaning that if you want to be more robust, you'll get lower reward, but in fact that didn't seem to be the case in many cases.
+Of course, that's not a universal conclusion, but part of the reason why you might expect there to be a little bit of a free lunch is that, well, deep neural networks are actually very powerful.
+So it's not actually unreasonable to imagine that you can train one network that is just as good across a variety of masses as any single network for that mass.
+Another kind of interesting observation, and this is very important when we talk about transfer learning, is that randomizing enough parameters actually creates robustness to other parameters that were not randomized.
+So the particular experiment that Rajeshwaran et al.
+did here was they had four different physical parameters that were being varied in the simulator, and they excluded one of them from the randomization.
+So the mass was always the same, but friction, joint damping, and armature were varied, and found that with this kind of solution, that's the blue line here, it was actually decently robust to mass.
+And intuitively, we can kind of see why that would be the case, because many of these physical parameters, they have kind of redundant effects.
+So if you decrease mass, that's a lot like decreasing friction, because your ground reaction forces won't be as large, and therefore your friction force will not be as large.
+So while changing friction is not the same as changing mass, if you randomize friction, you will be a little bit more robust to mass.
+And that's actually very important, because in reality, when we're doing transfer learning, we almost always have unmodeled effects.
+We almost always can't actually vary all the parameters that distinguish the source domain from the target domain.
+So it's very good to know that if you vary enough parameters, perhaps even those parameters that you didn't vary, you might still be a little bit robust to.
+And then of course the other thing you could do is, if you get a little bit of experience in the target domain, you can adapt a little bit.
+You can change your distribution of parameters to be closer to the target domain, and then things would work better.
+Now the idea of randomization has been used very widely in transfer learning for RL.
+This was the first paper that applied it for deep RL with visual observations for flying a drone.
+It's been used with recurrent neural networks that can be robust to physical variation and then also actually adaptive.
+More recently, this technique has been extremely popular for learning locomotion policies.
+This is a paper from ETH Zurich that shows a fairly extreme degree of robustness for a policy trained in a physical simulator with a high degree of randomization.
+So this has been a very influential idea across the board for transfer learning, especially in robotics.
+Now the idea is not exclusive to robotics.
+You could imagine randomizing simulators for all sorts of other domains, but robotics especially seems to be one where this has really taken off.
+So if you want to read more about the techniques that I covered, here are some references for domain adaptation, fine-tuning, and randomization.
+In the last part of this section, I'm going to also talk a little bit about multitask transfer.
+This discussion will be quite a bit shorter because multitask transfer is a very powerful tool, but we're going to talk about it a lot more when we discuss meta-learning later.
+So this will just be like kind of a quick primer to the multitask.
+So let's start with the multitask idea.
+The basic idea is that you can learn faster and perhaps transfer better by learning multiple tasks.
+So if you have a variety of tasks, maybe you have this robot that needs to do a whole range of household chores, you could learn each of these tasks individually, but it's very likely that the tasks share some common structure.
+Not all of their structure will be shared, but perhaps they share some structure in the sense that the way the robot moves its arms is kind of similar, the way it touches objects might be similar.
+So perhaps if you don't train them individually, but you instead train them all together, the fact that you can share those representations will make all the tasks learn quicker.
+So if one of the tasks figures out how to pick up an object, that kind of capability can sort of immediately be used by the other tasks, and maybe they'll explore better or they'll learn faster.
+And furthermore, if you learn multiple different tasks and then you are provided with a new task at test time, it seems more likely that you will have something to transfer to that target task if you have more source tasks.
+Kind of a similar intuition as we've had with the randomization, if you have a greater variety of training situations, then it's more likely that the test situation will look somewhat familiar to you.
+So multitask learning can accelerate learning of all the tasks that are learned together, and it can provide better pre-training for downstream tasks.
+Now, there's not a heck of a lot more to say about this.
+The basic version of this really hinges on the ability to have a sufficiently effective reinforced learning algorithm that you can do this multitask training.
+And, you know, that kind of amounts to scaling things up appropriately, choosing the right hybrid parameters, and so on.
+There are various techniques that people have proposed that are specifically designed to make multitask training better, but there isn't really kind of one killer technique that works across the board.
+So what I would say there is, if you're really interested in this, you can do a literature search and read up on multitask learning in RL, but the basic starting point is just to take the same kinds of algorithms that you would use in single task RL and try to scale them up.
+I do want to say a few words about kind of the way that this kind of stuff can be framed as an MDP.
+So one, you know, somewhat straightforward but very important idea is that multitask RL really does correspond to single task RL in a joint MDP.
+So if you're wondering how to represent multitask reinforcement learning as an RL problem, keep in mind that it's really the same RL problem.
+So in a standard RL setting, you first sample the initial state from P of S zero, and then you roll out your policy.
+If you want to embed a multitask problem into the setting, all you have to do is just change the initial state distribution.
+So you could think about it like this.
+If you're learning to play multiple different Atari games with the same policy, in a regular Atari game, the initial state distribution is just the start of that game.
+In this multitask Atari MDP, the initial state distribution is the distribution over games.
+So on the first time step, you sample a game and then you play that game thereafter.
+That is still a single MDP.
+So in principle, the algorithm doesn't actually need to change at all in order to do this.
+You just pick the MDP randomly in the first state, and that's part of the MDP definition.
+Now, there can be a little bit of a nuance because maybe the policy can do multiple things in the same environment.
+If this was an Atari game, this wouldn't be an issue because you could tell which Atari game you're playing by looking at the screen.
+Maybe you have a robot in your home, and the robot can, in the same initial state, go and do the laundry or go and do the dishes.
+So in that case, if you want to instantiate multitask learning as a standard RL problem, you need to do a little bit more to indicate to the agent which task it's supposed to be doing.
+So the way that we do this is by assigning some sort of context to each task.
+The context can be a variety of different things.
+It could be as simple as just a one hot vector indicating whether we're doing the dishes or doing the laundry, or it could be some kind of descriptor of a task, maybe a gold image or even a textual description.
+And all of those are reasonable choices.
+So we call these contextual policies.
+A standard policy is just pi of A given S.
+A contextual policy is pi of A given B.
+A given S, context, omega.
+And if you learn it with an actor critic method or a Q learning method, then your Q function would also be taking omega in as input.
+So this could be a one hot vector indicating whether you're doing the dishes or the laundry.
+It could be a textual description or it could be something else.
+This is very, very simple.
+All you have to do is simply augment the state space to add the context to the state.
+And now, the problem of training this multitask policy to do all these tasks basically amounts to the same multitask MDP from before where omega is chosen randomly at the initial time step.
+And then it doesn't change for the rest of the episode.
+So people have trained contextual policies for all sorts of settings.
+Maybe you have a robot stacking Lego blocks and omega is the location where it stacks something.
+You have a virtual character walking and omega is the desired walking direction.
+Maybe you have a hockey robot and omega is where it should hit the puck.
+So this is all pretty straightforward to do.
+You don't actually have to change your algorithm to do this.
+You can just change the MDP definition to add this additional variable to the state.
+A particularly common choice of contextual policies is what's called a goal condition policy.
+So in a goal condition policy, the context is just another state.
+And your reward rewards you for reaching that state.
+Either just one if you reach the state correctly or a little ball around the state to say, well, if you're close to the desired state, then that's considered a positive reward.
+Goal condition policies can be especially convenient because you don't need to manually define the reward for each task.
+You can just sample a bunch of random states to be your goals.
+And you can transfer a zero shot to a new task if it's another goal.
+So if you're lucky enough that your new task is defined by a goal, then zero shot transfer is entirely possible.
+This has some disadvantages though, because training such goal condition policies is often actually difficult in practice.
+It just represents a fairly difficult reinforcement learning problem.
+And not all tasks are goal reaching tasks.
+So this example from the example from the Exploration 2 lecture shows an instance of a task that cannot be represented as a goal, where you have to reach the green location while avoiding the red circle.
+So there's no single goal that explains this.
+If you want to learn more about goal condition policies, I encourage you to read a few of the related papers in this area, because while setting up goal conditioned RL in the most straightforward way is actually very simple, you just define a particular MDP.
+If you want to make these methods work really well, there's a variety of tricks that could be really useful.
+And these tricks include clever ways of selecting which goals to train for, clever ways of representing value functions or Q functions, and clever ways of formulating rewards and reinforcement learning loss functions that are especially effective when you're trying to reach goals.
+So the basic version of this is straightforward, however making it work really well is more complex outside of the scope of this lecture, but if you're interested in this, I would encourage you to read these papers.
