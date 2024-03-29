@@ -156,11 +156,11 @@ So what we did was we tried to kind of theoretically derive what this implicit r
 And in particular, we are considering these methods that train Qt.
 So we're going to take Q functions in this case.
 So you have a neural network that produces a few functions as output, taking as input these k and the action.
-And one piece of notation I'm going to define here, I'm going to consider the last but one-day features of this network, the last but one-day activations of this network as phi theta of xk.
+And one piece of notation I'm going to define here, I'm going to consider the last but one-day features of this network, the last but one-day activations of this network as ϕ theta of xk.
 So they are the features that you learn.
 And this is sort of maybe somewhat ad hoc.
 You can define features in different ways as well.
-But for the context of today's talk, for simplicity of understanding, let's stick to that definition, as what we will call phi.
+But for the context of today's talk, for simplicity of understanding, let's stick to that definition, as what we will call ϕ.
 So it turns out that in the case of reinforcement learning, there's a major difference between supervised objectives and Q learning objectives that cause this regularization to be very different.
 This regularization effect to be very differently manifested for RL and supervised learning.
 And to understand where that difference comes from, I'm going to write down a few equations here.
@@ -180,7 +180,7 @@ So in some ways, your target value depends also on the Q function that you are t
 And the Q function that you're training affects the subsequent target values, creating a cyclic loop that's going to make things very different from the learning dynamics of supervised learning, where you are trying to regress to fixed targets.
 Because of this difference, actually, if you write down or if you calculate this regularizer that I was talking about, it ends up being very different for Q learning, and the standard supervised learning.
 So for standard supervised learning, one example, under certain modeling assumptions, you can show that the regularizer will end up preferring solutions with a low norm, with a low feature norm.
-So your regularizer is a function that penalizes the norm of the feature as phi theta for them that way.
+So your regularizer is a function that penalizes the norm of the feature as ϕ theta for them that way.
 This is actually good, because if you think of things like weight decay, they are very similar in motivation.
 This is kind of like weight decay, but not on weights, but on features instead.
 On the other hand, for offline RL now, you have a much more complicated regularizer.
@@ -190,11 +190,11 @@ So the first term of this RL regularizer is actually the same.
 It's a term that tries to penalize the norms of the features that you're saying.
 So that's a good term in some ways, because you're trying to learn low norm features.
 You're not trying to overfit in weird ways to your data.
-But this second term now, it's a term that actually, if you look at it a bit more carefully, it looks like a dot product between phi theta at xi, which is your state at the current step, and phi theta at xi plus 1, which is your state at the next step.
+But this second term now, it's a term that actually, if you look at it a bit more carefully, it looks like a dot product between ϕ theta at xi, which is your state at the current step, and ϕ theta at xi plus 1, which is your state at the next step.
 So it's something that kind of combines together features that are given state action x comma a with x prime, or the next state, xi plus 1 in this case.
-And if you think about it, while the derivative is not here, if you think about it, this is precisely why this is precisely something that you would get from a target value like thing, because the target value has xi plus 1 under your two function, whereas the q theta xa up there in the objective is graded on your current state and current phi.
+And if you think about it, while the derivative is not here, if you think about it, this is precisely why this is precisely something that you would get from a target value like thing, because the target value has xi plus 1 under your two function, whereas the q theta xa up there in the objective is graded on your current state and current ϕ.
 So that's sort of the intuition for why this term comes from.
-But now, if you look at what this term does, it is actually a term that looks like a dot product between two vectors, dot product between phi theta of xi ai and phi theta of xi.
+But now, if you look at what this term does, it is actually a term that looks like a dot product between two vectors, dot product between ϕ theta of xi ai and ϕ theta of xi.
 So you have the other two vectors, which are the two functions of the term, the first and the second.
 And the second is a dot product.
 And at the end of the dot product, you have a negative sign in front of this.
@@ -205,7 +205,7 @@ That basically means I'm going to maximize the dot product of features at Xi ai 
 Because an easy way to maximize dot product of two vectors is to increase their lengths if the lengths are not bounded.
 So in some ways, the second term has an effect of conflicting with the first term, where the first term is trying to reduce magnitude of features.
 The second term is trying to increase the magnitude of those features in this case.
-Because Xi ai, phi theta of Xi ai appear in both the terms in this case.
+Because Xi ai, ϕ theta of Xi ai appear in both the terms in this case.
 So there's some clear difference that happens with this RN regularizer in comparison with the supervised learning regularizer, which you see up there.
 Any questions here?
 So I think I did a bunch of derivation orally.

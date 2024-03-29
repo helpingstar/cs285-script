@@ -13,18 +13,18 @@ Here you can see some examples of samples drawn from a variational autoencoder t
 So here the x's are pixel images, so they're arrays of pixels, and the z's are going to be latent vectors with some dimensionality like 64 or 128.
 The architecture of the variational autoencoder.
 Essentially follows what we discussed in previous sections.
-So if we want to set this up as a computational graph for training, we would have the encoder q with parameters phi, take in the image xi, and that neural network would output the mean mu phi of xi and the variance sigma phi of xi.
+So if we want to set this up as a computational graph for training, we would have the encoder q with parameters phi, take in the image xi, and that neural network would output the mean mu ϕ of xi and the variance sigma ϕ of xi.
 Then we would sample some noise from a zero mean unit variance distribution, and then we would form the resulting z by taking the mean and adding the noise epsilon times the z.
 So we would have the standard deviation sigma, and that gives us z.
 And then we can pass z through the decoder, p theta of x given z, and that would produce the image.
 The training procedure trains this whole thing with the reparameterization trick.
-So it's trained to maximize the variational lower bound with respect to both the parameters of the decoder theta and the parameters of the encoder phi.
+So it's trained to maximize the variational lower bound with respect to both the parameters of the decoder theta and the parameters of the encoder ϕ.
 So the objective just ends up being the average over the entire data set of the log probability of the image from the decoder.
 And then we can write the result in the decoder, where the mean and standard deviation for the z comes from the encoder.
-So we use the reparameterization trick to backpropagate the error of this first log probability term all the way from the decoder back into the encoder, and thus train both theta and phi.
+So we use the reparameterization trick to backpropagate the error of this first log probability term all the way from the decoder back into the encoder, and thus train both theta and ϕ.
 And of course, we also have to subtract off the KL divergence regularizer, which basically accounts for the prior.
-And the KL divergence here is between the encoder distribution, q phi of z given xi, and the prior p of z.
-And since q phi of z given xi is Gaussian, and the prior p of z by convention is a zero mean unit variance Gaussian, this KL divergence can actually be computed in closed form using the analytic formula for the KL divergence between two Gaussians.
+And the KL divergence here is between the encoder distribution, q ϕ of z given xi, and the prior p of z.
+And since q ϕ of z given xi is Gaussian, and the prior p of z by convention is a zero mean unit variance Gaussian, this KL divergence can actually be computed in closed form using the analytic formula for the KL divergence between two Gaussians.
 So that's pretty straightforward to do.
 All right, so that's the variational autoencoder.
 And what the variational autoencoder allows us to do is it allows us to train a latent variable model representing some inputs, which are typically taken to be images.
@@ -202,8 +202,8 @@ So you can imagine that the process of producing a single Z corresponds to looki
 And that's actually very natural.
 If we want to have a state estimator in a partially observed environment, we might infer the distribution over states now, given the history of observations so far.
 Of course, we could have a much better encoder if we also take into account Zt-1.
-So we could have an encoder Q phi Zt given Zt-1 and O1-1.
-So we could have an encoder Q phi Zt given Zt-1 through T, and that would be a better encoder.
+So we could have an encoder Q_ϕ Zt given Zt-1 and O1-1.
+So we could have an encoder Q_ϕ Zt given Zt-1 through T, and that would be a better encoder.
 Different works have explored a variety of different encoders, and the whole point of using the variational inference framework is that we actually have a lot of flexibility in what kind of encoder to use.
 Some encoders will be better than others in the sense that they lead to more accurate posteriors, but all of them constitute valid variational lower bounds.
 So in this example, the decoders would be independent, meaning that each Z would be decoded into the image at that time step, and the images are independent of each other but of course the Zs are all closely coupled because of the prior.

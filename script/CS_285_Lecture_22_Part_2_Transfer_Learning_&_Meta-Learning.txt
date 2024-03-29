@@ -74,11 +74,11 @@ Well, to try to understand this, let's imagine the following schematic picture f
 Generic learning, you have some kind of parameter theta, and you're going to find the theta that minimizes some loss function on the training set.
 And let's call this process of finding this argument FLEARN.
 So FLEARN takes in a training set and outputs the argument of your policy, of your model parameters theta.
-Generic meta-learning can be thought of as finding the argmin of the loss over your test set for some parameters phi, where these parameters phi are a function of your training set.
+Generic meta-learning can be thought of as finding the argmin of the loss over your test set for some parameters phi, where these parameters ϕ are a function of your training set.
 So you have some function F theta, which is now a learned function, it's no longer a fixed learning algorithm.
 F theta takes in a training set, which is now a learned function, it's no longer a fixed learning algorithm.
-F theta takes in a training set, and it produces some parameters phi.
-And those parameters phi are everything you need to know about the training set to do well on the test set.
+F theta takes in a training set, and it produces some parameters ϕ.
+And those parameters ϕ are everything you need to know about the training set to do well on the test set.
 And the way you do meta-learning is you train F theta so that the loss on the test sets of the meta-training tasks is minimized.
 So it's kind of a second order thing.
 You're going to train F theta, which reads in D train, so that the output of F theta works well on D test.
@@ -87,12 +87,12 @@ So what is F theta for the RNN example?
 Well, F theta is the part of the RNN that reads in the training set.
 So you can think of the parameters of F theta, this theta star, as being the parameters of this RNN, and it's going to produce some sort of hidden activation.
 So once it reads in that training set, it has some hidden activation H i for the task i, and that hidden activation is then given to a little classifier that takes in the hidden activation, and a test image X, and produces Y.
-So this little bit at the end, that's your classifier, and its parameters phi are simply the combination of H, the hidden activations, and its own parameters theta p.
+So this little bit at the end, that's your classifier, and its parameters ϕ are simply the combination of H, the hidden activations, and its own parameters theta p.
 So it has its own parameters, it's a little neural net, so that's theta p, and it takes in the hidden activations from the RNN encoder, and that's H i.
-So that is what is phi i for this RNN meta-learner.
+So that is what is ϕ i for this RNN meta-learner.
 Now there are other parameters.
 Let's look at this.
-There are other kinds of meta-learners you could devise, and they will have different notions of phi i, but this is kind of the simplest.
+There are other kinds of meta-learners you could devise, and they will have different notions of ϕ i, but this is kind of the simplest.
 That the parameters that you quote-unquote learn for a new task are simply the hidden state of this RNN, and the parameters of that top layer.
 So the process of learning a new task basically then amounts to just running the RNN forward, and getting the hidden state.
 So just to recap precisely how this works and how it's trained.
@@ -103,8 +103,8 @@ The meta-training process trains the parameters of all of these networks.
 It trains the parameters of the RNN encoder, and it trains the parameters of that little thing at the end.
 When you go to the target task, which we call meta-test time, you get a training set for the target task.
 That training set is then encoded using that RNN encoder, which produces a new HI.
-That new HI is then concatenated with the parameters of the little classifier at the end, which is not adapted to the new task, and that's phi i.
-And then your prediction depends only on phi i.
+That new HI is then concatenated with the parameters of the little classifier at the end, which is not adapted to the new task, and that's ϕ i.
+And then your prediction depends only on ϕ i.
 So in practice, this is a very long way of explaining something very simple, which is that in practice you just run this RNN forward and you get an answer.
 But this is the explanation of how it relates to metamor.
 Thank you.

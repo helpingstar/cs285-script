@@ -67,7 +67,7 @@ So this kind of trick can be used to provide a very low variance policy gradient
 If you want to read more about these kinds of control variants and how you can use a critic without incurring bias, provided the second term can be evaluated, then check out this paper by Shixiang Gu called Q-Prop.
 Okay, so so far we talked about ways that we can use critics and get policy gradient estimators that are unbiased.
 But can we also use critics and get policy gradients that are still biased but only a little bit biased?
-So next we're going to talk about eligibility traces and end-step returns.
+So next we're going to talk about eligibility traces and n-step returns.
 First, let's take a look at the advantages estimator in an Actor-Critic algorithm.
 I'm going to denote this as ^{A}_C.
 So ^{A}_C is the current reward plus the next value minus the current value.

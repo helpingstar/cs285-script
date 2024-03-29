@@ -139,7 +139,7 @@ The inference approach is simple, and provides for effective exploration via pos
 And it can be a bit challenging to optimize in practice.
 But let's talk about how these things are actually similar to each other.
 The inference procedure is really just like the RNN procedure, but with stochastic variables.
-So phi is basically z.
+So ϕ is basically z.
 And the gradient-based approach can be instantiated as one of the other two, just with a particular choice of architecture.
 In fact, you can actually develop a stochastic version of model-agnostic meta-learning by adding noise to your gradients, and that will start looking a lot like the inference process.
 So they're actually pretty similar.

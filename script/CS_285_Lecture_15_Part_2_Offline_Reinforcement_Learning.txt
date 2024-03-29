@@ -240,7 +240,7 @@ We always use samples from our data set as samples from d pi beta.
 So the left-hand side of this is just the probability of seeing s' A prime under the policy pi theta.
 And the probability of seeing s' A prime is basically equal to the probability that you start in s' A prime, and that's what the first term captures.
 So it's the probability you start in s' times the probability that you take the action A prime plus the probability that you transition into s' A prime from another state.
-The probability you transition into s' A prime from another state, in this case S A, is given by the probability that you are in that state, which is d pi theta S A, and that's exactly what the product of those last two terms gives you, times the probability that you make that transition, which is what you get by multiplying it by P of S prime, given S A, times pi theta A prime, given S prime.
+The probability you transition into s' A prime from another state, in this case S A, is given by the probability that you are in that state, which is d pi theta S A, and that's exactly what the product of those last two terms gives you, times the probability that you make that transition, which is what you get by multiplying it by P of s', given S A, times pi theta A prime, given s'.
 So this is the probability of starting in s' A prime, and this is the probability of transitioning into it from another state, multiplied by the probability that you leave it in s' A prime, that you are actually in that state, which is what the last two terms account for.
 So solving for WSA typically involves some kind of fixed point problem.
 So it involves subtracting the right-hand side from the left-hand side and minimizing the square difference.

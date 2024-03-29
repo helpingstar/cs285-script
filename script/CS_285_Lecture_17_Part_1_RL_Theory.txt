@@ -113,7 +113,7 @@ And the algorithm that we'll start with is a very basic kind of model-based algo
 Now I use the term model-based rather loosely, this is actually a pretty idealized algorithm.
 So what we're going to do is we're going to estimate the transition probabilities P hat s' given S a simply by counting the number of times that we transition into s' from S a.
 A very simple tabular estimation strategy.
-So there's no function approximation here, there's no neural net, we're just doing tabular estimation, we're literally counting, how many times we land in a particular state s prime.
+So there's no function approximation here, there's no neural net, we're just doing tabular estimation, we're literally counting, how many times we land in a particular state s'.
 This, of course, only makes sense if the states are discrete and the actions are discrete, and we can build a table with all these numbers.
 And then what we're going to do is we'll first focus just on policy evaluation.
 So given some fixed policy pi, let's just use p-hat to estimate the q function q-hat pi.
@@ -214,7 +214,7 @@ And then you can manipulate that equation to solve for the probability δ or to 
 Now, in a lot of the analysis that we do in reinforcement learning, we're concerned with the fact that we're concerned with estimating probabilities of categorical variables.
 So p of s' given s,a is a distribution over a categorical variable, not a real valued variable.
 So Hoeffding's inequality applies to estimating the mean of a continuous valued random variable.
-But here, if we're estimating p hat, we're actually concerned with our accuracy in estimating the probability distribution over a categorical variable, in this case s prime.
+But here, if we're estimating p hat, we're actually concerned with our accuracy in estimating the probability distribution over a categorical variable, in this case s'.
 So a similar kind of concentration inequality can be derived for that.
 Let's say that z is some kind of discrete random variable that takes values in 1 through d.
 So d is the cardinality of z.
@@ -273,8 +273,8 @@ I just want to write down some equations that relate p to q pi for a fixed pi.
 And we saw this actually before when we talked about offline RL, but I'll just repeat it here for convenience.
 So we've got a fixed pi.
 So this is the Bellman equation.
-So q pi at some state, an action S A, is equal to the reward R S A plus gamma times the expected value over S prime, distributed according to p(s'|s,a), of v pi S prime.
-And v pi S prime, of course, is the expected value of q pi s' A prime under pi.
+So q pi at some state, an action S A, is equal to the reward R S A plus gamma times the expected value over s', distributed according to p(s'|s,a), of v pi s'.
+And v pi s', of course, is the expected value of q pi s' A prime under pi.
 And we can expand out the expectation, just write it as a sum.
 Writing it as a sum will make it easier to turn this into a linear algorithm, an algebra equation that we can then manipulate symbolically.
 So if we write this in vector notation, if we say that q is a vector with S A entries, R is a vector with S A entries, and p is a matrix, we can write q pi is equal to R plus gamma p v pi.

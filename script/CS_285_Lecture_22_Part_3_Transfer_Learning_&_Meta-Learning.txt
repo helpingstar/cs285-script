@@ -5,7 +5,7 @@ So we can, by analogy, apply the same idea to reinforcement learning.
 We can say that regular reinforcement learning is when you maximize the expected reward under some policy, pi theta, and that can be viewed as a learning function frl, but frl is not applied to a training set anymore.
 It's applied to an MDPM.
 So frl is a function of an MDP.
-Meta-reinforcement learning then can be viewed as maximizing the expected reward of a policy with some parameters phi i, where the parameters phi i are given by applying a learned function ftheta to an MDPMI.
+Meta-reinforcement learning then can be viewed as maximizing the expected reward of a policy with some parameters ϕ i, where the parameters ϕ i are given by applying a learned function ftheta to an MDPMI.
 So we just kind of transported the same definition into the RL setting.
 So meta-reinforcement learning, what this implies, meta-reinforcement learning will be a reinforcement learning procedure, but what it will train is this ftheta, which itself reads in an MDP and outputs some kind of representational policy.
 So let's try to instantiate this idea.
@@ -30,14 +30,14 @@ And then the third step is to look at the test MDP.
 So the relationship between this and contextual policies is that this is basically just a contextual policy, except now the context is all of the experience in the MDP-MI.
 Okay, this is not maybe the most obvious idea, so it would be a good idea to sort of pause and think about this a little bit.
 So let me repeat.
-The procedure on the left, where the parameters for the new task, phi i, are obtained by running some learning procedure f theta on mi, is basically the same as deploying a policy that is conditioned on all of the experience in the test MDP.
+The procedure on the left, where the parameters for the new task, ϕ i, are obtained by running some learning procedure f theta on mi, is basically the same as deploying a policy that is conditioned on all of the experience in the test MDP.
 Because that's what f theta is really executed on.
 f theta is a function of an MDP, but it's really a function of the experience you gathered in that MDP.
 So as long as you can feed all that experience into your policy, then you're doing meta-learning.
 So that is to say that the context, which we call z1, is the same as the experience in the test MDP.
 Okay.
-So the context, which is z2 or omega or something like that, is the phi i that we have here.
-So phi i is basically the context in a contextual policy.
+So the context, which is z2 or omega or something like that, is the ϕ i that we have here.
+So ϕ i is basically the context in a contextual policy.
 The main difference, of course, is that when we talked about multitask learning before, the context was provided for us.
 Someone would just say like, oh, your job is to do the laundry, your job is to do the dishes.
 Now the context is inferred from experience in MI.
@@ -71,7 +71,7 @@ Just say win.
 state and the hidden vector and produces an action.
 So this is a very straightforward way to represent f that can read in all of the experience and use it to inform what the policy should do.
 And then of course the parameters theta are the parameters of this RNN encoder and the policy head at the end.
-So as before phi is just represented by the parameters of that little policy head and the hidden state of the RNN.
+So as before ϕ is just represented by the parameters of that little policy head and the hidden state of the RNN.
 And the hidden state of the RNN is the only thing that you're actually inferring at meta test time when you adapt to a new MDP.
 Alright so that might seem a little simplistic right because we made a really big deal out of meta learning, we introduced a lot of formalism, but then it seems like all we end up with is we just have to train an RNN policy.
 Is that really all we have to do?

@@ -11,50 +11,50 @@ So you would have a gradient of Li with respect to theta, but the total number o
 So the idea in amortized variational inference will be to essentially amortize the cost of inferring this approximate posterior QI of Z over all the data points by using a single model that will give us the posterior for any x.
 And that single model could be a neural network model.
 So in this case, we're still going to have a Gaussian posterior for every x.
-But instead of storing the mean invariant, we would have a neural network that takes in that data point and outputs mu of phi of x and sigma of phi of x, the parameters of the Gaussian posterior for the data point x.
+But instead of storing the mean invariant, we would have a neural network that takes in that data point and outputs mu of ϕ of x and sigma of ϕ of x, the parameters of the Gaussian posterior for the data point x.
 All right, so that's the basic idea for amortized variational inference.
-You have two networks, the network that you're trying to learn, your generative model, p theta of x given z, and what we would call your inference network, Q subscript phi of z given x.
+You have two networks, the network that you're trying to learn, your generative model, p theta of x given z, and what we would call your inference network, Q subscript ϕ of z given x.
 So we know from our discussion before that you can formulate a lower bound on log p of xi using really any Q, but this lower bound is tightest when this Q is close to the posterior.
 So now, just like before, we had QI of z.
-Now we have Q phi of z given xi.
+Now we have Q_ϕ of z given xi.
 And now our variational lower bound is a function of two distributions, p theta.
-So we have QI of xi given z and Q phi of z given xi.
+So we have QI of xi given z and Q_ϕ of z given xi.
 So our training procedure, which is just a modification of the one from the previous slide, will look like this.
 First, calculate the gradient of the variational lower bound with respect to theta.
 And that's going to work basically the same way as before.
-Sample z from Q phi of z given xi, and then calculate the gradient with respect to theta, which is approximated by the gradient with respect to theta.
+Sample z from Q_ϕ of z given xi, and then calculate the gradient with respect to theta, which is approximated by the gradient with respect to theta.
 So we have a gradient of log p theta of xi given z, where z is the z that you just sampled.
 And then you can do a gradient ascent step on theta, the parameters of your generative model.
-And then, what you need to do is take a gradient step on phi.
-And the gradient step on phi is also doing gradient ascent on the variational lower bound, L.
-So the question that we have to answer in order to complete this algorithm is, how do we calculate the gradient with respect to phi of L?
+And then, what you need to do is take a gradient step on ϕ.
+And the gradient step on ϕ is also doing gradient ascent on the variational lower bound, L.
+So the question that we have to answer in order to complete this algorithm is, how do we calculate the gradient with respect to ϕ of L?
 So this is the quantity we're concerned with now.
-So here's the expression for L, and you can see that phi shows up in two places.
-First, phi is the distribution under which you take the expected value, and second, phi shows up in the entropy term.
+So here's the expression for L, and you can see that ϕ shows up in two places.
+First, ϕ is the distribution under which you take the expected value, and second, ϕ shows up in the entropy term.
 So here's a question for all of you.
 Let's think about that first term.
-It's the expected value under a distribution parameterized by phi of some quantity that is independent of phi.
+It's the expected value under a distribution parameterized by ϕ of some quantity that is independent of ϕ.
 And we want to take its gradient.
 Where have we seen this before?
 We've actually already discussed an algorithm that can calculate this part of the gradient.
 We discussed this algorithm early on in the course.
 Take a moment to think about this and try to think, what would the gradient of this term look like based on what we've already learned in the class?
 So our...
-Q subscript phi of Z given X will be given by a Gaussian distribution where the mean and variance are neural network functions of X.
+Q subscript ϕ of Z given X will be given by a Gaussian distribution where the mean and variance are neural network functions of X.
 The entropy of a Gaussian can be expressed in closed form.
-It's a closed form equation involving mu phi and sigma phi.
+It's a closed form equation involving mu ϕ and sigma ϕ.
 You can look this up in the textbook or on Wikipedia.
 It's a very standard equation.
 So that one is actually pretty easy to do.
 You just write down the equation in terms of mu and sigma, and you can take its derivative.
 It's really the first term that's problematic.
-So we can suggestively rewrite that term by calling it J of phi, which is equal to the expected value with respect to Z distributed according to Q phi of Z given XI of some quantity that I'm going to call R that is a function of XI and Z.
-And the important thing is that R just doesn't depend on phi.
+So we can suggestively rewrite that term by calling it J of phi, which is equal to the expected value with respect to Z distributed according to Q_ϕ of Z given XI of some quantity that I'm going to call R that is a function of XI and Z.
+And the important thing is that R just doesn't depend on ϕ.
 So how do we calculate the derivative of this with respect to phi?
 Well, we can just use policy gradient.
 So I suggestively use J and R here intentionally just to make it clear that this is exactly the same form of equation as what we had before with policy gradients.
-And that means that we can estimate the derivative grad J of phi by sampling Zs from Q phi and then averaging over those samples.
-And the quantity that we average is grad phi log Q phi for that sample times R.
+And that means that we can estimate the derivative grad J of ϕ by sampling Zs from Q_ϕ and then averaging over those samples.
+And the quantity that we average is grad ϕ log Q_ϕ for that sample times R.
 Now, unlike with policy gradient, these samples don't require actually interacting with the real world.
 These samples just require sampling from your Q model and then evaluating the log likelihood under the P model.
 So you can cheaply generate these samples, and this is a very reasonable way to calculate the gradient of that first term.
@@ -75,39 +75,39 @@ There's only Q.
 And calculating derivatives through the mean and variance of Q is actually quite feasible.
 So here's the trick that we can use that exploits this.
 Here's the equation.
-Here's the equation for J of phi again.
+Here's the equation for J of ϕ again.
 And remember, the difficult part is calculating the gradient of this term.
 The gradient of the entropy is easy to get because the entropy is a closed form equation expressed in terms of mu and sigma.
 And you can just calculate derivatives for that using any automatic differentiation software.
-The difficult part is calculating the gradient of J of phi.
+The difficult part is calculating the gradient of J of ϕ.
 Where Q phi, again, is this Gaussian.
-So if you have a variable Z that is distributed according to a Gaussian distribution, you can always rewrite that variable as the sum of a deterministic term, mu phi of x, and a stochastic term given by some random number epsilon times sigma phi of x.
+So if you have a variable Z that is distributed according to a Gaussian distribution, you can always rewrite that variable as the sum of a deterministic term, mu ϕ of x, and a stochastic term given by some random number epsilon times sigma ϕ of x.
 And if epsilon is distributed according to a Gaussian with mean 0 and variance 1, then plugging it into this formula will make Z correspond to samples from a Gaussian with mean mu and variance sigma.
 So you're essentially transforming a sample from a 0-mean-unit-variance Gaussian into a sample with a mean mu and a variance sigma.
-Now something to note about this equation is that epsilon doesn't depend on phi.
-So this way of writing Z expresses Z as a deterministic function parameterized by phi of a random variable epsilon that is independent of phi.
-And this is why we call this the reparameterization trick, because we are reparameterizing the random variable Z to be a deterministic function of another random variable epsilon that is independent of phi.
+Now something to note about this equation is that epsilon doesn't depend on ϕ.
+So this way of writing Z expresses Z as a deterministic function parameterized by ϕ of a random variable epsilon that is independent of ϕ.
+And this is why we call this the reparameterization trick, because we are reparameterizing the random variable Z to be a deterministic function of another random variable epsilon that is independent of ϕ.
 And when we do this, we can get a better gradient estimator.
 So what we can do is we can write our expectation with respect to Z as instead an expectation with respect to epsilon.
 Where I simply plugged in the equation for Z expressed in terms of epsilon into R.
 So this is a strict equality, this is not an approximation.
 The expected value over Z distributed according to a Gaussian with mean mu and variance sigma is equal to the expected value over epsilon distributed according to a Gaussian with mean 0 and variance 1, where you evaluate your R at xi comma mu of xi plus epsilon sigma xi.
-So now we are very close to being able to compute a better gradient for J of phi.
-Because phi here now parametrizes only deterministic quantities.
+So now we are very close to being able to compute a better gradient for J of ϕ.
+Because ϕ here now parametrizes only deterministic quantities.
 So think for a minute for how we could write a better gradient estimator based on this expectation over epsilon.
-Alright, so here is how we estimate the gradient of phi.
+Alright, so here is how we estimate the gradient of ϕ.
 First, sample epsilons from a zero mean unit variance Gaussian.
 Sample epsilon 1 through epsilon m.
 A single sample actually works pretty well.
 So you could just generate one sample for every data point in your mini-batch, and that is actually what we would usually do.
-Then, calculate the gradient with respect to phi as simply the average over all of your samples of grad phi of R evaluated at xi comma mu phi xi plus epsilon j sigma phi xi.
+Then, calculate the gradient with respect to ϕ as simply the average over all of your samples of grad ϕ of R evaluated at xi comma mu ϕ xi plus epsilon j sigma ϕ xi.
 So this requires R to be differentiable with respect to Z.
-And of course it requires mu phi and sigma phi to be differentiable with respect to phi, which they are because they are neural networks.
+And of course it requires mu ϕ and sigma ϕ to be differentiable with respect to phi, which they are because they are neural networks.
 We generally can't use this in reinforcement learning because in reinforcement learning we don't assume that we can calculate the derivative of your return.
 But here we can because R is just this log probability under the triangle model.
 It's another neural network.
 We know what it is.
-So we can calculate its derivative with respect to phi.
+So we can calculate its derivative with respect to ϕ.
 This gradient estimator has a lower variance because we are actually using the derivatives of R.
 The policy gradient that we had before didn't use the derivatives of R.
 So this is a better gradient estimator.
@@ -121,7 +121,7 @@ Here's another way you can look at it.
 You can take your original variational lower bound, the expected value with respect to z of log p theta xi given z plus log p of z plus the entropy of q.
 Write it out as three terms.
 So there's an expectation under z of the decoder, p theta xi given z, plus an expectation under z of the prior, log p of z plus the entropy.
-The second term is essentially the equation for the KL divergence between q phi of z given x and p of z.
+The second term is essentially the equation for the KL divergence between q ϕ of z given x and p of z.
 Because KL divergence has an entropy term and an expected value term.
 And if our prior p of z is also Gaussian, the KL divergence between two Gaussian distributions has a convenient analytic form.
 So if you look up KL divergence between two Gaussians, you'll just find an equation expressed in terms of the means of the variances of those Gaussians.
@@ -135,17 +135,17 @@ And now everything in this equation is deterministic except for epsilon.
 So we'll approximate the first expectation with a single sample, with a single Gaussian sample, epsilon.
 And here's the equation we're left with.
 And now everything in this equation you can directly code up in your automatic differentiation software.
-So the log p theta of xi given q phi xi plus epsilon, sigma phi xi.
-That is just calling the neural network representation for p theta with an input dependent on the neural network representation for mu phi and sigma phi.
+So the log p theta of xi given q ϕ xi plus epsilon, sigma ϕ xi.
+That is just calling the neural network representation for p theta with an input dependent on the neural network representation for mu ϕ and sigma ϕ.
 So everything here can be back propped through, and epsilon is just treated as a constant.
 The second term, the KL divergence, has a closed form equation for it, expressed in terms of the means and variances of q and p of z.
 So you could think of it like this.
 You have your inference network, parameterized by phi, which takes in xi and it outputs two quantities.
-A mean mu phi of xi and a sigma phi of xi.
+A mean mu ϕ of xi and a sigma ϕ of xi.
 Then you sample your epsilon from your zero mean unit variance Gaussian, and you combine that together with a mu and sigma to get you z.
 And the z is then fed into p theta of xi given z to produce a distribution over x.
-So this is a complete computation graph, and everything here has known derivatives, so you can back prop through this whole thing with respect to both phi and theta.
-So what this means is that you can actually code this up in your automatic differential software and just call that gradient from this whole thing, and this will give you derivatives of L with respect to both theta and phi.
+So this is a complete computation graph, and everything here has known derivatives, so you can back prop through this whole thing with respect to both ϕ and theta.
+So what this means is that you can actually code this up in your automatic differential software and just call that gradient from this whole thing, and this will give you derivatives of L with respect to both theta and ϕ.
 Okay.
 So how does this reparameterization trick compare to policy gradient?
 So this is the policy gradient estimator for the derivative of the variation on lower bound, just the first term, not the entropy term.

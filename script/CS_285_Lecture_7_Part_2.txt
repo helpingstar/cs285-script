@@ -1,42 +1,34 @@
 All right, so far we talked about how we can learn value functions represented in a tabular form.
-So there's no neural net, no d-bar L, no function approximation, just a small discrete state space where we can enumerate the value in every possible state.
+So there's no neural net, no Deep-RL, no function approximation, just a small discrete state space where we can enumerate the value in every possible state.
 Now let's talk about how we can introduce neural networks and function approximation.
-So first, how do we represent V ?
+So first, how do we represent V(s)?
 Well, so far we're talking about how we can represent it as a big table with one entry for each discrete state.
-So in state 0, you say V is 0.2, in state S equals 1, it's 0.3, and so on.
+So in state 0, you say V(s) is 0.2, in state s equals 1, it's 0.3, and so on.
 Why is this not enough?
 Well, take a moment to think about this.
 Why might we not want to represent the value function as a table?
 Let's say that you're playing a video game from images, right.
-Now in this video game, the number of possible states, if you have a 200x200 picture, is 255, which is the number of values that each pixel can take on, raised to the third power because there are three color channels, raised to the power of 200x200.
+Now in this video game, the number of possible states, if you have a 200x200 pixel image, is 255, which is the number of values that each pixel can take on, raised to the third power because there are three color channels, raised to the power of 200x200.
 So these are, this is the number of possible images you can see.
 Maintaining a table over this many entries is impossible, this is more than the number of atoms in the universe, and that's for a discrete state space.
 For a continuous state space, it's actually just infinite, and this would never be possible.
 This is also, by the way, sometimes referred to as the curse of dimensionality.
-So if you have a table that has a number of entries, you can say that you have a table that has a number of entries, and that's the curse of dimensionality.
 If someone says curse of dimensionality in the context of reinforcement learning, what that refers to is the simple fact that if you have a state space with many dimensions, the number of entries that you need in a table for tabular reinforcement learning is exponential in the number of dimensions.
 So we'll use a function approximator.
 Let's say just like in lecture 6, we're going to have a neural net value function that maps from states to scalar valued values.
-So we're going to have a neural net that looks like this, and it has some parameters, fine.
+So we're going to have a neural net that looks like this, and it has some parameters, ϕ.
 So what we can do is we can fit our neural net value function in much the same way as we did in lecture 6 by doing least squares regression onto target values.
-And if we use the value iteration procedure from the previous section, then our target values are just the max over a of q π sa.
-So the 38.
-Jerπ is going to be in theCu and traqn.
-So for the list of operations we could take in too complete an account, we could take as too large an account as people did, we can just stake out a maximum of 1 ут each time taking that capital and having it careers았어요 a maximum of 1 ут would look like this.
-Then our fitted value iteration algorithm would look like this.
+And if we use the value iteration procedure from the previous section, then our target values are just the max over a of Q^π(s,a).
+So then our fitted value iteration algorithm would look like this.
 We would take our dataset of states and actions.
 For every sample state, we would evaluate every possible action you could take in that state, and we would take a max over those actions of our Q values.
-So what I have in the parentheses here is I have just substituted in the Q value.
+So what I have in the parentheses here is I have to substituted in the Q value.
 So the Q values of the reward, plus γ times the expected value of the next state.
-You'll see this is real.
-Here is ourginqu.tm.
-Now we get 5u.
-Let's take one字 speed our second the next state.
 So I've substituted that into the parameters.
 We don't represent the Q function explicitly here.
 We just compute it as we go to evaluate the max.
 And that gives us our target values y.
-And then we solve for ϕ by doing least squares regression so that v ϕ of s_i is close to yi.
+And then we solve for ϕ by doing least squares regression so that V_ϕ(s_i) is close to y_i.
 So this is fitted value direction.
 Step one, compute your target values by constructing the Q function for every possible action at each sampled state.
 So you have a finite sampling of states and we still assume that we have discrete action space so we can perform this enumeration exactly.
@@ -55,21 +47,21 @@ It requires being able to compute that expected value.
 And perhaps more importantly, it requires us to be able to try multiple different actions from the same state, which we can't do in general if we can only run policies in the environment, instead of teleporting to a state multiple times and trying multiple actions from the same exact state.
 So if we don't know the transition dynamics, generally we can't do this.
 So let's go back to policy iteration.
-In policy iteration, we alternated between evaluating q π or a π.
-But if you have a π, or if you have q π, you can recover a π.
+In policy iteration, we alternated between evaluating Q^π or A^π.
+But if you have A^π, or if you have Q^π, you can recover A^π.
 And then step two, setting our policy to be this greedy argmax policy.
 So that was policy iteration.
 And step one in policy iteration involved policy evaluation, which involved repeatedly applying this value function recurrence that we saw before.
 So what if instead of applying the value function recurrence to learn the value function, we instead directly constructed a Q function recurrence in an analogous way?
 So if I wanted to construct the Q function at a particular state action tuple, I can write exactly the same recurrence.
-Except that now, since the Q function is a function of a state and an action, I don't need to evaluate the next state given s and π of s.
+Except that now, since the Q function is a function of a state and an action, I don't need to evaluate the next state given s and π(s).
 I just evaluate the next state given the s,a tuple that I'm training my Q function on.
 And this might at first seem like a very subtle difference, but it's a very, very important one.
-Because now, as my policy π changes, the action for which I need to sample s prime, basically the a that's on the right of the conditioning bar and p(s'|s,a), doesn't actually change.
-Which means that if I have a bunch of samples, s comma a comma s prime, I can use those samples to fit my Q function regardless of what policy I have.
+Because now, as my policy π changes, the action for which I need to sample s', basically the a that's on the right of the conditioning bar and p(s'|s,a), doesn't actually change.
+Which means that if I have a bunch of samples, (s,a,s'), I can use those samples to fit my Q function regardless of what policy I have.
 The only place where the policy shows up is as an argument to the Q function at the state s' inside of the expectation.
-And it turns out that this very seemingly very simple change allows us to perform policy iteration style algorithms without actually knowing the transition dynamics, just by sampling some s, a, s' tuples, which we can get by running any policy we want.
-So, this second recurrence that I've written here doesn't require knowing the transition probabilities, it just requires samples of the form s comma a comma s prime.
+And it turns out that this very seemingly very simple change allows us to perform policy iteration style algorithms without actually knowing the transition dynamics, just by sampling some (s, a, s') tuples, which we can get by running any policy we want.
+So, this second recurrence that I've written here doesn't require knowing the transition probabilities, it just requires samples of the form (s,a,s').
 So if we do this for step one in policy iteration, we would no longer require knowing the transition probabilities.
 And this is very important.
 This is the basis of most value-based model-free RL algorithms.
@@ -81,26 +73,26 @@ So evaluating the value of the argmax is just like taking the max.
 So we can forego policy construction.
 We can forgo that step two and directly perform value iteration.
 Can we do the same max trick with Q functions?
-So can we essentially do something like value iteration, but without knowing the transition?
+So can we essentially do something like value iteration, but without knowing the transition probabilities?
 So what we did before is we took policy iteration, which alternates between evaluating the value function in step two and setting the policy to be the greedy policy in step, sorry, evaluating the value function in step one and setting the policy to be the greedy policy in step two.
 And we transformed to this other algorithm where step one constructs target values by taking a max over the Q values.
 And step two fits a new value function to those target values.
+So here we just compute the values directly.
+So can we do this with Q values also but still retain this benefit of not needing to know the transitions.
 So the way that we construct a fitted Q iteration algorithm is very much analogous to fitted value iteration.
-We construct our target value YI as the reward of a sampled state action tuple s_i AI plus γ times the expected value of the value function at state s'.
-and then in step 2 we simply regress our Q function Q ϕ onto those target values.
+We construct our target value y_i as the reward of a sampled state action tuple (s_i, a_i) plus γ times the expected value of the value function at state s'.
+And then in step 2 we simply regress our Q function Q_ϕ onto those target values.
 The trick, of course, is that we have to evaluate step 1 without knowing the transition probabilities, so we're going to do two things.
-First, we're going to replace V of s'_i with the max over A at Q ϕ s'_i AI prime, because we're only approximating Q ϕ, we're not approximating V ϕ.
+First, we're going to replace V(s'_i) with the max over a at Q_ϕ(s'_i a'_i), because we're only approximating Q_ϕ, we're not approximating V_ϕ.
 And second, instead of taking a full expectation over all possible next states, we're going to use the sampled state s'_i that we got when we generated that sample.
-And now all we need to run this fitted Q iteration algorithm is samples s_i AI s'_i, which can be constructed by rolling out our policy.
+And now all we need to run this fitted Q iteration algorithm is samples s_i, a_i, s'_i, which can be constructed by rolling out our policy.
 So this is fitted Q iteration.
 It alternates between two steps.
-Step one, estimate target values, which you can do using only samples, and step two, estimate target values, which you can do using only samples.
-And your previous Q function Q ϕ.
+Step one, estimate target values, which you can do using only samples, and your previous Q function Q_ϕ.
 Step two, fit a new ϕ with regression onto your target values using the same exact samples that you used to compute your target values.
 And this doesn't require simulation of different actions.
 It only requires the actions that you actually sampled last time when you ran your policy.
 So this works even for off-policy samples.
-So this algorithm does not make any assumptions that the actions were actually sampled.
 So this algorithm does not make any assumptions that the actions were actually sampled from the latest policy.
 The actions could have been sampled from anything.
 So you can store all the data you've collected so far.
@@ -109,28 +101,24 @@ There's only one network.
 There's no policy gradient at all.
 There's no actor.
 There's only a Q function estimator, which is a neural network that takes in a state and an action and outputs a scalar valued Q value.
-Unfortunately, it turns out that this procedure does not have any convergence guarantees for the action.
-So we're going to use a scalar valued Q value.
+Unfortunately, it turns out that this procedure does not have any convergence guarantees for non-linear function approximation.
 So if you do this with a neural net, it may not converge to the true solution, and we'll discuss this a lot more later in the lecture.
 If you use a tabular representation, it is actually guaranteed to converge.
 But for a neural network, it's in general not guaranteed to converge.
 All right.
 So just to put the pieces together, here's the full fitted Q iteration algorithm.
 And for each step of the algorithm, there are some free parameters that I'm going to mention.
-Step one, we're going to use a non-linear function approximation.
-So we're going to use a non-linear function approximation.
-So step one, collect the data set consisting of tuples s_i, a_i, s'_i, and ri using some policy.
+Step one, collect the data set consisting of tuples (s_i, a_i, s'_i, r_i) using some policy.
 The algorithm works for a wide range of different policies.
 Now, not all policy choices are equally good, but the principles will apply to any policy, and it certainly doesn't have to be the latest policy.
 And one of the parameters you have to choose is the number of such transitions you are to collect.
-So typically, you would draw your policy for some number of steps or some number of steps.
-So you would draw your policy for some number of steps or some number of trajectories, but you get to choose how many.
+So typically, you would draw your policy for some number of steps or some number of trajectories, but you get to choose how many.
 And of course, you also choose the policy that you're going to be rolling out.
 What policy do you use to collect this data?
 A very common choice is, in fact, to use the latest policy, but there are a few nuances about that choice that I'll discuss shortly.
 Step two, for every transition that you sampled, calculate a target value.
-So you calculate the target value, yi, by taking the reward from that transition, plus γ times the max over the next action, a'_i, of the Q value, Q ϕ, s'_i, a'_i, using your previous Q function estimator, Q ϕ.
-Step three, train a new Q function, which means find a new parameter vector ϕ, by minimizing the difference between the values of Q ϕ, s_i, a_i, and the corresponding target value, yi.
+So you calculate the target value, y_i, by taking the reward from that transition, plus γ times the max over the next action, a'_i, of the Q value, Q_ϕ(s'_i, a'_i), using your previous Q function estimator, Q_ϕ.
+Step three, train a new Q function, which means find a new parameter vector ϕ, by minimizing the difference between the values of Q_ϕ(s_i, a_i), and the corresponding target value, y_i.
 So you have a Q function, which takes as input s and a.
 It outputs a scalar value, and it has parameters ϕ.
 I should mention, by the way, that a very common design for a neural network architecture for a Q function with discrete actions is actually to have the actions be outputs rather than inputs.
@@ -142,11 +130,11 @@ So in step three, one parameter you have to choose is the number of gradients st
 You can run this optimization all the way convergence or you can run it for just a few gradient steps.
 Now doing step 3 once doesn't actually get you the best possible Q function.
 You could alternate step 2 and step 3 some number of times, let's say capital K times, before going out and collecting more data.
-And the number of times you alternate step 2 and step 3 we're going to refer to as K, that's the number of iterations of the fit-or-q iteration that you take in the inner loop.
+And the number of times you alternate step 2 and step 3 we're going to refer to as K, that's the number of iterations of the fitted Q iteration that you take in the inner loop.
 And then once you've taken those K iterations maybe you could take your latest policy, modify it with some exploration rules, which I'll discuss shortly, and use it to collect some more data.
-So this is the general design of fit-or-q iteration.
-Many different algorithms can actually be interpreted as variants of fit-or-q iteration, including algorithms like Q-learning, which I will cover shortly.
-Alright, so to review this portion of the lecture, we discussed value-based methods, and we'll talk about the different ways that we can use fit-or-q to generate value-based methods.
+So this is the general design of fitted Q iteration.
+Many different algorithms can actually be interpreted as variants of fitted Q iteration, including algorithms like Q-learning, which I will cover shortly.
+Alright, so to review this portion of the lecture, we discussed value-based methods.
 Value-based methods do not learn a policy explicitly, they just learn a value function or a Q function represented as a table or a neural network.
 If we have a value function, we can recover a policy by using the argmax policy.
-We talked about how fit-or-q iteration removes the need for us to need to know the transition probabilities, and we discussed this kind of generic form of the fit-or-q iteration algorithm.
+We talked about how fitted Q iteration removes the need for us to need to know the transition probabilities, and we discussed this kind of generic form of the fitted Q iteration algorithm.

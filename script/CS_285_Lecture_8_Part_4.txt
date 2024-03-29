@@ -116,26 +116,26 @@ Alright, so one way to mitigate this problem is to use something called double-Q
 If the function that gives us the value is de-correlated from the function that selects the action, then in principle this problem should go away.
 So the idea is to just not use the same network to choose the action as the network that we use to evaluate the value.
 So double-Q learning uses two networks.
-One network, which we're going to call Phi A, and another network, which we're going to call Phi B.
-And Phi A uses the values from Phi B to evaluate the target values, but selects the action according to Phi A.
-So if you assume that Phi B and Phi A are de-correlated, then the action that Phi A selects for the argmax will be corrupted by some noise, but that noise will be different from the noise that Phi B has, which means that when Phi B evaluates that action, if the action was selected because it had a positive noise, then Phi B will actually give it a lower value.
+One network, which we're going to call ϕ A, and another network, which we're going to call ϕ B.
+And ϕ A uses the values from ϕ B to evaluate the target values, but selects the action according to ϕ A.
+So if you assume that ϕ B and ϕ A are de-correlated, then the action that ϕ A selects for the argmax will be corrupted by some noise, but that noise will be different from the noise that ϕ B has, which means that when ϕ B evaluates that action, if the action was selected because it had a positive noise, then ϕ B will actually give it a lower value.
 So the system will be kind of self-correcting.
-And then analogously Phi B is updated by using Phi A as its target network, and then Phi B as the action selection rule.
+And then analogously ϕ B is updated by using ϕ A as its target network, and then ϕ B as the action selection rule.
 So this is the essence of double-Q learning, and its purpose is to de-correlate the way that you select the action from the way that you evaluate the value of that action.
 So if the two Q networks are noisy in different ways, then in principle the problem should go away.
 Now in practice, the way that we can implement double-Q learning is without actually adding another Q function, but actually using the two Q functions we already have.
-So we already have a Phi and a Phi prime, and they are different networks, so we'll just use those in place of Phi A and Phi B.
-So in standard Q learning, if we write it out in this argmax way, which is exactly equivalent, our target value is Q Phi prime, evaluated at the argmax from Q Phi prime.
-In double-Q learning, we select the action using Q Phi, but evaluate it using Q Phi prime.
-So now as long as Phi prime and Phi are not too similar, then these will be de-correlated.
+So we already have a ϕ and a ϕ prime, and they are different networks, so we'll just use those in place of ϕ A and ϕ B.
+So in standard Q learning, if we write it out in this argmax way, which is exactly equivalent, our target value is Q_ϕ prime, evaluated at the argmax from Q_ϕ prime.
+In double-Q learning, we select the action using Q Phi, but evaluate it using Q_ϕ prime.
+So now as long as ϕ prime and ϕ are not too similar, then these will be de-correlated.
 So this is the only difference.
-We're using Phi to select the action instead of Phi prime.
+We're using ϕ to select the action instead of ϕ prime.
 And we still use the target network to evaluate our value to avoid this kind of moving targets problem.
-Now you could say that we do still have a little bit of the moving targets problem, because as our Phi changes, so does our action, but presumably the change in the argmax is a very sudden, discrete change, and it doesn't happen all the time.
+Now you could say that we do still have a little bit of the moving targets problem, because as our ϕ changes, so does our action, but presumably the change in the argmax is a very sudden, discrete change, and it doesn't happen all the time.
 So if you have three different actions, the argmax isn't going to change as often.
-Now something I might mention here is that, and many of you might already be thinking about this, Phi prime and Phi are of course not totally separate from each other, because periodically you do set Phi prime to be equal to Phi.
+Now something I might mention here is that, and many of you might already be thinking about this, ϕ prime and ϕ are of course not totally separate from each other, because periodically you do set ϕ prime to be equal to ϕ.
 So this solution is far from perfect.
-It doesn't totally de-correlate Phi prime and Phi.
+It doesn't totally de-correlate ϕ prime and ϕ.
 But in practice, it actually tends to work pretty well, and it actually mitigates a large fraction of the problems with overestimation.
 But of course not all of them.
 Alright.
@@ -144,8 +144,8 @@ And that's the use of multi-step returns.
 So our Q-learning target is, and here I intentionally am writing it out with time steps, is Rjt plus the max at t plus one.
 And where does the signal in this learning process come from?
 Well, if your initial Q function is very bad, it's essentially random, then almost all of your learning has to come from the R.
-So if your Q Phi prime is good, then the target values do most of the heavy lifting.
-If your Q Phi primes are bad, then the only thing that really matters is the reward, and that second term is essentially just contributing noise.
+So if your Q_ϕ prime is good, then the target values do most of the heavy lifting.
+If your Q_ϕ primes are bad, then the only thing that really matters is the reward, and that second term is essentially just contributing noise.
 And early on in training, your Q function is pretty bad, so almost all of your learning signal really comes from the reward.
 Later on in training, your reward, you know, your Q function becomes better, and the Q values are much larger in magnitude than the rewards, so later on in training, the Q values dominate.
 But your takeoff, your initial learning period, can be very slow if your Q function is bad, because this target value is mostly dominated by the Q value.

@@ -9,7 +9,7 @@ Instead of doing this pseudo-count thing, what if you still do regular counts, b
 So perhaps what you could do is you could take your states and you compute a kind of a hash that compresses the state, so it's a lossy hash, in such a way that states that are very different get...
 get very different hashes, but states that are very similar might be...
 might map to the same hash.
-So the idea is that we're going to compress s into a k-bit code via some encoder phi of s.
+So the idea is that we're going to compress s into a k-bit code via some encoder ϕ of s.
 And if k is chosen to be small enough, such that the number of states is larger than 2 to the k, then we'll have to compress some states into the same code.
 And then we will do counting, but we'll count with respect to these codes.
 We'll actually count how many times we've seen the same code instead of the same state.
@@ -110,11 +110,11 @@ So then we would say the novelty is low when the error is low, and the novelty i
 So then we could ask, well, what kind of function should we use for f star?
 And there are a number of different choices that have been explored in the literature.
 So one common choice is to set f star to be the dynamics.
-So basically f star of s a is s prime.
+So basically f star of s a is s'.
 That's very convenient because it's a quantity that clearly has something to do with the dynamics of the MDP, and of course you've observed s' in your data.
 So you could essentially train a model and then measure the error of that model as a notion of novelty.
 This is also related to information gain, which we'll discuss in the next part of the lecture.
-An even simpler way to do this is to just set f star to be a neural network with parameters phi, where phi is chosen randomly.
+An even simpler way to do this is to just set f star to be a neural network with parameters phi, where ϕ is chosen randomly.
 So this network is not actually trained, it's actually just initialized randomly to obtain an arbitrary but structured function.
 The point here is that you don't actually need f star to be all that meaningful.
 You just need it to be something that can serve as a target that varies over the state and action space in ways that are not trivial to model.

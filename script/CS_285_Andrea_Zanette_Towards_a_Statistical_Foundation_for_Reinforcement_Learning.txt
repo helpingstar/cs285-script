@@ -418,7 +418,7 @@ What is the covariance of the features?
 What is the covariance of the features?
 Well, the covariance, if this is a finite horizon problem, the covariance can really change through time steps.
 It's the covariance of the features.
-So sum of phi, phi transpose.
+So sum of phi, ϕ transpose.
 Feature extract.
 Yeah.
 Same as linear regression.

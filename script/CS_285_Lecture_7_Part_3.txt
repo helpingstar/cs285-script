@@ -9,7 +9,7 @@ So intuitively, the main reason that Fittick Q iteration allows us to get away w
 So as our policy changes, what really changes is this max.
 Remember, the way that we got this max was by taking the argmax, which is our policy, the policy in an argmax policy, and then plugging it back into the Q value to get the actual value for the policy.
 So inside of that max, you can kind of unpack it.
-And pretend that it's actually Q ϕ of s'_i comma argmax of Q ϕ, and that argmax is basically our policy.
+And pretend that it's actually Q_ϕ of s'_i comma argmax of Q_ϕ, and that argmax is basically our policy.
 So this is the only place where the policy shows up.
 And conveniently enough, it shows up as an argument to the Q function, which means that as our policy changes, as our action a'_i changes, we do not need to generate new rollouts.
 You can almost think of this as a kind of model.
@@ -56,7 +56,7 @@ Very much analogous to how you calculate the advantage value in Actor-Critic, in
 And then in step three, you take one gradient descent step on the error between your Q values and the target value that you just computed.
 So the equation that I have here, it looks a little complicated, but I basically just applied the chain rule of probability to that objective inside the art min in step three.
 So applying chain rule, you get dq d ϕ at s_i, a_i times the error q ϕ s_i, a_i minus yi.
-And the error in those parentheses, that q s_i, a_i minus yi, is something that you can do in the algorithm.
+And the error in those parentheses, that q s_i, a_i minus y_i, is something that you can do in the algorithm.
 So you can do that in the algorithm.
 So you can do that in the algorithm.
 So you can do that in the algorithm.

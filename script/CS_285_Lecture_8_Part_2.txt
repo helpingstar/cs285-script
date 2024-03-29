@@ -24,20 +24,20 @@ And then we will make a new batch.
 And then we will make a new batch.
 And then we will make an update on the parameters of our Q function.
 This update looks a lot like the update from before with replay buffers, but I've made one very small change, where now the parameters in the max are different parameter vectors.
-So it used to be that I would take the max over a' of Q phi, and now it's Q phi prime, where phi prime is some other parameter vector.
+So it used to be that I would take the max over a' of Q phi, and now it's Q_ϕ prime, where ϕ prime is some other parameter vector.
 And then, of course, after I make a k of these back and forth updates, which, again, is a little bit more complicated, I'm going to make a new batch.
 And then, of course, after I make a k of these back and forth updates, which, again, is a little bit more complicated, could be just k equals 1, could be just k equals 1, I'd go out and collect more data.
-And then I have a big outer loop where, after n steps of data collection, I'm going to actually update phi prime and set it to be phi.
+And then I have a big outer loop where, after n steps of data collection, I'm going to actually update ϕ prime and set it to be ϕ.
 So this looks a lot like the fitter-q duration procedure I had before, because essentially I'm making multiple updates with the same target values.
-Because if phi prime stays the same, then the entire target value stays the same.
+Because if ϕ prime stays the same, then the entire target value stays the same.
 Except that I might still be collecting more data, except that I might still be collecting more data, data in that inner loop.
-So step two, the data collection is now inside the updates to phi prime.
+So step two, the data collection is now inside the updates to ϕ prime.
 And the reason for doing this is because in practice, you often want to collect data as much as possible, whereas for stability, you typically don't want to update your target network parameters quite as often.
 So some sensible back of the envelope choices, k could be between one and four.
 So we might take between one and four steps between each time when we collect more data, but n might be around 10,000.
 So we might take as many as 10,000 steps before we change our target values, and that's to make sure that we're not trying to hit a moving target, because it's very hard to hit a moving target with supervised regression.
-So initially, we initialize both phi and phi prime to be essentially a random initialization, and then after the first n steps, which could be 10,000, we're going to update phi prime to set it to be equal to phi.
-But then phi prime will remain static for the next 10,000 steps.
+So initially, we initialize both ϕ and ϕ prime to be essentially a random initialization, and then after the first n steps, which could be 10,000, we're going to update ϕ prime to set it to be equal to ϕ.
+But then ϕ prime will remain static for the next 10,000 steps.
 And that means that step four starts looking a lot more like supervised regression, and for that reason, step four is easier to do, it's much more stable, and you're much more likely to get an algorithm that learns a meaningful q function.
 So your targets don't change in the inner loop.
 And that means that essentially step two, three, and four looks a lot like supervised regression, with the only real difference being that you might collect more data, and that data could be collected using your latest, for instance, epsilon 3d policy.
@@ -50,10 +50,10 @@ Step two, sample a mini batch from your buffer uniformly at random.
 So this mini batch might not even contain the transition that you just took in the real world.
 Step three, compute a target value for every element in your mini batch.
 And you compute these target values now using your target network, q5 prime.
-Step four, update the current network parameters phi by essentially taking the gradient for the regression onto those target values.
-Now notice that so far, phi has not been used anywhere else, except maybe in step one, if you're using an epsilon 3d policy, because then in step one, you take your action based on the epsilon 3d sampling rule for the policy induced implicitly by the argmax over q5.
+Step four, update the current network parameters ϕ by essentially taking the gradient for the regression onto those target values.
+Now notice that so far, ϕ has not been used anywhere else, except maybe in step one, if you're using an epsilon 3d policy, because then in step one, you take your action based on the epsilon 3d sampling rule for the policy induced implicitly by the argmax over q5.
 So that's the other place where q5 might be used.
-And then step five, which is only done every n steps, is to update phi prime by replacing phi prime with phi.
+And then step five, which is only done every n steps, is to update ϕ prime by replacing ϕ prime with ϕ.
 And as I said, n might be around, maybe, 10,000.
 And then you repeat this process.
 Now something to note is that this procedure is basically a special case of the more general procedure at the top of this slide.
@@ -72,32 +72,32 @@ There's something a little strange about this way of updating target networks.
 There's something a little strange about this way of updating target networks.
 And here's some intuition to illustrate some of the strangeness.
 This strangeness is not necessarily really bad, it's just a little bit strange.
-So let's say that I sampled my transition and then I updated my phi and then I sampled another transition and I updated my phi again.
+So let's say that I sampled my transition and then I updated my ϕ and then I sampled another transition and I updated my ϕ again.
 So blue boxes are samples, that's basically step one.
 Green boxes that's step two, three and four.
 And then I keep going like this.
 And then I keep going like this.
 And then over here on this step, maybe my target network is obtained from the first step.
-So perhaps at the first step when I started out, phi prime is equal to phi.
+So perhaps at the first step when I started out, ϕ prime is equal to ϕ.
 So at the third step, I get my target values back from the first step.
 And at the second step, I get them from the first step.
 And the fourth step, I get them from the first step.
-And then if the fourth step is where I update phi prime to be equal to phi, so basically if my n is equal to four, in practice n would be much larger, but let's say it's equal to four.
-Then at the fifth step, I get my phi prime from the preceding step.
+And then if the fourth step is where I update ϕ prime to be equal to phi, so basically if my n is equal to four, in practice n would be much larger, but let's say it's equal to four.
+Then at the fifth step, I get my ϕ prime from the preceding step.
 So it seems like in different steps, the target values are lagged by very different amounts.
 If you're at the step right after n, if you're at the n plus one step, your target network is only one step old.
 And if you're right before a flip, then it's n minus one steps old.
 So it seems like at different points in time, your target values look more like a moving target than others.
-If you're right after that point where you set phi prime to phi, if you're right after that point where you set phi prime to phi, if you're right after that point, if you're right after one of these flips, then your target really looks like a moving target.
+If you're right after that point where you set ϕ prime to phi, if you're right after that point where you set ϕ prime to phi, if you're right after that point, if you're right after one of these flips, then your target really looks like a moving target.
 And if it's been a long time, then it really doesn't look like a moving target.
 So this feels a little off.
 It's not actually that big of a problem, but if it feels a little bit off, then one common choice that you could do is you could use a different kind of update, which is kind of similar to polyac averaging.
 So those of you that are familiar with convex optimization might recognize this as essentially a variant of polyac averaging.
-So a popular alternative is to set phi prime at every single step to be tau times the old phi prime plus one minus tau times the new phi.
-So you can think of this as phi prime is gradually interpolating between its old value and the new value defined by phi.
+So a popular alternative is to set ϕ prime at every single step to be tau times the old ϕ prime plus one minus tau times the new ϕ.
+So you can think of this as ϕ prime is gradually interpolating between its old value and the new value defined by ϕ.
 And you would choose tau to be a pretty big number.
 So for instance, you might choose it to be 0.999.
-So that means that one part of out of a thousand is essentially coming from phi and the rest of the value is going to be 0.9999.
+So that means that one part of out of a thousand is essentially coming from ϕ and the rest of the value is going to be 0.9999.
 So for example, two- todo is ourselves customize Bailey.
 We can change the sheep to one-displaystyle and the sheep to one-deep.
 Now the way that that's going to work is if I get all of the animals, I'd actually scenecut them so that I do one-third of and then rotate every animal- bracket.
@@ -106,6 +106,6 @@ So what I'm looking at is a, kind of using an automatic stigator mode where you'
 So, justallah.
 Alt- cide зн but some, and that comes from the connection to polyac averaging.
 I'm not going to go into it in this lecture, but if you want to learn more about why it's okay to linearly interpolate parameters of nonlinear functions in this way, look up polyac averaging.
-And of course the caveat is that this only makes sense if phi prime is similar to phi.
-So if phi prime was a totally different neural network trained in a totally separate way, this might be a little bit strange, but because you're gradually making phi prime more and more similar to phi, this procedure is actually alright.
-And of course the nice thing about this is that now phi prime is updated the same way every single step, so every step is lagged by the same amount.
+And of course the caveat is that this only makes sense if ϕ prime is similar to ϕ.
+So if ϕ prime was a totally different neural network trained in a totally separate way, this might be a little bit strange, but because you're gradually making ϕ prime more and more similar to phi, this procedure is actually alright.
+And of course the nice thing about this is that now ϕ prime is updated the same way every single step, so every step is lagged by the same amount.

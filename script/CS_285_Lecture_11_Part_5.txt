@@ -49,7 +49,7 @@ If we have a latent space model, now we have a P of OT given s_t and a P of s_t 
 So we have to maximize the log probabilities of both of those, and potentially also the reward model, if we want to add that in.
 If we knew the states, then this would be easy.
 Then we would just add together log P5, P5, P5 and P5.
-st plus one given s_t at to log p phi ot given st.
+st plus one given s_t at to log p ϕ ot given st.
 The problem is that we don't know what s is, so we have to use an expected log likelihood objective where the expectation is taken over the distribution over the unknown states in our training trajectories.
 Those of you that are familiar with things like hidden Markov models, it's basically the same idea.
 So we would need some sort of algorithm that can compute a posterior distribution over states given our images and then estimate this expected log likelihood using states sampled from that approximate posterior.
@@ -99,7 +99,7 @@ So we can simply remove the expectation.
 So we can simply remove the expectation.
 So we can simply remove the expectation.
 So we can simply remove the expectation.
-Then you could optimize both phi and psi jointly by back-propagating through this whole thing.
+Then you could optimize both ϕ and psi jointly by back-propagating through this whole thing.
 If the dynamics is stochastic, then you want to use something called the reparameterization trick to make this possible to solve with gradient descent, which I'll cover next week.
 But you could also use deterministic dynamics in this case and have a fully deterministic state-space model of this sort.
 So the short version is write down this objective, and then optimize it with back-propagation and gradient descent.

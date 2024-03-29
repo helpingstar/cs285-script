@@ -82,7 +82,7 @@ And it's going to run a short model-based rollout from that state.
 And there's a choice you can make here.
 You can either use your latest policy or the policy that collected the data or something else.
 The most common choice would be to use your latest policy.
-So you would actually use your current parameters phi and do the argmax or use the corresponding actor.
+So you would actually use your current parameters ϕ and do the argmax or use the corresponding actor.
 And then you would take these transitions you're collecting from the model and you would push them into the buffer of model-based transitions.
 And now when you're doing your Q function regression, you would sample some data from your model-based buffer and some data from your real buffer.
 You want to keep them separate because you want to be able to modulate how much real data versus how much synthetic data you use.

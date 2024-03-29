@@ -12,7 +12,7 @@ Remember that the RL algorithms are going to consist of three parts.
 The orange box, which is to generate samples, the green box, which fits some kind of model, and the blue box that improves the policy.
 And whatever we do in the green box, essentially its purpose is to allow us to understand how good our policy is, because if we can understand how good our policy is, then we can improve it.
 I know that's a little bit abstract, but I'll make this more concrete in a second.
-So if we're talking about model-based RL, classically in the green box we would fit a model, some kind of f of s,a that predicts s prime.
+So if we're talking about model-based RL, classically in the green box we would fit a model, some kind of f of s,a that predicts s'.
 And then in the blue box we would use either planning or the algorithms we discussed in the previous parts to improve the policy.
 So really, this makes it, I think, quite clear that the role of the model is really to evaluate the policy.
 A model is something that, under which you should be able to simulate your policy and get back an estimate of the policy's expected return.
@@ -117,41 +117,41 @@ So for a successor representation, if you can learn these vectors mu pi as a fun
 Take the vector mu pi st, basically the probability of landing in all future states given you start in st, and take a dot product of it with a vector of all rewards.
 But of course these vectors might be really huge, so you probably don't want to construct them.
 So instead of constructing these vectors, what if we construct their projections onto some basis?
-So let's say that we're given some features, maybe our features are five, and we're given some features of phi.
-What does phi represent?
-Well maybe phi represents some basis of images, maybe it represents some hand-designed features, whatever it is, some kind of features.
-So you have features and we'll index them as phi j.
-So phi j s is a number, and you can think of phi 1 s, phi 2 s, phi 3 s, phi 4 s, etc., phi n s, and that's n features.
+So let's say that we're given some features, maybe our features are five, and we're given some features of ϕ.
+What does ϕ represent?
+Well maybe ϕ represents some basis of images, maybe it represents some hand-designed features, whatever it is, some kind of features.
+So you have features and we'll index them as ϕ j.
+So ϕ j s is a number, and you can think of ϕ 1 s, ϕ 2 s, ϕ 3 s, ϕ 4 s, etc., ϕ n s, and that's n features.
 So each feature is a function over s, and there's n of them.
-Well, then we can construct what are called successor features, and we can say that the successor features are essentially going to be the projection of mu onto phi.
-So the jth successor feature at s, t is just the sum over all s of mu s, s, t, phi j, s.
+Well, then we can construct what are called successor features, and we can say that the successor features are essentially going to be the projection of mu onto ϕ.
+So the jth successor feature at s, t is just the sum over all s of mu s, s, t, ϕ j, s.
 So you're basically going to average over all the states, weighted by the feature values of those states.
 It's the expected value over the states of those states.
 of that feature.
-You can also write this with linear algebra, if you represent mu as a vector, then psi j of s, t is just mu s, t dotted with the vector phi j, where the vector phi j is of length equal to the number of states, with each entry corresponding to that state's feature value for phi j.
-So it's almost like phi j is like a pseudo-reward, and psi j is its pseudo-value function.
+You can also write this with linear algebra, if you represent mu as a vector, then psi j of s, t is just mu s, t dotted with the vector ϕ j, where the vector ϕ j is of length equal to the number of states, with each entry corresponding to that state's feature value for ϕ j.
+So it's almost like ϕ j is like a pseudo-reward, and psi j is its pseudo-value function.
 And you're going to construct many of these things.
 So now here's an interesting property.
-If we can express the reward function as a weighted combination of the features phi, so if r of s is equal to the sum over j of phi j of s times some weight w j, or put another way, if r of s is the dot product between the vector of features at state s and some weights w, then it turns out that the value function could be recovered, with those same weights w.
+If we can express the reward function as a weighted combination of the features phi, so if r of s is equal to the sum over j of ϕ j of s times some weight w j, or put another way, if r of s is the dot product between the vector of features at state s and some weights w, then it turns out that the value function could be recovered, with those same weights w.
 It turns out that v pi of s, t is psi pi s, t dotted with the same w.
 This is actually quite easy to prove, so all we have to do is first write this dot product out as a sum, so it's a sum over all features j of psi j s, t times w j, and then we'll just take the definition of psi j up above, and plug that in.
-So psi j is just the inner product, and we'll just write it down as a sum over all features j of mu and phi j.
-Now phi j here is now a matrix.
+So psi j is just the inner product, and we'll just write it down as a sum over all features j of mu and ϕ j.
+Now ϕ j here is now a matrix.
 It's going to have one row for every possible state, and one column for every feature.
 Okay?
-Sorry, phi is going to have that.
-So phi j then is just a vector, which corresponds to rows of that matrix.
+Sorry, ϕ is going to have that.
+So ϕ j then is just a vector, which corresponds to rows of that matrix.
 So I've just substituted in the equation for psi up above.
-And now of course mu pi s, t doesn't depend on j, so I can take mu pi s, t out, so it's mu pi s, t transpose times the sum over j of phi j w, but up above that's exactly how we define the reward.
+And now of course mu pi s, t doesn't depend on j, so I can take mu pi s, t out, so it's mu pi s, t transpose times the sum over j of ϕ j w, but up above that's exactly how we define the reward.
 So this product between the phi's and w's is just the reward, so we can just write it down as a vector.
 So this is exactly mu s, t transpose times the vector of rewards.
-So this basically shows that instead of working with the successor representation itself, you can project the successor representation onto some basis, in this case the basis defined by the features phi, and as long as your reward function lies in that same basis, meaning that you have some weights w, such that the reward is equal to phi of s transpose w, then you can construct instead of the successor representation, these successor features psi, and for the same weights w you'll recover the value function.
-And of course the key to this is that the dimensionality of phi and psi can be a lot lower than the number of possible states, and this can give you a much more tractable algorithm.
+So this basically shows that instead of working with the successor representation itself, you can project the successor representation onto some basis, in this case the basis defined by the features phi, and as long as your reward function lies in that same basis, meaning that you have some weights w, such that the reward is equal to ϕ of s transpose w, then you can construct instead of the successor representation, these successor features psi, and for the same weights w you'll recover the value function.
+And of course the key to this is that the dimensionality of ϕ and psi can be a lot lower than the number of possible states, and this can give you a much more tractable algorithm.
 So if the number of features is much less than the number of states, learning this is much easier.
 So if you have let's say 10 million states, maybe doing vector valued backups on mu with 10 million dimensions is much easier, because it's less impractical, but maybe you summarize them with 100 features, and doing the backups on 100 features is much more tractable.
 So this is the Bellman backup equation for mu, the Bellman backup equation for psi is basically exactly the same.
-The only difference now is instead of this δ function s equals i, we just put in the feature phi j.
-And you can almost think of mu as a special case where phi is the δ function.
+The only difference now is instead of this δ function s equals i, we just put in the feature ϕ j.
+And you can almost think of mu as a special case where ϕ is the δ function.
 So basically mu, the successor representation, is a special kind of successor feature where the phi's happen to be canonical vectors, vectors that are one in one state and zero everywhere else.
 But in general you can construct other bases including much smaller bases and recover much more tractable successor features.
 You can also construct a Q function like version.
@@ -159,19 +159,19 @@ So these successor features are functions of only the state, and they can be use
 You can also construct successor features that are a function of the state and action.
 Exactly the same way, just use a Q backup instead of a value backup.
 So here the action is an input, and then the expectation is taken over the next state and the next action.
-Same exact idea, and then the Q function can be recovered as psi pi transpose w, as long as the reward is phi transpose w.
+Same exact idea, and then the Q function can be recovered as psi pi transpose w, as long as the reward is ϕ transpose w.
 So how can we use successor features?
 Well, here's one idea.
 What if we use it to recover a Q function, very quickly?
 So step one, train psi pi, STAT, for a particular policy pi, with Bellman backups.
-So essentially what this means is that someone specifies a basis phi.
+So essentially what this means is that someone specifies a basis ϕ.
 We haven't defined how to specify that basis, that's a design choice you have to make, but let's say that you can specify a basis somehow, maybe you manually defined 128 features, you can learn their corresponding psi pi's, just with those Bellman backups, with some data.
 You can run your policy or just use some off-putting, and then you can run your policy data and recover psi pi.
 Step two, someone gives you some reward samples, basically some tuples of state and reward.
 Maybe you gather these by running your policy, it doesn't matter, but somehow you obtain pairs of states and their rewards.
-Solve for a vector w, to minimize the difference between phi si times w, and the sampled reward.
+Solve for a vector w, to minimize the difference between ϕ si times w, and the sampled reward.
 So essentially do least squares regression onto those rewards.
-And this is where it's important for your features phi to be a sufficiently expressive basis, so that you can actually approximate the reward accurately.
+And this is where it's important for your features ϕ to be a sufficiently expressive basis, so that you can actually approximate the reward accurately.
 And then you can recover the q function just by taking those same w's, and multiplying your psi by them.
 Now the reason that this is quite elegant is because, conceivably you could reuse the same successor feature of psi pi, for many different rewards.
 So you can trade the psi pi once, and then use it to evaluate q functions for many different reward functions.

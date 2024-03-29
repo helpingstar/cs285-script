@@ -187,8 +187,8 @@ Erdem here was Vichy student in our group.
 His thesis is basically on this.
 I'm summarizing his thesis in one slide.
 But basically the idea here is what we would like to do is you would like to find a set of trajectories, like two trajectories maybe, that you want to generate.
-And this phi here corresponds to those two trajectories.
-This phi is the difference between feature vectors of those two trajectories.
+And this ϕ here corresponds to those two trajectories.
+This ϕ is the difference between feature vectors of those two trajectories.
 And what I would like to do is you would like to find trajectories that are information gathering.
 So what we are going to optimize is some sort of information, theoretical metric.
 And then we have explored a number of information, theoretical metrics.

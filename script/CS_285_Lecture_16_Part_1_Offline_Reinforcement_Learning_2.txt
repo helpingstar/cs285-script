@@ -196,7 +196,7 @@ And both of those can have errors.
 Can we actually avoid that?
 Can we somehow avoid all out-of-distribution action queries when computing the target values?
 Well, here's the target value computation.
-And let's say that this, the second term, that's v of s prime.
+And let's say that this, the second term, that's v of s'.
 Okay?
 So that's the value, ideally the value for pi nu.
 But let's just say it's just another neural network.

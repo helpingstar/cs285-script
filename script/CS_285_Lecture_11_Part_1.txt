@@ -23,7 +23,7 @@ So we could start with the first step, which is to run some basic exploration po
 We could start with step one, which is to run some basic exploration policies.
 to collect some data, and this exploration policy could just be a completely random policy.
 It's not a neural network or anything like that, it just selects actions uniformally at random and collects a data set of transitions.
-So here our transition is a tuple s comma a comma s prime.
+So here our transition is a tuple (s,a,s').
 We saw state s, we took action a, and we arrived at state s' and that got us our transition, and we'll have a data set of these transitions.
 We can use this data set to then train our model with supervised learning.
 So we'll learn a dynamics model of this model and combine values 0,1, and 4 with a 들어 Cage equations.
