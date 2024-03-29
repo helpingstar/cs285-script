@@ -84,7 +84,7 @@ What does the term offline RL really mean?
 Well, so these are the pictures we had on the previous slide.
 But formally, we're going to say that we have a data set D.
 And just like in our discussion of Q learning from before, the data set is really a data set of transitions, state, action, next state and reward.
-Now, these transitions are likely to be arranged into trajectories, meaning that, you know, for the first transition, the S prime is actually the S for the second transition.
+Now, these transitions are likely to be arranged into trajectories, meaning that, you know, for the first transition, the s' is actually the S for the second transition.
 So very likely it's, it's arranged into trajectories.
 But the algorithms that we're going to discuss, usually don't assume that with the exception of important sample policy gradients.
 But most dynamic programming algorithms, most algorithms that are based on Q functions, just assume that your data set is arranged into transitions, we will have states and we will often refer to stick distributions.

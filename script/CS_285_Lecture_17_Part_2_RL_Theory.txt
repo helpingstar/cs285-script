@@ -24,7 +24,7 @@ Let's unpack this a little bit.
 So r hat is, in this case, for the purpose of this analysis, just the reward averaged over all the times when we've seen the state S a.
 So the value in r hat for S a is just the sample average, 1 over the number of times we've seen S a, times the sum over all of our samples of r hat.
 So that's the average reward we've seen for that state action tuple.
-And p hat, basically the same as before, is the number of times we've seen the transition S a S prime divided by the number of times we've seen S a.
+And p hat, basically the same as before, is the number of times we've seen the transition S a s' divided by the number of times we've seen S a.
 Now this might look like the same kind of idea that we had in the model-based analysis before, but note that these are not models.
 This is the effect of averaging together different transitions in the data.
 So what we would do in a real fitted q-iteration algorithm is we would have different losses for every single sample.
@@ -81,7 +81,7 @@ Well this is exactly Hoeffding's inequality.
 So if we just directly plug in the formula for Hoeffding's inequality we get that the difference between r hat and r is just going to be less than or equal to 2 times the max of impossible reward, that's basically the range of rewards of the b plus minus b minus, times the square root of 1 over δ over 2n.
 So our familiar bound, the error will scale as 1 over root n.
 For the second part this is just the sum over all next states of the difference of p hat and p times the maximum over the action of qs prime a prime.
-And we can bound that by a replacing the max over a prime with a max over s prime and a prime.
+And we can bound that by a replacing the max over a prime with a max over s' and a prime.
 So that'll make this this q term independent of s prime, right?
 Because if you average together the you know the values of some vector that's the same that that's bounded by summing together the maximum values of that vector because any entry in the vector is less than or equal to its maximum.
 And now looking at this equation hopefully you'll recognize this as the total variation divergence between p hat and p.

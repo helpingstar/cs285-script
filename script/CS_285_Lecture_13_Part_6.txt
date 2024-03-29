@@ -6,7 +6,7 @@ We could ask for information gain about the state density P of S, which sounds a
 So that goes back to the first category of methods.
 So it's kind of weird.
 It's a weird choice, but it actually kind of makes sense.
-Another thing you could do is information gain about dynamics, about P of S prime given S A.
+Another thing you could do is information gain about dynamics, about p(s'|s,a).
 And this is a very reasonable choice because information gain about the dynamics shows that you're learning something about the MDP.
 So if you assume that the reward of the MDP is mostly sparse, meaning that it's mostly zero everywhere, then the main thing there is to learn about is the dynamics of the MDP.
 And since the MDP is fully determined by the initial state, the dynamics, and the reward, and the reward is not informative, and the initial state is very easy to determine, then it makes sense that you would ask for information gain about the dynamics because that's the one thing that varies quite frequently and provides a useful signal.
@@ -38,10 +38,10 @@ So in fact, it's exactly equivalent to the KL divergence.
 Now we're going to be learning about the dynamics.
 So the quantity of the dynamic is going to be the quantity of the dynamic.
 And the quantity of the Z is the parameter vector theta that describes the dynamics model.
-So we have some dynamics model P theta of st plus 1 given st at, using any of the techniques we discussed in the model-based RL lectures.
+So we have some dynamics model P theta of s_t plus 1 given s_t at, using any of the techniques we discussed in the model-based RL lectures.
 And the quantity of interest z is theta.
 And the observation y is a transition.
-It's a tuple st at st plus 1.
+It's a tuple s_t at s_t plus 1.
 And the question we're going to ask is, well, which action should we be taking to get the most informative transitions, the transitions that are the most informative about theta?
 So then the KL divergence that we want is the following.
 We want to maximize the KL divergence between P theta, given our history, given all the data we've seen so far, and the new transition against P of theta given only our history.

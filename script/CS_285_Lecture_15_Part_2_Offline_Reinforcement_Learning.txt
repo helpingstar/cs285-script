@@ -49,7 +49,7 @@ Now, I didn't actually change anything.
 This is just because multiplication commutes, so this is just exploiting the commutative property.
 To just write the same exact importance weight in a different way.
 But writing it in this way makes it a little bit more apparent that there are really two parts to the importance weight.
-The part that multiplies all the actions prior to little t, which you can think of as essentially accounting for the fact that pi theta has a different probability of reaching the state st than pi beta does.
+The part that multiplies all the actions prior to little t, which you can think of as essentially accounting for the fact that pi theta has a different probability of reaching the state s_t than pi beta does.
 And then all the stuff afterwards, which basically accounts for the fact that your value, the value q had that you estimate by summing up the rewards in pi beta, might be different from the value that you would get from pi theta.
 So the second part of the weight accounts for the difference in reward to go.
 So the first part accounts for the difference in probability of landing in st, because we have states sampled from d pi beta and we want states from d pi theta.
@@ -158,7 +158,7 @@ But you can still do this with importance sampling.
 So you can do this with a bandit with importance sampling.
 It's a little weird, but it works.
 And it gives us the intuition for the multi-step case.
-So a regular importance sampled bandit would just be rho SA times RSA.
+So a regular importance sampled bandit would just be rho s,a times RSA.
 Right.
 So we have rewards from some other distribution.
 And we're going to multiply them by an importance weight.
@@ -169,7 +169,7 @@ But now let's say that we have some guess.
 So we have some guess V hat S and some guess Q hat SA.
 And how do we get this guess?
 Well, maybe we just train a neural network to regress onto the values.
-One thing we need here is we need V hat S to actually be the expected value of Q hat SA with respect to the actions.
+One thing we need here is we need V hat S to actually be the expected value of Q hat s,a with respect to the actions.
 But that's pretty easy to get.
 You know, you could just estimate Q hat SA.
 And then just estimate V hat S with samples from your policy.
@@ -229,7 +229,7 @@ called GENDIZE.
 I won't go through this in detail because the derivation for this is kind of involved, and I've already spent quite a bit of time on it.
 It's an important sampling.
 But I want to just give you a taste for what the general gist of this is.
-So if you look at this consistency condition, you can see that on the left-hand side, you have the probability of seeing a state and an action S prime A prime under the behavior policy pi beta times the weight.
+So if you look at this consistency condition, you can see that on the left-hand side, you have the probability of seeing a state and an action s' A prime under the behavior policy pi beta times the weight.
 Now, what's going on here?
 Well, if you multiply d pi beta by the weight, you get d pi theta, right?
 Because the weight is d pi theta over d pi theta.
@@ -237,11 +237,11 @@ So what this is really describing is a condition that state action marginals nee
 When it comes time to actually optimize this in practice, of course, we're going to subtract the right-hand side from the left-hand side, and as long as we get a multiplier of d pi beta in front of everything, then we can approximate it with samples.
 So in reality, we never actually estimate these d pi beta terms directly.
 We always use samples from our data set as samples from d pi beta.
-So the left-hand side of this is just the probability of seeing S prime A prime under the policy pi theta.
-And the probability of seeing S prime A prime is basically equal to the probability that you start in S prime A prime, and that's what the first term captures.
-So it's the probability you start in S prime times the probability that you take the action A prime plus the probability that you transition into S prime A prime from another state.
-The probability you transition into S prime A prime from another state, in this case S A, is given by the probability that you are in that state, which is d pi theta S A, and that's exactly what the product of those last two terms gives you, times the probability that you make that transition, which is what you get by multiplying it by P of S prime, given S A, times pi theta A prime, given S prime.
-So this is the probability of starting in S prime A prime, and this is the probability of transitioning into it from another state, multiplied by the probability that you leave it in S prime A prime, that you are actually in that state, which is what the last two terms account for.
+So the left-hand side of this is just the probability of seeing s' A prime under the policy pi theta.
+And the probability of seeing s' A prime is basically equal to the probability that you start in s' A prime, and that's what the first term captures.
+So it's the probability you start in s' times the probability that you take the action A prime plus the probability that you transition into s' A prime from another state.
+The probability you transition into s' A prime from another state, in this case S A, is given by the probability that you are in that state, which is d pi theta S A, and that's exactly what the product of those last two terms gives you, times the probability that you make that transition, which is what you get by multiplying it by P of S prime, given S A, times pi theta A prime, given S prime.
+So this is the probability of starting in s' A prime, and this is the probability of transitioning into it from another state, multiplied by the probability that you leave it in s' A prime, that you are actually in that state, which is what the last two terms account for.
 So solving for WSA typically involves some kind of fixed point problem.
 So it involves subtracting the right-hand side from the left-hand side and minimizing the square difference.
 And the trick in deriving these algorithms is to basically turn that difference into an expected value under d pi beta, because once you can express it as an expected value under d pi beta, then you can use samples from d pi beta to estimate it.

@@ -58,7 +58,7 @@ But making this kind of assumption could be very convenient.
 Because it allows us to study how difficult learning is, essentially, if we assume that exploration is easy.
 Right.
 So one way to do this is to basically say we're going to have oracle exploration for every state action tuple.
-We're going to sample PS prime given SA n times.
+We're going to sample PS prime given s,a n times.
 So we'll just literally just like uniform carpet bomb the whole MDP.
 And then let's end at that point.
 The problem is still not solved.
@@ -108,10 +108,10 @@ And these kinds of qualitative questions, they're actually very important.
 They can guide our choice of parameters and algorithm design decisions and we can get some qualitative guidance on those things by doing theoretical analysis.
 So having understood all that, let's actually get into the meat of some of the analysis that we can do.
 So we'll start with some basic sample complexity analysis and a lot of what I'll present in this lecture follows the RL theory textbook by Alec Agrawal and others linked at the bottom of the slide, as well as some lecture slides that were made by Avril Kumar last year.
-So we'll start with the oracle exploration assumption, meaning that for every state action tuple we can sample the next state S prime n times.
+So we'll start with the oracle exploration assumption, meaning that for every state action tuple we can sample the next state s' n times.
 And the algorithm that we'll start with is a very basic kind of model-based algorithm.
 Now I use the term model-based rather loosely, this is actually a pretty idealized algorithm.
-So what we're going to do is we're going to estimate the transition probabilities P hat S prime given S a simply by counting the number of times that we transition into S prime from S a.
+So what we're going to do is we're going to estimate the transition probabilities P hat s' given S a simply by counting the number of times that we transition into s' from S a.
 A very simple tabular estimation strategy.
 So there's no function approximation here, there's no neural net, we're just doing tabular estimation, we're literally counting, how many times we land in a particular state s prime.
 This, of course, only makes sense if the states are discrete and the actions are discrete, and we can build a table with all these numbers.
@@ -212,7 +212,7 @@ So hopefully this gives you some idea of how these concentration inequalities wo
 You write down some equation for the probability that you'll be off by epsilon.
 And then you can manipulate that equation to solve for the probability δ or to solve for the number of samples.
 Now, in a lot of the analysis that we do in reinforcement learning, we're concerned with the fact that we're concerned with estimating probabilities of categorical variables.
-So p of s prime given sA is a distribution over a categorical variable, not a real valued variable.
+So p of s' given s,a is a distribution over a categorical variable, not a real valued variable.
 So Hoeffding's inequality applies to estimating the mean of a continuous valued random variable.
 But here, if we're estimating p hat, we're actually concerned with our accuracy in estimating the probability distribution over a categorical variable, in this case s prime.
 So a similar kind of concentration inequality can be derived for that.
@@ -244,7 +244,7 @@ And we can solve it for n.
 And we get that n is less than or equal to 1 over epsilon squared log 1 over delta.
 So all the same stuff.
 We can describe what the error will be as a function of the number of samples or how many samples we need as a function of the error and the probability.
-So if we just make a substitution, substitute the symbols for p hat, the cardinality of S prime is S, capital S.
+So if we just make a substitution, substitute the symbols for p hat, the cardinality of s' is S, capital S.
 Well, the cardinality of capital S.
 That's the number of states.
 So if we just plug this directly into this inequality, we know that if we use n samples for every state action tuple, then the total number of states is less than or equal to the square root of the number of states times 1 over the square root of n plus epsilon with probability 1 minus delta.
@@ -273,8 +273,8 @@ I just want to write down some equations that relate p to q pi for a fixed pi.
 And we saw this actually before when we talked about offline RL, but I'll just repeat it here for convenience.
 So we've got a fixed pi.
 So this is the Bellman equation.
-So q pi at some state, an action S A, is equal to the reward R S A plus gamma times the expected value over S prime, distributed according to p of S prime given S A, of v pi S prime.
-And v pi S prime, of course, is the expected value of q pi S prime A prime under pi.
+So q pi at some state, an action S A, is equal to the reward R S A plus gamma times the expected value over S prime, distributed according to p(s'|s,a), of v pi S prime.
+And v pi S prime, of course, is the expected value of q pi s' A prime under pi.
 And we can expand out the expectation, just write it as a sum.
 Writing it as a sum will make it easier to turn this into a linear algorithm, an algebra equation that we can then manipulate symbolically.
 So if we write this in vector notation, if we say that q is a vector with S A entries, R is a vector with S A entries, and p is a matrix, we can write q pi is equal to R plus gamma p v pi.

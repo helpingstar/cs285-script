@@ -164,7 +164,7 @@ Okay, so short version, Q learning and Fitted Q iteration are not actually doing
 There's also, unfortunately, another sad corollary to all this, which is that our Actor-Critic algorithm that we discussed before also is not guaranteed to converge under function approximation for the same reason.
 So there we also do a Bellman backup when we use a bootstrap update, and we do a projection when we update our value function, and the concatenation of those is not a convergent operator.
 So Fitted bootstrap policy evaluation also doesn't converge.
-And by the way, one aside about terminology, most of you probably already noticed this, but when I use the term V π, I'm referring to the value function for some policy π.
+And by the way, one aside about terminology, most of you probably already noticed this, but when I use the term V^π, I'm referring to the value function for some policy π.
 This is what the critic does.
 When I use V star, this is the value function for the optimal policy π star, and this is what we're trying to find in value iteration.
 Okay, so to review, we talked about some value iteration theory, we discussed the operator for the backup, the operator for the backup, the operator for the projection.

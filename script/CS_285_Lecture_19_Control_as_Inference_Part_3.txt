@@ -21,7 +21,7 @@ So essentially this kind of backup results in a kind of optimism bias.
 Now why does this happen?
 Well.
 Well, the first problem that we're solving is to infer the most likely trajectory given optimality.
-And then marginalizing and conditioning this, we get the policy P of At given St comma O one through T.
+And then marginalizing and conditioning this, we get the policy P of At given s_t comma O one through T.
 The question intuitively that this inference problem is asking is, given that you obtained high reward, what was your action probability?
 Now think back to the lottery example.
 If you know that you've got a million dollars.
@@ -29,7 +29,7 @@ that makes it more likely that you played the lottery.
 That doesn't mean that playing the lottery is a good idea.
 So fundamentally, the tension here is that the inference question we're asking is not quite the question to which we really want the answer.
 What we want to know is what would you have done if you were trying to be optimal, not what do I think you did given that you got a million bucks.
-And the issue that this really stems from is that the posterior probability of ST plus 1 given STAT and O1 through capital T is not the same as its prior probability.
+And the issue that this really stems from is that the posterior probability of s_t plus 1 given STAT and O1 through capital T is not the same as its prior probability.
 So when we perform this inference process, we're actually altering the dynamics to agree with our evidence.
 Again, the intuition here follows very nicely from the lottery example.
 If you know that you got a million bucks, and you bought the lottery ticket, there's a higher probability that you won the lottery.

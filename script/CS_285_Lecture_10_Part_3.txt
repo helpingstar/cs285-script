@@ -1,7 +1,7 @@
 Okay, so far we've covered black box optimization methods for planning and Monte Carlo tree search, which is suitable primarily for kind of discrete actions and stochastic environments.
 Next we're going to talk about trajectory optimization with derivatives.
 So far the methods we've discussed don't actually use derivatives of the dynamics, but in many cases in continuous environments we might actually know what the derivatives of the dynamics are.
-And as a bit of notation I mentioned before that in reinforcement learning and dynamic programming we like to use st and at to denote the state of action, and we like to use r for rewards.
+And as a bit of notation I mentioned before that in reinforcement learning and dynamic programming we like to use s_t and at to denote the state of action, and we like to use r for rewards.
 In optimal control it's much more common to use xt and ut for the state and action, and to use costs instead of rewards.
 Since this part of the lecture deals with trajectory optimization and optimal control methods that are most commonly studied in the optimal control program, we're going to talk about the trajectory optimization of the weld weld.
 The topic today is essentially the previous topic of the course.

@@ -19,7 +19,7 @@ And this is going to look like a kind of mix between the online Q learning algor
 So we're going to collect our data set using some policy, and we add that policy to our buffer.
 This is now step 2.
 Step 1 will be revealed later.
-We're going to then, in an inner loop, sample a batch, si, ai, si', ri, from this buffer.
+We're going to then, in an inner loop, sample a batch, s_i, a_i, si', ri, from this buffer.
 And then we will make a new batch.
 And then we will make a new batch.
 And then we will make an update on the parameters of our Q function.

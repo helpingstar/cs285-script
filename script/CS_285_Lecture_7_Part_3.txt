@@ -16,7 +16,7 @@ You can almost think of this as a kind of model.
 The Q function allows you to sort of simulate what kind of values you want to get out of the model.
 So you can simulate the values you would get if you were to take different actions.
 And then, of course, you take the best action if you want to most improve your behavior.
-So this max approximates the value of π prime, our greedy policy, at s'_i.
+So this max approximates the value of π', our greedy policy, at s'_i.
 And that's why we don't need new samples.
 We're basically using our Q function to simulate the value of new actions.
 So given a state and an action, the transition is actually independent of π.
@@ -36,9 +36,9 @@ So if you had a tabular update, you would just directly write those YIs into you
 So you could think of θ Q iteration as optimizing an error, the error being the Bellman error, the difference between Q, ϕ, SA, and those target values Y, and that is kind of the closest to an actual optimization objective.
 But of course, that error itself doesn't really reflect the goodness of your policy.
 It's just the accuracy with which you're able to copy your target values.
-If the error is 0, then you know that Q, ϕ, SA is equal to RSA plus γ max A prime Q, ϕ, s' A prime.
+If the error is 0, then you know that Q, ϕ, s,a is equal to RSA plus γ max A prime Q, ϕ, s' A prime.
 And this is an optimal Q function, corresponding to the error of fit.
-And this is an optimal Q function, corresponding to the optimal policy π prime, where the policy is recovered by the argmax rule.
+And this is an optimal Q function, corresponding to the optimal policy π', where the policy is recovered by the argmax rule.
 So this you can show maximizes reward.
 But if the error is not 0, then you can't really say much about the performance of this policy.
 So what we know about θ Q iteration is, in the tabular case, your error will be 0, which means that you'll recover Q star.
@@ -50,13 +50,13 @@ So, so far, the generic form of θ Q learning that we talked about has these thr
 Collect the data set, evaluate your target values, train your neural network parameters to fit those target values, and then alternate these two steps k times.
 And then after k times, go out and collect more data.
 You can instantiate a special case of this, of this algorithm with particular choices for those hyperparameters, which actually corresponds to an online algorithm.
-So in the online algorithm, in step one, you take exactly one action, ai, and observe one transition, si, ai, s'_i, ri.
+So in the online algorithm, in step one, you take exactly one action, ai, and observe one transition, s_i, a_i, s'_i, ri.
 Then in step two, you compute one target value for that transition that you just took.
 Very much analogous to how you calculate the advantage value in Actor-Critic, in online Actor-Critic, for the one transition that you just took.
 And then in step three, you take one gradient descent step on the error between your Q values and the target value that you just computed.
 So the equation that I have here, it looks a little complicated, but I basically just applied the chain rule of probability to that objective inside the art min in step three.
-So applying chain rule, you get dq d ϕ at si, ai times the error q ϕ si, ai minus yi.
-And the error in those parentheses, that q si, ai minus yi, is something that you can do in the algorithm.
+So applying chain rule, you get dq d ϕ at s_i, a_i times the error q ϕ s_i, a_i minus yi.
+And the error in those parentheses, that q s_i, a_i minus yi, is something that you can do in the algorithm.
 So you can do that in the algorithm.
 So you can do that in the algorithm.
 So you can do that in the algorithm.
@@ -79,7 +79,7 @@ So if we run the Q-duration algorithm, then it will essentially commit our argma
 And if that action is not a very good action, we might be stuck taking that bad action essentially in perpetuity, and we might never discover that better actions exist.
 So in practice, when we run fitted Q-duration or Q-learning algorithms, it's highly desirable to modify the policy that we use in step one to not just be the argmax policy, but to inject some additional randomness to produce better results.
 So a很多 validate Brotherhood theory where this Eso, with probability one minus Epsilon you will take the greedy action And then with probability utility that will be probably probability epsilon, you will take one of the other actions uniformly at random.
-So the probability of every action is 1 minus epsilon if it's the arc max, and then epsilon divided by the number of actions minus 1 otherwise.
+So the probability of every action is 1 minus epsilon if it's the argmax, and then epsilon divided by the number of actions minus 1 otherwise.
 This is called epsilon reading.
 Why might this be a good idea?
 Well, if we choose epsilon to be some small number, it means that most of the time we take the action that we think is best.

@@ -46,7 +46,7 @@ So that's where we've seen this before.
 So the first term is just equal to the ratio of beta STAT divided by beta ST, and if you don't remember how to compute beta, please go back to the lecture on Monday and re-watch the first inference problem.
 And the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the backward message over STAT.
 And again, if you don't remember how we derived this, go back to the lecture on Monday and watch the third inference problem.
-Now here the beta ST in the denominator of the first expression cancels out with the beta ST in the numerator of the second expression, and we just get the answer that this quantity is proportional to beta STAT times alpha ST.
+Now here the beta s_t in the denominator of the first expression cancels out with the beta s_t in the numerator of the second expression, and we just get the answer that this quantity is proportional to beta STAT times alpha ST.
 And then you have to normalize it over states and actions, but not over trajectories, crucial.
 So this is a much more tractable thing to normalize if you have a relatively small state space.
 Okay, so now the way that we can estimate this second term is by first calculating this quantity that I'm going to call mu T, the state action marginal, and we calculate that by multiplying the backward messages by the forward messages, and normalizing overall states and actions.

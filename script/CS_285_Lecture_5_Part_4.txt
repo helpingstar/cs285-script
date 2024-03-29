@@ -65,7 +65,7 @@ I wanted to derive it in this other way on the slide, just so that you could see
 Interestingly enough, if you estimate this gradient locally, so if you use this importance sampling derivation to evaluate the gradient at θ = θ', then the importance weight comes out equal to one, and you recover the original policy gradient.
 So this derivation actually gives you a different way to derive the same policy gradient that we had before.
 But in the off-policy setting, θ' is not equal to θ, and in that case, we have to fall back on our importance weights, which we derived before, as simply the ratio of the products of the policy probabilities.
-And if we substituted in all three now the terms in this policy gradient, the importance weights are product overall time steps of π_{θ'}/π_θ.
+And if we substituted in all three now the terms in this policy gradient, the importance weights are product over all time steps of π_{θ'}/π_θ.
 The ∇log π part is a sum over all time steps of ∇_{θ'} log π_{θ'}, and the reward is a sum over all time steps of the reward.
 So we have three terms inside of our importance sampled off-policy policy gradient estimator, and we just multiply those three terms together.
 Now what about causality?
@@ -111,12 +111,12 @@ But writing it out in this way allows us to perform a little trick.
 We can split up using the chain rule, we can split up this marginal, both in the numerator and the denominator, into the product of two terms, a state marginal, π_{θ'}(s_{i,t}), and the action conditional, π_{θ'}(a_{i,t}|s_{i,t}).
 And then we could imagine what happens if we just ignore the state marginals, if we just ignore the ratio of the state probabilities.
 Well, then we get an equation for the importance sampled policy gradient that is very similar to the one I have at the top of the slide, only the product neglects all of the ratios except at t' equals t.
-So if you don't want your importance weights to be exponential on T, you could try to ignore the ratio, of the state marginal probabilities.
+So if you don't want your importance weights to be exponential on capital T, you could try to ignore the ratio, of the state marginal probabilities.
 So you're still accounting for the ratio of action probabilities, but ignoring the state marginal probabilities.
 This does not in general give you the correct policy gradient.
 However, we'll see later on in the course when we discuss advanced policy gradients, that ignoring the state marginal probabilities is reasonable in the sense that it gives you bounded error in the case where θ' is not too different from θ.
 And this simple insight is actually very important for deriving practical importance sample policy gradient algorithms that don't suffer from an exponential increase in their variance, right?
 Because when you multiply together importance weights over all time steps from t'=1 to t, you get an exponential increase in variance because your weights exponentially attract to zero.
-But if you ignore the state marginal rate ratio, then you only get the weights at the time step t, which means that their variance does not grow exponentially.
+But if you ignore the state marginal ratio, then you only get the weights at the time step t, which means that their variance does not grow exponentially.
 So we'll learn later on when we discuss advanced policy gradients, why ignoring this part is reasonable.
 For now, I'll just tell you that it's a reasonable choice if θ is close to θ', meaning that if your policy is changing only a little bit.

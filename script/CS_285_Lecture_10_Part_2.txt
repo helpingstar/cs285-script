@@ -17,7 +17,7 @@ However, we'll define your problem just like we if of A1 to A2.
 It consoles and масers, it compots or composes the nagantum and Ano, just guess and check.
 So you just pick a set of action sequences from some distribution, maybe even uniformly at random.
 So just pick A1 through A capital N.
-And then you choose your action sequence, you choose some AI based on which one is the arg max with respect to the index of jai.
+And then you choose your action sequence, you choose some AI based on which one is the argmax with respect to the index of jai.
 You basically choose the best action sequence instead of maximizing over, let's say, a large or continuous valued sequence of actions.
 You just maximize over a discrete index from 1 to N.
 That's very, very easy to do.
@@ -44,7 +44,7 @@ Coding this up takes just a few minutes.
 It's also often quite efficient, especially if you're working on modern hardware.
 Because later on when we talk about learned models, when your model is represented by something like a neural network, it can actually be quite nice to be able to evaluate the value of multiple different action sequences in parallel.
 You can essentially treat A1 through AN as a kind of mini badge and evaluate the returns through your neural network model all simultaneously.
-And then the ARC max is a max reduction.
+And then the argmax is a max reduction.
 So there are typically very, very fast ways to implement these methods on modern hardware.
 So you can do this with modern GPUs with modern deep learning frameworks.
 What's the disadvantage of this approach?
@@ -52,7 +52,7 @@ Well, you might not pick very good actions because you're essentially relying on
 You're relying on one of those randomly sampled action sequences being very good.
 So one way that we can dramatically improve this random shooting method while still retaining many of its benefits is something called the cross-entropy method or CEM.
 The cross-entropy method is quite a good choice if you want a black box optimization algorithm for these kinds of control problems in low to moderate dimensions with low to moderate time horizons.
-So our original recipe with random shooting was to choose a sequence of actions from some distribution like the uniform distribution and then pick the ARC max.
+So our original recipe with random shooting was to choose a sequence of actions from some distribution like the uniform distribution and then pick the argmax.
 So what we're going to do in cross-entropy method is we're going to be a bit smarter about selecting this distribution.
 Instead of sampling the actions completely at random from the, let's say, the uniform distribution or all valid actions, we'll instead select this distribution to focus in on the regions where you think the good actions might lie.
 And this will be an iterative process.

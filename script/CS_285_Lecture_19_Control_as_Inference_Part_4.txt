@@ -13,7 +13,7 @@ And I would encourage you to do this as an exercise if you want to get more fami
 The policy that you recover in soft Q-learning is given by the exponentiated advantage, rather than being the greedy policy.
 And this policy can be shown to be the solution to the corresponding variational inference problem.
 So the resulting algorithm, the resulting soft Q-learning algorithm, looks very similar to the algorithms that we saw before.
-We take some action and observe Si, Ai, Si' , Ri, added to our buffer, sample a mini-batch from our buffer, and then we compute a target value where the only difference is that instead of taking a max over the Q value at the next time step, now we take a soft max.
+We take some action and observe s_i, a_i, Si' , Ri, added to our buffer, sample a mini-batch from our buffer, and then we compute a target value where the only difference is that instead of taking a max over the Q value at the next time step, now we take a soft max.
 But then just like before, we update our Q function to take a recurrent value.
 And then we take a regression step to improve our fit to the target value, and we lazily update our target network parameters.
 So everything is exactly the same, except for the use of the soft max.

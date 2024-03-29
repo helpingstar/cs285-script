@@ -273,7 +273,7 @@ And this is very intuitive, it's just saying take those transitions that are lik
 There are a variety of ways to approximate this quantity without training a dynamics model.
 One of the ways to do it is to train a discriminator for it.
 Now since you're estimating a conditional probability, you actually need two discriminators.
-So you have a discriminator for a joint S A S prime and a discriminator for a joint S A, and you actually take the difference of the two.
+So you have a discriminator for a joint S A s' and a discriminator for a joint S A, and you actually take the difference of the two.
 I won't go into the details for why this works.
 For the details of the method, I would encourage you to read the paper, but the high level idea I want you to take away from this slide is just that you can use invariance-based ideas to handle changes in dynamics.
 What that leads to is agents that are trying to behave in the source domain in such a way that they don't do anything that would be impossible in the target domain.

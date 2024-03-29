@@ -57,18 +57,18 @@ So if we don't know the transition dynamics, generally we can't do this.
 So let's go back to policy iteration.
 In policy iteration, we alternated between evaluating q π or a π.
 But if you have a π, or if you have q π, you can recover a π.
-And then step two, setting our policy to be this greedy arc max policy.
+And then step two, setting our policy to be this greedy argmax policy.
 So that was policy iteration.
 And step one in policy iteration involved policy evaluation, which involved repeatedly applying this value function recurrence that we saw before.
 So what if instead of applying the value function recurrence to learn the value function, we instead directly constructed a Q function recurrence in an analogous way?
 So if I wanted to construct the Q function at a particular state action tuple, I can write exactly the same recurrence.
 Except that now, since the Q function is a function of a state and an action, I don't need to evaluate the next state given s and π of s.
-I just evaluate the next state given the sa tuple that I'm training my Q function on.
+I just evaluate the next state given the s,a tuple that I'm training my Q function on.
 And this might at first seem like a very subtle difference, but it's a very, very important one.
-Because now, as my policy π changes, the action for which I need to sample s prime, basically the a that's on the right of the conditioning bar and p of s prime given sa, doesn't actually change.
+Because now, as my policy π changes, the action for which I need to sample s prime, basically the a that's on the right of the conditioning bar and p(s'|s,a), doesn't actually change.
 Which means that if I have a bunch of samples, s comma a comma s prime, I can use those samples to fit my Q function regardless of what policy I have.
-The only place where the policy shows up is as an argument to the Q function at the state s prime inside of the expectation.
-And it turns out that this very seemingly very simple change allows us to perform policy iteration style algorithms without actually knowing the transition dynamics, just by sampling some s, a, s prime tuples, which we can get by running any policy we want.
+The only place where the policy shows up is as an argument to the Q function at the state s' inside of the expectation.
+And it turns out that this very seemingly very simple change allows us to perform policy iteration style algorithms without actually knowing the transition dynamics, just by sampling some s, a, s' tuples, which we can get by running any policy we want.
 So, this second recurrence that I've written here doesn't require knowing the transition probabilities, it just requires samples of the form s comma a comma s prime.
 So if we do this for step one in policy iteration, we would no longer require knowing the transition probabilities.
 And this is very important.
@@ -119,7 +119,7 @@ So just to put the pieces together, here's the full fitted Q iteration algorithm
 And for each step of the algorithm, there are some free parameters that I'm going to mention.
 Step one, we're going to use a non-linear function approximation.
 So we're going to use a non-linear function approximation.
-So step one, collect the data set consisting of tuples si, ai, s'_i, and ri using some policy.
+So step one, collect the data set consisting of tuples s_i, a_i, s'_i, and ri using some policy.
 The algorithm works for a wide range of different policies.
 Now, not all policy choices are equally good, but the principles will apply to any policy, and it certainly doesn't have to be the latest policy.
 And one of the parameters you have to choose is the number of such transitions you are to collect.
@@ -130,7 +130,7 @@ What policy do you use to collect this data?
 A very common choice is, in fact, to use the latest policy, but there are a few nuances about that choice that I'll discuss shortly.
 Step two, for every transition that you sampled, calculate a target value.
 So you calculate the target value, yi, by taking the reward from that transition, plus γ times the max over the next action, a'_i, of the Q value, Q ϕ, s'_i, a'_i, using your previous Q function estimator, Q ϕ.
-Step three, train a new Q function, which means find a new parameter vector ϕ, by minimizing the difference between the values of Q ϕ, si, ai, and the corresponding target value, yi.
+Step three, train a new Q function, which means find a new parameter vector ϕ, by minimizing the difference between the values of Q ϕ, s_i, a_i, and the corresponding target value, yi.
 So you have a Q function, which takes as input s and a.
 It outputs a scalar value, and it has parameters ϕ.
 I should mention, by the way, that a very common design for a neural network architecture for a Q function with discrete actions is actually to have the actions be outputs rather than inputs.

@@ -167,7 +167,7 @@ So it's a big problem here that the expectation over states is with respect to �
 If we could just use θ instead of θ prime, then we would recover the policy gradient expression that we had before.
 So that's the problem that we're left with.
 Essentially, we need to somehow ignore the fact that we need to use state sampling to get the expectation over states.
-So we can get away with using state sampling to get the expectation over states and instead get away with using state sampling from pi θ prime of st and instead get away with using state sampling from pi θ of st.
+So we can get away with using state sampling to get the expectation over states and instead get away with using state sampling from pi θ prime of s_t and instead get away with using state sampling from pi θ of st.
 So this is our problem.
 If we could only get rid of that θ, then the only remaining θ prime would be in the importance weight.
 And then if we differentiate it, we would recover the policy gradient and show that policy gradient and policy iteration are in fact equivalent.
@@ -175,5 +175,5 @@ So why do we want this to be true?
 Well, we want this to be true because if we take this quantity and we call it a bar θ prime, and we can show that j θ prime minus j θ is approximately equal to a bar θ prime, that means that we can find θ prime by taking the argmax of a bar.
 And that means that we can use ^{A} to get an improved policy pi prime.
 So is this true, and when is this true?
-The claim, which I'm going to show in the next part of this lecture, is that p_θ st is close to p_θ prime of st when pi θ is close to pi θ prime.
+The claim, which I'm going to show in the next part of this lecture, is that p_θ s_t is close to p_θ prime of s_t when pi θ is close to pi θ prime.
 Now that might seem like a kind of obvious statement, but it's actually not quite obvious to prove this statement in a non-vacuous way.

@@ -9,10 +9,10 @@ So all the algorithms we'll discuss in today's lecture learn only a model and th
 Whereas in the previous lecture we'll discuss how we can use model-based RL to learn policies.
 So the goals for today's lecture will be to understand how to build model-based RL algorithms, understand the important considerations for model-based RL, and understand the trade-offs between different model classes.
 So why should we learn the model?
-Well, if we had some estimate of the dynamics, for example a function f that returns st plus 1, then we could simply use all those tools from last week that we learned about the model-based RL.
+Well, if we had some estimate of the dynamics, for example a function f that returns s_t plus 1, then we could simply use all those tools from last week that we learned about the model-based RL.
 So we can use models to learn to control our system instead of having to deal with model-free RL algorithms.
-In the stochastic case we would learn a stochastic model of the form p given st .
-For most of the algorithms that I'll discuss in today's lecture, I'll present them as deterministic model algorithms of the form f equals st plus 1, but almost all of those ideas can just as well be used with probabilistic models that learn a distribution over the next state.
+In the stochastic case we would learn a stochastic model of the form p given s_t .
+For most of the algorithms that I'll discuss in today's lecture, I'll present them as deterministic model algorithms of the form f equals s_t plus 1, but almost all of those ideas can just as well be used with probabilistic models that learn a distribution over the next state.
 And when this distinction is salient, I'll make a distinction between the two.
 So let's think about how we can learn f from data and then plan through it to select our actions.
 We could imagine a very simple model-based RL algorithm prototype.
@@ -24,7 +24,7 @@ We could start with step one, which is to run some basic exploration policies.
 to collect some data, and this exploration policy could just be a completely random policy.
 It's not a neural network or anything like that, it just selects actions uniformally at random and collects a data set of transitions.
 So here our transition is a tuple s comma a comma s prime.
-We saw state s, we took action a, and we arrived at state s prime and that got us our transition, and we'll have a data set of these transitions.
+We saw state s, we took action a, and we arrived at state s' and that got us our transition, and we'll have a data set of these transitions.
 We can use this data set to then train our model with supervised learning.
 So we'll learn a dynamics model of this model and combine values 0,1, and 4 with a 들어 Cage equations.
 we'll learn a dynamics model f that minimizes the average over all the points in our data set of the difference between f and s .
@@ -67,7 +67,7 @@ Right, so I'm going to be in for a bad time.
 I'm going to be in for a bad time for a reason that we've actually seen before.
 So the data that I use to train my model comes from the distribution over states induced by the policy pi zero.
 We can call this p pi zero.
-Take a moment to think about why using a model trained on p pi zero st can lead to some really bad outcomes when we then use that model to plan.
+Take a moment to think about why using a model trained on p pi zero s_t can lead to some really bad outcomes when we then use that model to plan.
 As a hint, the answer to this is something that we've seen before in several of our previous lectures.
 So the issue is basically the following.
 The issue is that when we plan through our model, you can think of that planning as executing another policy.
@@ -78,7 +78,7 @@ So pi f is fully determined by f.
 And it has its own state distribution.
 Its state distribution is p pi f of st.
 And in this case, that distribution involves going very far to the right and falling off the mountain.
-The reason that the problem happens is because p pi f of st is not equal to p pi zero of st.
+The reason that the problem happens is because p pi f of s_t is not equal to p pi zero of st.
 So we are experiencing distributional shift.
 And the way the problems of this distributional shift manifest themselves is that our model is valid for estimating the outcomes of actions in the region that was visited during data collection, meaning for states with high probability p pi zero of st.
 But when we plan under that model, we can't do that.

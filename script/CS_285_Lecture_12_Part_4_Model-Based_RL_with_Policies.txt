@@ -12,7 +12,7 @@ Remember that the RL algorithms are going to consist of three parts.
 The orange box, which is to generate samples, the green box, which fits some kind of model, and the blue box that improves the policy.
 And whatever we do in the green box, essentially its purpose is to allow us to understand how good our policy is, because if we can understand how good our policy is, then we can improve it.
 I know that's a little bit abstract, but I'll make this more concrete in a second.
-So if we're talking about model-based RL, classically in the green box we would fit a model, some kind of f of sA that predicts s prime.
+So if we're talking about model-based RL, classically in the green box we would fit a model, some kind of f of s,a that predicts s prime.
 And then in the blue box we would use either planning or the algorithms we discussed in the previous parts to improve the policy.
 So really, this makes it, I think, quite clear that the role of the model is really to evaluate the policy.
 A model is something that, under which you should be able to simulate your policy and get back an estimate of the policy's expected return.
@@ -52,7 +52,7 @@ So s future is a random variable, and the distribution here is basically the pro
 Now, as a little detail, the quantity in parentheses there doesn't actually sum to one.
 In order for it to sum to one, you have to multiply it out front by one minus gamma.
 And if you want an intuition for what p of s future really represents, you can kind of think of it like this.
-Select a future time step at random from a geometric distribution with parameter gamma, and then evaluate p of st prime equals s, and then you can calculate the probability of s future for the time step t' that you sampled.
+Select a future time step at random from a geometric distribution with parameter gamma, and then evaluate p of s_t prime equals s, and then you can calculate the probability of s future for the time step t' that you sampled.
 And that's a perfectly valid way to interpret the probability of s future.
 So it's the probability that you will land somewhere in the future where what future means is this gamma discounted distribution over time steps.
 Another way you could think about it, which is actually equivalent, is that at every time step, you have a probability of one minus gamma of terminating.
@@ -82,16 +82,16 @@ So it's not the next state, it's actually a distribution over states, over this 
 So it's independent of rewards, but not independent of policies, and you can recover value functions for a particular reward as an inner product between the successor feature, the successor representation vector, and the reward vector.
 In fact, successor representations turn out to obey a Bellman equation.
 And that's actually fairly straightforward to note, just from looking at the definition.
-It becomes pretty clear that probability that you will land in a particular state is basically 1 minus gamma times the probability that you're in that state right now, which is just 1 if you're in that state and 0 otherwise, because ST is not random, ST is an input, plus gamma times the probability that you will land in it in the future from the next state.
+It becomes pretty clear that probability that you will land in a particular state is basically 1 minus gamma times the probability that you're in that state right now, which is just 1 if you're in that state and 0 otherwise, because s_t is not random, s_t is an input, plus gamma times the probability that you will land in it in the future from the next state.
 So the expectation here is over the action you will take now and the state that you will land in at time t plus 1, and within the expectation is just the same mui evaluated as t plus 1.
 So this is a kind of Bellman equation.
 You can think of it as a Bellman backup with a pseudo-reward given by this δ function.
-So the pseudo-reward is 1 minus gamma times δ ST equals i.
+So the pseudo-reward is 1 minus gamma times δ s_t equals i.
 And remember, the 1 minus gamma is just a constant out front.
 So really the important thing is that the reward is just 1 for the state i, basically for the dimension of mu that you're learning, and 0 everywhere else.
 And in practice, since you would want to learn every entry in mu, you would use a vectorized backup.
-So for the 0th entry, it would be δ ST equals 0.
-For entry 1, it would be δ ST equals 1, etc., etc.
+So for the 0th entry, it would be δ s_t equals 0.
+For entry 1, it would be δ s_t equals 1, etc., etc.
 So you would learn that whole vector all at once.
 So you would have these vector-valued Bellman backups.
 And you can do things like value iteration with this and recover these mus.
@@ -106,7 +106,7 @@ So we've, in some sense, simplified the kind of model we need, but we might have
 The second issue is that it's not clear how to scale this to large state spaces.
 So as I've described this, this vector mu needs to have one entry for every possible state.
 And if your states are like images in an Atari game, the number of possible states could be enormous.
-It's also not even clear if this is well defined for continuous state spaces, because for continuous state spaces, that δ function, st equals i, will always be zero.
+It's also not even clear if this is well defined for continuous state spaces, because for continuous state spaces, that δ function, s_t equals i, will always be zero.
 Your probability of randomly landing in a very specific state is always zero.
 That's why you use densities rather than probabilities for continuous variables.
 So for continuous state spaces, we'll need to have kind of a density version of this rather than a probability version, and that will also be a little bit more elaborate.

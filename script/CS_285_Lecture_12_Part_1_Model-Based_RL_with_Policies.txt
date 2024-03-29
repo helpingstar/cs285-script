@@ -33,7 +33,7 @@ So to overcome this, we really need to move towards the closed loop case, where 
 So in the closed loop case, the agent observes a state, and then produces a policy that will be followed thereafter.
 And the objective for that is much closer to the original reinforcement learning problem.
 The difference, of course, with the model-based RL setting is that we will...
-model P given ST explicitly, which might potentially give us some other ways of addressing this problem.
+model P given s_t explicitly, which might potentially give us some other ways of addressing this problem.
 But the objective is exactly the same as in regular RL.
 It's to produce a policy that will choose actions for whatever state you might find yourself in.
 And this kind of approach, if we're able to develop an effective closed-loop control algorithm, would address the math test problem, because it would be able to optimize a policy that gives the right answer for every possible observed state of the math test.

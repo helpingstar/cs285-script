@@ -1,6 +1,6 @@
 In the next section of today's lecture, I'm going to discuss some practical considerations that we need to take into account when actually implementing Q-learning algorithms, and then some improvements that can make them work a bit better.
 So one question that we can start with, are our Q values actually accurate?
-We can think of Q values as this kind of abstract object that we use inside reinforcement learning to help us improve our policy and get that arc max.
+We can think of Q values as this kind of abstract object that we use inside reinforcement learning to help us improve our policy and get that argmax.
 But a Q function is also a prediction.
 It's a prediction about the total reward that you will get in the future if you start in a particular state of action and then follow your policy.
 So it makes sense to ask whether these predictions are actually accurate predictions.

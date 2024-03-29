@@ -193,7 +193,7 @@ Now we have one row for every sample.
 And we're going to replace p phi with the features at the next time step.
 Right.
 Because we don't know what p phi is.
-We do know what s prime is.
+We do know what s' is.
 So we can just evaluate the feature function at s prime.
 And we can get what we call capital phi prime.
 And we can just substitute that in there.
@@ -251,7 +251,7 @@ Now we don't have to actually evaluate the following state.
 We don't have to know what the dynamics will do for pi of S prime.
 We do need to featurize the action from the policy.
 And this is very similar to the principle that we had in Q iteration.
-So we're going to featurize S prime and pi of S prime.
+So we're going to featurize s' and pi of S prime.
 And that will give us phi prime.
 So a very important property here is that phi doesn't change as the policy changes.
 But phi prime does change.

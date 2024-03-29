@@ -33,7 +33,7 @@ So, if you had access to Q of S1 comma A1 and you needed to select the policy π
 You could simply test every action and just assign 100% probability to the best one, one with the largest value for Q.
 So, this basic idea is that Q of S1 comma A1 is equal to R of S2 of S2 of S1 comma A1.
 This basic idea can be extended to a more general concept.
-So, this is the simple rule that I said, you know, a simple way to get π here is just assign a probability of 1 to the arc max.
+So, this is the simple rule that I said, you know, a simple way to get π here is just assign a probability of 1 to the argmax.
 So, the more general principle is what we're going to call the Q function.
 So, the Q function can be defined at other time steps, not just time step 1.
 And the definition is this.
@@ -55,7 +55,7 @@ All right, let's continue.
 So what are Q functions and value functions good for?
 Well, I provided some intuition for this a couple slides ago when I talked about how once you have a Q function for at least the first time step, you can recover a better policy for the first time step.
 So one idea is that if we have a policy π and we can figure out its full Q function, Q^π S comma A, then we can improve π.
-For example, we can pick a new policy π prime that assigns a probability of 1 to the value of S1.
+For example, we can pick a new policy π' that assigns a probability of 1 to the value of S1.
 And we can do this on the first time step, but also on all of the time steps.
 And in fact, we can show that this policy is at least as good as π and probably better.
 Don't worry if it's not obvious to you right now why this is true.
@@ -64,7 +64,7 @@ But this is the basis of a class of methods called policy iteration algorithms, 
 And crucially, it doesn't matter what policy you use.
 You can use it to derive the same thing.
 So let's look at the following.
-So let's say that you have a policy π prime that is good for π.
+So let's say that you have a policy π' that is good for π.
 And you can do this on the first time step.
 And you can do this on the second time step.
 And you can do this on the third time step.
@@ -80,9 +80,9 @@ That's a very good example.
 Let's do this.
 a.
 So the intuition is that if q π s a is larger than v of s, then a is better than average.
-Because remember that v π of s is just the expected value of q π s a under π of a given s.
-By this definition, v π of s is how you will do on average when you use your policy from state s.
-So if you can do better than average, if you can choose an action a so that q π s a is larger than v π of s, then you will do better.
+Because remember that V^π(s) is just the expected value of q π s a under π of a given s.
+By this definition, V^π(s) is how you will do on average when you use your policy from state s.
+So if you can do better than average, if you can choose an action a so that q π s a is larger than V^π(s), then you will do better.
 You'll do better than average under your old policy.
 So one thing you could do is you could modify π of a given s to increase the probability of actions whose value under the Q function is larger than the value at that state.
 And you can actually use this to get a gradient-based update rule on π.

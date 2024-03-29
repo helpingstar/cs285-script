@@ -1,5 +1,5 @@
 Alright, let's talk about how we can actually implement policy gradients with constraints to instantiate the algorithm that we derived in the previous section.
-So the claim that we had was that pθ of st is close to pθ' of st when πθ is close to πθ' and close here was defined in terms of total variation divergence.
+So the claim that we had was that pθ of s_t is close to pθ' of s_t when πθ is close to πθ' and close here was defined in terms of total variation divergence.
 Now it would help us to get a slightly more convenient bound because for some policy classes imposing total variation divergence constraints is actually pretty difficult.
 So a more convenient bound that we could derive, you can use the fact that total variation divergence is actually related to KL divergence via an inequality.
 So if you bound the KL divergence between πθ' and πθ, that also bounds the total variation divergence as per this equation.

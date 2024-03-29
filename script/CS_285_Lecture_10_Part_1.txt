@@ -23,15 +23,15 @@ We learned about the potential of the trajectory distribution p_θ tau induced b
 And we learned about a number of other objectives.
 We learned about a number of other objectives.
 We learned variance on this basic recipe including methods that use discounts.
-The trajectory distribution is formed by multiplying together the initial state probability the policy probabilities pi θ at given st and the transition probabilities pst plus 1 given st 18.
+The trajectory distribution is formed by multiplying together the initial state probability the policy probabilities pi θ at given s_t and the transition probabilities pst plus 1 given s_t 18.
 And I'm going to use p_θ of tau or interchangeably pi θ of tau to denote the trajectory distribution and make it clear that it depends on θ.
-And we learned that the trajectory distribution of p_θ of tau could be multiplied So in the algorithms that we've discussed so far, we've assumed a model-free formulation, meaning that we assume that we do not know P of ST plus 1 given STAT, and not only that, but we don't even attempt to learn.
-So these were all algorithms that managed to get away with only sampling from P of ST plus 1 given ST along full trajectories without ever needing to actually know what the probabilities were or ever needing to make predictions about, for example, what would have happened if you had taken a different action from the same state.
+And we learned that the trajectory distribution of p_θ of tau could be multiplied So in the algorithms that we've discussed so far, we've assumed a model-free formulation, meaning that we assume that we do not know P of s_t plus 1 given STAT, and not only that, but we don't even attempt to learn.
+So these were all algorithms that managed to get away with only sampling from P of s_t plus 1 given s_t along full trajectories without ever needing to actually know what the probabilities were or ever needing to make predictions about, for example, what would have happened if you had taken a different action from the same state.
 In fact, if you recall our discussion of Q learning, we managed to intentionally avoid this issue by switching over from value functions and policy iteration over to Q functions.
 So, so far we've assumed that the transition probabilities are not known and made no attempt to actually learn them.
 But what if we do know the transition probabilities?
 And as a bit of terminology, I'm going to say transition probabilities, transition dynamics, dynamics, or models, all of those things basically mean the same thing.
-They all refer to P of ST plus 1 given STAT, although in some cases those transition dynamics might actually be deterministic, meaning that only one state has a probability of 1 and all other states have a probability of 0.
+They all refer to P of s_t plus 1 given STAT, although in some cases those transition dynamics might actually be deterministic, meaning that only one state has a probability of 1 and all other states have a probability of 0.
 So hopefully it'll be clear from context which one I'm talking about.
 All right, so oftentimes in practical problems, we do actually know the transition dynamics.
 For example, if you are playing a game, like an Atari game or chess or Go, in all of those settings, you really do know the rules that govern the game, either because it was programmed by hand or, as in the case of board games, because the rules are known and they're specified in a rulebook somewhere.
@@ -103,13 +103,13 @@ Can they imagine that they're in state S1?
 So you can imagine a sequence of actions, A1 through A capital T, that will minimize that total cost.
 And then they send these actions back to the world and those actions get executed.
 So those actions, A1 through AT, represent the agent's plan.
-So if you want to write things in terms of rewards, you can formulate this optimization as I did on the previous slide, where A1 through A capital T is selected as the argmax of the reward, subject to the constraint that ST plus 1 is equal to F of STAT.
-I apologize, there's a small typo on this slide, that AT plus 1 should be an ST plus 1.
+So if you want to write things in terms of rewards, you can formulate this optimization as I did on the previous slide, where A1 through A capital T is selected as the argmax of the reward, subject to the constraint that s_t plus 1 is equal to F of STAT.
+I apologize, there's a small typo on this slide, that AT plus 1 should be an s_t plus 1.
 Okay, so in the deterministic case, this is all good.
 But what happens in the stochastic case?
 So in the stochastic case, now you can define a distribution over a sequence of states, conditioned on a sequence of actions.
-So you can say that, well, the probability of S1 through S capital T, given A1 through A capital T, is given by probability of S1 times the product of the ST plus 1 given ST, AT terms.
-Notice that the probability of AT given ST doesn't appear here, because we are conditioning everything on a plan.
+So you can say that, well, the probability of S1 through S capital T, given A1 through A capital T, is given by probability of S1 times the product of the s_t plus 1 given ST, AT terms.
+Notice that the probability of AT given s_t doesn't appear here, because we are conditioning everything on a plan.
 We are conditioning everything on a sequence of actions.
 So in this case, we can select our sequence of actions as the sequence of actions that we want to use.
 So we can select our sequence of actions as the sequence of actions that we want to use.

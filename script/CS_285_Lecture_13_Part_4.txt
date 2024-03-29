@@ -111,7 +111,7 @@ So then we could ask, well, what kind of function should we use for f star?
 And there are a number of different choices that have been explored in the literature.
 So one common choice is to set f star to be the dynamics.
 So basically f star of s a is s prime.
-That's very convenient because it's a quantity that clearly has something to do with the dynamics of the MDP, and of course you've observed s prime in your data.
+That's very convenient because it's a quantity that clearly has something to do with the dynamics of the MDP, and of course you've observed s' in your data.
 So you could essentially train a model and then measure the error of that model as a notion of novelty.
 This is also related to information gain, which we'll discuss in the next part of the lecture.
 An even simpler way to do this is to just set f star to be a neural network with parameters phi, where phi is chosen randomly.

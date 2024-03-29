@@ -21,7 +21,7 @@ If we choose each of these hyperparameters to be one, meaning one step of data c
 Here I've called online Q-duration.
 This is really Q-learning.
 So if you hear someone say Q-learning, they really mean this method.
-Step one, take one action Ai and observe the resulting transition, Si, Ai, s'_i, Ri.
+Step one, take one action Ai and observe the resulting transition, s_i, a_i, s'_i, Ri.
 Step two, calculate the target value Yi for that transition.
 Step three, perform one gradient step on the difference between the output of the Q function and the value that you just calculated.
 And of course, as usual, this algorithm fits into our anatomy of our reinforcement learning method.
@@ -105,7 +105,7 @@ And then we get something that looks a lot like online Q-learning only without t
 So if we take one gradient step, then we're basically just alternating between computing target values for our transitions and taking gradient step for our transitions.
 And due to this, we really get the understanding of what's happening in the framework of our system.
 So this gives us this modified version of the Q-learning algorithm with a replay buffer.
-In step one, instead of actually taking steps in the real world, we simply sample a batch, multiple transitions, si, ai, si', ri, from our buffer, which I'm going to call b.
+In step one, instead of actually taking steps in the real world, we simply sample a batch, multiple transitions, s_i, a_i, si', ri, from our buffer, which I'm going to call b.
 And then in step two, we sum up our gradient over all of the entries in that batch.
 So each time around this loop we might sample a different batch, we sample it iid independently and identically distributed from our buffer, which means that our samples are no longer correlated.
 And then the only question I have to answer is where do we get our buffer?

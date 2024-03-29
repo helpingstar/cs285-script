@@ -8,7 +8,7 @@ So now our objective is the sum over the models times 1 over n of the sum over t
 All right, So this is the case if you learn a distribution over deterministic models.
 If you have stochastic models then you would have an expectation for each model with respect to its distribution.
 So in general for some candidate action sequence A1 through AH, step one is to sample a model from P , which if you have a bootstrap ensemble amounts to just choosing one of the n models randomly.
-Step two, at each time step sample st plus one from P given STAT and that parameter vector that you sampled from the posterior.
+Step two, at each time step sample s_t plus one from P given STAT and that parameter vector that you sampled from the posterior.
 Step three, calculate the reward as the sum over all the time steps for those predicted states.
 And then step four is to repeat steps one through three to accumulate the average reward as necessary.
 So this would be the recipe for any distribution model.

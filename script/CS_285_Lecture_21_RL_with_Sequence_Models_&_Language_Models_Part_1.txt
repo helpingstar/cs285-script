@@ -91,14 +91,14 @@ So it's actually totally okay to use the this grad log pi equation.
 However, the advantage estimator takes a little bit of care because there are multiple ways to estimate the advantage in policy gradients and some of them can get us in trouble whereas others are totally fine to use.
 So the key point is that the advantage is a function of the state st.
 The advantage is not necessarily a function of the observation ot.
-So the advantage does not depend on st minus 1 but if you don't have the state then you might get in trouble.
+So the advantage does not depend on s_t minus 1 but if you don't have the state then you might get in trouble.
 So that's why it's totally okay to use rt plus the next value minus the current value as your advantage estimator with some function approximator for v because when you're training a function approximator for v as a function of state you're basically leveraging the property that every time you see the state s you're going to expect to get the same value.
 So you're going to get the same value for the function of the observation ot.
 So that's why v hat only needs to be a function of the present state.
 It doesn't need to take past states into account because of the Markov property.
 The Markov property tells us the value is only going to be a function of the current state not dependent on how you got to that state.
 But of course that's not true for observations.
-So you can't simply swap out the argument to v hat and replace st with ot.
+So you can't simply swap out the argument to v hat and replace s_t with ot.
 So it's not okay to train v hat of ot because the value depends on might depend on past observations.
 Because the current state might depend on past observations.
 So what this means is that if you're going to use policy gradients, if you use the regular Monte Carlo estimate, if you just simply plug in the sum of rewards, that is okay because that derivation did not actually use the Markov property.
@@ -213,16 +213,16 @@ Well, if we're going to take a history of observations, what if we just take not
 But we're going to take a look at our observation history, so it can contain more information than the observation history.
 So if we use the observation history itself as our state representation, it will contain just as much information as the zt that we're inferring from the sequence VEs.
 So what if we just define our state that way?
-What if we say that our state ST is just all the observations O1 through OT.
+What if we say that our state s_t is just all the observations O1 through OT.
 If it was good enough before to infer zt from O1 through OT.
 That means that O1 through OT contains all the information we need to get a Markovian should be a Markovian state itself.
 So does that work?
 And does that work basically amounts to asking does a history obey the Markov property?
-So the Markov property just says that the state st plus one is conditionally independent of state st minus one given the current state st.
-And now the current state st is all the observations up to t, the previous state st minus one is all the observations up to t minus one.
-And what this shows us is that the previous observations tell us nothing that we can't infer from st itself, right?
-Because st contains st minus one inside of it.
-The observations O1 through O t minus one are contained inside the sequence O1 through O t, which means that if you already know st, which means you know O1 through O t, finding out st minus one, meaning finding out all the previous observations, doesn't tell you anything new because that sequence already contains all those observations.
+So the Markov property just says that the state s_t plus one is conditionally independent of state s_t minus one given the current state st.
+And now the current state s_t is all the observations up to t, the previous state s_t minus one is all the observations up to t minus one.
+And what this shows us is that the previous observations tell us nothing that we can't infer from s_t itself, right?
+Because s_t contains s_t minus one inside of it.
+The observations O1 through O t minus one are contained inside the sequence O1 through O t, which means that if you already know st, which means you know O1 through O t, finding out s_t minus one, meaning finding out all the previous observations, doesn't tell you anything new because that sequence already contains all those observations.
 And that's basically the argument for why history states do obey the Markov property, meaning that the sequence of observations up to time t, d separates the sequence of observations up to time t plus one from the sequence of observations of the time t minus one, because the sequence up to t minus one is contained inside the sequence up to t.
 Which means that if we apply Q-learning on these history states, meaning that our Q function is a function of all the observations O1 through O t, then we can see that the sequence of observations up to time t minus one is contained inside the sequence of observations O1 through O t.
 This actually will work.

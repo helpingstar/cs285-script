@@ -1,13 +1,13 @@
-Okay, so let's talk about the conditions under which we can use pθst in place of pθ' of st and still have a reasonable objective that accurately approximates the return of the new policy.
+Okay, so let's talk about the conditions under which we can use pθst in place of pθ' of s_t and still have a reasonable objective that accurately approximates the return of the new policy.
 So to recap, what we want to do is we want to ignore the distribution mismatch.
-We want to use pθ of st instead of pθ' of st such that the only dependence on θ' in this whole equation is in the importance weight because we know from our previous policy gradient lecture that if we differentiate the thing on the right-hand side, we get exactly the policy gradient.
+We want to use pθ of s_t instead of pθ' of s_t such that the only dependence on θ' in this whole equation is in the importance weight because we know from our previous policy gradient lecture that if we differentiate the thing on the right-hand side, we get exactly the policy gradient.
 So we want this to be true so that jθ' minus jθ is well approximated by a bar θ' this thing on the right-hand side so that we could just maximize a bar.
 And get a better new policy.
-And what we're going to try to show is that pθ of st is close to pθ' of st when πθ is close to πθ'.
+And what we're going to try to show is that pθ of s_t is close to pθ' of s_t when πθ is close to πθ'.
 And when that's the case, then the right-hand side approximates the left-hand side, meaning the difference between them can be bounded by some quantity which is small if the difference between πθ and πθ' is small.
 Okay, so this is what we're interested in.
-We want to show that πθ st is close to πθ' st.
-Sorry, pθ st is close to pθ' st when πθ is close to πθ'.
+We want to show that πθ s_t is close to πθ' st.
+Sorry, pθ s_t is close to pθ' s_t when πθ is close to πθ'.
 So let's start with a simple case.
 Let's first assume that πθ is a deterministic policy, which means that we can express it as at equals πθ of st.
 We'll generalize this to stochastic policies later, but I think the deterministic derivation provides a little bit of intuition.
@@ -31,7 +31,7 @@ And in fact, our assumption is very similar to the assumption we had before, whi
 So this is the probability we made no mistake, and this is some other distribution on which we're going to make no assumption whatsoever.
 So hopefully this seems familiar to all of you.
 And just like before, this equation implies that we can write the total variation divergence between p-theta prime and p-theta as essentially just the part that's different, right?
-So that 1 minus epsilon to the t times p-theta st part has zero total variation divergence against p-theta of st.
+So that 1 minus epsilon to the t times p-theta s_t part has zero total variation divergence against p-theta of st.
 So it's only that second part, and that second part has a multiplier of 1 minus epsilon to the t in front of it, and that multiplies the t-v divergence between p-mistake and p-theta.
 Now we can't bound this t-v divergence to p-mistake minus p-theta because we're making no assumption on p-mistake.
 So the only bound we have is the trivial bound, which is that any total variation divergence always has to be less than or equal to 2.
@@ -87,7 +87,7 @@ What we want is we actually want to relate the two objectives expressed in terms
 Well, so for this I'm going to derive another little calculation, which describes the expected values of functions under distributions when the total variation divergence between those distributions is bounded.
 So we're going to have some function f of st, which in our case is this complicated thing that involves expectations over actions and advantage values, but it doesn't really matter what it is.
 Whatever it is that's called f of st, we can bound its expected value between the two distributions.
-So we can write the expected value under pi θ prime of st of f of st as the sum over all possible states of pi θ prime times f.
+So we can write the expected value under pi θ prime of s_t of f of s_t as the sum over all possible states of pi θ prime times f.
 And we know that this quantity, is greater than or equal to the sum over all the states of pi θ times f minus the total variation divergence between pi θ and pi θ prime times the maximum value that f could possibly take on.
 So the way that I arrive at this calculation is I write pi θ prime as being equal to pi θ prime plus pi θ minus pi θ.
 I group the terms to get a pi θ times f minus a pi θ minus pi θ prime times f.
@@ -105,7 +105,7 @@ So as the two policies get closer together, as epsilon gets small, that second p
 So we're going to take all that and add the derivative base, and then the derivative base can also be reduced to twofill elements, whose ratio tot 90 followed by….
 Mars, k, e, and v, so we get one-becca-y, and that ratio taken down to pistein, term can always be made arbitrarily small so long as f is bounded, basically, so long as f doesn't go off to infinity for any state.
 So this was the equation that we were originally concerned about.
-We were concerned about the expected value under p_θ prime of st of the expected value over the actions of the importance sampled estimator for the advantage.
+We were concerned about the expected value under p_θ prime of s_t of the expected value over the actions of the importance sampled estimator for the advantage.
 So by taking everything inside the brackets to be f, then we can bound this quantity below by the expected value under p_θ(s)t of the same quantity, and this thing now just looks exactly like the thing that we differentiate to get the policy gradient, minus an error term, and the error term is 2 times epsilon times t times a constant c, and the constant c is the largest value that the thing inside the brackets, the thing inside the state expectation, can take on.
 Take a moment to think about what the largest possible value for that quantity inside the brackets could be, basically.
 What should we use for c?
@@ -117,7 +117,7 @@ So that means that the largest value that c could take on is the largest possibl
 So that means that the, basically, the expected value of any function can't possibly be larger than the largest value that function takes on, and the largest value that an advantage can take on is the number of time steps that the function can take on.
 And so, in this case, we're going to use the largest reward, because ultimately, an advantage is the sum of rewards over time.
 So that means that the c is on the order of the number of time steps times r max, and if you have infinite time steps, but you use a discount, then you know that the discount values, they form a geometric series, so they have to sum to 1 over 1 minus gamma.
-So in a finite horizon case, c is capital t times arg max.
+So in a finite horizon case, c is capital t times argmax.
 In an infinite horizon case, it's r max over 1 minus gamma.
 By the way, as an aside here, if you're doing reinforcement learning theory, and you ever see a term that looks like 1 over (1-γ), just mentally substitute the time horizon for that, because 1 over (1-γ) is essentially the equivalent of a horizon in the infinite horizon case.
 It's basically the number of time steps, the effective number of time steps that you're summing rewards over.
