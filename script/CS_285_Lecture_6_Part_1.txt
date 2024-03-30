@@ -70,6 +70,7 @@ We'll have to estimate it, for example using some function approximator.
 So the better our estimate of the advantage, the lower our variance will be.
 Now it's also worth mentioning that the kind of Actor-Critic methods that we'll discuss in today's lecture don't necessarily produce unbiased estimates of the advantage function.
 So while the policy gradient we've discussed so far has been unbiased, if your advantage function is incorrect, then your entire policy gradient can also be biased.
+[9:53]
 Usually we're okay with that because the enormous reduction in variance is often worth the slight increase in bias that we incur from using approximate Q values and value functions.
 So to summarize, the conventional policy gradient uses a kind of a Monte Carlo estimate of the advantage calculated by using the one sample that you have in the remainder of the current trajectory by summing up the rewards in your trajectory and subtracting a baseline.
 This is an unbiased but high-variance single sample estimate, and we can replace it with an approximate advantage function, which itself is usually calculated from an approximate Q function or an approximate value function, and get a much lower variance estimate, because now we're potentially getting a better estimate for this expectation that does not rely on a single sample, but often the resulting approximate value functions will have some bias, so we'll trade off lots of variance for some small increase in bias.
@@ -79,6 +80,7 @@ The blue box will still be the same, we'll still use the policy gradient to do g
 So let's talk about that next.
 Let's talk about fitting value functions.
 So we have three possible quantities, Q, V, or A.
+[11:28]
 Ultimately we want A, but the question we might ask is, well what should we fit?
 Which of these three should we fit?
 And what should we fit to?
@@ -95,6 +97,7 @@ And the expectation here is of course taken with respect to the transition dynam
 Now we can make a small approximation where we could say that the actual state s_{t+1} that we saw in the current trajectory is kind of representative of the average s_{t+1} that we will get.
 Now at this point we've made an approximation.
 This is not an exact equality.
+[13:09]
 We're essentially approximating the distribution over states at the next time step with, again, a single sample estimator.
 But now it's a single sample estimator for just that one time step.
 Everything after that is still integrated out as represented by the value function V^π.
@@ -139,6 +142,7 @@ That's essentially generalization.
 Generalization means that your function approximator understands that nearby states should take on similar values.
 So if you accidentally had a very different outcome in one of those states than you did in the other, the function approximator will, to some degree, average those out, and produce lower variance estimates than you would have gotten if you're just directly used that single sample value in your policy gradient.
 So it's not good as making multiple rods from same state, but it's still pretty good.
+[19:20]
 So the way that we would do this is we would generate training data by taking all of our rollouts, and for each state along every rollout we create a tuple consisting of the state s_{i,t} and a label corresponding to the sum of rewards that we saw starting from s_{i,t}, for the rest of that rollout.
 And we're going to call these labels y_{i,t}.
 And when I say target value, I mean y_{i,t}.
@@ -150,6 +154,7 @@ But can we do even better?
 So the ideal target that we would like to have when training our value function is the true expected value of rewards starting from the state s_{i,t}.
 Of course, we don't know this quantity.
 The Monte Carlo target that we used before uses a single sample estimate of this quantity.
+[21:07]
 But we can also use the relationship that we wrote out before, where we saw that a Q function is simply equal to the reward at the current time step plus the expected reward starting from the next time step.
 And if we write out this quantity, then we can perform the same substitution as before and actually replace the second term in the summation with our estimate of the value function.
 And this is a better lower variance estimate of the reward to go than our single sample estimator.
@@ -164,6 +169,7 @@ So now our target value y_{i,t} is given by the sum.
 And our training process, just like before, is going to be supervised regression onto these y_{i,t}s.
 This is sometimes referred to as a bootstrap estimate, and the bootstrap estimate has lower variance because it's using ^{V} instead of a single sample estimator, but it also has higher bias because our ^{V}^π_ϕ might be incorrect.
 So that's the trade-off.
+[23:25]
 Alright, so to conclude this portion of the lecture, what I want to do is give you a few examples of policy evaluation just so that you get a better intuitive understanding of what the heck policy evaluation actually means.
 Because in many cases, policy evaluation actually is a very intuitive concept.
 For example, if we're training a reinforcement learning system with Actor-Critic to play backgammon, this is from the TD Gammon paper in 1992, maybe our reward corresponds to the outcome of the game.
