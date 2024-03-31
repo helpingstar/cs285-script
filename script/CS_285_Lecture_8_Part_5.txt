@@ -71,7 +71,7 @@ And when it's always quadratic, then you can always find the maximum.
 In this case, the maximum is just mu ϕ of s, as long as p ϕ of s is positive definite.
 So this is called the normalized advantage function.
 And the reason that it's called normalized is that if you exponentiate it, then you get a normalized probability distribution.
-So the arcmax of Q_ϕ is mu phi, and the max is V_ϕ.
+So the argmax of Q_ϕ is mu phi, and the max is V_ϕ.
 So now we've just made this maximization operation very easy at the cost of reducing the representational capacity of our Q function.
 Because if the true Q function is not quadratic in the action, then of course the problem we have is that we can't represent it exactly.
 So there's no difference between the two.
@@ -79,28 +79,28 @@ We can do a change to the algorithm.
 It's just as efficient as Q learning, but it loses some representational power.
 All right.
 The last option I'm going to discuss is to perform Q learning with continuous actions by learning an approximate maximizer.
-This is going to be a little bit similar to option one, only instead of running the optimization separately for every single arcmax that we have to take, we'll actually train a second neural network to perform the maximization.
+This is going to be a little bit similar to option one, only instead of running the optimization separately for every single argmax that we have to take, we'll actually train a second neural network to perform the maximization.
 So the particular algorithm that I'll describe is most closely related to DDPG by Lillicrap et al.
 and ICLR 2016.
 But DDPG itself is almost identical to another algorithm called NFQCA, which was proposed much earlier.
 So you could equivalently think of this as basically NFQCA.
 This algorithm can also be interpreted as a kind of deterministic after-critic method, but I think it's actually simplest to think of it conceptually as a Q learning algorithm.
-So remember that our max over a of Q_ϕ s,a is just Q_ϕ evaluated at the arcmax.
-So as long as we can do that arcmax, we can perform Q learning.
-So the idea is to train another network, mu θ S, such that mu θ S is approximately the arcmax of Q_ϕ.
-And you can also think of mu θ S as a kind of policy, because it looks at a state and outputs the action, specifically the arcmax action.
+So remember that our max over a of Q_ϕ s,a is just Q_ϕ evaluated at the argmax.
+So as long as we can do that argmax, we can perform Q learning.
+So the idea is to train another network, mu θ S, such that mu θ S is approximately the argmax of Q_ϕ.
+And you can also think of mu θ S as a kind of policy, because it looks at a state and outputs the action, specifically the argmax action.
 How do we do this?
 Well, you just solve for θ to find the θ that maximizes Q_ϕ at S comma mu θ S.
 So you basically push gradients through your Q function and maximize.
 And you can use the chain rule to evaluate this derivative.
 So DQ_ϕ D θ is just DA D θ, which is the derivative of mu θ, times DQ_ϕ DA.
 So you can obtain this derivative by backpropagating through the graph, propagating through the Q function and into the mu, and then into the mu parameters.
-So now our targets are going to be given by as Yj equals Rj plus γ times Q_ϕ prime, evaluated at Sj prime comma mu θ Sj prime, which is really an approximation for the arcmax, as long as mu θ is a good estimate of the arcmax.
+So now our targets are going to be given by as Yj equals Rj plus γ times Q_ϕ prime, evaluated at Sj prime comma mu θ Sj prime, which is really an approximation for the argmax, as long as mu θ is a good estimate of the argmax.
 So here is what that algorithm will look like.
 Step 1, take some action AI, observe the corresponding transition s_i, a_i, s'_i, Ri, and add it to your buffer, just like in Q-learning.
 Step 2, sample a mini-batch Sj, Aj, Sj prime, Rj from your buffer, uniformly at random.
 Step 3, compute your target value.
-And now instead of using the arcmax, you're going to use mu θ.
+And now instead of using the argmax, you're going to use mu θ.
 And in fact, you're going to use mu θ prime.
 So you actually have a target network for Q_ϕ prime and a target network for mu θ prime.
 And then step 4, just like in Q-learning, perform a gradient update on ϕ.

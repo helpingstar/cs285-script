@@ -1,6 +1,6 @@
 All right, in today's lecture we're going to continue our discussion of value-based methods from last time, and we'll discuss some practical deep reinforcement learning algorithms that can utilize Q-functions.
 So even though we learned that value-based methods in general are not guaranteed to converge, in practice we can actually get some very powerful and very useful reinforcement learning algorithms out of them, and that's what we'll talk about today.
-So first, to recap from last time, we discussed how we could derive a general class of value-based methods which we called fitted Q-duration algorithms, which do not require knowledge of the transition probabilities, and do not require us to explicitly represent a policy.
+So first, to recap from last time, we discussed how we could derive a general class of value-based methods which we called fitted Q iteration algorithms, which do not require knowledge of the transition probabilities, and do not require us to explicitly represent a policy.
 So in this class of methods there are basically three steps.
 Step one, we collect a data set using some policy, and we learn that these are off-policy algorithms, which means that they can collect their data sets using a wide range of different policies.
 They can aggregate data sets using a wide range of different policies.
@@ -13,12 +13,12 @@ Using ein state JWG or doing some other way to do that we are comprisτά goal a
 So we use .
 Order state is a way that we can climb multiple virtual Y i members at putting those virtual y i at on theeston does not define this as anóle machine-created union or as an mouth爾 DC happen for any kidd of a group that we mean we employeesism yeah little som and and in step 3 we update our function approximately or stirring for q and we're going in step two again in step three we update our function approximator for q and then we update our function approximator for q, which is also important which is parameterized by phi, by finding the argmin parameters, the parameters that minimize the difference between the output of Q_ϕ and the target's y_i that we just computed.
 Step two and three can in general be repeated some number of times before we collect more data.
-So this is the general recipe of the Fittick Q-duration algorithm, which has a number of choices that we can make.
+So this is the general recipe of the Fitted Q iteration algorithm, which has a number of choices that we can make.
 We can choose how many transitions to collect in step one.
 We can choose how many gradient steps to take in step three when we optimize ϕ.
 And we can choose how many times to alternate between steps two and step three before we collect more data.
 If we choose each of these hyperparameters to be one, meaning one step of data collection, one gradient step, and only do step two and three once before collecting more data, then we get what is called the online Q-learning algorithm, which has a number of choices that we can make.
-Here I've called online Q-duration.
+Here I've called online Q iteration.
 This is really Q-learning.
 So if you hear someone say Q-learning, they really mean this method.
 Step one, take one action Ai and observe the resulting transition, s_i, a_i, s'_i, Ri.
@@ -28,7 +28,7 @@ And of course, as usual, this algorithm fits into our anatomy of our reinforceme
 The orange box is step one.
 The green box is where we fit our Q function.
 And the blue box here is somewhat degenerate.
-It just involves choosing the action to be the arcmax of the Q.
+It just involves choosing the action to be the argmax of the Q.
 All right, so what are some things that are problematic about this general procedure?
 We learned about a few things last time.
 For instance, we learned that the update in step three, even though it looks like a gradient update, it looks like it's applying the chain rule, it's not actually the gradient of any well-defined objective.

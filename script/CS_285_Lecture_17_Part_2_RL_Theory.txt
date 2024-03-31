@@ -1,7 +1,7 @@
-In the second part of today's lecture, we're going to do some theoretical analysis of a model-free reinforcement learning algorithm that is kind of similar to one that we might actually want to use, namely fitted Q-duration.
-Now of course we know that real fitted Q-duration in general is not guaranteed to converge, so we're going to use a kind of an idealized model of fitted Q-duration that is, you know, a little more simplified than the real method but is amenable to theoretical analysis.
+In the second part of today's lecture, we're going to do some theoretical analysis of a model-free reinforcement learning algorithm that is kind of similar to one that we might actually want to use, namely fitted Q iteration.
+Now of course we know that real fitted Q iteration in general is not guaranteed to converge, so we're going to use a kind of an idealized model of fitted Q iteration that is, you know, a little more simplified than the real method but is amenable to theoretical analysis.
 So here is our abstract model of exact Q- iteration.
-In exact Q-duration we're going to, at every iterate, set Q to be equal to some operator T times Q .
+In exact Q iteration we're going to, at every iterate, set Q to be equal to some operator T times Q .
 The operator T is going to be the Bellman optimality operator, so T times Q is equal to R plus gamma times P times the max over A of four-dimensional.
 So the the max operator here is kind of weird because Q is an S-A length matrix and we're gonna say that max A of that S-A length vector results in a new vector that is of length S.
 So it's max A but it's kind of this blockwise max where over all the actions corresponding to the same states it computes one entry which is the max over those actions.
