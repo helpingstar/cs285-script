@@ -212,7 +212,7 @@ So hopefully this gives you some idea of how these concentration inequalities wo
 You write down some equation for the probability that you'll be off by epsilon.
 And then you can manipulate that equation to solve for the probability δ or to solve for the number of samples.
 Now, in a lot of the analysis that we do in reinforcement learning, we're concerned with the fact that we're concerned with estimating probabilities of categorical variables.
-So p of s' given s,a is a distribution over a categorical variable, not a real valued variable.
+So p of (s'|s,a) is a distribution over a categorical variable, not a real valued variable.
 So Hoeffding's inequality applies to estimating the mean of a continuous valued random variable.
 But here, if we're estimating p hat, we're actually concerned with our accuracy in estimating the probability distribution over a categorical variable, in this case s'.
 So a similar kind of concentration inequality can be derived for that.
@@ -368,16 +368,16 @@ So that's kind of the nature of the algebraic manipulation.
 It's not terribly insightful, but it gives us this useful lemma.
 Now here's another useful lemma.
 This one is going to be even simpler.
-Given p pi and any vector in RSA, we're going to have this relationship.
-If we apply i minus gamma p pi inverse, meaning this, uh, uh, this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by one minus gamma, meaning that applying i minus gamma p pi inverse to some vector will blow up the infinity norm of that vector by at most a factor of one over one minus gamma.
+Given p pi and any vector in r(s,a), we're going to have this relationship.
+If we apply i minus gamma p pi inverse, meaning this, uh, uh, this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by one minus gamma, meaning that applying i minus gamma p pi inverse to some vector will blow up the infinity norm of that vector by at most a factor of one over one minus γ.
 So intuitively, the q function corresponding to a reward v is at most one over one minus gamma times larger in terms of the infinity norm.
 By the way, we see a lot of these one over one minus gamma terms lying around.
 Just to make it clear where these come from, usually when you have sums of discounted rewards, you're going to have sums that look like this.
 You're going to have a sum from t equals zero to infinity of gamma to the t times some number c.
 I mean, usually the c will depend on t, but typically it'll be bounded by some quantity, like it'll be bounded by the largest reward.
 So you'll often end up with bounds that have terms that look like a sum over from t equals zero to infinity of gamma to the t times c.
-And that's c times a geometric series, and that's equal to c over one minus gamma.
-So when you have a geometric series like that, it ends up equaling one over one minus gamma.
+And that's c times a geometric series, and that's equal to c over one minus γ.
+So when you have a geometric series like that, it ends up equaling one over one minus γ.
 That's just kind of a standard math result.
 And that's where all these one over one minus gamma terms come from.
 One way to interpret it is that this is a kind of horizon term.
@@ -415,7 +415,7 @@ It's just greater than or equal to that.
 So if you divide everything through by one minus gamma, then you get the infinity norm of v divided by one minus gamma is greater than or equal to the infinity norm of w.
 And remember, w is i minus gamma p pi inverse times v.
 And that completes the proof.
-So now, putting these pieces together, we've got our two lemmas, i minus gamma p pi inverse v in the infinity norm, is less than or equal to v in the infinity norm over one minus gamma.
+So now, putting these pieces together, we've got our two lemmas, i minus gamma p pi inverse v in the infinity norm, is less than or equal to v in the infinity norm over one minus γ.
 And we've got the simulation lemma.
 So now what we'll do is we'll plug in p minus p hat v pi from the simulation lemma into this second lemma in place of v.
 And that will tell us that the infinity norm of q pi minus q hat pi, that the infinity norm of the left-hand side of the simulation lemma, is of course equal to the infinity norm of the right-hand side, because if the left-hand side is equal to the right-hand side, then their infinity norms are equal.
@@ -455,7 +455,7 @@ So we can see that some parts of the analysis are quite appealing.
 For example, more samples leads to lower error.
 And in particular, the values concentrate at a rate of one over square root of n, which is actually the same as in supervised learning.
 So the effect of samples is the same.
-But what is interesting is that the error grows quadratically, in one over one minus gamma.
+But what is interesting is that the error grows quadratically, in one over one minus γ.
 So the gamma term in the numerator we don't really care about, because that's going to be close to one, but the denominator we care about a great deal.
 And the important thing about this bound, is that the denominator is squared.
 So you can think of it as error growing quadratically in the horizon.

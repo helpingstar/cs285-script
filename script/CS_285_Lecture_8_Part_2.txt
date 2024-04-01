@@ -44,7 +44,7 @@ And that means that essentially step two, three, and four looks a lot like super
 So based on this general recipe, one of the things we can derive is the kind of classic deep q learning algorithm, which is sometimes called dqn.
 Don't be too confused by the name, dqn is essentially just q learning with deep neural networks, which is a special case of this kind of general recipe that I outlined.
 So this particular special case looks like this.
-Step one, take an action AI and observe the resulting transition, and then add it to the buffer.
+Step one, take an action aI and observe the resulting transition, and then add it to the buffer.
 So this looks a lot like online q learning.
 Step two, sample a mini batch from your buffer uniformly at random.
 So this mini batch might not even contain the transition that you just took in the real world.

@@ -118,7 +118,7 @@ So I'm going to take all of the terms that are getting subtracted off on the rig
 So first notice that the sign is switched.
 So I switched the minus to a plus.
 So when I switch the minus to a plus, then that becomes the sum from 1 to infinity minus the sum from 0 to infinity.
-So in every one of those steps, step 1, step 2, step 3, step 4, the term from the second sum, the one from 1 to infinity, has an extra factor of gamma.
+So in every one of those steps, step 1, step 2, step 3, step 4, the term from the second sum, the one from 1 to infinity, has an extra factor of γ.
 The term from the first sum lacks that factor.
 And the term from the second sum is evaluated at time step t plus 1.
 The term from the first sum is evaluated at time step t.
@@ -127,7 +127,7 @@ Now that means that the terms inside the parentheses now become a sum from 1 to 
 And then I'm going to pair off these terms.
 So for the first term in the first sum, that's evaluating s1.
 For the first term in the second sum, that's evaluating s0.
-And they're off by one factor of gamma.
+And they're off by one factor of γ.
 So the first term becomes γ v s1 minus v s0.
 The second term becomes γ squared v s2 minus γ v s0.
 And I'll take the γ to the t term out so that I get an expression that looks like this.

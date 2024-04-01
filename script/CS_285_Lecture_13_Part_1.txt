@@ -155,7 +155,7 @@ So you don't know the reward for each arm, and you don't know the reward distrib
 So you could assume that the reward of each arm is distributed according to some probability distribution, and then you could imagine even learning this probability distribution.
 So there's an unknown per-action distribution for each arm.
 So how can we define the bandit?
-Well, we assume that the reward for each action is distributed according to some distribution, and the distribution for action A is parameterized by a parameter vector theta .
+Well, we assume that the reward for each action is distributed according to some distribution, and the distribution for action a is parameterized by a parameter vector theta .
 So for example, if your rewards are , you might be in a setting where the probability of getting reward is theta , which is just a number, and the probability of getting reward is 1-theta .
 If your rewards are continuous, maybe you have some continuous distribution.
 And you don't really know what the theta are, but you could assume that you have a prior on them.

@@ -15,7 +15,7 @@ But even then, this provides significant benefit if you can learn a good model.
 So, essentially, Dyna is online Q-learning that performs model-free RL with a model.
 So, here's how Dyna works.
 It's very much going to follow online Q-learning, but then with a little modification.
-So, step one, in the current state, pick an action A using your exploration policy.
+So, step one, in the current state, pick an action a using your exploration policy.
 This is exactly the same as online Q-learning.
 Step two, observe the resulting next state S' and the reward to get a transition tuple S, A, S' R.
 Now, here's where the new stuff starts coming in.

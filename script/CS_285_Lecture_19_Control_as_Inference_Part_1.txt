@@ -102,7 +102,7 @@ And we already know how the states and actions relate to one another.
 For now, we'll stick to fully observed settings.
 So we could also add observations to this picture, but we won't bother with that for now just to avoid cluttering up the notation.
 What we do, however, need to add is some additional variables that represent the task, that represent why the agent may choose to take one action or another.
-And so far we have the transition probabilities, P of s' given s comma a.
+And so far we have the transition probabilities, P of (s'|s,a).
 And our goal will be to model joint distributions over trajectories, so P of s1 through t and a1 through t.
 That's our trajectory tau.
 So what can we set this probability to?

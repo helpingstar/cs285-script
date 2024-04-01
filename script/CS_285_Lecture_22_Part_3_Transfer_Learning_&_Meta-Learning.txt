@@ -36,7 +36,7 @@ f theta is a function of an MDP, but it's really a function of the experience yo
 So as long as you can feed all that experience into your policy, then you're doing meta-learning.
 So that is to say that the context, which we call z1, is the same as the experience in the test MDP.
 Okay.
-So the context, which is z2 or omega or something like that, is the ϕ i that we have here.
+So the context, which is z2 or Ω or something like that, is the ϕ i that we have here.
 So ϕ i is basically the context in a contextual policy.
 The main difference, of course, is that when we talked about multitask learning before, the context was provided for us.
 Someone would just say like, oh, your job is to do the laundry, your job is to do the dishes.

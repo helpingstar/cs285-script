@@ -59,7 +59,7 @@ So the probability of entering the death state is (1-γ), which means that the m
 And that (1-γ) remaining slice accounts for entering the death state.
 So mechanically, the modification that we have with the discount factors just multiply our values by γ for every time step that we back them up.
 And what that does is it makes us prefer rewards that happen sooner rather than later.
-And mathematically, one way that we can interpret this is that we're actually modifying our MDP to introduce the probability of death with probability of 1 minus gamma.
+And mathematically, one way that we can interpret this is that we're actually modifying our MDP to introduce the probability of death with probability of 1 minus γ.
 All right.
 Let's dig into discount factors a little bit more.
 First, could we introduce discount factors into regular Monte Carlo policy gradients?
@@ -67,7 +67,7 @@ Well, the answer is we most definitely can.
 So for example, there's one option for how to do this is we can just take that single sample reward-to-go calculation and we can put γ into it.
 So the equation I have here is exactly the reward-to-go calculation I had before, except that now I've added this γ raised to the power (t' - t) in front of my reward.
 So that means that the first reward, the one that happens at time step t, has a multiplier of 1.
-The next one at t plus 1 gets a multiplier of gamma.
+The next one at t plus 1 gets a multiplier of γ.
 The next one at t plus 2 gets a multiplier of γ squared and so on.
 So we're much more affected by rewards that happen closer to us in time.
 This type of estimator is essentially the single sample version of what you would get if you were to use the value function with the discounted bootstrap.
@@ -94,7 +94,7 @@ So what's going on here?
 Why do we have this difference?
 Well, one way that we can understand this difference is if we take the γ^(t-1) factor and distribute it out of the sum.
 So the last line I have here is exactly equal to the preceding line.
- I've just distributed out a γ^(t-1) factor.
+I've just distributed out a γ^(t-1) factor.
 So now the reward to go calculation is exactly the same as option 1, but I have this additional multiplier of γ^(t-1) in front of ∇log π.
 So what is that doing?
 Well, what that's doing is actually quite natural.

@@ -54,7 +54,7 @@ And if something about these definitions is unclear, please make sure to write a
 All right, let's continue.
 So what are Q functions and value functions good for?
 Well, I provided some intuition for this a couple slides ago when I talked about how once you have a Q function for at least the first time step, you can recover a better policy for the first time step.
-So one idea is that if we have a policy π and we can figure out its full Q function, Q^π S comma A, then we can improve π.
+So one idea is that if we have a policy π and we can figure out its full Q function, Q^π s,a, then we can improve π.
 For example, we can pick a new policy π' that assigns a probability of 1 to the value of S1.
 And we can do this on the first time step, but also on all of the time steps.
 And in fact, we can show that this policy is at least as good as π and probably better.

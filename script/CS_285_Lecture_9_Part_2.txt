@@ -116,9 +116,9 @@ Well, an advantage is the sum of rewards over time.
 So that means that the largest value that c could take on is the largest possible reward times the number of time steps, because all those importance weights and all those expectations, they have to sum up to 1.
 So that means that the, basically, the expected value of any function can't possibly be larger than the largest value that function takes on, and the largest value that an advantage can take on is the number of time steps that the function can take on.
 And so, in this case, we're going to use the largest reward, because ultimately, an advantage is the sum of rewards over time.
-So that means that the c is on the order of the number of time steps times r max, and if you have infinite time steps, but you use a discount, then you know that the discount values, they form a geometric series, so they have to sum to 1 over 1 minus gamma.
+So that means that the c is on the order of the number of time steps times r max, and if you have infinite time steps, but you use a discount, then you know that the discount values, they form a geometric series, so they have to sum to 1 over 1 minus γ.
 So in a finite horizon case, c is capital t times argmax.
-In an infinite horizon case, it's r max over 1 minus gamma.
+In an infinite horizon case, it's r max over 1 minus γ.
 By the way, as an aside here, if you're doing reinforcement learning theory, and you ever see a term that looks like 1 over (1-γ), just mentally substitute the time horizon for that, because 1 over (1-γ) is essentially the equivalent of a horizon in the infinite horizon case.
 It's basically the number of time steps, the effective number of time steps that you're summing rewards over.
 Okay.

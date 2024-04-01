@@ -21,7 +21,7 @@ If we choose each of these hyperparameters to be one, meaning one step of data c
 Here I've called online Q iteration.
 This is really Q-learning.
 So if you hear someone say Q-learning, they really mean this method.
-Step one, take one action Ai and observe the resulting transition, s_i, a_i, s'_i, Ri.
+Step one, take one action ai and observe the resulting transition, s_i, a_i, s'_i, Ri.
 Step two, calculate the target value y_i for that transition.
 Step three, perform one gradient step on the difference between the output of the Q function and the value that you just calculated.
 And of course, as usual, this algorithm fits into our anatomy of our reinforcement learning method.

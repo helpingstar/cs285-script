@@ -110,7 +110,7 @@ So here's how we can think about Monte Carlo Tree Search.
 Let's say that you want to play an Atari game, let's say you want to play this game called SeaQuest, where you have to shoot these torpedoes at some fish.
 I don't know why you want to shoot torpedoes at fish, that seems ecologically irresponsible, but that's what the game requires you to do.
 And the game requires selecting from a set of actions to control your little submarine.
-What you could imagine if you have access to a model is you could take your starting state and see what happens if you take action A1 equals zero and see what happens if you take action A1 equals one, maybe just two actions.
+What you could imagine if you have access to a model is you could take your starting state and see what happens if you take action a1 equals zero and see what happens if you take action a1 equals one, maybe just two actions.
 And both of the, you know, each of those actions will put you in a different state.
 It might put you in a different state each time you take that action, so the true dynamics might be stochastic, but that's okay.
 We would just take the action multiple times and see what happens.

@@ -97,7 +97,7 @@ So DQ_ϕ D θ is just DA D θ, which is the derivative of mu θ, times DQ_ϕ DA.
 So you can obtain this derivative by backpropagating through the graph, propagating through the Q function and into the mu, and then into the mu parameters.
 So now our targets are going to be given by as Yj equals Rj plus γ times Q_ϕ prime, evaluated at Sj prime comma mu θ Sj prime, which is really an approximation for the argmax, as long as mu θ is a good estimate of the argmax.
 So here is what that algorithm will look like.
-Step 1, take some action AI, observe the corresponding transition s_i, a_i, s'_i, Ri, and add it to your buffer, just like in Q-learning.
+Step 1, take some action aI, observe the corresponding transition s_i, a_i, s'_i, Ri, and add it to your buffer, just like in Q-learning.
 Step 2, sample a mini-batch Sj, Aj, Sj prime, Rj from your buffer, uniformly at random.
 Step 3, compute your target value.
 And now instead of using the argmax, you're going to use mu θ.

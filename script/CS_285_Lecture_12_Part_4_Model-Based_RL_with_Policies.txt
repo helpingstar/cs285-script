@@ -50,7 +50,7 @@ I'm going to want to construct a distribution that I'm going to call the distrib
 And it's a distribution that depends on pi, so that's why I'm going to write it as p pi, s future equals s, given st.
 So s future is a random variable, and the distribution here is basically the probability that you will land in that state at some point in the future, with different points in the future, weighted by gamma to a different palette.
 Now, as a little detail, the quantity in parentheses there doesn't actually sum to one.
-In order for it to sum to one, you have to multiply it out front by one minus gamma.
+In order for it to sum to one, you have to multiply it out front by one minus γ.
 And if you want an intuition for what p of s future really represents, you can kind of think of it like this.
 Select a future time step at random from a geometric distribution with parameter gamma, and then evaluate p of s_t prime equals s, and then you can calculate the probability of s future for the time step t' that you sampled.
 And that's a perfectly valid way to interpret the probability of s future.

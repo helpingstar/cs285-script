@@ -20,7 +20,7 @@ The important thing is that it's some quantity that decreases rapidly as n of a.
 So it's a function that increases.
 Okay, so can we use this idea with MDPs?
 One thing we could do is essentially extend it to the MDP setting and create what is called count-based exploration.
-So instead of counting the number of times you've pulled some arm, which is n of a, you would count the number of times you've visited some state action tuple s comma a, or even just the number of times you've visited some state n of s, and use it to add an exploration bonus.
+So instead of counting the number of times you've pulled some arm, which is n of a, you would count the number of times you've visited some state action tuple s,a, or even just the number of times you've visited some state n of s, and use it to add an exploration bonus.
 So we can use this idea to estimate the reward for the exploration bonus.
 So the UCB estimate in the bandit case is estimating the reward with an additional exploration bonus.
 In the MDP case, we will also estimate reward with an exploration bonus.

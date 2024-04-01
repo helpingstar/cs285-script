@@ -93,7 +93,7 @@ You could just think of it as a score, and you just want that score to be larger
 So basically, you just need some number that is very predictive of whether a state is novel or not.
 It doesn't even have to be a proper density.
 So you just need to be able to tell if a state is novel or not, and if that's all you want, there are other ways to get this that are a little more heuristic, but can work well.
-So, for example, let's say that we have some target function f star of s comma a.
+So, for example, let's say that we have some target function f star of s,a.
 Don't worry about what this function is for now.
 Let's just say it's some scalar value function on states and actions.
 So maybe it's this function.

@@ -409,18 +409,18 @@ And all of those are reasonable choices.
 So we call these contextual policies.
 A standard policy is just pi of A given S.
 A contextual policy is pi of A given B.
-A given S, context, omega.
-And if you learn it with an actor critic method or a Q learning method, then your Q function would also be taking omega in as input.
+A given S, context, Ω.
+And if you learn it with an actor critic method or a Q learning method, then your Q function would also be taking Ω in as input.
 So this could be a one hot vector indicating whether you're doing the dishes or the laundry.
 It could be a textual description or it could be something else.
 This is very, very simple.
 All you have to do is simply augment the state space to add the context to the state.
-And now, the problem of training this multitask policy to do all these tasks basically amounts to the same multitask MDP from before where omega is chosen randomly at the initial time step.
+And now, the problem of training this multitask policy to do all these tasks basically amounts to the same multitask MDP from before where Ω is chosen randomly at the initial time step.
 And then it doesn't change for the rest of the episode.
 So people have trained contextual policies for all sorts of settings.
-Maybe you have a robot stacking Lego blocks and omega is the location where it stacks something.
-You have a virtual character walking and omega is the desired walking direction.
-Maybe you have a hockey robot and omega is where it should hit the puck.
+Maybe you have a robot stacking Lego blocks and Ω is the location where it stacks something.
+You have a virtual character walking and Ω is the desired walking direction.
+Maybe you have a hockey robot and Ω is where it should hit the puck.
 So this is all pretty straightforward to do.
 You don't actually have to change your algorithm to do this.
 You can just change the MDP definition to add this additional variable to the state.

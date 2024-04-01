@@ -152,7 +152,7 @@ And now we get our familiar geometric series, the sum from i equals 0 to infinit
 So that's 1 over 1 minus gamma times the infinity norm of epsilon, where epsilon is a big vector with k dimensions, where every dimension has the error at that iteration.
 So that's pretty neat.
 Now we see how error scales for just the approximation error.
-So if we incur some epsilon fit every step, then the total error we'll get will be epsilon times 1 over 1 minus gamma.
+So if we incur some epsilon fit every step, then the total error we'll get will be epsilon times 1 over 1 minus γ.
 So the longer our horizon essentially the more error we get, get, which intuitively kind of you can think of as saying that every time you back up, which is every iteration of fit or queue iteration, you incur some additional error.
 So since the number of backups you need to make is equal to your horizon, that's the order of the approximation error that you'll see.
 So now let's put these two things together.
@@ -175,11 +175,11 @@ So what we can do is we can just take these two terms and plug them in here, and
 So here's what we have.
 We can see that the sampling error is the same as the one on the previous slide.
 We can see here that error compounds with the horizon over iterations, and due to sampling.
-Notice that in the sampling error, the second term actually is also of order 1 over 1 minus gamma, because q infinity is on the order of r max over 1 over 1 minus gamma.
+Notice that in the sampling error, the second term actually is also of order 1 over 1 minus gamma, because q infinity is on the order of r max over 1 over 1 minus γ.
 We discussed this before.
 We talked about how the value functions and q functions, basically their magnitudes are the reward times the reward, and so on.
-So we can see that in the sampling error the first term is actually 1 over 1 minus gamma, because q infinity is on the order of r max over 1 over 1 minus gamma.
-reward times the horizon, so it's r max over 1 minus gamma.
+So we can see that in the sampling error the first term is actually 1 over 1 minus gamma, because q infinity is on the order of r max over 1 over 1 minus γ.
+reward times the horizon, so it's r max over 1 minus γ.
 So if you imagine what will happen if we substitute in epsilon k plus sampling error into that second equation, you have a 1 over 1 minus gamma term in front, and then you have a sum of three terms, one of which itself also has a 1 over 1 minus gamma term in it.
 So the overall order of the error will be quadratic in 1 over 1 minus gamma, just like we saw in part one.
 Now so far we needed strong assumptions, specifically infinity norm assumptions, on the error that we're incurring.
