@@ -35,7 +35,7 @@ Crucially we don't need another neural network to represent this policy.
 The policy is represented implicitly as this argmax, so the only thing that we need to actually learn is the advantage.
 And then we will of course re-estimate the advantage function for π' and then construct a new policy that's the argmax with respect to that.
 So each time we create this implicit π', we know that that is at least as good as π and in most cases better.
-So we still have an algorithm with the usual three boxes, where in the orange box are generated samples, in the green box we're going to fit some kind of value function, either Q^π or v^π, which we will use to estimate the advantage, and in the blue box, instead of taking a gradient ascent step on an explicit policy, we will construct this implicit policy as the argmax.
+So we still have an algorithm with the usual three boxes, where in the orange box are generated samples, in the green box we're going to fit some kind of value function, either Q^π or V^π, which we will use to estimate the advantage, and in the blue box, instead of taking a gradient ascent step on an explicit policy, we will construct this implicit policy as the argmax.
 [5:00]
 So this is the high-level idea behind what is called policy iteration.
 So in policy iteration, step one is to evaluate the advantage of your current policy π, and then step two is to construct a new policy that's going to be this π', where π' takes an action with probability one if it is the argmax of the advantage.
