@@ -13,7 +13,7 @@ Here you can see some examples of samples drawn from a variational autoencoder t
 So here the x's are pixel images, so they're arrays of pixels, and the z's are going to be latent vectors with some dimensionality like 64 or 128.
 The architecture of the variational autoencoder.
 Essentially follows what we discussed in previous sections.
-So if we want to set this up as a computational graph for training, we would have the encoder q with parameters phi, take in the image xi, and that neural network would output the mean mu ϕ of xi and the variance sigma ϕ of xi.
+So if we want to set this up as a computational graph for training, we would have the encoder q with parameters ϕ, take in the image xi, and that neural network would output the mean mu ϕ of xi and the variance sigma ϕ of xi.
 Then we would sample some noise from a zero mean unit variance distribution, and then we would form the resulting z by taking the mean and adding the noise epsilon times the z.
 So we would have the standard deviation sigma, and that gives us z.
 And then we can pass z through the decoder, p theta of x given z, and that would produce the image.
@@ -123,7 +123,7 @@ So the variable here that we're modeling is y, so p of y given x comma z.
 is the decoder.
 Basically everything is the same as before, except now we're generating y and both the encoder and decoder get x as input.
 The prior can optionally depend on x, but there's really no need to do this.
-So the architecture now is you have your encoder with parameters phi, it takes in x and y, and it produces the mean and standard deviation of z, mu and sigma.
+So the architecture now is you have your encoder with parameters ϕ, it takes in x and y, and it produces the mean and standard deviation of z, mu and sigma.
 We still have the noise, we still add mu plus epsilon times sigma to get our z, but now our decoder takes in both z and x as input and produces p theta of y given x comma z.
 And just like before, the whole thing is trained with the variational lower bound shown at the top of the slide.
 So even though the model is conditional, very little actually changed.

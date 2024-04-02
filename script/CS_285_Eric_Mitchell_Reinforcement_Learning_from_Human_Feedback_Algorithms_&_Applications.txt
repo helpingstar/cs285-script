@@ -132,7 +132,7 @@ And this score function is sort of this unobserved, implicit sort of latent scor
 All right, so now we have a probabilistic model that relates discrete binary choices, which is what we have in our data to some scoring function.
 And we can just turn this into a loss function on a reward model.
 And do maximum likelihood, right?
-So we just replaced S here with R phi, which is our reward model that's got some parameters.
+So we just replaced S here with R ϕ, which is our reward model that's got some parameters.
 And we're just going to do maximum likelihood here on our data set of preference data, and out pops a reward model that we can then optimize.
 Okay, so this is sort of the human feedback part of the RLHF.
 Are we good?

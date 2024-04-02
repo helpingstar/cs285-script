@@ -144,7 +144,7 @@ So then we get this action a'_i and we plug it into the Q value.
 And that gets us a target value that actually represents the value of the latest policy at this old state s'_i.
 That's really cool.
 Okay, so we've resolved our issue with the value function.
-Instead of learning V, we're going to learn Q and we're going to exploit the fact that we can evaluate the value function with the expected value of the Q function under the policy.
+Instead of learning V, we're going to learn Q and we're going to exploit the fact that we can evaluate the value function as just the expected value of the Q function under the policy.
 Now, how are we going to deal with step 5?
 How are we going to deal with a policy gradient?
 Well, all we're going to do is we're going to use the same trick but this time we're going to use it for a_i instead of a'_i.

@@ -48,7 +48,7 @@ It's a very standard equation.
 So that one is actually pretty easy to do.
 You just write down the equation in terms of mu and sigma, and you can take its derivative.
 It's really the first term that's problematic.
-So we can suggestively rewrite that term by calling it J of phi, which is equal to the expected value with respect to Z distributed according to Q_ϕ of Z given XI of some quantity that I'm going to call R that is a function of XI and Z.
+So we can suggestively rewrite that term by calling it J of ϕ, which is equal to the expected value with respect to Z distributed according to Q_ϕ of Z given XI of some quantity that I'm going to call R that is a function of XI and Z.
 And the important thing is that R just doesn't depend on ϕ.
 So how do we calculate the derivative of this with respect to phi?
 Well, we can just use policy gradient.
@@ -80,7 +80,7 @@ And remember, the difficult part is calculating the gradient of this term.
 The gradient of the entropy is easy to get because the entropy is a closed form equation expressed in terms of mu and sigma.
 And you can just calculate derivatives for that using any automatic differentiation software.
 The difficult part is calculating the gradient of J of ϕ.
-Where Q phi, again, is this Gaussian.
+Where Q ϕ, again, is this Gaussian.
 So if you have a variable Z that is distributed according to a Gaussian distribution, you can always rewrite that variable as the sum of a deterministic term, mu ϕ of x, and a stochastic term given by some random number epsilon times sigma ϕ of x.
 And if epsilon is distributed according to a Gaussian with mean 0 and variance 1, then plugging it into this formula will make Z correspond to samples from a Gaussian with mean mu and variance sigma.
 So you're essentially transforming a sample from a 0-mean-unit-variance Gaussian into a sample with a mean mu and a variance sigma.
@@ -102,7 +102,7 @@ A single sample actually works pretty well.
 So you could just generate one sample for every data point in your mini-batch, and that is actually what we would usually do.
 Then, calculate the gradient with respect to ϕ as simply the average over all of your samples of grad ϕ of R evaluated at xi comma mu ϕ xi plus epsilon j sigma ϕ xi.
 So this requires R to be differentiable with respect to Z.
-And of course it requires mu ϕ and sigma ϕ to be differentiable with respect to phi, which they are because they are neural networks.
+And of course it requires mu ϕ and sigma ϕ to be differentiable with respect to ϕ, which they are because they are neural networks.
 We generally can't use this in reinforcement learning because in reinforcement learning we don't assume that we can calculate the derivative of your return.
 But here we can because R is just this log probability under the triangle model.
 It's another neural network.
@@ -140,7 +140,7 @@ That is just calling the neural network representation for p theta with an input
 So everything here can be back propped through, and epsilon is just treated as a constant.
 The second term, the KL divergence, has a closed form equation for it, expressed in terms of the means and variances of q and p of z.
 So you could think of it like this.
-You have your inference network, parameterized by phi, which takes in xi and it outputs two quantities.
+You have your inference network, parameterized by ϕ, which takes in xi and it outputs two quantities.
 A mean mu ϕ of xi and a sigma ϕ of xi.
 Then you sample your epsilon from your zero mean unit variance Gaussian, and you combine that together with a mu and sigma to get you z.
 And the z is then fed into p theta of xi given z to produce a distribution over x.

@@ -52,10 +52,10 @@ So we want the model parameters after observing a new transition to be very diff
 So the intuition is that a transition is more informative if it causes a belief over theta to change.
 Now the problem with this, of course, is that estimating a parameter posterior, as we've discussed multiple times now, is in general intractable.
 So if theta represents the parameters of some neural net, then we can't in general get a true posterior P theta, but we can get approximations to it.
-So the idea will be to use variational inference to estimate some approximate posterior that we're going to call Q of theta, given some variational parameters phi, which we're going to try to use to closely approximate P theta given h.
+So the idea will be to use variational inference to estimate some approximate posterior that we're going to call Q of theta, given some variational parameters ϕ, which we're going to try to use to closely approximate P theta given h.
 And then given a new transition, we'll update the variational parameters ϕ to get new variational parameters ϕ prime, and then we'll compare these two distributions.
 So we're going to have our approximate posterior, Q of theta given ϕ.
-And then we'll have our q of theta given phi, which is approximately equal to P theta given h.
+And then we'll have our q of theta given ϕ, which is approximately equal to P theta given h.
 And then what we have to do is we have to actually train this approximate posterior, and we'll train it to optimize the variational lower bound, which is given by the KL divergence between Q theta given ϕ and P of h given theta times P of theta.
 So this is the usual variational lower bound.
 If you're not familiar with variational lower bounds, don't worry, we'll cover them in a lot more detail in a subsequent lecture.

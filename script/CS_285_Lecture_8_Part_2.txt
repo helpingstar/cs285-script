@@ -24,7 +24,7 @@ And then we will make a new batch.
 And then we will make a new batch.
 And then we will make an update on the parameters of our Q function.
 This update looks a lot like the update from before with replay buffers, but I've made one very small change, where now the parameters in the max are different parameter vectors.
-So it used to be that I would take the max over a' of Q phi, and now it's Q_ϕ prime, where ϕ prime is some other parameter vector.
+So it used to be that I would take the max over a' of Q ϕ, and now it's Q_ϕ prime, where ϕ prime is some other parameter vector.
 And then, of course, after I make a k of these back and forth updates, which, again, is a little bit more complicated, I'm going to make a new batch.
 And then, of course, after I make a k of these back and forth updates, which, again, is a little bit more complicated, could be just k equals 1, could be just k equals 1, I'd go out and collect more data.
 And then I have a big outer loop where, after n steps of data collection, I'm going to actually update ϕ prime and set it to be ϕ.
@@ -82,13 +82,13 @@ So perhaps at the first step when I started out, ϕ prime is equal to ϕ.
 So at the third step, I get my target values back from the first step.
 And at the second step, I get them from the first step.
 And the fourth step, I get them from the first step.
-And then if the fourth step is where I update ϕ prime to be equal to phi, so basically if my n is equal to four, in practice n would be much larger, but let's say it's equal to four.
+And then if the fourth step is where I update ϕ prime to be equal to ϕ, so basically if my n is equal to four, in practice n would be much larger, but let's say it's equal to four.
 Then at the fifth step, I get my ϕ prime from the preceding step.
 So it seems like in different steps, the target values are lagged by very different amounts.
 If you're at the step right after n, if you're at the n plus one step, your target network is only one step old.
 And if you're right before a flip, then it's n minus one steps old.
 So it seems like at different points in time, your target values look more like a moving target than others.
-If you're right after that point where you set ϕ prime to phi, if you're right after that point where you set ϕ prime to phi, if you're right after that point, if you're right after one of these flips, then your target really looks like a moving target.
+If you're right after that point where you set ϕ prime to ϕ, if you're right after that point where you set ϕ prime to ϕ, if you're right after that point, if you're right after one of these flips, then your target really looks like a moving target.
 And if it's been a long time, then it really doesn't look like a moving target.
 So this feels a little off.
 It's not actually that big of a problem, but if it feels a little bit off, then one common choice that you could do is you could use a different kind of update, which is kind of similar to polyac averaging.
@@ -107,5 +107,5 @@ So, justallah.
 Alt- cide зн but some, and that comes from the connection to polyac averaging.
 I'm not going to go into it in this lecture, but if you want to learn more about why it's okay to linearly interpolate parameters of nonlinear functions in this way, look up polyac averaging.
 And of course the caveat is that this only makes sense if ϕ prime is similar to ϕ.
-So if ϕ prime was a totally different neural network trained in a totally separate way, this might be a little bit strange, but because you're gradually making ϕ prime more and more similar to phi, this procedure is actually alright.
+So if ϕ prime was a totally different neural network trained in a totally separate way, this might be a little bit strange, but because you're gradually making ϕ prime more and more similar to ϕ, this procedure is actually alright.
 And of course the nice thing about this is that now ϕ prime is updated the same way every single step, so every step is lagged by the same amount.

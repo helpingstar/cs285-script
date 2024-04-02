@@ -71,7 +71,7 @@ And when it's always quadratic, then you can always find the maximum.
 In this case, the maximum is just mu ϕ of s, as long as p ϕ of s is positive definite.
 So this is called the normalized advantage function.
 And the reason that it's called normalized is that if you exponentiate it, then you get a normalized probability distribution.
-So the argmax of Q_ϕ is mu phi, and the max is V_ϕ.
+So the argmax of Q_ϕ is mu ϕ, and the max is V_ϕ.
 So now we've just made this maximization operation very easy at the cost of reducing the representational capacity of our Q function.
 Because if the true Q function is not quadratic in the action, then of course the problem we have is that we can't represent it exactly.
 So there's no difference between the two.

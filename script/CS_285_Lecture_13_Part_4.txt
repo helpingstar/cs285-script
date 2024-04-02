@@ -114,7 +114,7 @@ So basically f star of s a is s'.
 That's very convenient because it's a quantity that clearly has something to do with the dynamics of the MDP, and of course you've observed s' in your data.
 So you could essentially train a model and then measure the error of that model as a notion of novelty.
 This is also related to information gain, which we'll discuss in the next part of the lecture.
-An even simpler way to do this is to just set f star to be a neural network with parameters phi, where ϕ is chosen randomly.
+An even simpler way to do this is to just set f star to be a neural network with parameters ϕ, where ϕ is chosen randomly.
 So this network is not actually trained, it's actually just initialized randomly to obtain an arbitrary but structured function.
 The point here is that you don't actually need f star to be all that meaningful.
 You just need it to be something that can serve as a target that varies over the state and action space in ways that are not trivial to model.

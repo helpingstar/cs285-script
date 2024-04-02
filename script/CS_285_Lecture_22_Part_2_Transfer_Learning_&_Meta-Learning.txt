@@ -74,7 +74,7 @@ Well, to try to understand this, let's imagine the following schematic picture f
 Generic learning, you have some kind of parameter theta, and you're going to find the theta that minimizes some loss function on the training set.
 And let's call this process of finding this argument FLEARN.
 So FLEARN takes in a training set and outputs the argument of your policy, of your model parameters theta.
-Generic meta-learning can be thought of as finding the argmin of the loss over your test set for some parameters phi, where these parameters ϕ are a function of your training set.
+Generic meta-learning can be thought of as finding the argmin of the loss over your test set for some parameters ϕ, where these parameters ϕ are a function of your training set.
 So you have some function F theta, which is now a learned function, it's no longer a fixed learning algorithm.
 F theta takes in a training set, which is now a learned function, it's no longer a fixed learning algorithm.
 F theta takes in a training set, and it produces some parameters ϕ.

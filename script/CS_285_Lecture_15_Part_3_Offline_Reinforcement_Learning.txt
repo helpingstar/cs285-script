@@ -108,7 +108,7 @@ Just like w r was a k by 1 vector.
 So w r when multiplied into ϕ gave you a vector of rewards.
 p ϕ when multiplied into ϕ will give you a matrix of features at the next time step.
 And all of this is for a fixed policy behind.
-Now if you're wondering how you solve for p phi, it's the same normal equations as before.
+Now if you're wondering how you solve for p ϕ, it's the same normal equations as before.
 So the same least squares formula can be applied to solve for p ϕ.
 It's just our targets now instead of being r are p pi ϕ.
 So p pi ϕ is what we want this to be equal to.
