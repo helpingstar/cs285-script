@@ -72,7 +72,7 @@ First, let's take a look at the advantages estimator in an Actor-Critic algorith
 I'm going to denote this as ^{A}_C.
 So ^{A}_C is the current reward plus the next value minus the current value.
 And this, as we saw, has much lower variance than the policy gradient, but higher bias if the value is wrong, and it's always at least a little bit wrong.
-We can also take a look at the Monte-Carlo advantage estimator that we use in policy gradient algorithms, which I've written out here using the value function as the baseline, to keep things consistent so that both of them have a minus V term.
+We can also take a look at the Monte-Carlo advantage estimator that we use in policy gradient algorithms, which I've written out here using the value function as the baseline, to keep things consistent so that both of them have a 'minus V' term.
 So here we have a sum of future rewards minus our baseline, which in this case is the value function.
 This has no bias, but it has much higher variance because of the single sample estimate.
 So at this point you might wonder, well, can we get something in between?
@@ -129,7 +129,7 @@ It's kind of like that single step advantage estimator at time step t'.
 So this is pretty cool.
 If you just construct a weighted sum of these one-step advantage estimators at every time step, weighted by (γλ)^{t' - t}, you recover exactly the sum of all possible n-step returns.
 So this is going to allow you to trade off bias variance just by choosing this λ, which acts very similarly to a discount.
-So the larger lambdas look further in the future, smaller lambdas use value functions closer to the present.
+So the larger λ look further in the future, smaller λ use value functions closer to the present.
 So it has a very similar effect as the discount, which also maybe sheds some light on the role that discounts play in policy gradients.
 So this suggests that even if we didn't have λ, the role of γ would be a kind of bias variance trade-off.
 And that's in fact what's the case.
