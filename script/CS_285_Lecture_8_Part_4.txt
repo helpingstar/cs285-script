@@ -124,18 +124,18 @@ And then analogously ϕ B is updated by using ϕ A as its target network, and th
 So this is the essence of double-Q learning, and its purpose is to de-correlate the way that you select the action from the way that you evaluate the value of that action.
 So if the two Q networks are noisy in different ways, then in principle the problem should go away.
 Now in practice, the way that we can implement double-Q learning is without actually adding another Q function, but actually using the two Q functions we already have.
-So we already have a ϕ and a ϕ prime, and they are different networks, so we'll just use those in place of ϕ A and ϕ B.
-So in standard Q learning, if we write it out in this argmax way, which is exactly equivalent, our target value is Q_ϕ prime, evaluated at the argmax from Q_ϕ prime.
-In double-Q learning, we select the action using Q Phi, but evaluate it using Q_ϕ prime.
-So now as long as ϕ prime and ϕ are not too similar, then these will be de-correlated.
+So we already have a ϕ and a ϕ', and they are different networks, so we'll just use those in place of ϕ A and ϕ B.
+So in standard Q learning, if we write it out in this argmax way, which is exactly equivalent, our target value is Q_{ϕ'}, evaluated at the argmax from Q_{ϕ'}.
+In double-Q learning, we select the action using Q Phi, but evaluate it using Q_{ϕ'}.
+So now as long as ϕ' and ϕ are not too similar, then these will be de-correlated.
 So this is the only difference.
-We're using ϕ to select the action instead of ϕ prime.
+We're using ϕ to select the action instead of ϕ'.
 And we still use the target network to evaluate our value to avoid this kind of moving targets problem.
 Now you could say that we do still have a little bit of the moving targets problem, because as our ϕ changes, so does our action, but presumably the change in the argmax is a very sudden, discrete change, and it doesn't happen all the time.
 So if you have three different actions, the argmax isn't going to change as often.
-Now something I might mention here is that, and many of you might already be thinking about this, ϕ prime and ϕ are of course not totally separate from each other, because periodically you do set ϕ prime to be equal to ϕ.
+Now something I might mention here is that, and many of you might already be thinking about this, ϕ' and ϕ are of course not totally separate from each other, because periodically you do set ϕ' to be equal to ϕ.
 So this solution is far from perfect.
-It doesn't totally de-correlate ϕ prime and ϕ.
+It doesn't totally de-correlate ϕ' and ϕ.
 But in practice, it actually tends to work pretty well, and it actually mitigates a large fraction of the problems with overestimation.
 But of course not all of them.
 Alright.
@@ -144,8 +144,8 @@ And that's the use of multi-step returns.
 So our Q-learning target is, and here I intentionally am writing it out with time steps, is Rjt plus the max at t plus one.
 And where does the signal in this learning process come from?
 Well, if your initial Q function is very bad, it's essentially random, then almost all of your learning has to come from the R.
-So if your Q_ϕ prime is good, then the target values do most of the heavy lifting.
-If your Q_ϕ primes are bad, then the only thing that really matters is the reward, and that second term is essentially just contributing noise.
+So if your Q_{ϕ'} is good, then the target values do most of the heavy lifting.
+If your Q_{ϕ'}s are bad, then the only thing that really matters is the reward, and that second term is essentially just contributing noise.
 And early on in training, your Q function is pretty bad, so almost all of your learning signal really comes from the reward.
 Later on in training, your reward, you know, your Q function becomes better, and the Q values are much larger in magnitude than the rewards, so later on in training, the Q values dominate.
 But your takeoff, your initial learning period, can be very slow if your Q function is bad, because this target value is mostly dominated by the Q value.

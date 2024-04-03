@@ -96,7 +96,7 @@ Sometimes we are given the transition probabilities, and sometimes not.
 Sometimes we have to infer them from experience.
 In forward reinforcement learning, we are given a reward function.
 And our goal is to learn pi star, the optimal policy for that reward function.
-In inverse reinforcement learning, we are given trajectories tau sampled by running the optimal policy.
+In inverse reinforcement learning, we are given trajectories τ sampled by running the optimal policy.
 We don't necessarily know what the optimal policy is, but we do assume that our sampling is correct.
 And we know that the sample trajectories came from that policy, or some approximation thereof.
 And our goal is to learn the reward function r psi that pi star optimized to produce those taus, where psi is a parameter vector that parameterizes the reward.

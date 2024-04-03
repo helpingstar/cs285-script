@@ -75,7 +75,7 @@ And then once we calculate a value function V^π this way, then we can construct
 Now this also means that our policy will be deterministic.
 So expected values with respect to this π will be pretty easy to compute.
 So we can simplify our bootstrap update by removing the expectation with respect to π and just directly plugging in the only action that has non-zero probability.
-So then we get the simplified backup where v prime of s is set to r(s,π(s)) plus γ times the expectation under p(s'|s,π(s)) of V^π(s').
+So then we get the simplified backup where V^{π}(s) is set to r(s,π(s)) plus γ times the expectation under p(s'|s,π(s)) of V^π(s').
 Okay, so now we can plug this procedure into our policy iteration algorithm.
 So as a reminder our policy iteration algorithm.
 Step one is evaluate our advantage, which we can obtain from the value function.

@@ -97,7 +97,7 @@ And the one that I'm going to pick is p_θ prime of tau.
 Why am I putting in p_θ prime of tau?
 Well, because my goal ultimately is to turn this into an expectation under p_θ prime of tau.
 That's the right-hand side of our claim.
-And I can put in p_θ prime of tau here because it has the same initial state marginal and the quantity inside the expectation only depends on s0.
+And I can put in p_θ prime of τ here because it has the same initial state marginal and the quantity inside the expectation only depends on s0.
 So in a sense, that value doesn't change if I take the expectation with respect to different policies.
 And now, what I'm going to do is I'm going to use a little telescoping sums trick.
 So I'm going to replace v pi θ of s0 with this funny quantity.
@@ -143,7 +143,7 @@ And one of them has an r, and the other one has γ v s1 minus v s0.
 So I can group these two expectations together.
 I can distribute the expectation out, and I get a sum from zero to infinity, γ to infinity, γ to the power t, and then a quantity inside the parentheses, which is exactly the advantage function.
 And crucially, because the value function here is the value for pi θ, the advantage is the advantage for pi θ as well.
-So that means that this is equal to the expected value under p_θ prime of tau of the sum from zero to infinity of γ to the t of the advantage of pi θ s, t, a, t.
+So that means that this is equal to the expected value under p_θ prime of τ of the sum from zero to infinity of γ to the t of the advantage of pi θ s, t, a, t.
 So this proves the claim that we want to prove.
 And just to make sure everyone is on the same page, concretely what this proves is that if we maximize the expected value of the advantage of an old policy with respect to an expectation for the new policy, then we will optimize j θ prime.
 We'll actually optimize the reinforcement learning objective.

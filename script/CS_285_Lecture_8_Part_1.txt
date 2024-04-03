@@ -3,7 +3,7 @@ So even though we learned that value-based methods in general are not guaranteed
 So first, to recap from last time, we discussed how we could derive a general class of value-based methods which we called fitted Q iteration algorithms, which do not require knowledge of the transition probabilities, and do not require us to explicitly represent a policy.
 So in this class of methods there are basically three steps.
 Step one, we collect a data set using some policy, and we learn that these are off-policy algorithms, which means that they can collect their data sets using a wide range of different policies.
-They can aggregate data from previous iterations, and they can use various exploration rules like epsilon greedy and Boltzmann exploration.
+They can aggregate data from previous iterations, and they can use various exploration rules like ϵ-greedy and Boltzmann exploration.
 Then in step two, for each transition in our data set, and when I say transition I mean s_i, a_i, s'_i, and r_i tuples, for each transition we calculate what we call the target, which I'm denoting as y_i, which is equal to the current reward plus γ times the max over the actions of the next time step.
 And we learned that this max is what allows us to make this algorithm off-policy so the max basically accounts for the fact that you are implicitly computing a greedy argmax policy using your current Q function Q_ϕ and then evaluating the value of that argmax policy by plugging it into Q_ϕ.
 So, of course the argmax is simply the max so that gets us our targets y_i and then in step three we update our function approximator for Q which is parameterized by ϕ, by finding the argmin parameters, the parameters that minimize the difference between the output of Q_ϕ and the target's y_i that we just computed.
@@ -63,8 +63,8 @@ And that's to use something called a replay buffer.
 Replay buffers are a fairly old idea in reinforcement learning.
 They were introduced way back in the 1990s.
 And here's how they work.
-So let's think back to the full-fitted Q-iteration algorithm.
-In the full-fitted Q-iteration algorithm, we would collect a data set of transitions using whatever policy we wanted, and then we would make multiple updates on that data set of transitions.
+So let's think back to the full fitted Q-iteration algorithm.
+In the full fitted Q-iteration algorithm, we would collect a data set of transitions using whatever policy we wanted, and then we would make multiple updates on that data set of transitions.
 So we would label all of the transitions with target values.
 Then we might make a large number of gradient steps regressing onto those target values.
 And then we might even go back and compute new target values before we even collect more data.
@@ -91,18 +91,18 @@ So where will the data come from?
 Well, what we need to do is we need to periodically feed the replay buffer.
 Because initially, our policy will be very bad.
 And maybe our initial very bad policy just won't visit all the interesting regions of the space.
-So we still want to occasionally feed the replay buffer by using our latest policy, maybe with some epsilon greedy exploration to collect some better data, some data that achieves better coverage.
+So we still want to occasionally feed the replay buffer by using our latest policy, maybe with some ϵ-greedy exploration to collect some better data, some data that achieves better coverage.
 So then, the diagram you could think of might look like this.
 We have our buffer of transitions.
 We're cranking away on this buffer doing our off-policy Q learning.
 And then periodically, we deploy some policy back into the world.
-For example, the greedy policy with epsilon greedy exploration to collect a little bit more data and bring back some more transitions to add back to our buffer.
+For example, the greedy policy with ϵ-greedy exploration to collect a little bit more data and bring back some more transitions to add back to our buffer.
 And that will refresh our buffer with behavior that hopefully gets better coverage.
 All right.
 So putting it all together we can devise a full kind of Q learning recipe with replay buffers.
 Step one, collect a data set of transitions using some policy.
 Maybe initially, it's just a random policy.
-Later on, it will be the argmax policy with epsilon greedy exploration, and add this data to your buffer B.
+Later on, it will be the argmax policy with ϵ-greedy exploration, and add this data to your buffer B.
 So that's this part.
 Step two, sample a batch from B, and then do some learning on that batch by summing over the batch, this Q learning pseudo gradient.
 So we're going to calculate target values for every entry in the batch.
@@ -111,4 +111,4 @@ And then we'll sum it over the whole batch.
 Since we sum over the whole batch, we get a lower variance gradient.
 It has more than one sample.
 And since we sample the batch iid from our buffer, our samples are going to be de-correlated so long as our buffer is big enough.
-And we can repeat this K equals one times, K=1 is very common but larger k can be more efficient so if you repeat this k equals one times and then go out and collect more data, then you get a fairly classic kind of deep Q learning algorithm with replay buffers.
+And we can repeat this K equals one times, K=1 is very common but larger k can be more efficient so if you repeat this K equals one times and then go out and collect more data, then you get a fairly classic kind of deep Q learning algorithm with replay buffers.

@@ -5,8 +5,8 @@ There was a lot of things that we covered and a lot of different methods, so I'm
 So at the root of it we have learning-based control.
 So basically our aim was to cover learning-based control methods interpreted very broadly, and learning-based control methods include imitation learning methods, which are learning from demonstration supervision, and reinforcement learning methods, which are learning from rewards.
 Reinforcement learning methods include classic model-free RL algorithms, which are things like policy gradients, value-based methods.
-Value-based methods and policy gradients combined result in actor-critic methods, which are things like deep-q learning, which is an example of a specific value-based method.
-We also cover deep-q learning as an example of a specific value-based method, q-function actor-critic methods like SAC, and advanced policy gradient methods like TRPO and BPO.
+Value-based methods and policy gradients combined result in actor-critic methods, which are things like deep-Q learning, which is an example of a specific value-based method.
+We also cover deep-Q learning as an example of a specific value-based method, q-function actor-critic methods like SAC, and advanced policy gradient methods like TRPO and BPO.
 There's also model-based control, and model-based control does not have to be learning-based.
 So those planning and control methods we discussed, like LQR, don't by themselves necessarily have anything to do with learning, but they can be combined with learning to produce model-based RL methods.
 In their purest form, model-based RL methods that do not use a policy, that simply train a model and then plan through that model, don't actually make use of all these RL concepts we discussed in the model-free portion, but we can of course put them together and use learned models in combination with reinforcement learning algorithms like policy gradients or value-based methods to get more effective model-based RL algorithms.

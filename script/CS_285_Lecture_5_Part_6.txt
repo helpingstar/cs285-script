@@ -20,7 +20,7 @@ Now the convenient thing with having a two-dimensional parameter space is that w
 This figure is borrowed from an excellent paper by Peters and Schaal, which I'm going to cite at the end of this portion of the lecture.
 The little blue arrow here shows the gradient, normalized to be unit length.
 The horizontal axis is the first parameter k, and the vertical axis is the second parameter σ.
-The optimal setting for the parameters is k equals negative one and σ equals zero.
+The optimal setting for the parameters is K equals negative one and σ equals zero.
 So it's in the middle at the bottom of this plot.
 But one of the things you might notice from looking at this plot is that the arrows don't actually point towards the optimum.
 And the reason for this is that as σ gets smaller and smaller, the gradient with respect to σ gets larger and larger.

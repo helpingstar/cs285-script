@@ -26,8 +26,8 @@ It might be no better than random for a long time while that random exploration 
 And many of you will probably experience this in homework 3 when you train on the Pong video game.
 Start with high exploration, start with large values of epsilon, and then gradually reduce to a higher value of epsilon.
 Start with high exploration, start with large values of epsilon, and then gradually reduce to a higher value of epsilon.
-So you can start with a lot of exploration as you go, because initially your q function is garbage anyway, so it's mostly the random exploration that will be doing most of the heavy lifting.
-And then later on, once your q function gets better, then you can decrease epsilon.
+So you can start with a lot of exploration as you go, because initially your Q function is garbage anyway, so it's mostly the random exploration that will be doing most of the heavy lifting.
+And then later on, once your Q function gets better, then you can decrease epsilon.
 So it often helps to put it on a schedule.
 A few more advanced tips for q-learning.
 The errors of the Bellman error, the gradients of the Bellman error, can be very big.
@@ -35,7 +35,7 @@ So it's kind of a least squares regression, so these squared error quantities ca
 And something that's a little troublesome is that if you have a really bad action, you don't really care about the value of that action, but your squared error objective really cares about figuring out exactly how bad it is.
 So if you have some good actions that are like plus 10, plus 9, plus 8, and you have some bad actions that are minus 1 million, that minus 1 million will create a huge gradient, even though you don't really care that it's minus 1 million.
 Like if you were to guess minus 900,000, it would result in the same policy.
-But your q function objective is to get the same result, so you can get the same result.
+But your Q function objective is to get the same result, so you can get the same result.
 And the squared error objective really cares about that.
 And that will result in big gradients.
 So what you can do is you can either clip your gradients, or you can use what's called a Huber loss.

@@ -38,7 +38,7 @@ Bye.
 Bye.
 Bye.
 Bye.
-it turns out that the importance weights actually have a very appealing form, because we know that the optimal normalization constant, the probabilities of the structures from the optimal policy, are given by p of tau times the exponential of the reward, and we know the reward, well, not the true reward, but the reward for our current psi, so we can actually calculate these importance weights, provided that we have access to the policy that we just optimized to calculate the denominator, and we usually do.
+it turns out that the importance weights actually have a very appealing form, because we know that the optimal normalization constant, the probabilities of the structures from the optimal policy, are given by p of τ times the exponential of the reward, and we know the reward, well, not the true reward, but the reward for our current psi, so we can actually calculate these importance weights, provided that we have access to the policy that we just optimized to calculate the denominator, and we usually do.
 So the importance weights, we can write them out like this.
 This is very similar to what we had before in the lecture on importance weighted policy gradients.
 So we have the initial state terms, the dynamics terms, and at the top we have the additional reward terms, at the bottom we have the additional policy terms.

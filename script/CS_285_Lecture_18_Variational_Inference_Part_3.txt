@@ -80,7 +80,7 @@ And remember, the difficult part is calculating the gradient of this term.
 The gradient of the entropy is easy to get because the entropy is a closed form equation expressed in terms of mu and sigma.
 And you can just calculate derivatives for that using any automatic differentiation software.
 The difficult part is calculating the gradient of J of ϕ.
-Where Q ϕ, again, is this Gaussian.
+Where Q_ϕ, again, is this Gaussian.
 So if you have a variable Z that is distributed according to a Gaussian distribution, you can always rewrite that variable as the sum of a deterministic term, mu ϕ of x, and a stochastic term given by some random number epsilon times sigma ϕ of x.
 And if epsilon is distributed according to a Gaussian with mean 0 and variance 1, then plugging it into this formula will make Z correspond to samples from a Gaussian with mean mu and variance sigma.
 So you're essentially transforming a sample from a 0-mean-unit-variance Gaussian into a sample with a mean mu and a variance sigma.

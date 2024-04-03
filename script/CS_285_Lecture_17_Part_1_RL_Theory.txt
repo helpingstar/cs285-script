@@ -116,18 +116,18 @@ A very simple tabular estimation strategy.
 So there's no function approximation here, there's no neural net, we're just doing tabular estimation, we're literally counting, how many times we land in a particular state s'.
 This, of course, only makes sense if the states are discrete and the actions are discrete, and we can build a table with all these numbers.
 And then what we're going to do is we'll first focus just on policy evaluation.
-So given some fixed policy pi, let's just use p-hat to estimate the q function q-hat pi.
+So given some fixed policy pi, let's just use p-hat to estimate the Q function q-hat pi.
 So this idealized algorithm takes some policy, and then it uses this p-hat to exactly estimate q-hat pi.
-Now q-hat pi is not the exact q function, but it is the exact q function under p-hat, because p-hat fully determines an MDP, and then it will do something like q-value iteration to estimate q-hat pi.
+Now q-hat pi is not the exact Q function, but it is the exact Q function under p-hat, because p-hat fully determines an MDP, and then it will do something like q-value iteration to estimate q-hat pi.
 So step two is exact, but using an inexact model p-hat.
 This is a very simple algorithm, and our goal is basically going to be to understand the error.
 So we're going to use an error that is induced by the fact that p-hat is not perfect.
 Now to kind of take stock of what we're doing here, this is, of course, a rather simplistic RL method.
 This is not how we would usually do RL.
-And the main purpose of this analysis is really to understand how sampling error in estimating p-hat propagates into q functions.
+And the main purpose of this analysis is really to understand how sampling error in estimating p-hat propagates into Q functions.
 So for a little bit of context with this, in supervised learning theory, there's...
 There are a lot of tools that we can use to answer questions like, if I'm trying to estimate a quantity like p-hat, and I have some number of samples, how accurate is my estimate going to be?
-And by introducing step two, what we're really trying to do is we're trying to take these standard supervised learning results, and we're trying to pass them through the RL machinery to say, well, how do bounds on sampling error from supervised learning translate into bounds on sampling error for q functions when that q function is the result of some kind of error?
+And by introducing step two, what we're really trying to do is we're trying to take these standard supervised learning results, and we're trying to pass them through the RL machinery to say, well, how do bounds on sampling error from supervised learning translate into bounds on sampling error for Q functions when that Q function is the result of some kind of error?
 So we're going to use a lot of tools that we can use to answer questions like, so we're going to use a lot of tools that we can use to answer questions like, not just anything in a simple p-hat, but any type of error.
 So that's really going to be the flavor of the analysis that I'll present.
 So the questions that we'll ask, how close is q-hat pi to q pi, meaning that we're going to estimate the q values of our policy pi, how close is it to the true q values of that policy?
@@ -146,13 +146,13 @@ So if you see me write an infinity norm, what it really means is just the differ
 And it's good to use the infinity norm because it gives us a bound on worst-case performance.
 Now we could ask another question.
 How close is q hat star if we learn it using p hat?
-So if we don't just evaluate some policy that's given to us, but if we instead try to actually run q-value iteration, like actually find the optimal q function under p hat, how close is q hat?
-How close is it going to be to the true optimal q function?
+So if we don't just evaluate some policy that's given to us, but if we instead try to actually run q-value iteration, like actually find the optimal Q function under p hat, how close is q hat?
+How close is it going to be to the true optimal Q function?
 So what's the difference between q star and q hat star?
 And ideally we'd like to see that that's bounded by some epsilon.
-So q hat star is the optimal q function we learn under our learned model, which is basically what happens if we do RL with this method.
+So q hat star is the optimal Q function we learn under our learned model, which is basically what happens if we do RL with this method.
 And as I mentioned before, we could also ask, how good is the resulting policy, which is not the same.
-So if we take the policy pi hat, which corresponds to q hat star, and we take the true q function of pi hat, how different is that from q star, meaning how suboptimal is the policy we get by running q-value iteration under p hat?
+So if we take the policy pi hat, which corresponds to q hat star, and we take the true Q function of pi hat, how different is that from q star, meaning how suboptimal is the policy we get by running q-value iteration under p hat?
 And that last question is really the one that quantifies the performance of RL, because that's really telling us how much worse is the policy we get under the model p hat than the best policy we could have gotten anywhere.
 Now it turns out that actually the first question, the policy evaluation question, gives us a tool that is very good for answering the other two questions.
 So we'll mostly focus on the first question, how close is q hat pi to q pi for a given policy pi, and then we'll see how to utilize that as a tool to answer the other two questions.
@@ -293,7 +293,7 @@ And v is a vector with the number of entries equal to the number of states.
 And you can see that all the dimensionalities line up.
 So you can multiply p by v pi, and that gives you a vector with S A entries, and then you can add that to R, and that'll be the same dimensionality as q pi.
 We can also write v as some matrix capital pi times q pi.
-Remember that v is an expected value with respect to the actions of the q function.
+Remember that v is an expected value with respect to the actions of the Q function.
 So pi here is a matrix that now has S different rows and S A columns, and every entry is the probability of some action in some state.
 So that means that q pi is equal to R plus gamma times some matrix p pi times q pi, where p pi is just what you get by multiplying capital P by capital pi.
 All right.
@@ -320,7 +320,7 @@ Because remember, q hat pi was obtained just by solving the learned MDP determin
 So now we're going to introduce a little lemma that we're going to use to understand the relationship between errors in p hat and errors in q hat.
 We'll actually introduce two lemmas, and then we'll put them together and get our conclusion.
 So the first lemma is what's called the simulation lemma.
-The simulation lemma describes how a q function in the true MDP, q pi, differs from the q function in the learned MDP, q hat pi.
+The simulation lemma describes how a Q function in the true MDP, q pi, differs from the Q function in the learned MDP, q hat pi.
 Okay.
 This is the statement of the simulation lemma.
 It might be a little opaque, but I'll unpack this shortly.
@@ -331,7 +331,7 @@ This is the true value.
 So you can think of these as differences in probabilities weighted by their value.
 The value kind of, roughly speaking, constitutes their relative importance.
 And this is this evaluation operator.
-This is the thing that takes reward functions to q functions.
+This is the thing that takes reward functions to Q functions.
 So roughly speaking, what we're doing is we're taking our true value function, we're converting it into a kind of a pseudo reward by passing it through the difference of the dynamics, and then we are basically running q iteration on the pseudo reward.
 Okay.
 Slightly opaque result, but it will be pretty useful later.
@@ -370,7 +370,7 @@ Now here's another useful lemma.
 This one is going to be even simpler.
 Given p pi and any vector in r(s,a), we're going to have this relationship.
 If we apply i minus gamma p pi inverse, meaning this, uh, uh, this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by one minus gamma, meaning that applying i minus gamma p pi inverse to some vector will blow up the infinity norm of that vector by at most a factor of one over one minus γ.
-So intuitively, the q function corresponding to a reward v is at most one over one minus gamma times larger in terms of the infinity norm.
+So intuitively, the Q function corresponding to a reward v is at most one over one minus gamma times larger in terms of the infinity norm.
 By the way, we see a lot of these one over one minus gamma terms lying around.
 Just to make it clear where these come from, usually when you have sums of discounted rewards, you're going to have sums that look like this.
 You're going to have a sum from t equals zero to infinity of gamma to the t times some number c.

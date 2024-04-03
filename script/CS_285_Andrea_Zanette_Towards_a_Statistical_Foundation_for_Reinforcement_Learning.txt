@@ -149,7 +149,7 @@ OK.
 I want to give one slide that is perhaps a bit more technical about how do we go about achieving something like this.
 Well, exploration generally is typically achieved, at least for probably efficient algorithms, by adding an exploration bonus to the experience reward.
 Think about DQN.
-Exploration there is done with epsilon greedy, at least in the most basic format.
+Exploration there is done with ϵ-greedy, at least in the most basic format.
 But if you want more sophisticated schemes, think about UCB in embedded algorithms.
 Normally what's done is a bonus is added.
 Now the bonus can take different forms.

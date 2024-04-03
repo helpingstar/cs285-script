@@ -191,7 +191,7 @@ Which means that you can still get out-of-distribution actions with this.
 So there's actually two places where you end up querying out-of-distribution actions.
 One is in the target value, where you're computing the expectation under pi theta.
 So as I said, at convergence, pi theta should obey the constraint, but it may not obey the constraint over the course of training.
-And also when you're estimating the advantage, that's again q minus the expected value of q under pi theta, so that also requires querying actions from pi theta into the q function.
+And also when you're estimating the advantage, that's again q minus the expected value of q under pi theta, so that also requires querying actions from pi theta into the Q function.
 And both of those can have errors.
 Can we actually avoid that?
 Can we somehow avoid all out-of-distribution action queries when computing the target values?
@@ -205,7 +205,7 @@ So we could take, for example, all the sampled state-action tuples in our data s
 Now that won't really work, because when you do this, v of s i is going to match q of s i a i, but a i in the data set comes from pi beta, not from pi nu.
 So you're actually estimating the value of pi beta, not of pi nu.
 So this is not really going to work.
-It's going to give you the q function of the behavior policy, not of your latest policy.
+It's going to give you the Q function of the behavior policy, not of your latest policy.
 Because the action comes from pi beta.
 But now here's a funny thought.
 If you consider all the trajectories that you have in the data set, and you look at one of the states along those trajectories, well, in that state, there's probably only one action that you ever saw.
@@ -231,8 +231,8 @@ The equation for an expectile loss might look a little bit messy, but there's ac
 So a mean squared error loss looks like a parabola.
 It penalizes negative errors and positive errors equally, and it penalizes errors more as they get larger because it's a square.
 The expectile loss is a kind of tilted error loss, a tilted parabola, where negative weights, negative errors have a different coefficient than positive errors.
-So if we choose the value of tau here to multiply appropriately, then we can basically penalize negative errors much more than positive errors, which means that it's much better for V of S to be larger than QSIAI than it is for it to be smaller.
-If we choose a large value of tau like 0.9, for example, then we're penalizing small values of V a lot less than large values.
+So if we choose the value of τ here to multiply appropriately, then we can basically penalize negative errors much more than positive errors, which means that it's much better for V of S to be larger than QSIAI than it is for it to be smaller.
+If we choose a large value of τ like 0.9, for example, then we're penalizing small values of V a lot less than large values.
 And this gives us something on the upper end of this distribution.
 Now at this point you might be thinking, hang on, our problem all along was that our Q values were turning out to be much larger than they should be.
 And now we're going to penalize large values a lot less than small values, so isn't that going to exacerbate the problem?

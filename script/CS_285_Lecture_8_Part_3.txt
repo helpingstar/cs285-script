@@ -3,7 +3,7 @@ We covered fitted Q iteration, online Q-learning, deep Q-learning with replay bu
 We can unify all of these in one kind of conceptual framework, and I just want to highlight this in the next portion.
 And many of you might probably already suspect what that more general framework is, but let's just make it really explicit.
 So here is the general Q-learning with replay buffers and target networks that I discussed before.
-So here we have this outer-outer loop where we save the target network parameters, ϕ prime goes to ϕ.
+So here we have this outer-outer loop where we save the target network parameters, ϕ' goes to ϕ.
 And we could use this polyhack averaging trick or just a standard flip every n steps.
 In step two, we collect some number of data points using some policy and add it to the buffer.
 In step three, we sample a batch.
@@ -25,7 +25,7 @@ This is the basic object at the center of all of this.
 We periodically interact with the world.
 And when we interact with the world, what we typically do is we take our latest vector ϕ.
 We construct some policy out of ϕ.
-For instance, using epsilon greedy or Boltzmann exploration.
+For instance, using ϵ-greedy or Boltzmann exploration.
 We send it out into the world, and it brings back one or more transitions.
 And you can think of this not as a discrete decision that we make periodically, but as a continuous process that is always running.
 So let's call it process one, the data collection process.
@@ -40,19 +40,19 @@ Where the oldest thing in the buffer gets thrown out when a new thing gets added
 So if your buffer has one million transitions, then as soon as the one million and one transition gets added in, then the oldest transition gets thrown in the garbage.
 And that ensures that your buffer doesn't grow.
 And that it's not unbounded.
-Then you have your target parameters, ϕ prime.
+Then you have your target parameters, ϕ'.
 And your target parameters are used to compute those target values.
 And you have your current parameters, ϕ.
-Your current parameters are the ones that you're going to give to process one, in order to construct that epsilon greedy policy to collect more data.
+Your current parameters are the ones that you're going to give to process one, in order to construct that ϵ-greedy policy to collect more data.
 And you have process two, which updates the target parameters.
-So process two will periodically copy ϕ into ϕ prime.
+So process two will periodically copy ϕ into ϕ'.
 Or perform that polyhack averaging.
 And process two is typically a very slow process.
 So it typically runs very infrequently.
 And then you have process three, which is kind of the main learning process.
 And what process three does is it loads a batch of transitions from the replay buffer.
 So that's step three in the pseudo-code above.
-It loads in the target parameters, ϕ prime.
+It loads in the target parameters, ϕ'.
 It uses the target parameters to calculate target values for every transition in the batch that was sampled.
 It uses that to update the current parameters, ϕ.
 That's step four above.

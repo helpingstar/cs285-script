@@ -50,12 +50,12 @@ But as P theta gets better and better the discriminator is going to produce valu
 In fact at convergence when P theta of X is actually equal to P star you would expect the discriminator to produce probabilities that are always 0.5.
 Okay this may be a little bit of an academic exercise.
 We can actually use this inference to cast inverse RL as a kind of GAN with a very peculiar kind of discriminator.
-So for IRL the optimal policy is going to approach P theta which is proportional to P of tau times the exponential of R psi of tau.
+So for IRL the optimal policy is going to approach P theta which is proportional to P of τ times the exponential of R psi of tau.
 So what we're going to do is we're going to choose this parameterization for our discriminator.
-We're going to say that the discriminator is equal to P of tau times 1 over Z times the exponential reward.
-So that's just the optimal policy distribution divided by P theta of tau plus P of tau times 1 over Z times the exponential reward.
-So we've basically just directly used the formula for the optimal discriminator replacing P star with P of tau times the exponential reward which is reasonable because that's what we would expect to get at convergence.
-And if we expand the equation of P theta of tau just as before the trajectory probabilities which contain all those initial state and dynamics terms will cancel out leaving us with a discriminator that has the form 1 over Z times the exponential reward divided by the product of the policy's probabilities plus 1 over Z times the exponential reward.
+We're going to say that the discriminator is equal to P of τ times 1 over Z times the exponential reward.
+So that's just the optimal policy distribution divided by P theta of τ plus P of τ times 1 over Z times the exponential reward.
+So we've basically just directly used the formula for the optimal discriminator replacing P star with P of τ times the exponential reward which is reasonable because that's what we would expect to get at convergence.
+And if we expand the equation of P theta of τ just as before the trajectory probabilities which contain all those initial state and dynamics terms will cancel out leaving us with a discriminator that has the form 1 over Z times the exponential reward divided by the product of the policy's probabilities plus 1 over Z times the exponential reward.
 And something to note here is that this discriminator will only be equal to 0.5 when the policy probabilities are equal to the exponential reward, which means that the policy is converged.
 And then what we're going to do is we're going to optimize this discriminator, this ratio, with respect to the parameters of the reward with respect to psi.
 So we'll basically pick the reward such that this ratio is largest for the human samples and smallest for the policy samples.
@@ -97,9 +97,9 @@ So just to summarize this, we can cast IRL as adversarial imitation in classic d
 We have a number of methods that we can use to recover the expert's reward function, but we can't guarantee that we will recover their policy.
 So we can't guarantee that we will recover their policy.
 The policy's attempts in the human demonstrations and the reward function tries to minimize the reward of the policy samples and maximize the reward of the human demonstrations.
-And it learns the distribution p of tau such that the demos have maximum likelihood.
+And it learns the distribution p of τ such that the demos have maximum likelihood.
 The generative adversarial imitation learning approach instead uses a classifier, which tries to assign the label false to all the policy samples and true to all the human demonstrations.
-And d of tau is the probability that tau is as a demo basically and then you use log d of tau as your reward.
+And d of τ is the probability that τ is as a demo basically and then you use log d of τ as your reward.
 They're basically the same thing except that for one of them you can recover a reward function whereas for the other one you don't recover the reward but you do recover the policy.
 So the difference is that the discriminator for guided cost learning and other IRL methods just has this particular special form whereas for the Jaron-Van Ressera limitation learning approach the discriminator is just a binary classifier.
 Now these things have been used in a number of different settings so you could for example combine it with a kind of clustering approach and recover multiple different behavior clusters from heterogeneous demonstrations.

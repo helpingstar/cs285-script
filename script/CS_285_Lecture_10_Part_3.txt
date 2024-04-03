@@ -76,7 +76,7 @@ And the question that we're going to start with is the base case.
 We're going to solve for just the last action, and we're going to solve for the action ut as a function of the last state xt.
 So the last state xt is unknown, but what we can do is we can express the optimal ut for this linear quadratic system as an expression that depends on the last state xt.
 So here's how we can do it.
-The total portion of the objective that depends on the last action is the q function at the last time step, right?
+The total portion of the objective that depends on the last action is the Q function at the last time step, right?
 Because changing the last action won't change the reward or the cost at time step capital T minus one.
 So we know that the only portion of the subject that is influenced by ut is the cost of the last time step.
 And that's given by some constant plus the quadratic cost function.
@@ -110,7 +110,7 @@ You solve that quadratic function by setting the derivative to 0.
 And you get this rule for selecting u, t.
 Of course, the trouble is that it depends on x capital T.
 So in order to actually get a number for u, t, you have to figure out what x capital T should be.
-So here's our q function for the last time step.
+So here's our Q function for the last time step.
 And since u capital T is fully determined by x capital T, we can eliminate it by a substitution.
 So what we can do now is we can just plug in the rule for u capital T that we derived on the previous slide.
 And now we get an expression that doesn't depend on u capital T.

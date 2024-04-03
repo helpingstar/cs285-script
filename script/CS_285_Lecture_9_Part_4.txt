@@ -116,7 +116,7 @@ So here your parameters are k and sigma.
 In that setting, you're basically adding some Gaussian noise and walking left and right, in that setting we saw that the regular policy gradient actually looks very unfortunate.
 The regular policy gradient does have to point in the right direction, it always does, but it's extremely ill-conditioned.
 Essentially, as sigma decreases, the gradient with respect to sigma becomes much, much larger than the gradient with respect to k.
-So even though the optimal solution is that k equals negative 1, you might never reach that solution because you'll be too busy decreasing sigma.
+So even though the optimal solution is that K equals negative 1, you might never reach that solution because you'll be too busy decreasing sigma.
 Intuitively, the reason this is happening is that k and sigma affect the probabilities to different degrees.
 And because sigma affects the probabilities so much more when it's small, then the corresponding gradient component is much larger.
 And, simply, staying within a fixed ball in θ space, even in this very simple 2-dimensional space, is just not enough.

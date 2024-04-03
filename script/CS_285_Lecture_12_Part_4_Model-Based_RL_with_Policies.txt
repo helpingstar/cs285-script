@@ -172,19 +172,19 @@ Maybe you gather these by running your policy, it doesn't matter, but somehow yo
 Solve for a vector w, to minimize the difference between ϕ si times w, and the sampled reward.
 So essentially do least squares regression onto those rewards.
 And this is where it's important for your features ϕ to be a sufficiently expressive basis, so that you can actually approximate the reward accurately.
-And then you can recover the q function just by taking those same w's, and multiplying your psi by them.
+And then you can recover the Q function just by taking those same w's, and multiplying your psi by them.
 Now the reason that this is quite elegant is because, conceivably you could reuse the same successor feature of psi pi, for many different rewards.
-So you can trade the psi pi once, and then use it to evaluate q functions for many different reward functions.
-And then if you want to take an action, you could choose the argmax action, with respect to this approximate q function.
-Now at this point we might ask, is this actually the optimal q function?
+So you can trade the psi pi once, and then use it to evaluate Q functions for many different reward functions.
+And then if you want to take an action, you could choose the argmax action, with respect to this approximate Q function.
+Now at this point we might ask, is this actually the optimal Q function?
 Meaning that if we choose the action this way, will we actually get the optimal policy for the reward that we've used to recover w?
 Unfortunately the answer is in general no.
-Because remember that the q function you get here, is not the optimal q function, it's the q function for the policy pi.
+Because remember that the Q function you get here, is not the optimal Q function, it's the Q function for the policy pi.
 So everything here is for a specific policy.
 So when you take the argmax here, what you're really doing is one step of policy iteration.
 So pi prime will be a better policy for this reward than pi, but it will not be the optimal one, because it's just one step of policy iteration.
 It's better than nothing, so you do get a better policy from doing this, but it's not optimal.
-In general this is one of the big challenges with successor features, is that they cannot be used to directly recover the optimal q function.
+In general this is one of the big challenges with successor features, is that they cannot be used to directly recover the optimal Q function.
 But you can do a little bit better than this, so there is an idea too that works a little bit better.
 And the, what we can do is we can actually take many policies to begin with.
 Let's say someone gives you features, let's say someone gives you 128 manually designed features, and a thousand policies.

@@ -195,7 +195,7 @@ Right.
 Because we don't know what p ϕ is.
 We do know what s' is.
 So we can just evaluate the feature function at s'.
-And we can get what we call capital ϕ prime.
+And we can get what we call capital ϕ'.
 And we can just substitute that in there.
 And similarly, we can replace our reward vector, which had one entry for every state, with a reward vector that had one entry for every sample.
 So we just rewrite everything in terms of samples.
@@ -242,7 +242,7 @@ So you have the same LSTD equations, but now you use state action features for e
 And you can do the same sample based substitution.
 So you can compute the data set of state actions, rewards, and next states.
 You can compute the reward as a big vector for an entry for every sample.
-You can still compute ϕ prime.
+You can still compute ϕ'.
 But notice now there's a little subtlety.
 Phi prime is the next feature that you get from taking the action in the data set.
 But then because we're featurizing states and actions, we give it the next state in the data set, s'.
@@ -252,12 +252,12 @@ We don't have to know what the dynamics will do for pi of s'.
 We do need to featurize the action from the policy.
 And this is very similar to the principle that we had in Q iteration.
 So we're going to featurize s' and pi of s'.
-And that will give us ϕ prime.
+And that will give us ϕ'.
 So a very important property here is that ϕ doesn't change as the policy changes.
-But ϕ prime does change.
-For ϕ prime, we always featurize the same s', the one we have in the data set.
+But ϕ' does change.
+For ϕ', we always featurize the same s', the one we have in the data set.
 But a different action because that action depends on our policy pi.
-So ϕ prime is actually the only thing in here that depends on pi.
+So ϕ' is actually the only thing in here that depends on pi.
 So you would encode the action pi, not the action in the data.
 So then LSBI proceeds like this.
 Compute WQ for your current policy.
@@ -265,11 +265,11 @@ Let's call it pi k.
 And then compute a new policy, pi k plus 1, which is greedy with respect to WQ.
 Because with WQ, you can get a full Q function.
 And therefore, you can compute a full policy.
-And then you set your ϕ prime to be the new ϕ prime feature matrix that you would get with this new policy pi k plus 1.
+And then you set your ϕ' to be the new ϕ' feature matrix that you would get with this new policy pi k plus 1.
 So this is now a complete algorithm for doing offline RL.
 You would actually evaluate this WQ by just computing the right-hand side of this equation.
 Recover pi k plus 1.
-And then set the ϕ prime to be the corresponding feature matrix.
+And then set the ϕ' to be the corresponding feature matrix.
 All right.
 So what's the problem with all this?
 Well, the issue with actually doing all this in practice is the distributional shift problem that we had before.

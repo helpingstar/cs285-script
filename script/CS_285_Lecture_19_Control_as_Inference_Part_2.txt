@@ -74,8 +74,8 @@ This is not the same as the soft max that we use as a loss function in deep lear
 It is a soft relaxation of the max operator.
 So this expression for vt of s_t approaches the max over a of qt as qt gets bigger and bigger.
 So that's pretty interesting.
-We saw in reinforcement learning that the optimal value function is the max of the optimal q function.
-Now we see that in the inference perspective, the value function is the soft max of the q function, which kind of makes sense.
+We saw in reinforcement learning that the optimal value function is the max of the optimal Q function.
+Now we see that in the inference perspective, the value function is the soft max of the Q function, which kind of makes sense.
 We want to soften our notion of optimality so that slightly suboptimal things are still possible.
 Let's talk about the other expression.
 So if we write the other expression in log space, then we get the following equation.
@@ -88,7 +88,7 @@ In which setting is the equation that I have on the right side of the slide exac
 Well, it turns out to be the case in the setting where the next state is a deterministic function of the current state in action.
 Because if the next state is a deterministic function of the current state in action, then the expected value only has one non-zero element in the sum, which means that the log and the exponent cancel out.
 So in the deterministic setting, it is exactly the Bellman equation.
-So we saw before how the value iteration algorithm alternates between computing the q function using the Bellman equation and computing the value function by taking a max.
+So we saw before how the value iteration algorithm alternates between computing the Q function using the Bellman equation and computing the value function by taking a max.
 In the case of a deterministic transition, this expression for q is basically the same as the value function for the Bellman equation.
 In the case of a stochastic transition, you actually get a kind of optimistic transition.
 Notice that this is also a log sum x, which means that these target values will be dominated by the next state that has the largest value.

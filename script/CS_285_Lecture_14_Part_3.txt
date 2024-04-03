@@ -71,7 +71,7 @@ So as a result you get this tail chasing problem that I had on the previous slid
 You get this issue where the policy will keep jumping to different places and at the end will not actually minimize the KL divergence.
 But let's try to sketch out what that algorithm will look like anyway, and then we'll see that there's actually a very simple fix that will fix this problem.
 So here is how we can sketch out this algorithm and I'm going to use somewhat tedious notation for- this notation will be important later.
-So, at every iteration, we're going to learn a policy pi k where k here indexes the iterations, So the first iteration is k equals 1, the second iteration is k equals 2, etc.
+So, at every iteration, we're going to learn a policy pi k where k here indexes the iterations, So the first iteration is K equals 1, the second iteration is K equals 2, etc.
 We'll learn a policy pi k to maximize the expected value under pi of r tilde k.
 And again, I'm using the superscript k on r tilde to denote that this is the r tilde that used the density estimator from iteration k.
 And then you will update your density estimator, maybe it's a variational autoencoder or some other distribution, to fit the current state marginal, the state marginal of this new policy pi k.

@@ -95,19 +95,19 @@ So you basically push gradients through your Q function and maximize.
 And you can use the chain rule to evaluate this derivative.
 So DQ_ϕ D θ is just DA D θ, which is the derivative of mu θ, times DQ_ϕ DA.
 So you can obtain this derivative by backpropagating through the graph, propagating through the Q function and into the mu, and then into the mu parameters.
-So now our targets are going to be given by as Yj equals Rj plus γ times Q_ϕ prime, evaluated at Sj prime comma mu θ Sj prime, which is really an approximation for the argmax, as long as mu θ is a good estimate of the argmax.
+So now our targets are going to be given by as Yj equals Rj plus γ times Q_{ϕ'}, evaluated at Sj prime comma mu θ Sj prime, which is really an approximation for the argmax, as long as mu θ is a good estimate of the argmax.
 So here is what that algorithm will look like.
 Step 1, take some action aI, observe the corresponding transition s_i, a_i, s'_i, Ri, and add it to your buffer, just like in Q-learning.
 Step 2, sample a mini-batch Sj, Aj, Sj prime, Rj from your buffer, uniformly at random.
 Step 3, compute your target value.
 And now instead of using the argmax, you're going to use mu θ.
 And in fact, you're going to use mu θ prime.
-So you actually have a target network for Q_ϕ prime and a target network for mu θ prime.
+So you actually have a target network for Q_{ϕ'} and a target network for mu θ prime.
 And then step 4, just like in Q-learning, perform a gradient update on ϕ.
 And additionally, we'll now perform a gradient update on θ.
 So the gradient on θ uses that chain rule derivation for the gradient that I showed in the previous slide.
 So it takes the derivative of the Q value with respect to the action, and then multiplies that by the derivative of the action with respect to θ, which is just backpropagation through mu.
-Then we're going to update our target parameters, ϕ prime and θ prime, for example, using polyarcha-aversion.
+Then we're going to update our target parameters, ϕ' and θ prime, for example, using polyarcha-aversion.
 And then we'll repeat this process.
 So this is the basic pseudo-code for a continuous action Q-learning algorithm.
 In this case, this particular algorithm is DDPG, but there are many more recent variants as well as older variants.
