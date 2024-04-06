@@ -52,7 +52,7 @@ Okay, now that trick for getting behavioral cloning to work is not very reliable
 Keep in mind that having ways to put the system in states where the expert can demonstrate corrections can be a very good thing, and it's also worth thinking about data augmentation tricks.
 But let's talk about some more technical solutions.
 Why might you fail to fit the expert behavior?
-Because if you can minimize the number, that value epsilon, perhaps even epsilon t squared might still be a small number.
+Because if you can minimize the number, that value ϵ, perhaps even ϵ t squared might still be a small number.
 So if you can understand why you might fail to fit the expert behavior, maybe you can get a model that's so powerful that it's probably that if mistakes are so low that even that quadratic cost doesn't actually worry you too much.
 So why might you fail to fit the expert?
 Well one reason is what I'll refer to as non-Markovian behavior.

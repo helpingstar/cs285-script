@@ -49,17 +49,17 @@ And again, if you don't remember how we derived this, go back to the lecture on 
 Now here the beta s_t in the denominator of the first expression cancels out with the beta s_t in the numerator of the second expression, and we just get the answer that this quantity is proportional to beta STAT times alpha ST.
 And then you have to normalize it over states and actions, but not over trajectories, crucial.
 So this is a much more tractable thing to normalize if you have a relatively small state space.
-Okay, so now the way that we can estimate this second term is by first calculating this quantity that I'm going to call mu T, the state action marginal, and we calculate that by multiplying the backward messages by the forward messages, and normalizing overall states and actions.
-And then we can express this expectation as just the<|vi|> a sum in discrete spaces or an integral in continuous spaces of mu sdA t times the gradient of r sdA t, which we can also write as an inner product between a vector of probabilities mu and a vector of derivatives for the reward at every state-action tuple.
+Okay, so now the way that we can estimate this second term is by first calculating this quantity that I'm going to call μ T, the state action marginal, and we calculate that by multiplying the backward messages by the forward messages, and normalizing overall states and actions.
+And then we can express this expectation as just the<|vi|> a sum in discrete spaces or an integral in continuous spaces of μ sdA t times the gradient of r sdA t, which we can also write as an inner product between a vector of probabilities μ and a vector of derivatives for the reward at every state-action tuple.
 Okay, so that's a pretty elegant expression for this gradient.
-It does require us to actually be able to compute mu, which means that we need a small and countable state space.
+It does require us to actually be able to compute μ, which means that we need a small and countable state space.
 Typically a discrete state space would be best.
 And of course we need to actually be able to calculate those forward and backward messages, which requires knowing the transition probabilities.
 So this wouldn't work for unknown dynamics, and it wouldn't work for a large or continuous state-action spaces, but for small and discrete spaces this is quite feasible.
 So this leads us to the classic maximum entropy inverse RL algorithm as proposed by Brian Ziebart in his 2008 paper.
 Given your current vector psi, compute your backward messages as described in the previous lecture, and compute your forward messages as described in the previous lecture.
-Then compute your mu by multiplying these messages and renormalizing.
-And then evaluate the gradient of the likelihood of the trajectories as the difference between the average over all the trajectories of grad psi r psi minus the inner product between mu and grad r.
+Then compute your μ by multiplying these messages and renormalizing.
+And then evaluate the gradient of the likelihood of the trajectories as the difference between the average over all the trajectories of grad psi r psi minus the inner product between μ and grad r.
 And then simply take a gradient ascent step on psi since you've just calculated the gradient of the likelihood.
 And then repeat this process until convergence.
 So this is basically an algorithm for computing the gradient of the likelihood of the demonstrated trajectories, and at convergence this will yield the reward parameters that maximize the likelihood of those trajectories and therefore produce the reward that best explains the potentially suboptimal behavior of the expert.

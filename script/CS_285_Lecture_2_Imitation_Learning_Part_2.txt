@@ -67,14 +67,14 @@ Our total horizon length is capital T.
 So that's how long each of these trajectories are.
 This is our cost.
 And we're going to make some assumption, which basically amounts to saying, let's assume that supervised learning worked.
-So our assumption, the simple one that we'll start with is we'll just say that the probability assigned to any action that is not the expert's action is less than or equal to epsilon if the state S is one of the training states.
+So our assumption, the simple one that we'll start with is we'll just say that the probability assigned to any action that is not the expert's action is less than or equal to ϵ if the state S is one of the training states.
 So this basically says that on the training states, your probability of making a mistake is small.
-It's going to be some small number epsilon.
+It's going to be some small number ϵ.
 In general, we can extend this to say the probability is small for any state that's sampled from the training distribution.
 So it doesn't have to literally be one of the states that you saw.
 But for now, just to keep it simple, let's say that it's literally one of the states that you saw.
 And now let's construct a very simple problem.
-Where under this assumption, if you assume that your probability of making a mistake is epsilon for any state that you saw, and unbounded for any state that you didn't see, things are going to be very bad.
+Where under this assumption, if you assume that your probability of making a mistake is ϵ for any state that you saw, and unbounded for any state that you didn't see, things are going to be very bad.
 And I'm going to call this the tightrope walker example.
 So imagine that you have a problem where at every state, there's a very specific good action, which is to stay on the tightrope.
 And if you make an incorrect action, if you make a mistake, then you fall off the tightrope.
@@ -90,73 +90,73 @@ The demonstrations always go steadily to the right.
 So the action is always to go to the right.
 If you make a single mistake, if you go up or down, then you fall off the tightrope.
 And you're very concerned about that, not because you'll hurt yourself, but because you won't know what to do in that situation afterwards.
-So how many mistakes will you make over the course of a trajectory on average if your probability of making a mistake is less than or equal to epsilon at every state on the tightrope?
+So how many mistakes will you make over the course of a trajectory on average if your probability of making a mistake is less than or equal to ϵ at every state on the tightrope?
 So what we want to do is we want to write down a bound on the total cost.
-So on the first time step, your probability of making a mistake is epsilon.
+So on the first time step, your probability of making a mistake is ϵ.
 If you make a mistake, you fall off the tightrope, all of the remaining time steps are also in general going to be mistakes because you have no idea what to do.
-So for the first time step, you incur at least epsilon times capital T mistakes on average.
-Now with probability one minus epsilon, you didn't make a mistake.
+So for the first time step, you incur at least ϵ times capital T mistakes on average.
+Now with probability one minus ϵ, you didn't make a mistake.
 So then you move on to the next time step, the second square.
-And in the second square, you again have an epsilon probability of making a mistake, in which case, you fall off the tightrope.
+And in the second square, you again have an ϵ probability of making a mistake, in which case, you fall off the tightrope.
 And the remaining T minus one time steps are spent flailing around off the tightrope and making capital T minus one mistakes because that's how many time steps are left.
-And then with probability one minus epsilon, you go on to the third step and so on and so on.
+And then with probability one minus ϵ, you go on to the third step and so on and so on.
 So you have this series where you add up all these terms.
 There are capital T terms.
-And each of those capital T terms is on the order of epsilon T.
-Because if you assume that epsilon is a small number, one minus epsilon is negligibly small.
-So the order of all these terms, one minus epsilon is negligibly close to one.
-So the order of all these terms is going to be about epsilon times capital T.
+And each of those capital T terms is on the order of ϵ T.
+Because if you assume that ϵ is a small number, one minus ϵ is negligibly small.
+So the order of all these terms, one minus ϵ is negligibly close to one.
+So the order of all these terms is going to be about ϵ times capital T.
 And there is capital T of those terms.
-So that means that the number of mistakes on the order of epsilon capital T squared.
-It's like epsilon capital T squared over two with some correction term for one minus epsilon.
-But this is basically the order of that for small values of epsilon.
+So that means that the number of mistakes on the order of ϵ capital T squared.
+It's like ϵ capital T squared over two with some correction term for one minus ϵ.
+But this is basically the order of that for small values of ϵ.
 Now, what does this tell us about behavioral cloning?
 Well, it tells us that it's actually very bad because if you make a very long tightrope, this quadratic increase in the number of mistakes will really get you in trouble.
 What we would really like is a linear increase in the number of mistakes.
 So it's reasonable that the longer you go, the more mistakes you're going to accumulate.
 But if the rate is more than linear, then long horizons are getting us into a lot of trouble.
-Okay, so we're getting epsilon T squared.
+Okay, so we're getting ϵ T squared.
 Now, this is a counterexample.
-This shows that in the worst case, you will get epsilon T squared.
-It turns out that in general, epsilon capital T squared is actually the bound.
-So you won't do worse than epsilon T squared.
+This shows that in the worst case, you will get ϵ T squared.
+It turns out that in general, ϵ capital T squared is actually the bound.
+So you won't do worse than ϵ T squared.
 That's not actually necessary to understand that behavioral cloning is bad, but we can actually bound how bad it is.
 It's just not a very good bound.
 And we're actually going to derive that because the kind of analysis that we'll use for that can be pretty useful in all sorts of other topics in reinforcement learning.
 So I like to go through it.
 Just to give a sense for how these dynamical systems can be analyzed.
-Okay, so we showed that in the worst case, you get epsilon T squared.
-Next, we'll show that you won't do worse than epsilon T squared, meaning that there's a bound of epsilon T squared in general.
+Okay, so we showed that in the worst case, you get ϵ T squared.
+Next, we'll show that you won't do worse than ϵ T squared, meaning that there's a bound of ϵ T squared in general.
 Okay, so here we will actually have a more general analysis.
 So instead of saying that all of your states literally come from your training set, we'll say our states are sampled from P train.
-So for any state sampled from P train, uh, your error is less than or equal to epsilon.
-It's actually enough to just assume that the expected value of the error is less than or equal to epsilon, which is more realistic, of course, because typically you train for the expected value of the, uh, of the loss.
+So for any state sampled from P train, uh, your error is less than or equal to ϵ.
+It's actually enough to just assume that the expected value of the error is less than or equal to ϵ, which is more realistic, of course, because typically you train for the expected value of the, uh, of the loss.
 And with DAG, with, uh, with DAG, which we'll talk about later, it's an algorithm that we'll introduce at the end of the lecture.
 It'll make this problem go away because it'll make P train and P by θ the same, but for now they're not the same.
 So that's going to be a problem.
-We're going to show that the expected number of mistakes is, uh, going to be epsilon T squared in the worst case.
-And then of course with DAG, or when they become equal, it will be epsilon T.
+We're going to show that the expected number of mistakes is, uh, going to be ϵ T squared in the worst case.
+And then of course with DAG, or when they become equal, it will be ϵ T.
 Uh, so that'll the DAG stuff, don't worry about it yet.
 That'll come at the end of the lecture.
 Uh, but if P train is not equal to P θ, uh, then here's what happens.
 What we can do if we want to figure out the expected value of the cost, uh, is we can describe the distribution over states at time step T as a sum of two terms.
 And one of those terms is going to be easy to analyze and the other term will be really complicated and we'll just use a bound for that.
 So we can say that at time step T there's some probability that you didn't make any mistakes at all, meaning some probability that you stayed on the tightrope, that you did everything right.
-And if the probability of making a mistake at each step step is epsilon and you start off at an indistribution state, uh, meaning you start off at a state sample from P train, then the probability that you made no mistakes for T time steps is just one minus epsilon to the power T, little t.
-So we can say that P θ s_t is equal to one minus epsilon to the power T times P train s_t because that's the probability that you didn't make a mistake.
-And if you didn't make a mistake that you're still in the distribution P train plus one minus that one minus one minus epsilon to the T times some other distribution.
+And if the probability of making a mistake at each step step is ϵ and you start off at an indistribution state, uh, meaning you start off at a state sample from P train, then the probability that you made no mistakes for T time steps is just one minus ϵ to the power T, little t.
+So we can say that P θ s_t is equal to one minus ϵ to the power T times P train s_t because that's the probability that you didn't make a mistake.
+And if you didn't make a mistake that you're still in the distribution P train plus one minus that one minus one minus ϵ to the T times some other distribution.
 So it's just saying that, there's some part of your distribution for all the possibilities where you didn't do anything wrong and then there's everything else.
-And the weight on the part where you did nothing wrong is one minus epsilon to the T and the distribution there is P train.
+And the weight on the part where you did nothing wrong is one minus ϵ to the T and the distribution there is P train.
 Okay?
 So this is a decomposition you can make.
 Now P mistake is something really complicated, right?
 So we don't really understand what P mistake is.
 It's like the part of P θ that is separate from P train.
-So we're not going to make any assumptions on P mistake other than that it only constitute a one minus one minus epsilon to the T portion of your distribution, okay?
-and of course if epsilon is very very small then the sum is dominated by the first term so if epsilon is very small then 1 minus epsilon is almost 1 so most of it is in p train but of course the larger t is the more that exponent is going to hurt okay so that's what we've got and now what i'm going to do is i'm going to relate the distribution p_θ s_t to the distribution p train s_t now when you see me using this absolute value sign what i'm in general going to be referring to is a total variation divergence a total variation divergence is just a sum over all of the states of the absolute value of the difference in their probabilities it can be viewed as a very simple notion of divergence between distributions but for now we're just going to do this at one state so at any given state the absolute value of p_θ s_t minus p train st
-Well it's pretty to work out if you just substitute in the equation above for p_θ s_t you'll see there's a p train term that cancels out so you get a 1 minus epsilon to the t p train minus p train so that you can take out as a 1 minus 1 minus epsilon to the t and now you end up with this equation you get it up with 1 minus 1 minus epsilon to the t times the absolute value of p mistake minus p train okay now that's still a kind of a cryptic equation we don't know what this absolute value is but we know that all probability all probabilities have to be between 0 and 1.
+So we're not going to make any assumptions on P mistake other than that it only constitute a one minus one minus ϵ to the T portion of your distribution, okay?
+and of course if ϵ is very very small then the sum is dominated by the first term so if ϵ is very small then 1 minus ϵ is almost 1 so most of it is in p train but of course the larger t is the more that exponent is going to hurt okay so that's what we've got and now what i'm going to do is i'm going to relate the distribution p_θ s_t to the distribution p train s_t now when you see me using this absolute value sign what i'm in general going to be referring to is a total variation divergence a total variation divergence is just a sum over all of the states of the absolute value of the difference in their probabilities it can be viewed as a very simple notion of divergence between distributions but for now we're just going to do this at one state so at any given state the absolute value of p_θ s_t minus p train st
+Well it's pretty to work out if you just substitute in the equation above for p_θ s_t you'll see there's a p train term that cancels out so you get a 1 minus ϵ to the t p train minus p train so that you can take out as a 1 minus 1 minus ϵ to the t and now you end up with this equation you get it up with 1 minus 1 minus ϵ to the t times the absolute value of p mistake minus p train okay now that's still a kind of a cryptic equation we don't know what this absolute value is but we know that all probability all probabilities have to be between 0 and 1.
 so the biggest difference between two probabilities can be at most 1 right because the worst case is p mistake is 1 and p train is 0 or vice versa and the largest total variation divergence meaning if you sum over all of the states and you try to evaluate the absolute value of their difference is going to be 2 because the worst case is that in one state one of the probabilities one the other is 0 and in some other state it's the other way around one of them is 0 is the other one so the worst possible difference between two distributions when you sum over all the states is 2.
-so that means that this whole thing is bounded by 2 times 1 minus 1 minus epsilon to the t so what we've shown is that the total variation divergence between p_θ s_t and p train s_t is 2 times 1 minus 1 minus epsilon to the t and these exponents are a little hard to deal with but for values of epsilon between 0 and 1 there's a very convenient identity that 1 minus epsilon to the t is greater than or equal to 1 minus epsilon times t so that's true for any epsilon between 0 and 1 is just an algebraic identity so if we substitute that into the inequality above we can further bound this by 2 times epsilon t and that's just an algebraic convenience so that we can get rid of these exponents it gives us a slightly looser bound but it's a little easier to think about so what we've shown now is that the total variation divergence between p_θ s_t and p train s_t is bounded by 2 times epsilon t and remember total variation divergence is just the sum over all of the s's of the absolute value of the difference of their probabilities
+so that means that this whole thing is bounded by 2 times 1 minus 1 minus ϵ to the t so what we've shown is that the total variation divergence between p_θ s_t and p train s_t is 2 times 1 minus 1 minus ϵ to the t and these exponents are a little hard to deal with but for values of ϵ between 0 and 1 there's a very convenient identity that 1 minus ϵ to the t is greater than or equal to 1 minus ϵ times t so that's true for any ϵ between 0 and 1 is just an algebraic identity so if we substitute that into the inequality above we can further bound this by 2 times ϵ t and that's just an algebraic convenience so that we can get rid of these exponents it gives us a slightly looser bound but it's a little easier to think about so what we've shown now is that the total variation divergence between p_θ s_t and p train s_t is bounded by 2 times ϵ t and remember total variation divergence is just the sum over all of the s's of the absolute value of the difference of their probabilities
 Okay, so now let's talk about the quantity that we actually care about what is uh what kind of bound can we derive based on this for the sum over all of the time steps of the expected value of our cost.
 Well, uh to figure that out we'll substitute in the equation for an expected value so an expected value is just a sum over all the states of the probability of that state times its cost and what i'm going to do is i'm going to replace p_θ with p_θ minus p train plus p train so I can subtract p train.
 I can add p train in both cases that's totally fine to do.
@@ -165,20 +165,20 @@ I can take the absolute value of that.
 I can sum it over all the states, and that gives me the total variation divergence.
 And to account for the fact that in every state I have a different cost, I'll just replace that cost with the maximum cost, which I can take outside of the summation.
 And that gives me a valid upper bound.
-Now, at this point, I'm going to use my bound for that total variation divergence for the difference between p_θ and p train, and that's 2 epsilon t.
-And, of course, I know that my cost in p train, my expected cost, is epsilon because that's my initial assumption.
-So the first term becomes, the first term sum over s_t of p train times c is epsilon.
-The second term is 2 epsilon t times c max, and c max, of course, is 1.
+Now, at this point, I'm going to use my bound for that total variation divergence for the difference between p_θ and p train, and that's 2 ϵ t.
+And, of course, I know that my cost in p train, my expected cost, is ϵ because that's my initial assumption.
+So the first term becomes, the first term sum over s_t of p train times c is ϵ.
+The second term is 2 ϵ t times c max, and c max, of course, is 1.
 So the largest cost I can get in any state is 1 because I can make at least one mistake in any state.
 So that's my bound.
 Now, notice that this is summed over t.
-So I have t terms that are each on the order of epsilon t.
-So that means that this is going to have a linear term and a quadratic term, which means that the overall order is epsilon t squared.
+So I have t terms that are each on the order of ϵ t.
+So that means that this is going to have a linear term and a quadratic term, which means that the overall order is ϵ t squared.
 So what have I actually shown?
-I've shown on the previous slide that in the worst case, you're going to get epsilon t squared, and that's the tightrope walk, for example.
-I've also shown that epsilon t squared is, in fact, a bound, meaning that you will not do worse than epsilon t squared.
+I've shown on the previous slide that in the worst case, you're going to get ϵ t squared, and that's the tightrope walk, for example.
+I've also shown that ϵ t squared is, in fact, a bound, meaning that you will not do worse than ϵ t squared.
 So that's the behavioral cloning result.
-The behavioral cloning is epsilon t squared in the worst case, and epsilon t squared is, in fact, the bound for behavioral cloning.
+The behavioral cloning is ϵ t squared in the worst case, and ϵ t squared is, in fact, the bound for behavioral cloning.
 Okay, so that's the analysis, and it's good to understand this analysis.
 We'll talk about it more in class.
 But the next point I want to make about this is that this is rather pessimistic.

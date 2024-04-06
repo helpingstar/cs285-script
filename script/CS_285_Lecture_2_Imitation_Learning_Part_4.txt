@@ -61,7 +61,7 @@ So the method simply applies this goal relabeling imitation learning approach it
 And that can actually be a pretty decent and simple way to improve a policy.
 The other nice thing about these goal condition behavior cloning methods is that they're quite scalable.
 So you can apply them at a huge scale.
-This next case study I'm going to tell you about, this was a paper led by Dhruv Shah Ajay Sridor they did is they developed a policy for driving ground robots, not autonomous cars yet, but smaller scale ground robots, that could actually generalize across many different kinds of robots.
+This next case study I'm going to tell you about, this was a paper led by Dhruv Shah a_jay Sridor they did is they developed a policy for driving ground robots, not autonomous cars yet, but smaller scale ground robots, that could actually generalize across many different kinds of robots.
 So it's a goal conditioned imitation learning method that takes in the current observation and the goal image and actually takes in a history to deal with that non-Markovian-ness problem and then it outputs the action.
 And it's trained on data collected from many different kinds of robots, ranging from small scale RC cars to full large scale ATVs.
 And the cool thing about this policy is that it can then reach goals even for new types of robots that it was not trained in, like for example this drone in the top left corner of the video.

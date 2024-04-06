@@ -71,7 +71,7 @@ So P of theta given d is just the product over all of our parameter values of P 
 So i here indexes into the parameter vector.
 So the first number in the model is the variance, the second number is the variance, the third number is the variance, the fourth number is the variance, the fifth number is the variance, the sixth number is the variance, the seventh number is the variance, and so on.
 So we have the variance, the second number is the variance, and so on.
-And each of those independent marginals is just a Gaussian with some mean mu i and some variance sigma i, and that's what ϕ refers to, either just the mean or the mean and the variance.
+And each of those independent marginals is just a Gaussian with some mean μ i and some variance sigma i, and that's what ϕ refers to, either just the mean or the mean and the variance.
 If we have just the mean, then it's a constant variance.
 All right.
 So one very simple method we could use, which I also referenced in the model-based RL slides, is this method by Blundell et al.

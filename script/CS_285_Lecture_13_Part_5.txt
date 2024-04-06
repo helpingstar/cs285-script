@@ -41,7 +41,7 @@ So in order to play the game properly, what you're supposed to do is shoot all t
 The problem is that if you're exploring randomly, then once you're at the bottom of the ocean, it's extremely unlikely that you will randomly surface because that requires randomly pushing the up button many times.
 In fact, you're exponentially unlikely to resurface once you're at the bottom.
 And due to the mechanics of the game, it's actually a little bit easier to play if you go a little deeper down.
-So this makes surfacing for air very hard to discover through epsilon-greedy exploration.
+So this makes surfacing for air very hard to discover through ϵ-greedy exploration.
 When you explore with random Q functions, you commit to a random surface, you commit to a random surface, you commit to a random surface, but you have to have a random but internally consistent strategy for an entire episode.
 So the Q functions might make slightly different conclusions.
 For example, one of the Q functions in your ensemble might decide that going deeper is good.

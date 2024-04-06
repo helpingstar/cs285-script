@@ -423,7 +423,7 @@ Feature extract.
 Yeah.
 Same as linear regression.
 The same object appears.
-What do you mean by epsilon optimal ?
+What do you mean by ϵ optimal ?
 This won't be optimal, right, because it's a fluid.
 It's a linear rel.
 So it really depends on your data set.
@@ -442,16 +442,16 @@ And no algorithm would return that.
 So you can't really tell that.
 Yeah.
 No.
-I think if you want, this is the epsilon that you're talking about, right?
+I think if you want, this is the ϵ that you're talking about, right?
 This is the policy that we will return.
 You can always think about the optimal policy in the supremum.
 I want to evaluate this expression at the optimal policy.
 I can do that.
 But then this guy will become the value, the sort of optimal policy.
-And so this is your epsilon, right?
-This is epsilon suboptimal compared to the optimal policy.
-But epsilon can be huge.
-Basically, I'm telling you the value of epsilon, given the data set that we have.
+And so this is your ϵ, right?
+This is ϵ suboptimal compared to the optimal policy.
+But ϵ can be huge.
+Basically, I'm telling you the value of ϵ, given the data set that we have.
 This is really a way to measure how much information are contained in the data set.
 And as a result, what's the performance that you can expect?
 At the initial state, I would say.

@@ -8,10 +8,10 @@ If you have an algorithm, some kind of reinforcement learning algorithm, and it'
 What does how good mean?
 Well let's say we're doing Q-learning.
 We might ask how much does the learned Q function, Q hat k after k iterations, differ from the true optimal Q function?
-Could we for example show that Q hat k differs from the optimal Q function Q star in some norm by at most epsilon?
+Could we for example show that Q hat k differs from the optimal Q function Q star in some norm by at most ϵ?
 Now typically these algorithms have some kind of randomness in them, for example randomness in how we generate the samples.
-So we can't really guarantee that we'll always have a difference less than or equal to epsilon, so typically we would have a guarantee that it's less than or equal to epsilon with at least some probability 1 minus delta, where δ is a small number.
-So typically we would want to show that we have a randomness in the randomness of the samples, and we can show that this is true if we have at least some number of samples where the number of samples depends on some function of epsilon and delta.
+So we can't really guarantee that we'll always have a difference less than or equal to ϵ, so typically we would have a guarantee that it's less than or equal to ϵ with at least some probability 1 minus delta, where δ is a small number.
+So typically we would want to show that we have a randomness in the randomness of the samples, and we can show that this is true if we have at least some number of samples where the number of samples depends on some function of ϵ and delta.
 And typically we would want some well-behaved function, for example we might want n to increase logarithmically with delta.
 Another question we could ask, which is a slightly different question, is how does the policy induced by the Q function at the kth iteration differ from the optimal policy in terms of its Q value?
 So let me unpack the notation here.
@@ -40,7 +40,7 @@ So some examples.
 In exploration, you know, performance of RL methods is greatly complicated by exploration, because how well you learn, how many samples you need very strongly depends on how likely you are to find potentially sparse rewards.
 Since theoretical guarantees typically address worst case performance and worst case exploration is extremely hard, we typically don't want to couple analysis of exploration together with analysis of sample complexity that addresses things like approximation error sampling error.
 So we're going to do a couple of examples here.
-So in studying exploration, we want to show that some exploration method is good and typically good for exploration means that it is that will learn a good policy, a policy that deviates from the optimal policy by some epsilon in time that is polynomial, typically in the number of states, the number of actions, and in one over one minus gamma, which is the horizon.
+So in studying exploration, we want to show that some exploration method is good and typically good for exploration means that it is that will learn a good policy, a policy that deviates from the optimal policy by some ϵ in time that is polynomial, typically in the number of states, the number of actions, and in one over one minus gamma, which is the horizon.
 But separately from studying exploration, we might also study learning.
 So if we somehow abstract away exploration, if we somehow pretend that exploration is, you know, works well, how many samples do we need to effectively learn a model or value function that results in good performance?
 And this is a slightly separate question.
@@ -131,7 +131,7 @@ And by introducing step two, what we're really trying to do is we're trying to t
 So we're going to use a lot of tools that we can use to answer questions like, so we're going to use a lot of tools that we can use to answer questions like, not just anything in a simple p-hat, but any type of error.
 So that's really going to be the flavor of the analysis that I'll present.
 So the questions that we'll ask, how close is q-hat pi to q pi, meaning that we're going to estimate the q values of our policy pi, how close is it to the true q values of that policy?
-So ideally what we want to show is that over all states and actions, if we take the infinity norm of the difference between q pi and q pi hat, that infinity norm should be bounded by epsilon.
+So ideally what we want to show is that over all states and actions, if we take the infinity norm of the difference between q pi and q pi hat, that infinity norm should be bounded by ϵ.
 So that's the thing.
 So that's the thing.
 That's the thing.
@@ -140,7 +140,7 @@ That's the thing.
 That's the thing.
 That's the thing.
 with some probability 1 minus delta.
-And if the number of samples is larger than some function of epsilon and delta, where hopefully it's a nice function, a well-behaved function that is not exponential or something crazy like that.
+And if the number of samples is larger than some function of ϵ and delta, where hopefully it's a nice function, a well-behaved function that is not exponential or something crazy like that.
 The infinity norm is just the max.
 So if you see me write an infinity norm, what it really means is just the difference between the two things in the argument for the worst-case state action tuple.
 And it's good to use the infinity norm because it gives us a bound on worst-case performance.
@@ -149,7 +149,7 @@ How close is q hat star if we learn it using p hat?
 So if we don't just evaluate some policy that's given to us, but if we instead try to actually run q-value iteration, like actually find the optimal Q function under p hat, how close is q hat?
 How close is it going to be to the true optimal Q function?
 So what's the difference between q star and q hat star?
-And ideally we'd like to see that that's bounded by some epsilon.
+And ideally we'd like to see that that's bounded by some ϵ.
 So q hat star is the optimal Q function we learn under our learned model, which is basically what happens if we do RL with this method.
 And as I mentioned before, we could also ask, how good is the resulting policy, which is not the same.
 So if we take the policy pi hat, which corresponds to q hat star, and we take the true Q function of pi hat, how different is that from q star, meaning how suboptimal is the policy we get by running q-value iteration under p hat?
@@ -164,11 +164,11 @@ So whenever we need to answer questions about how close a learned function is to
 One of the most basic concentration inequalities, and typically the first one that you would learn about if you take a machine learning theory class, is Hoeffding's inequality.
 So the full statement of Hoeffding's inequality is given here, but it's a little bit opaque, but it has a very simple interpretation.
 So let me describe the full statement, and then I'll provide a little bit of intuition for what it's really saying.
-So suppose that x1, x2, through xn are a sequence of independent, identically distributed random variables with mean mu.
+So suppose that x1, x2, through xn are a sequence of independent, identically distributed random variables with mean μ.
 So what does that mean?
 Well, these are your samples.
-So you have some true distribution, and that true distribution has a mean mu.
-We don't really know anything else about that distribution, we'll just say it has a mean mu.
+So you have some true distribution, and that true distribution has a mean μ.
+We don't really know anything else about that distribution, we'll just say it has a mean μ.
 And you take some samples from that distribution.
 Let x bar n be the sample-wise average.
 So x bar n is the sum over all the xi's divided by n.
@@ -183,17 +183,17 @@ So suppose that each of these samples is in the range from b- to b+.
 Alright, so this is just saying that whatever their mean and whatever their distribution is, they can never be less than b-, and they can never be less than b-.
 So you can't get a solution that's larger than b+.
 Then we have the following two results.
-Your sample-based estimate of the average, x bar n, is greater than or equal to the true average plus epsilon with probability that is at most e to the negative 2 n epsilon squared divided by b plus minus b minus squared.
-So what this means is that the probability that your sample-based estimate of the mean differs from the true mean in the positive direction by epsilon is no greater than e to the negative 2 n epsilon squared over b plus plus b minus squared.
+Your sample-based estimate of the average, x bar n, is greater than or equal to the true average plus ϵ with probability that is at most e to the negative 2 n ϵ squared divided by b plus minus b minus squared.
+So what this means is that the probability that your sample-based estimate of the mean differs from the true mean in the positive direction by ϵ is no greater than e to the negative 2 n ϵ squared over b plus plus b minus squared.
 This is actually very good.
-This means that your probability of making a mistake larger than epsilon decreases exponentially in the number of samples.
+This means that your probability of making a mistake larger than ϵ decreases exponentially in the number of samples.
 And similarly, you have a bound on the other side.
-The probability of your estimate being less than mu minus epsilon is also less than or equal to epsilon to the negative 2 n epsilon squared divided by b plus plus b minus squared.
-So this describes how quickly your estimate x bar n concentrates around the true mean mu because as epsilon goes to zero, then your estimate approaches mu, and here we see the probability that your estimate will deviate from mu by more than epsilon.
+The probability of your estimate being less than μ minus ϵ is also less than or equal to ϵ to the negative 2 n ϵ squared divided by b plus plus b minus squared.
+So this describes how quickly your estimate x bar n concentrates around the true mean μ because as ϵ goes to zero, then your estimate approaches μ, and here we see the probability that your estimate will deviate from μ by more than ϵ.
 Now this has a few implications.
-So if we estimate mu with n samples, the probability that we're off by more than epsilon is at most the thing on the right-hand side of this inequality.
-And we can equivalently reinterpret it to say that if you want this probability to be delta, so if you want the probability to be off by more than epsilon to be at most delta, meaning that you are an error less than epsilon with probability at least 1 minus delta, then you can simply solve for delta.
-So you can say I want δ to be less than or equal to 2 times e to the negative 2 n epsilon squared over b plus plus b minus squared.
+So if we estimate μ with n samples, the probability that we're off by more than ϵ is at most the thing on the right-hand side of this inequality.
+And we can equivalently reinterpret it to say that if you want this probability to be delta, so if you want the probability to be off by more than ϵ to be at most delta, meaning that you are an error less than ϵ with probability at least 1 minus delta, then you can simply solve for delta.
+So you can say I want δ to be less than or equal to 2 times e to the negative 2 n ϵ squared over b plus plus b minus squared.
 The reason the 2 is there is because you can be off either in the positive direction or in the negative direction.
 And then you can just solve for delta.
 So you can take the log of both sides, and then you can do a little bit of algebra, rearrange these things.
@@ -201,15 +201,15 @@ So here in the first step what I did is I divided both sides by 2 and took the l
 Then in the next step what I did is I divided both sides by 2 and took the log.
 So I divided both sides by b plus minus b minus squared over 2 n and negated both sides.
 So that changes the less than or equal to into greater than or equal to.
-And then you take the square root and you see that you need b plus minus b minus over square root of 2 n times the square root of log 2 over δ to be greater than or equal to epsilon.
-So if you want some error epsilon with probability delta, or you want the error to be less than epsilon with probability 1 minus delta, then the number of samples you need scales as the square root of n.
-Or you can also write down a function for n in terms of epsilon and delta, same thing.
+And then you take the square root and you see that you need b plus minus b minus over square root of 2 n times the square root of log 2 over δ to be greater than or equal to ϵ.
+So if you want some error ϵ with probability delta, or you want the error to be less than ϵ with probability 1 minus delta, then the number of samples you need scales as the square root of n.
+Or you can also write down a function for n in terms of ϵ and delta, same thing.
 Just do a bunch of algebraic manipulation to get n on one side.
-And you can see that if you have this number of samples, then you will have error at most epsilon with probability no larger than delta.
+And you can see that if you have this number of samples, then you will have error at most ϵ with probability no larger than delta.
 So one of the conclusions that you can get from this is that error scales with 1 over square root of n.
 That's pretty convenient.
 So hopefully this gives you some idea of how these concentration inequalities work.
-You write down some equation for the probability that you'll be off by epsilon.
+You write down some equation for the probability that you'll be off by ϵ.
 And then you can manipulate that equation to solve for the probability δ or to solve for the number of samples.
 Now, in a lot of the analysis that we do in reinforcement learning, we're concerned with the fact that we're concerned with estimating probabilities of categorical variables.
 So p of (s'|s,a) is a distribution over a categorical variable, not a real valued variable.
@@ -228,26 +228,26 @@ So the first one is a probability that your error in the 2-norm is going to be b
 The second one has to do with the error in the 1-norm.
 And the error in the 1-norm, that's total variation divergence.
 That's the one we're going to be using.
-So if you look at the last line of this theorem, the probability that your estimate of the probabilities that q hat minus the true probabilities, q, in the 1-norm, which is total variation divergence, the probability that their total variation divergence is greater than or equal to the square root of d times 1 over root n plus epsilon is less than or equal to e to the negative n times epsilon squared.
+So if you look at the last line of this theorem, the probability that your estimate of the probabilities that q hat minus the true probabilities, q, in the 1-norm, which is total variation divergence, the probability that their total variation divergence is greater than or equal to the square root of d times 1 over root n plus ϵ is less than or equal to e to the negative n times ϵ squared.
 And notice the similarity to Hoeffding's inequality.
-So in Hoeffding's inequality, we also had the probability to be bounded by e to the negative 2n times epsilon squared with some other coefficients.
-So here we have a negative n epsilon squared.
+So in Hoeffding's inequality, we also had the probability to be bounded by e to the negative 2n times ϵ squared with some other coefficients.
+So here we have a negative n ϵ squared.
 It's just that the constants are different.
-And the thing that we are greater than or equal to is not epsilon.
-It's now this root d 1 over root n plus epsilon thing.
+And the thing that we are greater than or equal to is not ϵ.
+It's now this root d 1 over root n plus ϵ thing.
 But we can do all the same stuff.
 We can take this quantity and we can solve it for delta, for example.
-And we know that δ is less than or equal to e to the negative n epsilon squared.
-We can solve it for epsilon.
-And we get epsilon is less than or equal to 1 over root n times the square root of log 1 over delta.
+And we know that δ is less than or equal to e to the negative n ϵ squared.
+We can solve it for ϵ.
+And we get ϵ is less than or equal to 1 over root n times the square root of log 1 over delta.
 And we can solve it for n.
-And we get that n is less than or equal to 1 over epsilon squared log 1 over delta.
+And we get that n is less than or equal to 1 over ϵ squared log 1 over delta.
 So all the same stuff.
 We can describe what the error will be as a function of the number of samples or how many samples we need as a function of the error and the probability.
 So if we just make a substitution, substitute the symbols for p hat, the cardinality of s' is S, capital S.
 Well, the cardinality of capital S.
 That's the number of states.
-So if we just plug this directly into this inequality, we know that if we use n samples for every state action tuple, then the total number of states is less than or equal to the square root of the number of states times 1 over the square root of n plus epsilon with probability 1 minus delta.
+So if we just plug this directly into this inequality, we know that if we use n samples for every state action tuple, then the total number of states is less than or equal to the square root of the number of states times 1 over the square root of n plus ϵ with probability 1 minus delta.
 Now, this is in the case where we have n samples for each S .
 So the total number of samples that we would be using to estimate this model is n times the number of states times the number of actions.
 So we can say that we have n samples for every S .
@@ -467,8 +467,8 @@ So it's not always quadratic.
 But it is for this naive scheme that we analyzed.
 Alright, so that hopefully gives you a flavor of how this analysis works.
 Now a few relatively simple implications of this analysis.
-We showed that Q pi minus Q hat pi is less than or equal to epsilon.
-And epsilon is given by this equation.
+We showed that Q pi minus Q hat pi is less than or equal to ϵ.
+And ϵ is given by this equation.
 What about the difference between Q star and Q pi?
 Well, the difference between Q pi and Q hat star.
 Now this is a little different, right?
@@ -484,7 +484,7 @@ Right?
 So the optimal Q function is the Q function of the policy that has the largest Q values.
 So you can replace Q star with a supremum over pi of Q pi, and you can replace Q hat star with a supremum over pi of Q hat pi.
 And then we apply this convenient identity, and we see that this is less than or equal to the supremum over pi of the difference of the Q functions.
-But we know from our main result that Q pi minus Q hat pi is less than or equal to epsilon for all policies pi, which means that this whole thing is also less than or equal to epsilon.
+But we know from our main result that Q pi minus Q hat pi is less than or equal to ϵ for all policies pi, which means that this whole thing is also less than or equal to ϵ.
 Okay, so that's pretty convenient.
 We just directly took our result, and we used it to relate the optimal Q functions.
 But this doesn't actually tell us what the performance of the policy that we find under P hat will be in the true MDP.
@@ -499,12 +499,12 @@ And then we'll break these up using the triangle inequality.
 So this is less than or equal to Q star minus Q hat pi hat star plus Q pi hat star minus Q hat pi hat star.
 So the second term in this basically is the difference between the true Q function and the learned Q function for the same policy.
 So we know that that is bounded by the true Q function.
-So we know that that is bounded by epsilon.
+So we know that that is bounded by ϵ.
 The first term, Q hat pi hat star, is just Q hat star, right?
 That is the Q function corresponding to the best policy under our learned model.
 And then in the second term, they're the same policy.
 So that means that we can use the top left result for the second term, and we can use the Q star minus Q hat star result for the first term.
-And both of them are bounded by epsilon, so that means that the whole thing is bounded by 2 times epsilon.
+And both of them are bounded by ϵ, so that means that the whole thing is bounded by 2 times ϵ.
 Okay?
 So that's a pretty straightforward way to complete these results.
 Thank you.

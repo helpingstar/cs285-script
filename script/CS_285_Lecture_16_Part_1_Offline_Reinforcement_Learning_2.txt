@@ -34,9 +34,9 @@ So what all this means is that if we want to develop practical deep offline RL a
 And how do current and prior methods typically address this?
 Well, one very widely studied class of methods is what I'm going to refer to as policy constraint methods.
 These are methods that adopt some sort of actor-critic structure, and they're going to update their Q function with an expected value under pi nu, but they will modify the policy update to not just maximize the Q values, but also impose some sort of constraint.
-For example, a constraint that the KL divergence between pi and pi beta should be bounded by epsilon.
+For example, a constraint that the KL divergence between pi and pi beta should be bounded by ϵ.
 So in principle, this should solve distributional shift, right?
-Because if you choose epsilon to be small enough, then in principle, you should not get too many erroneous values.
+Because if you choose ϵ to be small enough, then in principle, you should not get too many erroneous values.
 That's the idea, at least.
 I will sort of give away the punchline.
 I'll say right away that while policy constraint methods provide good tools for analysis and kind of a reasonable basis to start with, generally the best performance is the best performance and perhaps even the best performance for coding and performing current methods do something a little more sophisticated.
@@ -103,7 +103,7 @@ But this better policy might violate our KL divergence constraint, because it re
 So this might be the best in-support policy, meaning the best policy that only assigns high probabilities to actions that had high probabilities that are pi beta, but it might violate our KL divergence constraint.
 So based on this intuition, what we might choose to do instead, is to improve the probability of the actions that have high probabilities, and employ a support constraint.
 A support constraint basically means that you're only going to give actions non-trivial probability.
-There's a typo here, that first inequality should be greater than sign, so pi A given S is greater than zero, only for actions where pi beta has a probability that's greater than or equal to some threshold epsilon.
+There's a typo here, that first inequality should be greater than sign, so pi A given S is greater than zero, only for actions where pi beta has a probability that's greater than or equal to some threshold ϵ.
 And that's kind of a crude way to write a support constraint, and of course in reality, it's very difficult to enforce this exactly as written, but there are various approximations that we can employ.
 One common choice is to use something like a maximum mean discrepancy estimator, and that can crudely estimate a support constraint.
 Now the trouble with these is that they're in general significantly more complex to implement.

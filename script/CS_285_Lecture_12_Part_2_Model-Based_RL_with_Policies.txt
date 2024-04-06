@@ -65,7 +65,7 @@ But of course, in model-based RL version 2.5, you're going to change the policy.
 You're going to make it better with respect to your model, which means that the issue is even further exacerbated, because now you'll be running with a learned dynamics model that is different from the real dynamics model, and with a modified policy that is different from the policy that collected the data.
 So the distributional shift will be even worse.
 So how quickly does the error accumulate?
-Well even in the best case when you run the same exact policy, just like in the behavior cloning discussion it will accumulate as epsilon t squared and I would leave it as an exercise to you guys to show that in fact that there's a bound of epsilon t squared and the bound is tight.
+Well even in the best case when you run the same exact policy, just like in the behavior cloning discussion it will accumulate as ϵ t squared and I would leave it as an exercise to you guys to show that in fact that there's a bound of ϵ t squared and the bound is tight.
 The logic for that is extremely similar to what we had in behavior cloning but the takeaway for us for now is that errors build up very quickly as the horizon of your model-based rollout increases which means that making long model-based rollouts is very costly to you in terms of accumulated error.
 This is another way of saying that the longer your rollout is the more likely it is that the conclusion you draw from that rollout meaning that its reward will differ from what you would actually get if you were to roll out in the real world.
 So perhaps what we want to do is avoid long rollouts.

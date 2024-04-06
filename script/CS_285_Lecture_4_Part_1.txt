@@ -156,7 +156,7 @@ So it's a vector of numbers that are all positive and sum to one.
 So one way you can find μ is by finding the eigenvector with eigenvalue one for the matrix defined by T.
 So μ is eigenvector of T with eigenvalue one.
 And it always exists under the ergodicity and aperiodicity assumptions.
-So if we know that if we run this Markov chain forward enough times, eventually it'll settle into mu.
+So if we know that if we run this Markov chain forward enough times, eventually it'll settle into μ.
 That means that as t goes to infinity, this sum of the expectations of the marginals becomes dominated by the stationary distribution terms.
 So you have some finite number of terms initially that are not in the stationary distribution, μ one, μ two, μ three, etc.
 Then you have infinitely many terms that are very, very close to the stationary distribution.

@@ -5,11 +5,11 @@ So, the picture that I had before in the Monday lecture was that if this green c
 So, if the blue curve is maximized, it'll be the one with the largest error in the positive direction.
 So, here's an idea.
 What if we modify the objective for training the Q function to have our standard Bellman error minimization, just like before, and then another term that explicitly seeks to find actions with high Q value and then minimize their value?
-So, notice that mu here is selected so that the expected Q values under mu are as large as possible.
+So, notice that μ here is selected so that the expected Q values under μ are as large as possible.
 And then Q is trained to minimize the Q value.
-So, notice that mu here is selected so that the expected Q values under mu are as large as possible.
+So, notice that μ here is selected so that the expected Q values under μ are as large as possible.
 And then Q is trained to minimize the Q value.
-So, notice that mu here is 398%.
+So, notice that μ here is 398%.
 And then Q is trained to minimize the Q value.
 So, now we have a function that is really tight, so it doesn't continue to work quite right.
 And then we have an operation that looks like this.
@@ -19,8 +19,8 @@ But we also have to jump over the limitớ and we're looking at those ideas, all
 So what we can do instead is we can have this term that always pushes down the Q values, and we can add an additional term that pushes up on Q values in the data set.
 Now this might at first seem like a really strange thing because we're combating overestimation, and somehow we're doing this by actually maximizing Q values in the data set.
 But let's imagine what this procedure will do in practice.
-If all of the large Q values are for actions that are in the data set, then these two terms should more or less balance out because mu will select actions in the data set to minimize their value, and then the second term will maximize their value, and the two will basically balance out and have very little net effect.
-If, however, the large Q values are for actions that are very different from the actions in the data set, the first term will push them down, and the second term will instead push up on the actions in the data set, which means that the next time around mu is going to select actions closer to the data set.
+If all of the large Q values are for actions that are in the data set, then these two terms should more or less balance out because μ will select actions in the data set to minimize their value, and then the second term will maximize their value, and the two will basically balance out and have very little net effect.
+If, however, the large Q values are for actions that are very different from the actions in the data set, the first term will push them down, and the second term will instead push up on the actions in the data set, which means that the next time around μ is going to select actions closer to the data set.
 So in a sense you can think of it as a kind of a feedback process where the more we end up with large Q values out of distribution, the more these two terms together push them back into the distribution, and once they're pushed all the way back then the two terms more or less cancel out.
 With this more nuanced version, including the mechanism of easy absent method, letting it understand that d is a more of a large Q property than impact- Shift-Lock-Disk, you can see in here it's not always possible to have a routine we can K- Dimension with remember- which is the κιniration rate- positive- Apostон-aufwert and we're not sure that we're going to be able to tell if these are large or small particles still because that is pretty interesting.
 Finally, sum against it this in practice.
@@ -29,20 +29,20 @@ Update your approximate Q function using LCQL and using your data set and then s
 In practice when you code the sub you wouldn't even have the explicit policy computation of step two you would just plug in the max but if the actions are continuous then you could have a separate explicit actor pi theta and update that actor in the usual way.
 So in the discrete action cases this really does look like Q learning with two additional terms in the continuous action case typically you would do this as a Q function actor critic algorithm.
 So the actor training in that case is exactly the same as an irregular actor critic method the only thing that changes is the loss function for the critic with the addition of the these two terms the pushing down and the pushing up term.
-So this is the critic objective now in practice if you want to actually implement this what you would do is you would add a little regularizer for mu let's call it r of mu and for appropriate choices of that regularizer it turns out that there are very convenient ways to implement this objective that don't require actually computing mu directly.
-So a very common choice for this regularizer is to use the entropy of mu.
-This essentially amounts to saying we want to get mu to have high entropy and we wanted to capture actions with high Q values.
+So this is the critic objective now in practice if you want to actually implement this what you would do is you would add a little regularizer for μ let's call it r of μ and for appropriate choices of that regularizer it turns out that there are very convenient ways to implement this objective that don't require actually computing μ directly.
+So a very common choice for this regularizer is to use the entropy of μ.
+This essentially amounts to saying we want to get μ to have high entropy and we wanted to capture actions with high Q values.
 So it's a kind of maximum entropy regularization.
-It turns out that if you do this the optimal choice for mu is proportional to the exponential of the Q values.
-Furthermore it turns out to also be the case that the expected value under mu of the Q function is the log sum exp of the Q values.
-So that's kind of a convenient property and if you have discrete actions and you use this maximum entropy regularization then you don't even need to construct mu explicitly.
+It turns out that if you do this the optimal choice for μ is proportional to the exponential of the Q values.
+Furthermore it turns out to also be the case that the expected value under μ of the Q function is the log sum exp of the Q values.
+So that's kind of a convenient property and if you have discrete actions and you use this maximum entropy regularization then you don't even need to construct μ explicitly.
 You can simply minimize the log sum exp of the Q values at every state.
 So that's very convenient.
 So for discrete actions just literally calculate this quantity directly.
-For continuous actions you could use importance sampling to estimate the expected value under mu of the Q function.
+For continuous actions you could use importance sampling to estimate the expected value under μ of the Q function.
 So you could sample actions either uniformly or random or from the current policy and then re-weight them by using the exponential Q.
 By using the exponential Q.
-By basically leveraging the fact that the optimal mu is proportional to the exponential Q and then use that to estimate this expectation.
+By basically leveraging the fact that the optimal μ is proportional to the exponential Q and then use that to estimate this expectation.
 And both of these are perfectly valid choices.
 So for discrete action just directly using this log sum exp formula tends to work really well.
 For continuous actions something like importance sampling tends to work pretty well.

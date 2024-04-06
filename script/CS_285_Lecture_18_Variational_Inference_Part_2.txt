@@ -154,7 +154,7 @@ And then do gradient descent on mui and sigma i.
 So what's the problem with this?
 Well, how many parameters do we have?
 Remember that we have a separate QI for every data point Xi.
-And they each have a different mu and a different sigma.
+And they each have a different μ and a different sigma.
 This is not a big deal if you have a few thousand data points, but it becomes a big problem if you have millions of data points.
 And in the deep learning setting, typically we would have a very large number of data points.
 So the total number of parameters if we have this Gaussian distribution is the number of parameters in the Model, theta.

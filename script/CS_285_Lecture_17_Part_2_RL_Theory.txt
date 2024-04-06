@@ -103,7 +103,7 @@ Okay so that's sampling error.
 Now what about approximation error?
 Well let's make some assumption.
 Let's assume that we have x and y equals 1 and x equals 1 and y equals 1, and we're going to use a function that does this.
-So we're going to say that when you fit q hat k plus 1 to the target values, which we're going to say are t q hat k, your fit has an infinity norm error of at most epsilon k.
+So we're going to say that when you fit q hat k plus 1 to the target values, which we're going to say are t q hat k, your fit has an infinity norm error of at most ϵ k.
 And for now we're going to analyze the case where you have an exact backup, but we'll come back to the approximate backup later.
 So let's just pretend for a minute that our backup is exact, so there's no difference between t and t hat, and we're just studying the effect of error in the fit.
 So if we have a set of n and n, we're going to do that.
@@ -118,7 +118,7 @@ And now we're going to assume that it's not exact, that it incurs some error, an
 Now this is a strong assumption.
 In reality, if you're doing supervised learning, your error is not bounded in the infinity norm.
 It's going to be bounded in something like a weighted L2 norm in expectation under some distribution.
-We're going to assume it's bounded in the infinity norm, which means that for the worst possible state action tuple, your error is at most epsilon k.
+We're going to assume it's bounded in the infinity norm, which means that for the worst possible state action tuple, your error is at most ϵ k.
 So this is a strong assumption, but it will make this very convenient.
 Okay, so now what we're going to try to understand is the difference between q hat k at some iteration k and the real q star, again in the infinity.
 So here's how we're going to do it.
@@ -131,33 +131,33 @@ So that's convenient, because that's the quantity that we're going to be boundin
 And then we have this other term, which consists of the backup of q hat k minus 1 minus the backup of q star.
 Now, q star, is the fixed point of t, so you can always replace q star with t q star, which is what I did on this line.
 And then we'll apply the triangular equality again to bound the infinity norm of the sum by the sum of their infinity norms.
-And the first term here, q hat k minus t q hat k minus 1, is just bounded by epsilon k minus 1 by our assumption at the top.
+And the first term here, q hat k minus t q hat k minus 1, is just bounded by ϵ k minus 1 by our assumption at the top.
 The indexing is off by 1, that's why it's k minus 1.
 So that leaves us with a second term.
 Now, for the second term, we're going to recognize an interesting fact that we saw way back in the day when we first learned about Q learning, which is that the Bellman backup is a contraction.
 The fact that the Bellman backup is a contraction in the infinity norm means that the infinity norm of what you get by applying t to two different Q functions is less than or equal to gamma times the infinity norm of the difference between those Q functions.
 So using the fact that t is a contraction in gamma, we can bound this by gamma times q hat k minus 1 minus q star.
-And now what we've done is we've related q hat k minus q star recursively to q hat k minus 1 minus q star, but with the addition of this little error term epsilon k minus 1.
+And now what we've done is we've related q hat k minus q star recursively to q hat k minus 1 minus q star, but with the addition of this little error term ϵ k minus 1.
 So now we're going to unroll this recursion.
 So applying the same thing again to q hat k minus 1 minus q star, we're going to unroll this recursion.
-So applying the same thing again to q hat k minus 1 minus q star, we bound the whole thing by epsilon k minus 1 plus gamma epsilon k minus 2 plus gamma squared times the difference.
-Then we're going to do it again, and we get gamma squared times epsilon k minus 3 plus gamma cubed, and so on and so on.
-If we go all the way back to the beginning, then we end up bounding the whole thing by this gamma discounted sum from i equals 0 to k minus 1, gamma to the i times the corresponding epsilon plus gamma to the k times the difference between q hat 0, and q star.
+So applying the same thing again to q hat k minus 1 minus q star, we bound the whole thing by ϵ k minus 1 plus gamma ϵ k minus 2 plus gamma squared times the difference.
+Then we're going to do it again, and we get gamma squared times ϵ k minus 3 plus gamma cubed, and so on and so on.
+If we go all the way back to the beginning, then we end up bounding the whole thing by this gamma discounted sum from i equals 0 to k minus 1, gamma to the i times the corresponding ϵ plus gamma to the k times the difference between q hat 0, and q star.
 Now, this tells us something very interesting, and also very useful, which is that the more iterations we take, the more we essentially forget our initialization.
 Because as k goes to infinity, this gamma to the k term will vanish, because gamma is less than 1, which means that the effect of our starting point, q hat 0, is going to vanish.
 So what that means is that if we take the limit as k goes to infinity, the second term gamma to the k vanishes, because gamma to the k approaches 0, and for the first term, we're going to simplify it a little bit.
-We're going to replace all those epsilon k minus i minus 1 terms with just the maximum epsilon we get over all the iterations.
+We're going to replace all those ϵ k minus i minus 1 terms with just the maximum ϵ we get over all the iterations.
 That's probably reasonable to do, because if our fitting error is bounded for every iteration, we'll just say that we can also bound it over all iterations.
 And now we get our familiar geometric series, the sum from i equals 0 to infinity of gamma to the i times some constant.
-So that's 1 over 1 minus gamma times the infinity norm of epsilon, where epsilon is a big vector with k dimensions, where every dimension has the error at that iteration.
+So that's 1 over 1 minus gamma times the infinity norm of ϵ, where ϵ is a big vector with k dimensions, where every dimension has the error at that iteration.
 So that's pretty neat.
 Now we see how error scales for just the approximation error.
-So if we incur some epsilon fit every step, then the total error we'll get will be epsilon times 1 over 1 minus γ.
+So if we incur some ϵ fit every step, then the total error we'll get will be ϵ times 1 over 1 minus γ.
 So the longer our horizon essentially the more error we get, get, which intuitively kind of you can think of as saying that every time you back up, which is every iteration of fit or queue iteration, you incur some additional error.
 So since the number of backups you need to make is equal to your horizon, that's the order of the approximation error that you'll see.
 So now let's put these two things together.
 We've got our sampling error, and that quantifies the difference between t hat and t, and we've got our approximation error, which is how much q hat k plus 1 will differ from t q hat k, and they'll differ due to sampling error and due to the approximation error.
-So essentially what we're going to do is we're going to subsume the sampling error inside the epsilons, and that will let us connect these two parts up.
+So essentially what we're going to do is we're going to subsume the sampling error inside the ϵs, and that will let us connect these two parts up.
 So put it stated another way, that bound from the previous slide can also be rewritten as the result of the approximation error.
 So that's the way that we're going to do it.
 So let's put this back together.
@@ -170,7 +170,7 @@ We'll again group the terms.
 So we're bounding this whole thing by q hat k minus t hat q hat k minus 1 plus t hat q k minus 1 minus t q hat k minus 1.
 So the second term is basically taking care of the sampling error, and the first term is taking care of the approximation error.
 So we know that the first term is the approximation error, and the second term is the approximation error.
-The first term is that epsilon k, and the second term is that big sampling error bound up above.
+The first term is that ϵ k, and the second term is that big sampling error bound up above.
 So what we can do is we can just take these two terms and plug them in here, and we can use that to calculate the difference between q hat k and q star in the limit as k goes to infinity, and it will be 1 over 1 minus gamma times a bunch of terms, basically a sum of three terms, two of them coming from sampling error and one coming from approximation error.
 So here's what we have.
 We can see that the sampling error is the same as the one on the previous slide.
@@ -180,13 +180,13 @@ We discussed this before.
 We talked about how the value functions and Q functions, basically their magnitudes are the reward times the reward, and so on.
 So we can see that in the sampling error the first term is actually 1 over 1 minus gamma, because q infinity is on the order of r max over 1 over 1 minus γ.
 reward times the horizon, so it's r max over 1 minus γ.
-So if you imagine what will happen if we substitute in epsilon k plus sampling error into that second equation, you have a 1 over 1 minus gamma term in front, and then you have a sum of three terms, one of which itself also has a 1 over 1 minus gamma term in it.
+So if you imagine what will happen if we substitute in ϵ k plus sampling error into that second equation, you have a 1 over 1 minus gamma term in front, and then you have a sum of three terms, one of which itself also has a 1 over 1 minus gamma term in it.
 So the overall order of the error will be quadratic in 1 over 1 minus gamma, just like we saw in part one.
 Now so far we needed strong assumptions, specifically infinity norm assumptions, on the error that we're incurring.
 So that is a fairly strong assumption that is not always going to hold.
 More advanced results can actually be derived with p-norms under some distributions.
 So infinity norms are not really realistic for practical learning algorithms.
 It is possible to do some analysis with p-norms, and you can learn more about that in the RL theory book referenced at the bottom of the slide.
-Basically this analysis studies norms of this form, where the p-mu norm is just the expected value under mu of the difference raised to the power p, and then the whole thing is raised to 1 over p.
+Basically this analysis studies norms of this form, where the p-mu norm is just the expected value under μ of the difference raised to the power p, and then the whole thing is raised to 1 over p.
 So if p is equal to 2, this is actually the quadratic Bellman error that we're used to.
 So there's some analysis that we can do with that, but we need some assumptions there too to avoid this non-convergence issue.
