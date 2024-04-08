@@ -50,7 +50,7 @@ But as P theta gets better and better the discriminator is going to produce valu
 In fact at convergence when P theta of X is actually equal to P star you would expect the discriminator to produce probabilities that are always 0.5.
 Okay this may be a little bit of an academic exercise.
 We can actually use this inference to cast inverse RL as a kind of GAN with a very peculiar kind of discriminator.
-So for IRL the optimal policy is going to approach P theta which is proportional to P of τ times the exponential of R psi of tau.
+So for IRL the optimal policy is going to approach P theta which is proportional to P of τ times the exponential of R psi of τ.
 So what we're going to do is we're going to choose this parameterization for our discriminator.
 We're going to say that the discriminator is equal to P of τ times 1 over Z times the exponential reward.
 So that's just the optimal policy distribution divided by P theta of τ plus P of τ times 1 over Z times the exponential reward.
@@ -67,7 +67,7 @@ The derivation of that is a little bit more involved, but you can find that in t
 And the interesting thing about this derivation is that we don't actually need importance weights anymore.
 They're actually subsumed into the partition function z, which we optimize along with our reward function parameters.
 And then the policy is optimized just like the generator in a GAN to maximize the reward.
-So we have our generator slash policy, we generate samples from that policy, we have our data slash demonstrations, which are samples from p star of t of tau.
+So we have our generator slash policy, we generate samples from that policy, we have our data slash demonstrations, which are samples from p star of t of τ.
 We train our discriminator with respect to the standard GAN objective, but the discriminator has this funny form that we had on the previous slide, which is, we train our discriminator with respect to the standard GAN objective, but the discriminator has this funny form that we had on the previous slide, and we optimize the policy to maximize the expected reward and entropy.
 So the policy changes to make it harder to distinguish from the demos.
 All right.

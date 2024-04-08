@@ -64,18 +64,18 @@ What's the probability that you will exit in the state s?
 These are equivalent, and they lead to exactly the same equation.
 So this equation for p of s future differs from the quantity in parentheses only by this constant one minus gamma out front.
 And that's just to ensure that everything sums to one over s.
-Okay, so I've constructed this distribution, and what that means is that if I have this distribution p pi s future equals s, given s , then I can compute my value at state s as just one over one minus gamma to get rid of that constant, times the sum over all states of p pi s future equals s, given s times r .
-We can use a little bit of linear algebra if we define a vector μ pi s as a vector of length equal to the number of states, where every entry in μ pi s is just p of s future equals the state corresponding to that entry.
-So this is the definition of the ith entry, so μ pi is the probability that s future equals s, given s .
+Okay, so I've constructed this distribution, and what that means is that if I have this distribution p π s future equals s, given s , then I can compute my value at state s as just one over one minus gamma to get rid of that constant, times the sum over all states of p π s future equals s, given s times r .
+We can use a little bit of linear algebra if we define a vector μ π s as a vector of length equal to the number of states, where every entry in μ π s is just p of s future equals the state corresponding to that entry.
+So this is the definition of the ith entry, so μ π is the probability that s future equals s, given s .
 And then you can define a vector r, which is a vector that contains, with length equal to the number of states, that contains the reward for every state.
-Then the value function is just one over one minus gamma times the inner product between μ pi s and r.
-Okay, so we've written out the value function in this very concise way, and what this suggests to us is that if we want to evaluate a policy, all we really need is to construct this μ pi vector.
-You can think of this μ pi as a kind of model.
-Mu pi is independent of the reward, but, and this is very important, it is not independent of the policy, and that's why I always put the policy as a superscript.
-Mu pi does depend on the policy, unlike the one-step model, but it does not depend on the reward.
+Then the value function is just one over one minus gamma times the inner product between μ π s and r.
+Okay, so we've written out the value function in this very concise way, and what this suggests to us is that if we want to evaluate a policy, all we really need is to construct this μ π vector.
+You can think of this μ π as a kind of model.
+Mu π is independent of the reward, but, and this is very important, it is not independent of the policy, and that's why I always put the policy as a superscript.
+Mu π does depend on the policy, unlike the one-step model, but it does not depend on the reward.
 So you can think of it as a kind of model, a kind of multi-step model.
-Essentially, μ pi predicts where you will land, not at the next time step, but over this discounted future distribution of time steps.
-So this μ pi is called a successor representation, and it was first introduced in this paper called Improving Generalization for Temporal Difference Learning.
+Essentially, μ π predicts where you will land, not at the next time step, but over this discounted future distribution of time steps.
+So this μ π is called a successor representation, and it was first introduced in this paper called Improving Generalization for Temporal Difference Learning.
 And the successor representation is a very interesting object.
 You can think of it as a kind of hybrid between a value function and a model, because just like a model, it predicts future states, but like a value function, it's a discounted average.
 So it's not the next state, it's actually a distribution over states, over this geometrically discounted future.
@@ -113,8 +113,8 @@ So for continuous state spaces, we'll need to have kind of a density version of 
 But let's first talk about how to scale this to large state spaces, and then from there we'll discuss a little bit how this can actually give us a little bit of benefit over standard model-free RL.
 Okay.
 So for this we need to talk about something called successor features.
-So for a successor representation, if you can learn these vectors μ pi as a function of st, then you can recover your value function as an inner product.
-Take the vector μ pi st, basically the probability of landing in all future states given you start in st, and take a dot product of it with a vector of all rewards.
+So for a successor representation, if you can learn these vectors μ π as a function of st, then you can recover your value function as an inner product.
+Take the vector μ π st, basically the probability of landing in all future states given you start in st, and take a dot product of it with a vector of all rewards.
 But of course these vectors might be really huge, so you probably don't want to construct them.
 So instead of constructing these vectors, what if we construct their projections onto some basis?
 So let's say that we're given some features, maybe our features are five, and we're given some features of ϕ.
@@ -133,7 +133,7 @@ So it's almost like ϕ j is like a pseudo-reward, and psi j is its pseudo-value 
 And you're going to construct many of these things.
 So now here's an interesting property.
 If we can express the reward function as a weighted combination of the features ϕ, so if r of s is equal to the sum over j of ϕ j of s times some weight w j, or put another way, if r of s is the dot product between the vector of features at state s and some weights w, then it turns out that the value function could be recovered, with those same weights w.
-It turns out that v pi of s, t is psi pi s, t dotted with the same w.
+It turns out that v π of s, t is psi π s, t dotted with the same w.
 This is actually quite easy to prove, so all we have to do is first write this dot product out as a sum, so it's a sum over all features j of psi j s, t times w j, and then we'll just take the definition of psi j up above, and plug that in.
 So psi j is just the inner product, and we'll just write it down as a sum over all features j of μ and ϕ j.
 Now ϕ j here is now a matrix.
@@ -142,7 +142,7 @@ Okay?
 Sorry, ϕ is going to have that.
 So ϕ j then is just a vector, which corresponds to rows of that matrix.
 So I've just substituted in the equation for psi up above.
-And now of course μ pi s, t doesn't depend on j, so I can take μ pi s, t out, so it's μ pi s, t transpose times the sum over j of ϕ j w, but up above that's exactly how we define the reward.
+And now of course μ π s, t doesn't depend on j, so I can take μ π s, t out, so it's μ π s, t transpose times the sum over j of ϕ j w, but up above that's exactly how we define the reward.
 So this product between the phi's and w's is just the reward, so we can just write it down as a vector.
 So this is exactly μ s, t transpose times the vector of rewards.
 So this basically shows that instead of working with the successor representation itself, you can project the successor representation onto some basis, in this case the basis defined by the features ϕ, and as long as your reward function lies in that same basis, meaning that you have some weights w, such that the reward is equal to ϕ of s transpose w, then you can construct instead of the successor representation, these successor features psi, and for the same weights w you'll recover the value function.
@@ -159,14 +159,14 @@ So these successor features are functions of only the state, and they can be use
 You can also construct successor features that are a function of the state and action.
 Exactly the same way, just use a Q backup instead of a value backup.
 So here the action is an input, and then the expectation is taken over the next state and the next action.
-Same exact idea, and then the Q function can be recovered as psi pi transpose w, as long as the reward is ϕ transpose w.
+Same exact idea, and then the Q function can be recovered as psi π transpose w, as long as the reward is ϕ transpose w.
 So how can we use successor features?
 Well, here's one idea.
 What if we use it to recover a Q function, very quickly?
 So step one, train psi pi, STAT, for a particular policy pi, with Bellman backups.
 So essentially what this means is that someone specifies a basis ϕ.
 We haven't defined how to specify that basis, that's a design choice you have to make, but let's say that you can specify a basis somehow, maybe you manually defined 128 features, you can learn their corresponding psi pi's, just with those Bellman backups, with some data.
-You can run your policy or just use some off-putting, and then you can run your policy data and recover psi pi.
+You can run your policy or just use some off-putting, and then you can run your policy data and recover psi π.
 Step two, someone gives you some reward samples, basically some tuples of state and reward.
 Maybe you gather these by running your policy, it doesn't matter, but somehow you obtain pairs of states and their rewards.
 Solve for a vector w, to minimize the difference between ϕ si times w, and the sampled reward.
@@ -174,15 +174,15 @@ So essentially do least squares regression onto those rewards.
 And this is where it's important for your features ϕ to be a sufficiently expressive basis, so that you can actually approximate the reward accurately.
 And then you can recover the Q function just by taking those same w's, and multiplying your psi by them.
 Now the reason that this is quite elegant is because, conceivably you could reuse the same successor feature of psi pi, for many different rewards.
-So you can trade the psi pi once, and then use it to evaluate Q functions for many different reward functions.
+So you can trade the psi π once, and then use it to evaluate Q functions for many different reward functions.
 And then if you want to take an action, you could choose the argmax action, with respect to this approximate Q function.
 Now at this point we might ask, is this actually the optimal Q function?
 Meaning that if we choose the action this way, will we actually get the optimal policy for the reward that we've used to recover w?
 Unfortunately the answer is in general no.
-Because remember that the Q function you get here, is not the optimal Q function, it's the Q function for the policy pi.
+Because remember that the Q function you get here, is not the optimal Q function, it's the Q function for the policy π.
 So everything here is for a specific policy.
 So when you take the argmax here, what you're really doing is one step of policy iteration.
-So pi prime will be a better policy for this reward than pi, but it will not be the optimal one, because it's just one step of policy iteration.
+So π' will be a better policy for this reward than pi, but it will not be the optimal one, because it's just one step of policy iteration.
 It's better than nothing, so you do get a better policy from doing this, but it's not optimal.
 In general this is one of the big challenges with successor features, is that they cannot be used to directly recover the optimal Q function.
 But you can do a little bit better than this, so there is an idea too that works a little bit better.
@@ -190,13 +190,13 @@ And the, what we can do is we can actually take many policies to begin with.
 Let's say someone gives you features, let's say someone gives you 128 manually designed features, and a thousand policies.
 Where did you get those policies?
 Well, I don't know, maybe they're random policies, maybe they were obtained from some demonstrations, just a bunch of different candidate policies that you can play with.
-Different policies pi k, for each policy you will learn a different successor feature, psi pi k.
-And then like before you'll get some rewards, you'll solve for w, and then you'll recover a q pi k for every policy pi k.
+Different policies π k, for each policy you will learn a different successor feature, psi π k.
+And then like before you'll get some rewards, you'll solve for w, and then you'll recover a q π k for every policy π k.
 And then when it comes time to choose the action, what we'll do is we'll actually take the argmax over the action, over the max over the policies, for every single state, so for different states we might pick different policies.
 The intuition here is that you're finding the highest reward policy in each state.
-And it turns out that you can actually show that when you do this, you will actually improve, in general you will do, as well or better than the best policy among pi k.
+And it turns out that you can actually show that when you do this, you will actually improve, in general you will do, as well or better than the best policy among π k.
 So you'll do, the reason that you can do better is because you might choose a different policy in different states.
-So you won't just improve on the best pi k, you'll actually improve on the best combination of pi k's.
+So you won't just improve on the best π k, you'll actually improve on the best combination of π k's.
 So it's a little bit subtle as to why this works.
 So, you know, as an exercise at home, you could think a little bit more about why this max over k actually makes sense.
 But at a high level the intuition is that we're simply taking the policy with the highest q value.
@@ -214,7 +214,7 @@ What if we frame the problem of learning successor representations as the proble
 So we're going to have this very funny object.
 It's a classifier where there's a binary decision, and the decision is, does S future follow from S .
 So it's a binary classifier where F equals 1 means that S future is a future state from S .
-More precisely, the set of positives, the set of positive examples is sampled from P pi S future.
+More precisely, the set of positives, the set of positive examples is sampled from P π S future.
 So this is that distribution that we get by sampling a future time step from the geometric distribution, and then sampling the state from the probability of landing in a particular state at that time step.
 So that's the positive set.
 And the negative set is sampled randomly from all possible states the policy might visit, anywhere.
@@ -222,24 +222,24 @@ So it's like a background distribution.
 Now we know that the Bayes optimal classifier is given by, the probability of a particular tuple from the positive set, divided by its probability from the positive set, plus its probability from the negative set.
 So plugging in these definitions for the positive and negative distributions, the optimal classifier is the probability of S future given S divided by the probability of S future given S plus the probability of that same S future from the state marginal.
 Okay, this is just the definition of a Bayes optimal classifier.
-So the insight that we're going to use, is that it's a lot easier to train this classifier, than it is to directly learn P pi S future given S .
-But if we can train this classifier, then we can recover P pi S future given S from that classifier.
+So the insight that we're going to use, is that it's a lot easier to train this classifier, than it is to directly learn P π S future given S .
+But if we can train this classifier, then we can recover P π S future given S from that classifier.
 So here's the classifier for, the Bayes optimal classifier for F equals 1.
 For F equals 0, it's 1 minus that same quantity, so just for completeness we can write it like this, right?
-So P of F equals 0 is just the probability from S future, divided by P pi S future given S.
+So P of F equals 0 is just the probability from S future, divided by P π S future given S.
 So if we take the ratio of these two classifiers, the denominators cancel out, and you just get the probability of S future given S divided by the probability of S future.
-So if you take the ratio and multiply it by P pi S future, then you get exactly the quantity we want, P pi S future given S .
+So if you take the ratio and multiply it by P π S future, then you get exactly the quantity we want, P π S future given S .
 And for continuous states, this will give you a probability density.
 And again, the definition of this probability density is just like before.
 Sample a random future time step from the geometric division.
 So if you take the ratio of these two classifiers, you can take a random future time step from the geometric distribution, and then evaluate the density of hitting the state S future at that time step.
 Now, if we're going to use these quantities to recover things like Q functions, the most important thing to us is the dependence of this quantity on S .
-This P pi S future is a difficult quantity to compute, but it's a constant that is independent of S .
+This P π S future is a difficult quantity to compute, but it's a constant that is independent of S .
 So, as long as we can train these classifiers, we can recover essentially almost everything we want.
 There'll be some constant out front that is hard for us to deal with, but that constant doesn't matter, for example, if you're maximizing over A to choose the optimal action for reaching some state or the optimal action for maximizing some reward.
 So, how do we actually train this classifier?
 Well, it's actually pretty straightforward.
-If you can generate on-policy data, we have our definition of the positive distribution and the negative distribution, so D plus is P pi S future given S , D minus is P pi S, so we can simply sample a state from P pi S by running the policy and just choosing random states that the policy visited, and we can sample from P pi S future given S , by picking some time step T, then picking a random future time step from the geometric distribution, and selecting the corresponding time step in the trajectory.
+If you can generate on-policy data, we have our definition of the positive distribution and the negative distribution, so D plus is P π S future given S , D minus is P π S, so we can simply sample a state from P π S by running the policy and just choosing random states that the policy visited, and we can sample from P π S future given S , by picking some time step T, then picking a random future time step from the geometric distribution, and selecting the corresponding time step in the trajectory.
 And then we can train this classifier with a cross-entropy loss.
 Now, this is an on-policy algorithm.
 What you really want in practice is typically an off-policy algorithm, because that could be much more data efficient.

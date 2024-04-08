@@ -40,9 +40,9 @@ So the main topic for today's lecture will be to figure out how to devise offlin
 Basically, the difference between these and the other two is that in offline reinforcement learning, you don't actually get this active interaction.
 You just have a buffer.
 So you assume that somebody else collected that buffer for you by running some other policy, which we refer to as a behavior policy.
-It's called pi beta.
+It's called π beta.
 By the way, it's very important to distinguish the behavior policy from the expert policy that we had in imitation learning.
-So in offline reinforcement learning, we don't assume that pi beta is any sort of expert.
+So in offline reinforcement learning, we don't assume that π beta is any sort of expert.
 Pi beta could even be fully random.
 It's just a mechanism that was used to collect a data set.
 And then that data set will be used during a training phase to train up the best policy we can get.
@@ -90,10 +90,10 @@ But the algorithms that we're going to discuss, usually don't assume that with t
 But most dynamic programming algorithms, most algorithms that are based on Q functions, just assume that your data set is arranged into transitions, we will have states and we will often refer to stick distributions.
 We've used different notation in this class at different points, mostly because I want to make sure that you guys are familiar with all of the notation that's used in the literature.
 But we will use the symbol d with a superscript corresponding to a policy to denote a state marginal, a state distribution induced by that policy.
-We will use pi beta to denote the unknown policy that collected our data set.
-So in reality, you usually don't know what pi beta is.
+We will use π beta to denote the unknown policy that collected our data set.
+So in reality, you usually don't know what π beta is.
 So someone gave you a data set, maybe you're doing autonomous driving, and your data set consists of all sorts of human driving, good drivers, bad drivers, mediocre drivers.
-You don't actually know what their policy is, but for the purpose of mathematical analysis, you can assume that there exists some policy pi beta, you just don't necessarily know it.
+You don't actually know what their policy is, but for the purpose of mathematical analysis, you can assume that there exists some policy π beta, you just don't necessarily know it.
 There's some kind of transition function, there's some kind of reward that's just like before, and as I said, the behavior policy is generally not known.
 The RL objective is just like before, is to maximize the expected sum of discounted rewards, so nothing really changed there.
 And there are several types of RL objectives, and there are several types of offline RL problems that we could define.
@@ -108,9 +108,9 @@ And we'll discuss that a little bit.
 And we'll discuss that a little bit.
 And we'll discuss that a little bit.
 That's actually very easy.
-But there's a little typo on the slide that should actually be j of pi.
+But there's a little typo on the slide that should actually be j of π.
 So it's estimate the return of some policy that you're given using a data set d.
-Estimating j of pi beta is actually pretty easy.
+Estimating j of π beta is actually pretty easy.
 But you could use the same data set to estimate the value of some other policy that was not the one that collected the data.
 And that's a lot harder, and that's called off-policy evaluation.
 Offline reinforcement learning, which is also sometimes called batch RL and sometimes fully off-policy RL, is, you know, it's a lot harder to do.
@@ -126,7 +126,7 @@ So some sort of off-policy evaluation is often in the inner loop of an offline R
 But I will discuss a little bit later how, in some sense, the general off-policy evaluation problem, the problem of evaluating any policy can actually be a little bit harder than learning the best possible policy.
 The intuition for why is that when you're learning the best possible policy, you don't actually have to evaluate some other policies that might never arise in the course of learning.
 Now, there's a subtlety with this statement, and I intentionally wrote it in kind of a slightly cryptic way.
-Given D, learn the best possible policy pi theta.
+Given D, learn the best possible policy π theta.
 That is not necessarily the best possible policy in the MDP.
 It's the best possible policy that you can learn using your data set.
 And it's, I think, pretty easy to see why, given certain data sets, the optimal policy may simply never be learnable.

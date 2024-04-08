@@ -103,8 +103,8 @@ For now, we'll stick to fully observed settings.
 So we could also add observations to this picture, but we won't bother with that for now just to avoid cluttering up the notation.
 What we do, however, need to add is some additional variables that represent the task, that represent why the agent may choose to take one action or another.
 And so far we have the transition probabilities, P of (s'|s,a).
-And our goal will be to model joint distributions over trajectories, so P of s1 through t and a1 through t.
-That's our trajectory tau.
+And our goal will be to model joint distributions over trajectories, so P of s_1 through t and a1 through t.
+That's our trajectory τ.
 So what can we set this probability to?
 Well, if all we have is the CPDs in the MDP, the transition probabilities and the initial state distribution, there's no assumption of optimal behavior.
 So we have to add something else to represent why you might choose to take a more optimal action over a less optimal action.
@@ -120,7 +120,7 @@ You can think of them as basically true or false variables saying, is the monkey
 and all of them are set to true.
 So then the inference problem we need to solve is what is the probability of a trajectory given that all of the optimality variables from time 1 to capital T are true.
 Or we might want to make this inference condition on an initial state.
-So we could either do P of τ given O1 through T or P of τ given O1 through T comma S1.
+So we could either do P of τ given O1 through T or P of τ given O1 through T comma s_1.
 And the particular form of the distribution that we will choose for P of OT given s_t comma AT is that we will set the probability that OT is equal to true to be the exponential of the reward at s_t comma AT.
 Now this again is going to seem like a somewhat arbitrary decision and we will see later that the seemingly arbitrary decision actually leads to a very convenient and elegant mathematical framework.
 But for now, we will just go ahead and do the same thing over and over again.
@@ -151,7 +151,7 @@ So I'll write that this is proportional to.
 And what it's proportional to is the probability of the product.
 So I'll write that this is proportional to the product.
 And what it's proportional to is the product.
-So I'll write that this is proportional to the of all of our CPDs, which I'll write as the probability of tau, which just accounts for the dynamics and initial state, times the product of all of these Bernoulli random variable probabilities from time step 1 until t, which basically means we take the product of p and all of the exponential rewards over all the time steps.
+So I'll write that this is proportional to the of all of our CPDs, which I'll write as the probability of τ, which just accounts for the dynamics and initial state, times the product of all of these Bernoulli random variable probabilities from time step 1 until t, which basically means we take the product of p and all of the exponential rewards over all the time steps.
 Okay, that seems fairly sensible.
 Now we know that a product of exponentials is the exponential of the sum of the exponents, so we're going to equivalently write it in a way that is maybe a little bit more suggestive of what this thing is doing, as p of τ times the exponential of the sum of rewards along that trajectory.
 Now this should immediately give us some fairly appealing intuition for what this framework is doing.

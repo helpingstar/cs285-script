@@ -407,8 +407,8 @@ The context can be a variety of different things.
 It could be as simple as just a one hot vector indicating whether we're doing the dishes or doing the laundry, or it could be some kind of descriptor of a task, maybe a gold image or even a textual description.
 And all of those are reasonable choices.
 So we call these contextual policies.
-A standard policy is just pi of A given S.
-A contextual policy is pi of A given B.
+A standard policy is just π of A given S.
+A contextual policy is π of A given B.
 A given S, context, Ω.
 And if you learn it with an actor critic method or a Q learning method, then your Q function would also be taking Ω in as input.
 So this could be a one hot vector indicating whether you're doing the dishes or the laundry.

@@ -84,7 +84,7 @@ Since it's not generating X1, X2, and X3, and X4, that's the prompt.
 It's only generating X5 and X6.
 So the probability of A given S is given by the probability of X5 given X1 through 4 and the probability of X6 given X1 through 5.
 And I've separated X1 through 4 from X5 because X5 is really the previous time step of the action, whereas X1 through 4 is the state.
-So pi of A given S is essentially our policy pi theta.
+So π of A given S is essentially our policy π theta.
 Now, something to note here is that there are now two notions of time step, and this is actually super confusing.
 The time step X1, you know, 1, 2, 3, 4, 5, 6, those are the time steps for the language generation for the transformer.
 As far as the RL algorithm is concerned, there's only one time step.
@@ -103,18 +103,18 @@ And this makes it a basic one step RL problem that is a bandit.
 Okay, so let's start with using the simplest RL algorithms, which is policy gradient.
 So this is our objective.
 We're going to take its gradient, and we'll use exactly the formulas from the policy gradient lecture.
-So we know that the gradient of the expected reward is the expectation of grad log pi times R.
-Now we saw before that pi was just a product, a product of the probability of all the tokens in the completion.
+So we know that the gradient of the expected reward is the expectation of ∇log π times R.
+Now we saw before that π was just a product, a product of the probability of all the tokens in the completion.
 So when we take the gradient of the log of pi, that's just the sum of the gradients of the log probabilities of all the completion tokens.
 Okay, so that's pretty straightforward because these are exactly the kinds of gradients that you compute when you do a backward pass from the cross-entropy loss.
 And of course, we can estimate this with samples.
-So if we use a standard reinforced estimator, then the samples need to come from pi theta.
+So if we use a standard reinforced estimator, then the samples need to come from π theta.
 So you would actually sample a completion from your language model.
 You would actually tell it what is the capital of France, ask it to generate a completion.
 It would generate Paris end of sequence.
 And then you would evaluate the reward of that sample and use that as part of your gradient estimator.
 You can also use an importance sample estimator, where you might generate completions from some other policy, and then use an importance weight to get a gradient for your current policy.
-And the samples can come from some other policy, pi bar.
+And the samples can come from some other policy, π bar.
 Pi bar could, for example, be a supervised training model.
 The first estimator is a reinforced style estimator.
 The second one is an importance weighted estimator, such as PPO.
@@ -126,12 +126,12 @@ Especially because evaluating the rewards of those samples can be expensive.
 And we'll talk about that in a second.
 So in reality, it's often much preferred to generate samples from your language model, evaluate the rewards of those samples, and then take many gradient steps using importance sampled estimators, and then repeat.
 So a particular algorithm, let's take this important sample estimator, let's call it GradHAT as a shorthand.
-And notice that it's a function of theta, pi bar, and a set of samples, Ai.
+And notice that it's a function of theta, π bar, and a set of samples, Ai.
 The way that you could do this is you could sample a batch of completions for a particular state.
 In reality, you would have many states, but I've written this after just a single state.
 You would sample a batch of completions.
 You would evaluate the rewards for each of them.
-Then you would set pi bar to be your previous policy, the one that generated those samples.
+Then you would set π bar to be your previous policy, the one that generated those samples.
 And then you would have an inner loop, a mini batch, and then on that mini batch you would take a gradient step using RadHat, and then you would repeat this k times.
 So your batch might be, let's say, a thousand completions, and then your mini batch might be 64.
 And then you would take some number of gradient steps, and then every once in a while you'd go back out and generate more samples from your model, set that to apply bar, and repeat.
@@ -225,17 +225,17 @@ That's also valid.
 So here's an overall method that we can use with this scheme.
 And this method was described in two papers, fine-tuning language models from human preferences and training language models to follow instructions with human feedback.
 These basically are the foundation of instructGPT, chatGPT, and so on.
-The overall method is to first run supervised training or typically fine-tuning to get your initial policy pi theta.
+The overall method is to first run supervised training or typically fine-tuning to get your initial policy π theta.
 And that's just supervised training of a language model.
 And then for each question in your data set, for each s, you would sample k possible answers, a, k, from your policy and construct a data set consisting of tuples with a prompt s, i, and k possible answers, a, i, 1 through a, i, k, for that prompt.
 Then you would get humans to label each of those points, each of those s, a, 1 through a, k tuples to indicate which answer they prefer.
 And then you would use this to get a data set consisting of tuples with a prompt s, i, and k possible answers.
 And then you would use that labeled data set to train r, psi.
-And then you would update pi theta using RL with r, psi as the reward.
+And then you would update π theta using RL with r, psi as the reward.
 And then you would repeat this process some number of times.
 Now, typically when you do this, in step five, you would actually run many steps of policy optimization.
 So in step five, you wouldn't just optimize against that reward once with important sampling.
-You would actually generate samples from pi theta, optimize, generate more samples, and repeat.
+You would actually generate samples from π theta, optimize, generate more samples, and repeat.
 So there's actually two nested loops.
 And then you would run a policy optimization as well to generate multiple während simple mainionen Jamesouvert's приход.
 Then you would run CORBALLO together with a couple of continuous undergraduates in Reading, to mall the AND tracks the two haveического and spicy there.
@@ -265,7 +265,7 @@ Well, the problem, of course, is what we saw before in the model-based RL discus
 The problem is distributional shift.
 And that's a problem that we see in RL per language models that is sometimes referred to as over-optimization, which basically means that you exploit the reward model after a while, and while the policy initially gets better, later on it gets worse.
 The other problem is that the reward model needs to be very good.
-So over-optimization is often tackled with a simple modification, where we simply add a penalty to our expected reward objective that penalizes the policy pi theta from deviating from the original structure, so that we begin toto downstairs our veering commander model by saying if I give this signal, the interesante equation can hundred times more than that, because we leave a square meaning if I trade this region, I can askew it there.
+So over-optimization is often tackled with a simple modification, where we simply add a penalty to our expected reward objective that penalizes the policy π theta from deviating from the original structure, so that we begin toto downstairs our veering commander model by saying if I give this signal, the interesante equation can hundred times more than that, because we leave a square meaning if I trade this region, I can askew it there.
 So in theiform region, this core building, so at the top is the value of thezcz and there's the total value of large transformer that is itself pre-trained to be a language model and then fine-tuned to output the reward because the reward model needs to be very good.
 It needs to be powerful enough that it can resist all that optimization exploitation pressure from reinforcement learning.
 Okay, so to recap an overview, we can train language models with policy gradients.

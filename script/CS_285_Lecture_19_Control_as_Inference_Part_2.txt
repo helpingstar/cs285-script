@@ -141,15 +141,15 @@ And our state backward message is o given s_t .
 So the first fraction in this expression is just the ratio of the state action backward message and the state backward message.
 The second ratio is just p given st, which is our action prior, which we've assumed to be uniform.
 So the second fraction goes away, because it's uniform, it's a constant, leaving us with just the first fraction.
-So that means that the optimum policy, pi of a given st, can simply be recovered as the ratio between the state action message and the state message.
+So that means that the optimum policy, π of a given st, can simply be recovered as the ratio between the state action message and the state message.
 All right.
 Now, let's bring back this idea of expressing things in log space.
 So in log space, we saw that the logarithm of the state action backward message is kind of Q-like, and the logarithm of the state backward message is V-like.
 So we can see that the logarithm of the state action backward message is kind of Q-like, and the logarithm of the state action backward message is kind of V-like.
 So what if we plug those into the policy?
-If we plug these into the policy, then we get that pi of a given s_t is equal to the exponential of Q divided by the exponential of V, which is just the exponential of Q minus V, and Q minus V is an advantage-like function.
+If we plug these into the policy, then we get that π of a given s_t is equal to the exponential of Q divided by the exponential of V, which is just the exponential of Q minus V, and Q minus V is an advantage-like function.
 So that's quite appealing.
-We're now able to express the policy, pi of a given st, as the exponential of the advantage st.
+We're now able to express the policy, π of a given st, as the exponential of the advantage st.
 which means your probability of taking an action is the Boltzmann distribution in this soft advantage-like function.
 Actions with higher advantage are more likely, the action with the largest advantage is the most likely, and actions become exponentially less likely as their advantage decreases.
 That seems like a fairly intuitive notion.

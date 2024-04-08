@@ -295,7 +295,7 @@ There's a lot of space in high dimension.
 If you take random vectors in high dimension, they will almost always be orthogonal.
 And so you can sort of hide information in very high dimension.
 It's not something that, it's obvious in 2D or 3D, you really have to go high dimension.
-Yeah, the policy pi is fixed.
+Yeah, the policy π is fixed.
 It could be, you know, think about predicting the value of the optimal policy.
 It could be fixed or it could be, you know, the optimal one.
 So I do want to spend one slide talking about, indeed what happens with more general function approximation in terms of positive result.
@@ -332,7 +332,7 @@ But normally, what you've given is projectors that they might be, for example, f
 And so they're generally narrowly concentrated.
 And the best case scenario is that you have a data set that's not the best.
 And that's what we call problem of partial coverage.
-And in the example here, the data set may have a lot of information about pi 1, no information about pi 2, and some information about pi 3.
+And in the example here, the data set may have a lot of information about π 1, no information about π 2, and some information about π 3.
 And somehow, you have to come up with and choose between the three and figure out which policy is the best.
 And the thing that they want to sort of highlight today is how do we even measure this coverage, how much information the data set contains to find a good policy.
 And intuitively, the way to solve this problem is precisely what you've seen in class.
@@ -527,7 +527,7 @@ But this quantity is smaller.
 And so with this expression tells you is that you should do better than the policies that generate in the dataset.
 If you design the algorithm correctly, this is sort of the minimum that you would expect.
 You want to do better than the behavior of clone.
-Right and and this expression says exactly that if I put pi as Behavioral policy that generated the data set C.
+Right and and this expression says exactly that if I put π as Behavioral policy that generated the data set C.
 Pi will be smaller It's gonna be one this expression will be smaller and this tells me I do better than Behavioral cloning which is what we would expect Okay Time to sum up We have seen sort of three things One is most problems in RL.
 They're not worst case.
 They belong to a much easier class of problems We have seen that as soon as we move to function approximation RL is much more difficult than standard supervised learning and then we have seen what type of guarantees we can obtain for offline reinforcement learning algorithms and to conclude I think After the presentation this is much more clear.

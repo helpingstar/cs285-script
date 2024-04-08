@@ -46,11 +46,11 @@ So one of the ways that we could approach this is we could say, can we find anot
 So in this approximate posterior Q, we want the dynamics to be the same as they were originally, unaffected by your knowledge of the reward, but we want the action probabilities to change.
 So where have we seen this before?
 Where have we seen the notion of approximating one probability distribution with another one that has some constraints?
-So if, for example, we say that X is O1 through T, and Z is S1 through T and A1 through T, then this problem is equivalent to saying, find Q to approximate P .
+So if, for example, we say that X is O1 through T, and Z is s_1 through T and A1 through T, then this problem is equivalent to saying, find Q to approximate P .
 Basically, find an approximate distribution that accurately approximates the posterior over unobserved variables.
 And that is basically the problem that variational inference solves.
 So can we shoehorn this problem?
-Can we find another distribution, Q, S1 through T, A1 through T, that is close to the posterior P, but has the dynamics P given S, D, A, T?
+Can we find another distribution, Q, s_1 through T, A1 through T, that is close to the posterior P, but has the dynamics P given S, D, A, T?
 Can we shoehorn this into the framework of variational inference?
 Take a few moments to think about this.
 Think about how you could use variational inference to address this.
@@ -59,7 +59,7 @@ And then check your answer against what I'm going to do next.
 And then I'll tell you on the next slide.
 All right.
 So what we're going to do in order to perform control using variational inference is we'll define a somewhat peculiar distribution class for Q.
-We'll define Q of S1 through T and A1 through T as the product of P , the product of the transition probabilities P given S, D, A, T at every time step, and an action distribution, Q of A, T given S, D.
+We'll define Q of s_1 through T and A1 through T as the product of P , the product of the transition probabilities P given S, D, A, T at every time step, and an action distribution, Q of A, T given S, D.
 Now this definition for the variational distribution is quite peculiar because typically when we use variational inference, we learn the entire variational distribution.
 But here we're actually fixing some parts of the variational distribution to be the same as P and only learning the action conditional.
 So we're going to have the same dynamics and the same initial state as P.
@@ -75,15 +75,15 @@ So it makes sense that the O's are removed, only the S's and A's remain.
 And we have the same initial state distribution, the same transition probabilities.
 We no longer have the O's, but instead we have Q of A, T given S, D.
 And that's the only part that we're going to learn.
-By the way, as an aside, I should mention that all of these derivations are presented for the case where S1 is unobserved.
-Oftentimes, you might actually know S1, in which case P of S1 goes away, the S1 node will be shaded everywhere, and it will not actually be represented as part of your variational distribution.
+By the way, as an aside, I should mention that all of these derivations are presented for the case where s_1 is unobserved.
+Oftentimes, you might actually know S1, in which case P of s_1 goes away, the s_1 node will be shaded everywhere, and it will not actually be represented as part of your variational distribution.
 It's very straightforward to derive that.
-It just adds a little bit more clutter to the notation, which is why I omit that on these slides and treat S1 as a latent variable.
-But keep in mind that if you are in a situation where you know the current state and you just want to figure out future states and actions, then S1 will be observed.
+It just adds a little bit more clutter to the notation, which is why I omit that on these slides and treat s_1 as a latent variable.
+But keep in mind that if you are in a situation where you know the current state and you just want to figure out future states and actions, then s_1 will be observed.
 But it's pretty easy to extend this to that setting, and I would encourage you to do that as an exercise on your own time.
 Okay.
 So now to tie this back to the variational inference discussion from last week, again, we're going to say X, our observed variables, is just O1 through T.
-Z, our latent variables, correspond to S1 through T, and so on.
+Z, our latent variables, correspond to s_1 through T, and so on.
 And then we're going to write out our variational lower bound in terms of these things.
 And then we will optimize that variational lower bound, and we'll see that actually corresponds very closely to a lot of our algorithms that we've already learned about.
 Okay.
@@ -93,9 +93,9 @@ So we're going to write out our variational lower bound in terms of these things
 So we'll say that the value of X is greater than or equal to the expected value under Q of Z of log P of X comma Z minus log Q of Z.
 And this is actually true for any Q of Z, but of course, as we learned last week, the closer Q of Z is to the posterior P of Z given X, the tighter this bound becomes.
 And this last term is just the entropy of Q.
-So substituting in our definitions for X and Z we can write out log P of O1 through T, the log probability of our evidence, as being greater than or equal to the expected value under S1 through T and A1 through T distributed according to Q of all of the probabilities in our graphical model, log P of S1 plus the sum of the log probabilities of the transitions plus the sum of the log probabilities of the equations.
-So we can write out log P of O1 through T, the sum of the log probabilities of the optimality variables, minus the entropy, which is going to be minus log P of S1.
-So this S1 comes from our definition for Q, minus the log probabilities of the transitions, again, this comes from our definition for Q, and then minus the log Q of A given S .
+So substituting in our definitions for X and Z we can write out log P of O1 through T, the log probability of our evidence, as being greater than or equal to the expected value under s_1 through T and A1 through T distributed according to Q of all of the probabilities in our graphical model, log P of s_1 plus the sum of the log probabilities of the transitions plus the sum of the log probabilities of the equations.
+So we can write out log P of O1 through T, the sum of the log probabilities of the optimality variables, minus the entropy, which is going to be minus log P of s_1.
+So this s_1 comes from our definition for Q, minus the log probabilities of the transitions, again, this comes from our definition for Q, and then minus the log Q of A given S .
 So now we can see why we made this particular choice for Q.
 We chose Q so that the initial state probabilities and the transition probabilities very conveniently cancel out, which means that our bound now just corresponds to the sum of the log probabilities of the optimality variables minus the log probabilities of the actions under Q.
 Substituting in the definition for P of O given S , we get this expression.

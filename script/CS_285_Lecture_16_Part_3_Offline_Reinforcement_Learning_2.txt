@@ -60,11 +60,11 @@ The second assumption is that we can show that the value is at least as large as
 A to m here is the true return of the policy that was trained under the model, the model represented by m.
 Epsilon u is the true return of the policy that was trained under the model, the model represented by m.
 Epsilon u is the expected value under the model of this error metric of u.
-So what the above equation is showing is that if we train a policy pi hat using our model, then the true reward of that policy will be at least as large as the best possible policy.
+So what the above equation is showing is that if we train a policy π hat using our model, then the true reward of that policy will be at least as large as the best possible policy.
 So we can find the best possible policy, but optimize against a different objective against the reward minus the error.
 And we can guarantee that our learned policy will be at least as good as that.
-Another way to interpret this is to introduce this symbol pi delta, and pi δ is the best policy that exists according to the true return, not the model, but according to the true return.
-So pi δ is the best policy under the true return for which the expected value of the error, the expected value of u, is bounded by delta.
+Another way to interpret this is to introduce this symbol π delta, and π δ is the best policy that exists according to the true return, not the model, but according to the true return.
+So π δ is the best policy under the true return for which the expected value of the error, the expected value of u, is bounded by delta.
 So it's basically the best policy that doesn't visit states where the model might be incorrect, where that latter phrase is quantified as the average error.
 So we can see that the best policy under the model is less than or equal to delta.
 What this equation 12 is saying is that the model that we learn, so the policy that we learn under our model, will be at least as good in terms of its true return as the best policy whose average error is bounded by δ minus an error term that depends on delta.
@@ -73,12 +73,12 @@ Okay, this might seem a little cryptic, but this theorem has a few interesting i
 One implication is that the error is less than or equal to delta.
 So if we choose δ to be very small, then we will actually improve on this.
 Another implication is that the error is less than or equal to δ base.
-So a really cool realization is that if we substitute in pi beta the behavior policy, and here we have Iceberg's equation, as well as some of the other models, great implementation of the 41st one, well we would expect that the error of the model under the states visited by the behavior policy will be very low, close to zero because those are the states that are actually used to train the model.
+So a really cool realization is that if we substitute in π beta the behavior policy, and here we have Iceberg's equation, as well as some of the other models, great implementation of the 41st one, well we would expect that the error of the model under the states visited by the behavior policy will be very low, close to zero because those are the states that are actually used to train the model.
 So if δ for that is very low.
 It's a close to zero.
 Then we would expect that this equation 12 would essentially guarantee that the learned the behavioral policy, or at least we don't do worse.
 The other thing that this can quantify is the optimality gap.
-So if we plug in the optimal policy pi star, then the policy that we learn is at least as good as pi star minus a penalty for how wrong the model is on the states that pi star visits.
+So if we plug in the optimal policy π star, then the policy that we learn is at least as good as π star minus a penalty for how wrong the model is on the states that π star visits.
 So if the model is very accurate for the states and actions visited by the optimal policy, then this would guarantee that we will recover something close to the optimal policy.
 So these are interesting results to show.
 Essentially, these results tell us that this method will improve the behavior policy, and it can get something close to the optimal policy if your model is accurate for the states and actions visited by the optimal policy.

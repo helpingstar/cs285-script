@@ -38,8 +38,8 @@ But the objective is exactly the same as in regular RL.
 It's to produce a policy that will choose actions for whatever state you might find yourself in.
 And this kind of approach, if we're able to develop an effective closed-loop control algorithm, would address the math test problem, because it would be able to optimize a policy that gives the right answer for every possible observed state of the math test.
 And therefore, it will realize that it can safely take the test and then produce the right answer, even though it doesn't know what the answer is until the test has been observed.
-Now, of course, in reality, there's a choice to be made, which is the form of pi.
-So when we talked about model-free RL before, we generally discussed pi represented by highly expressive function approximators like neural networks.
+Now, of course, in reality, there's a choice to be made, which is the form of π.
+So when we talked about model-free RL before, we generally discussed π represented by highly expressive function approximators like neural networks.
 And these give us global policies that will produce decent actions everywhere, or at least everywhere that they were trained.
 So, let's look at the model-free RL.
 When we discussed optimal control methods last week, we also talked about some methods that can give closed-loop controllers, but that are only locally good.
@@ -59,7 +59,7 @@ There are policies, which look at states and produce actions.
 There are dynamics, which look at states and actions and produce the next state.
 And there are rewards that look at states and actions and produce a scalar value.
 So, this is basically the computation graph.
-If you assume that the reward is a known function, maybe something that you can also compute derivatives for, and f is a learned model, so that's a neural net, and pi is a learned model, that's also a neural net, this is a perfectly valid computation graph that you could set up.
+If you assume that the reward is a known function, maybe something that you can also compute derivatives for, and f is a learned model, so that's a neural net, and π is a learned model, that's also a neural net, this is a perfectly valid computation graph that you could set up.
 You could actually implement this in pytorch.
 You could implement a loss, which is the negative of the sum of all the rewards, and you can call dot gradients on it.
 I'm kind of sweeping under the rug all the details about stochasticity, so this is only for deterministic systems.

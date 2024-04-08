@@ -20,7 +20,7 @@ So that's kind of interesting because it turns out that LQR actually does produc
 So Xd is now sampled from some distribution, and it's no longer deterministic.
 It turns out to actually still be Gaussian, which is very convenient.
 Okay, so this is basically the stochastic closed-loop case.
-And the particular form of pi that we ended up with after using LQR is a time-varying linear controller.
+And the particular form of π that we ended up with after using LQR is a time-varying linear controller.
 So our action is now linear in the state as capital K times the state plus little k, but it's potentially a different capital and lowercase k at every time step.
 So this maybe gives us some idea of an alternative to global neural net policies.
 All right, so that's kind of the easy part.

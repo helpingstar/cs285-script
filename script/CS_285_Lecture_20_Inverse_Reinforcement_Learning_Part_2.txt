@@ -20,15 +20,15 @@ You need to assign rewards that make the trajectories that you saw look more lik
 And it's actually this log normalizer that makes inverse reinforcement learning difficult.
 Alright, so let's talk about the log normalizer, or the partition function.
 That's what z is sometimes referred to as the partition function.
-z is equal to the integral over all possible trajectories of p of τ times the exponential of r psi of tau.
+z is equal to the integral over all possible trajectories of p of τ times the exponential of r psi of τ.
 Now, of course, immediately we could say, well, let's just plug in this equation for z, take its gradient, and optimize.
 Very reasonable thing to do, but of course integrating over all possible trajectories is in general going to be intractable.
 So if you plug in the equation for z, and then take the derivative with respect to psi, you get this expression.
 You get 1 over n times the sum over all of your samples of the gradient of the reward of the trajectory τ i minus 1 over z, that just comes from the derivative of a logarithm, times the integral of p of τ times the exponential of the reward, times grad r.
 But something pretty neat that you might note about this is that the second term can actually be viewed as an expected value under the distribution over trajectories induced by your current psi.
 Right?
-Because this expression, 1 over z times p of τ times exponential of r psi of tau, is exactly p of τ given optimality and psi.
-So you can equivalently write the gradient as the expected value, under the optimal policy pi star of grad r, minus the expected value under p τ given your current psi of grad r.
+Because this expression, 1 over z times p of τ times exponential of r psi of τ, is exactly p of τ given optimality and psi.
+So you can equivalently write the gradient as the expected value, under the optimal policy π star of grad r, minus the expected value under p τ given your current psi of grad r.
 The first term is approximated with samples, and that turns into a sum of grad r's on the τ i's divided by n, and the second term turns into that integral.
 So that's a very appealing interpretation.
 Your gradient is just the difference between the expected value of the gradient under the expert's point, and the expected value of the gradient under your current reward.

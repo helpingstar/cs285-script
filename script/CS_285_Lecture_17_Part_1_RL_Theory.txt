@@ -21,7 +21,7 @@ The question then is, how different is the expected reward of the policy iterati
 iteration k from the best expected reward you could get.
 So this is really a measure of regret.
 All right, so Q is not the same thing as Q hat k because you could, for example, have Q hat k erroneously overestimate the Q values.
-Q pi k is the true Q value of the policy corresponding to Q hat k, which is typically the argmax policy.
+Q π k is the true Q value of the policy corresponding to Q hat k, which is typically the argmax policy.
 And there are other questions we could ask too.
 Another kind of question we could ask is, if I use a particular exploration algorithm, how high is my regret going to be?
 This is a little bit more elaborate, but typically, you know, we might want to show that, for example, some kind of exploration procedure gives you regret that is logarithmic in T.
@@ -116,9 +116,9 @@ A very simple tabular estimation strategy.
 So there's no function approximation here, there's no neural net, we're just doing tabular estimation, we're literally counting, how many times we land in a particular state s'.
 This, of course, only makes sense if the states are discrete and the actions are discrete, and we can build a table with all these numbers.
 And then what we're going to do is we'll first focus just on policy evaluation.
-So given some fixed policy pi, let's just use p-hat to estimate the Q function q-hat pi.
-So this idealized algorithm takes some policy, and then it uses this p-hat to exactly estimate q-hat pi.
-Now q-hat pi is not the exact Q function, but it is the exact Q function under p-hat, because p-hat fully determines an MDP, and then it will do something like q-value iteration to estimate q-hat pi.
+So given some fixed policy pi, let's just use p-hat to estimate the Q function q-hat π.
+So this idealized algorithm takes some policy, and then it uses this p-hat to exactly estimate q-hat π.
+Now q-hat π is not the exact Q function, but it is the exact Q function under p-hat, because p-hat fully determines an MDP, and then it will do something like q-value iteration to estimate q-hat π.
 So step two is exact, but using an inexact model p-hat.
 This is a very simple algorithm, and our goal is basically going to be to understand the error.
 So we're going to use an error that is induced by the fact that p-hat is not perfect.
@@ -130,8 +130,8 @@ There are a lot of tools that we can use to answer questions like, if I'm trying
 And by introducing step two, what we're really trying to do is we're trying to take these standard supervised learning results, and we're trying to pass them through the RL machinery to say, well, how do bounds on sampling error from supervised learning translate into bounds on sampling error for Q functions when that Q function is the result of some kind of error?
 So we're going to use a lot of tools that we can use to answer questions like, so we're going to use a lot of tools that we can use to answer questions like, not just anything in a simple p-hat, but any type of error.
 So that's really going to be the flavor of the analysis that I'll present.
-So the questions that we'll ask, how close is q-hat pi to q pi, meaning that we're going to estimate the q values of our policy pi, how close is it to the true q values of that policy?
-So ideally what we want to show is that over all states and actions, if we take the infinity norm of the difference between q pi and q pi hat, that infinity norm should be bounded by ϵ.
+So the questions that we'll ask, how close is q-hat π to q pi, meaning that we're going to estimate the q values of our policy pi, how close is it to the true q values of that policy?
+So ideally what we want to show is that over all states and actions, if we take the infinity norm of the difference between q π and q π hat, that infinity norm should be bounded by ϵ.
 So that's the thing.
 So that's the thing.
 That's the thing.
@@ -152,10 +152,10 @@ So what's the difference between q star and q hat star?
 And ideally we'd like to see that that's bounded by some ϵ.
 So q hat star is the optimal Q function we learn under our learned model, which is basically what happens if we do RL with this method.
 And as I mentioned before, we could also ask, how good is the resulting policy, which is not the same.
-So if we take the policy pi hat, which corresponds to q hat star, and we take the true Q function of pi hat, how different is that from q star, meaning how suboptimal is the policy we get by running q-value iteration under p hat?
+So if we take the policy π hat, which corresponds to q hat star, and we take the true Q function of π hat, how different is that from q star, meaning how suboptimal is the policy we get by running q-value iteration under p hat?
 And that last question is really the one that quantifies the performance of RL, because that's really telling us how much worse is the policy we get under the model p hat than the best policy we could have gotten anywhere.
 Now it turns out that actually the first question, the policy evaluation question, gives us a tool that is very good for answering the other two questions.
-So we'll mostly focus on the first question, how close is q hat pi to q pi for a given policy pi, and then we'll see how to utilize that as a tool to answer the other two questions.
+So we'll mostly focus on the first question, how close is q hat π to q π for a given policy pi, and then we'll see how to utilize that as a tool to answer the other two questions.
 Okay.
 So before I get into this, let's introduce some standard tools in supervised learning theory.
 So all of this analysis has to do with how the number of samples affects the error in estimating some quantity.
@@ -263,26 +263,26 @@ But as long as we don't care about the constants, as long as you don't care abou
 And that'll make it a little bit convenient.
 So then we have fewer terms flying around.
 OK.
-So now that we've got our concentration inequalities out of the way and we can understand how accurate our learned model is going to be as a function of the number of samples, let's relate the error in p hat to the error in q hat pi.
+So now that we've got our concentration inequalities out of the way and we can understand how accurate our learned model is going to be as a function of the number of samples, let's relate the error in p hat to the error in q hat π.
 And this is where we actually get into the RL-centric part of the analysis.
 So so far, all of our discussion dealt with just general machine learning theory.
 Now we're going to get into the parts that are really specific to reinforcement learning.
-So let's try to relate the model p to q pi.
+So let's try to relate the model p to q π.
 For now, we won't worry about approximations or anything.
-I just want to write down some equations that relate p to q pi for a fixed pi.
+I just want to write down some equations that relate p to q π for a fixed π.
 And we saw this actually before when we talked about offline RL, but I'll just repeat it here for convenience.
-So we've got a fixed pi.
+So we've got a fixed π.
 So this is the Bellman equation.
-So q pi at some state, an action S A, is equal to the reward R S A plus gamma times the expected value over s', distributed according to p(s'|s,a), of v pi s'.
-And v pi s', of course, is the expected value of q pi s' A prime under pi.
+So q π at some state, an action S A, is equal to the reward R S A plus gamma times the expected value over s', distributed according to p(s'|s,a), of v π s'.
+And v π s', of course, is the expected value of q π s' A prime under π.
 And we can expand out the expectation, just write it as a sum.
 Writing it as a sum will make it easier to turn this into a linear algorithm, an algebra equation that we can then manipulate symbolically.
-So if we write this in vector notation, if we say that q is a vector with S A entries, R is a vector with S A entries, and p is a matrix, we can write q pi is equal to R plus gamma p v pi.
-So if we have, let's say, two states and two actions, q pi is a big vector with S A entries.
+So if we write this in vector notation, if we say that q is a vector with S A entries, R is a vector with S A entries, and p is a matrix, we can write q π is equal to R plus gamma p v π.
+So if we have, let's say, two states and two actions, q π is a big vector with S A entries.
 So it has two times two, four entries if you have two states and two actions.
 R is also a big vector.
 So it has four entries, two by two.
-And it doesn't actually matter how you arrange these entries, so you could imagine that it's like S1 A1, S1 A2, S2 A1, S2 A2, or you could imagine that it's the other way around.
+And it doesn't actually matter how you arrange these entries, so you could imagine that it's like s_1 A1, s_1 A2, s_2 A1, s_2 A2, or you could imagine that it's the other way around.
 It doesn't really matter.
 It's just something that is of length S A.
 p is a matrix that describes how a state action tuple transitions into a state.
@@ -291,40 +291,40 @@ Because it gives you the probability of each state given some state in action.
 So the number of columns is the number of states, the number of rows is the number of possible state action tuples.
 And v is a vector with the number of entries equal to the number of states.
 And you can see that all the dimensionalities line up.
-So you can multiply p by v pi, and that gives you a vector with S A entries, and then you can add that to R, and that'll be the same dimensionality as q pi.
-We can also write v as some matrix capital pi times q pi.
+So you can multiply p by v pi, and that gives you a vector with S A entries, and then you can add that to R, and that'll be the same dimensionality as q π.
+We can also write v as some matrix capital π times q π.
 Remember that v is an expected value with respect to the actions of the Q function.
-So pi here is a matrix that now has S different rows and S A columns, and every entry is the probability of some action in some state.
-So that means that q pi is equal to R plus gamma times some matrix p pi times q pi, where p pi is just what you get by multiplying capital P by capital pi.
+So π here is a matrix that now has S different rows and S A columns, and every entry is the probability of some action in some state.
+So that means that q π is equal to R plus gamma times some matrix p π times q pi, where p π is just what you get by multiplying capital P by capital π.
 All right.
 So now with that out of the way, we have a nice little summary.
-We have q pi is equal to R plus gamma p pi q pi.
-So p pi is just some kind of a matrix.
-And what we can do is we can take this gamma p pi q pi and throw it on the left-hand side of the equality.
-So we can say that q pi minus gamma p pi q pi is equal to R.
-And now we can see that you have all the terms involving q pi collected on the left-hand side.
+We have q π is equal to R plus gamma p π q π.
+So p π is just some kind of a matrix.
+And what we can do is we can take this gamma p π q π and throw it on the left-hand side of the equality.
+So we can say that q π minus gamma p π q π is equal to R.
+And now we can see that you have all the terms involving q π collected on the left-hand side.
 So you can...
-distribute out the matrix multiplying them, and you get i minus gamma p pi times q pi is equal to R.
-It turns out, although it is not trivial to prove this, that i minus gamma p pi is actually always going to be invertible.
-So you can write q pi as being equal to i minus gamma p pi inverse times R.
-And now we've related p to q pi.
-So we can write q pi as a function of p.
+distribute out the matrix multiplying them, and you get i minus gamma p π times q π is equal to R.
+It turns out, although it is not trivial to prove this, that i minus gamma p π is actually always going to be invertible.
+So you can write q π as being equal to i minus gamma p π inverse times R.
+And now we've related p to q π.
+So we can write q π as a function of p.
 And...
-well, specifically as a function of p pi.
+well, specifically as a function of p π.
 It's a nonlinear function, but...
 we have this relationship, and then we can use it to describe how errors in p will affect errors in q.
 Okay?
 Now, this is true for any dynamics.
-So just like we can write q pi is equal to i minus gamma p pi inverse R, we can also write q hat pi is equal to i minus gamma p hat pi inverse times R.
-Because remember, q hat pi was obtained just by solving the learned MDP determined by p hat.
+So just like we can write q π is equal to i minus gamma p π inverse R, we can also write q hat π is equal to i minus gamma p hat π inverse times R.
+Because remember, q hat π was obtained just by solving the learned MDP determined by p hat.
 So now we're going to introduce a little lemma that we're going to use to understand the relationship between errors in p hat and errors in q hat.
 We'll actually introduce two lemmas, and then we'll put them together and get our conclusion.
 So the first lemma is what's called the simulation lemma.
-The simulation lemma describes how a Q function in the true MDP, q pi, differs from the Q function in the learned MDP, q hat pi.
+The simulation lemma describes how a Q function in the true MDP, q pi, differs from the Q function in the learned MDP, q hat π.
 Okay.
 This is the statement of the simulation lemma.
 It might be a little opaque, but I'll unpack this shortly.
-So the simulation lemma says that q pi minus q hat pi is equal to gamma times i minus gamma p hat pi inverse times p minus p hat times v pi.
+So the simulation lemma says that q π minus q hat π is equal to gamma times i minus gamma p hat π inverse times p minus p hat times v π.
 So this part is the difference in probabilities.
 This is basically the difference between the true model and the learned model.
 This is the true value.
@@ -336,40 +336,40 @@ So roughly speaking, what we're doing is we're taking our true value function, w
 Okay.
 Slightly opaque result, but it will be pretty useful later.
 So first I'll prove the simulation lemma, and that will give you kind of a taste for some of the tools we use in these algebraic manipulations.
-Then I'll prove one more lemma, and I'll put them together to actually quantify the error in q hat pi.
+Then I'll prove one more lemma, and I'll put them together to actually quantify the error in q hat π.
 So the way we do this is actually fairly mechanical.
-We have q pi minus q hat pi, and we're going to replace q hat pi with the equation up above.
+We have q π minus q hat pi, and we're going to replace q hat π with the equation up above.
 Why?
-Well, notice how the right-hand side of this equation in the simulation lemma doesn't contain q hat pi.
-It contains v pi.
-So we're going to get v pi out of q pi, of course.
+Well, notice how the right-hand side of this equation in the simulation lemma doesn't contain q hat π.
+It contains v π.
+So we're going to get v π out of q pi, of course.
 And it also contains p hat.
 So we need to somehow get p hat in there.
-So what we're going to do is we're going to take q hat pi, and we'll replace it by this equation, i minus gamma p hat pi inverse r, because that contains p hat, and it lets us get rid of q hat pi.
+So what we're going to do is we're going to take q hat pi, and we'll replace it by this equation, i minus gamma p hat π inverse r, because that contains p hat, and it lets us get rid of q hat π.
 And for q pi, what we're going to do is we're going to stick in a p hat in there too, because remember, we need to get a p hat in front of everything.
-So we'll just stick in i minus gamma p hat pi inverse times i minus gamma p hat pi, because that's a matrix inverse times itself, which is identity, so we can always put that in.
+So we'll just stick in i minus gamma p hat π inverse times i minus gamma p hat pi, because that's a matrix inverse times itself, which is identity, so we can always put that in.
 Okay, so now we're getting somewhere.
-We have an i minus gamma p hat pi inverse in front of both terms, and we have a q pi in there, so hopefully that'll go somewhere.
-So now what I'm going to do is I'm going to take that r at the end, and I'll replace the r with i minus gamma p pi times q pi, right?
-Because q pi is equal to i minus gamma p pi inverse r, so I can multiply both sides by i minus gamma p pi, and that'll turn that r into an i minus gamma p pi q pi.
+We have an i minus gamma p hat π inverse in front of both terms, and we have a q π in there, so hopefully that'll go somewhere.
+So now what I'm going to do is I'm going to take that r at the end, and I'll replace the r with i minus gamma p π times q pi, right?
+Because q π is equal to i minus gamma p π inverse r, so I can multiply both sides by i minus gamma p pi, and that'll turn that r into an i minus gamma p π q π.
 So now I'm really getting somewhere.
 I've got two terms.
-They both have an i minus gamma p hat pi inverse in front of them, just like the simulation lemma.
+They both have an i minus gamma p hat π inverse in front of them, just like the simulation lemma.
 One of the terms has a p hat, and the other one has a p.
-So when I group them together, I can basically, since they both have an i minus gamma p hat pi inverse in front of them, I get an i minus gamma p hat pi inverse.
-Then in parentheses I have i minus gamma p hat pi minus i minus gamma p pi, and the whole thing is multiplied by q pi.
-So the identities cancel out, and since that second one becomes a minus minus gamma p pi, I can switch the order, and I get p pi minus p hat pi, that is all multiplied by gamma, so I take the gamma out front, and that leaves me with gamma i minus gamma p hat pi inverse times p pi minus p hat pi times q pi.
-Now remember that q pi, that p pi, is just p times this matrix pi, and it's the same matrix pi for both p and p hat.
+So when I group them together, I can basically, since they both have an i minus gamma p hat π inverse in front of them, I get an i minus gamma p hat π inverse.
+Then in parentheses I have i minus gamma p hat π minus i minus gamma p pi, and the whole thing is multiplied by q π.
+So the identities cancel out, and since that second one becomes a minus minus gamma p pi, I can switch the order, and I get p π minus p hat pi, that is all multiplied by gamma, so I take the gamma out front, and that leaves me with gamma i minus gamma p hat π inverse times p π minus p hat π times q π.
+Now remember that q pi, that p pi, is just p times this matrix pi, and it's the same matrix π for both p and p hat.
 So that gives me this equation.
-And v pi is just capital pi times q pi.
-So I can take the capital pi out, replace that with v pi, and then I finish proving the lemma.
+And v π is just capital π times q π.
+So I can take the capital π out, replace that with v pi, and then I finish proving the lemma.
 Okay.
 So that's kind of the nature of the algebraic manipulation.
 It's not terribly insightful, but it gives us this useful lemma.
 Now here's another useful lemma.
 This one is going to be even simpler.
-Given p pi and any vector in r(s,a), we're going to have this relationship.
-If we apply i minus gamma p pi inverse, meaning this, uh, uh, this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by one minus gamma, meaning that applying i minus gamma p pi inverse to some vector will blow up the infinity norm of that vector by at most a factor of one over one minus γ.
+Given p π and any vector in r(s,a), we're going to have this relationship.
+If we apply i minus gamma p π inverse, meaning this, uh, uh, this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by one minus gamma, meaning that applying i minus gamma p π inverse to some vector will blow up the infinity norm of that vector by at most a factor of one over one minus γ.
 So intuitively, the Q function corresponding to a reward v is at most one over one minus gamma times larger in terms of the infinity norm.
 By the way, we see a lot of these one over one minus gamma terms lying around.
 Just to make it clear where these come from, usually when you have sums of discounted rewards, you're going to have sums that look like this.
@@ -387,48 +387,48 @@ How far out you go before you basically stop seeing the effect of those rewards.
 So that's why we end up with a lot of one over one minus gamma terms flying around.
 And whenever you see a one over one minus gamma term, think horizon.
 Okay, so let's go through the proof of this lemma.
-We're going to use w as shorthand for i minus gamma p pi inverse v, just so that our equations are short.
+We're going to use w as shorthand for i minus gamma p π inverse v, just so that our equations are short.
 And...
-That means that the infinity norm of v is going to be equal to the infinity norm of i minus gamma p pi inverse times w.
+That means that the infinity norm of v is going to be equal to the infinity norm of i minus gamma p π inverse times w.
 Sorry, there's a little typo here.
-That should actually be i minus gamma p pi times w without the inverse.
+That should actually be i minus gamma p π times w without the inverse.
 So this inverse here.
 This is a little mistake.
-So this is greater than or equal to, by the triangle inequality, the infinity norm of i times w minus gamma times the infinity norm of p pi times w.
+So this is greater than or equal to, by the triangle inequality, the infinity norm of i times w minus gamma times the infinity norm of p π times w.
 That's just from the triangle inequality.
 So whenever you have the norm of the difference of two vectors that is greater than or equal to the difference of the norms of the two vectors.
 And...
 And...
 Now...
-What we can do is we can take that second term, p pi times w, and we actually know that the infinity norm of p pi times w is greater...
+What we can do is we can take that second term, p π times w, and we actually know that the infinity norm of p π times w is greater...
 Is going to be less than or equal to the infinity norm of w.
 Why?
 Well, because...
-p pi is a stochastic matrix.
+p π is a stochastic matrix.
 So when you take a linear combination of some vector with weights that are greater than or equal to zero and some to less than or equal to one, then you can't increase the length of that vector.
-So that's why you can take out the p pi term there.
+So that's why you can take out the p π term there.
 So now you have the infinity norm of w minus gamma times the infinity norm of w.
 So that's one minus gamma times the infinity norm of w.
 Now this is a bound, of course.
 It's not necessarily equal to that.
 It's just greater than or equal to that.
 So if you divide everything through by one minus gamma, then you get the infinity norm of v divided by one minus gamma is greater than or equal to the infinity norm of w.
-And remember, w is i minus gamma p pi inverse times v.
+And remember, w is i minus gamma p π inverse times v.
 And that completes the proof.
-So now, putting these pieces together, we've got our two lemmas, i minus gamma p pi inverse v in the infinity norm, is less than or equal to v in the infinity norm over one minus γ.
+So now, putting these pieces together, we've got our two lemmas, i minus gamma p π inverse v in the infinity norm, is less than or equal to v in the infinity norm over one minus γ.
 And we've got the simulation lemma.
-So now what we'll do is we'll plug in p minus p hat v pi from the simulation lemma into this second lemma in place of v.
-And that will tell us that the infinity norm of q pi minus q hat pi, that the infinity norm of the left-hand side of the simulation lemma, is of course equal to the infinity norm of the right-hand side, because if the left-hand side is equal to the right-hand side, then their infinity norms are equal.
-But then if we apply this top-left equation using p minus p hat v pi as little v, then this is less than or equal to gamma, that comes from the fact that the whole thing is multiplied by gamma, over one minus gamma, that comes from the top-left equation, times p minus p hat times v pi in the infinity norm.
-So now we've related q pi to q hat pi, to the difference between p and p hat, but that difference is weighted by this v pi thing.
+So now what we'll do is we'll plug in p minus p hat v π from the simulation lemma into this second lemma in place of v.
+And that will tell us that the infinity norm of q π minus q hat pi, that the infinity norm of the left-hand side of the simulation lemma, is of course equal to the infinity norm of the right-hand side, because if the left-hand side is equal to the right-hand side, then their infinity norms are equal.
+But then if we apply this top-left equation using p minus p hat v π as little v, then this is less than or equal to gamma, that comes from the fact that the whole thing is multiplied by gamma, over one minus gamma, that comes from the top-left equation, times p minus p hat times v π in the infinity norm.
+So now we've related q π to q hat pi, to the difference between p and p hat, but that difference is weighted by this v π thing.
 So what we can do is we can say, well, if you have some kind of matrix times a vector, their product is going to be less than or equal to the product of the largest entries.
-So you could say that this is less than or equal to gamma over one minus gamma of the max over s a, so that that's taking a max over the, taking a max over the, the rows of the matrix of the one norm between the difference between the entries, times the largest possible entry in v pi.
+So you could say that this is less than or equal to gamma over one minus gamma of the max over s a, so that that's taking a max over the, taking a max over the, the rows of the matrix of the one norm between the difference between the entries, times the largest possible entry in v π.
 This is a fairly crude bound, right?
 This is going to be pretty loose, but it is a bound.
 And now we've turned this into a form that uses quantities that we can actually get from our concentration inequalities from before.
 So if you remember, our concentration inequality was basically analyzing the mass of the matrix, the mass of the matrix, and then analyzing the max over s a of the one norm, the total variation divergence between p and p hat.
 Can we bound v pi, the infinity norm of v pi?
-Well, basically yes, because v pi is the sum over rewards.
+Well, basically yes, because v π is the sum over rewards.
 And if you have a sum from t equals zero to infinity of gamma to the t times some reward r t, well, let's just replace all the rewards with the largest possible reward.
 Let's call it r max.
 And then we can use the same geometric series formula, and get a bound of one over one minus gamma times r max.
@@ -438,8 +438,8 @@ It's actually fairly standard in this kind of analysis.
 Just assume that your rewards are between zero and one.
 The reason that we do that is because, well, rewards are invariant to additive and multiplicative factors.
 So you can assume some range on your reward, pretty much without loss of generalization, as long as your rewards are always finite.
-So that allows us to get rid of this v pi infinity term.
-And then we're left with this equation, that q pi minus q hat pi is less than or equal to gamma over one minus gamma squared times the total variation divergence on p maximized over S a.
+So that allows us to get rid of this v π infinity term.
+And then we're left with this equation, that q π minus q hat π is less than or equal to gamma over one minus gamma squared times the total variation divergence on p maximized over S a.
 So now we can use that concentration equality from before, which allows us to relate the total variation divergence.
 The constant is actually going to be different.
 It's going to be c two instead of just c.
@@ -467,40 +467,40 @@ So it's not always quadratic.
 But it is for this naive scheme that we analyzed.
 Alright, so that hopefully gives you a flavor of how this analysis works.
 Now a few relatively simple implications of this analysis.
-We showed that Q pi minus Q hat pi is less than or equal to ϵ.
+We showed that Q π minus Q hat π is less than or equal to ϵ.
 And ϵ is given by this equation.
 What about the difference between Q star and Q pi?
-Well, the difference between Q pi and Q hat star.
+Well, the difference between Q π and Q hat star.
 Now this is a little different, right?
-Because in Q pi minus Q hat pi, both Q functions are for the same policy, but evaluated using different models.
+Because in Q π minus Q hat pi, both Q functions are for the same policy, but evaluated using different models.
 Now we're asking what is the difference between the optimal Q function under P, versus the optimal Q function under P hat.
 And those will correspond to different policies.
 So there's a really useful little identity that we're going to use.
 If you'd have two functions, F and G, and you want to take the absolute value, which is the kind of norm, of the difference between their supremums, between the largest values they take on, that's going to be less than or equal to the supremum of the difference.
 Kind of makes sense, right?
 Because if you're maximizing F and G separately, that difference is going to be only smaller than if you're just directly maximizing their difference.
-Now, the thing about optimal Q functions is that they are, of course, the supremum of Q pi over all the policies.
+Now, the thing about optimal Q functions is that they are, of course, the supremum of Q π over all the policies.
 Right?
 So the optimal Q function is the Q function of the policy that has the largest Q values.
-So you can replace Q star with a supremum over pi of Q pi, and you can replace Q hat star with a supremum over pi of Q hat pi.
-And then we apply this convenient identity, and we see that this is less than or equal to the supremum over pi of the difference of the Q functions.
-But we know from our main result that Q pi minus Q hat pi is less than or equal to ϵ for all policies pi, which means that this whole thing is also less than or equal to ϵ.
+So you can replace Q star with a supremum over π of Q pi, and you can replace Q hat star with a supremum over π of Q hat π.
+And then we apply this convenient identity, and we see that this is less than or equal to the supremum over π of the difference of the Q functions.
+But we know from our main result that Q π minus Q hat π is less than or equal to ϵ for all policies pi, which means that this whole thing is also less than or equal to ϵ.
 Okay, so that's pretty convenient.
 We just directly took our result, and we used it to relate the optimal Q functions.
 But this doesn't actually tell us what the performance of the policy that we find under P hat will be in the true MDP.
 So that's the other question.
-What is the difference between Q star and the true Q function corresponding to pi hat star, corresponding to the policy that we get by doing the argmax action under Q hat star?
+What is the difference between Q star and the true Q function corresponding to π hat star, corresponding to the policy that we get by doing the argmax action under Q hat star?
 Here, the analysis is a little bit more involved.
-So what we're going to do is we're going to take this difference, and we're going to subtract and add Q hat pi hat star.
+So what we're going to do is we're going to take this difference, and we're going to subtract and add Q hat π hat star.
 So we can always insert, you know, minus x plus x because that's equal to zero.
-So we're going to put in Q star minus Q hat pi hat star.
-Plus Q hat pi hat star minus Q pi hat star.
+So we're going to put in Q star minus Q hat π hat star.
+Plus Q hat π hat star minus Q π hat star.
 And then we'll break these up using the triangle inequality.
-So this is less than or equal to Q star minus Q hat pi hat star plus Q pi hat star minus Q hat pi hat star.
+So this is less than or equal to Q star minus Q hat π hat star plus Q π hat star minus Q hat π hat star.
 So the second term in this basically is the difference between the true Q function and the learned Q function for the same policy.
 So we know that that is bounded by the true Q function.
 So we know that that is bounded by ϵ.
-The first term, Q hat pi hat star, is just Q hat star, right?
+The first term, Q hat π hat star, is just Q hat star, right?
 That is the Q function corresponding to the best policy under our learned model.
 And then in the second term, they're the same policy.
 So that means that we can use the top left result for the second term, and we can use the Q star minus Q hat star result for the first term.

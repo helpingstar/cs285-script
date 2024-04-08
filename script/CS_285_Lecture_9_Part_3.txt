@@ -11,7 +11,7 @@ So that's a little bit more of a different thing.
 So this makes the KL divergence very convenient to use.
 So the KL divergence has some very convenient properties that make it much easier to approximate and much easier to use in an actual reinforcement learning algorithm as we'll see in the remainder of this lecture.
 So in practice if we actually want to have a constrained policy gradient method we're going to express our constraint as a KL divergence rather than as a total variation divergence but since the KL divergence bounds the total variation divergence this is a legitimate thing to do and it preserves our bound.
-Okay so then the objective that we're going to want to optimize is our usual important sampled objective with the constraint that the KL divergence between pi θ' and pi θ is bounded by ϵ and if ϵ is small enough this is guaranteed to improve j θ' minus j θ because the error term will be bounded.
+Okay so then the objective that we're going to want to optimize is our usual important sampled objective with the constraint that the KL divergence between π_{θ'} and π_θ is bounded by ϵ and if ϵ is small enough this is guaranteed to improve J(θ') minus J(θ) because the error term will be bounded.
 So how can we enforce this constraint?
 Well there's a few ways to do this.
 Let's first look at the constraint of the KL divergence.

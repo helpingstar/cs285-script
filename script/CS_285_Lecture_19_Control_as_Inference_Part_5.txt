@@ -63,7 +63,7 @@ Soft actor critic is essentially the actor critic counterpart of soft Q-learning
 Soft actor critic is essentially the actor critic counterpart of soft Q-learning.
 So in soft actor critic, there's a Q-function update, but it's not a softmax, it's actually trying to learn the Q-function for a given policy.
 You can think of this as basically message passing in the variational family.
-And it looks exactly the same as the regular actor critic Q-function update with the addition of this minus log pi term to account for entropy.
+And it looks exactly the same as the regular actor critic Q-function update with the addition of this minus log π term to account for entropy.
 And then the policy update is just like that policy gradient objective that I showed before, but using this Q-function.
 And because this algorithm uses a Q-function, it can learn from off-policy data.
 And then of course, every time it updates the Q-function and it updates the policy, it interacts with the world and collects more data to add to its replay buffer.

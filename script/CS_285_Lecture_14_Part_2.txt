@@ -100,7 +100,7 @@ That's good because we want good coverage.
 We want to cover many, many different goals.
 So the goals get higher entropy due to this skew fit procedure.
 What does the RL part do?
-Well, your policy, which you can also write as pi of a given s comma g, so it's probability of action given current state and given goal.
+Well, your policy, which you can also write as π of a given s comma g, so it's probability of action given current state and given goal.
 Your policy is trying to reach the goal g, which means that as the policy gets better, the final state, which I'll denote as s here, is going to get closer and closer to g.
 So that means that the probability of g given your final state becomes more and more deterministic.
 Essentially, if your policy is very good, you could pose this question.

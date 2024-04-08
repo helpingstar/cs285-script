@@ -1,12 +1,12 @@
 All right.
 In the last portion of today's lecture, I'm going to talk about how we can go beyond covering state distributions and actually learn diverse skills.
 So what do I mean by this?
-Let's say that we have a policy pi of a given s comma z, where z is a task index.
+Let's say that we have a policy π of a given s comma z, where z is a task index.
 You know, maybe z is a categorical variable that takes on one of n different values.
 If you want the case where you have literally different policies for different skills, that's actually a special case of this.
 So you could imagine that you have n different policies that represent n different skills.
 Maybe washing dishes is one of them.
-And you can construct this pi of a given s comma z by saying, well, first look at z, determine which skill you want, and then run the corresponding policy.
+And you can construct this π of a given s comma z by saying, well, first look at z, determine which skill you want, and then run the corresponding policy.
 But most generally, you can write it as one conditional distribution, a given s comma z.
 Just keep in mind this case where you have discrete skills is just a special case.
 So you could imagine, for instance, in a 2D navigation scenario, maybe the skill zero goes up, skill one goes right, et cetera, et cetera, et cetera.

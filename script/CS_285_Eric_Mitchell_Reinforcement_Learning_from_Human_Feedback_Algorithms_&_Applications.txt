@@ -411,7 +411,7 @@ And so when we stick this intractable parametrization of our reward into this ju
 And that's DPO.
 So, you know, this loss function here is really just the reward model loss.
 It's just that since we have this identity that relates a policy to a reward function, we can just, turn this loss function on reward functions to a loss function on policies directly.
-Another way of thinking about this is instead of training a reward model and then training a policy to get high reward under that reward model, we are training a policy, pi theta, which is the optimal policy for a reward function that satisfies the Bradley-Terry model for the preference data that we have.
+Another way of thinking about this is instead of training a reward model and then training a policy to get high reward under that reward model, we are training a policy, π theta, which is the optimal policy for a reward function that satisfies the Bradley-Terry model for the preference data that we have.
 That's sort of the other direction to think about this.
 Okay.
 So that was a little bit overwhelming, but that's pretty much DPO.
@@ -447,7 +447,7 @@ This is bad.
 This is the SFT model.
 So this is not ever updated.
 PyREF is fixed here.
-The only thing we're ever changing here is pi theta.
+The only thing we're ever changing here is π theta.
 There's no previous batch thing like in PPO.
 You can drain that from your mind forever.
 We just have one policy that we're learning.

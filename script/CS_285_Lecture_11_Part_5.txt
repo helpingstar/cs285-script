@@ -126,7 +126,7 @@ Okay.
 So how do we use this in an actual model-based RL algorithm?
 Well, it's actually a very simple way to do this.
 You can run your model-based RL version 1.5 algorithm that I discussed before.
-You can run your base policy pi 0 to collect the data set of transitions.
+You can run your base policy π 0 to collect the data set of transitions.
 Now, these transitions consist of observation, action, and next observation tuples.
 Then you train your dynamics, reward model, observation model, and encoder together with back propagation.
 Plan through the model to choose actions that maximize the reward.

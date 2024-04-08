@@ -1,7 +1,7 @@
 Okay, so let's talk about the conditions under which we can use pθst in place of pθ' of s_t and still have a reasonable objective that accurately approximates the return of the new policy.
 So to recap, what we want to do is we want to ignore the distribution mismatch.
 We want to use pθ of s_t instead of pθ' of s_t such that the only dependence on θ' in this whole equation is in the importance weight because we know from our previous policy gradient lecture that if we differentiate the thing on the right-hand side, we get exactly the policy gradient.
-So we want this to be true so that jθ' minus jθ is well approximated by a bar θ' this thing on the right-hand side so that we could just maximize a bar.
+So we want this to be true so that jθ' minus jθ is well approximated by bar{A} θ' this thing on the right-hand side so that we could just maximize bar{A}.
 And get a better new policy.
 And what we're going to try to show is that pθ of s_t is close to pθ' of s_t when πθ is close to πθ'.
 And when that's the case, then the right-hand side approximates the left-hand side, meaning the difference between them can be bounded by some quantity which is small if the difference between πθ and πθ' is small.
@@ -18,8 +18,8 @@ So that's the probability that πθ' assigns to any action that is not determini
 So that's the probability that πθ' is not the action that πθ' would have taken, is less than or equal to ϵ.
 Essentially there's a bounded probability that πθ' does something different.
 So if this is the case then we can write the state marginal at time step t for θ' as the sum of two terms.
-The first term describes the case where every single time step up to t The first term describes the case where every single time step up to t the new policy pi θ' did exactly the same thing as pi θ.
-And since the probability of doing exactly the same thing as 1 minus ϵ, this term has a multiplier of 1 minus ϵ to the power of t in front of it, and the state marginal is exactly p_θ st, because if you did all the same things as pi θ, you have the same state distribution.
+The first term describes the case where every single time step up to t The first term describes the case where every single time step up to t the new policy π_{θ'} did exactly the same thing as π_θ.
+And since the probability of doing exactly the same thing as 1 minus ϵ, this term has a multiplier of 1 minus ϵ to the power of t in front of it, and the state marginal is exactly p_θ st, because if you did all the same things as π_θ, you have the same state distribution.
 The other term is simply everything else.
 It's 1 minus 1 minus ϵ to the t, and it multiplies some other state distribution, which we're going to assume that we don't know anything about.
 So we're going to call it p-mistake.
@@ -65,10 +65,10 @@ And the probability of x equals y is one minus ϵ.
 So to unpack this lemma a little bit, what this says is that if you have two distributions over the same variable, px of x and py of x, and their total variation divergence is ϵ, then you can construct a joint distribution over two variables, such that the marginals of that joint distribution with respect to its first and second argument are the two distributions you started with, and the probability of x being equal to y is one minus ϵ.
 And the probability of its two arguments being equal is one minus ϵ.
 And intuitively the reason that this lemma is useful to us is that we essentially want a generalization of the assumption from the previous slide.
-So in the previous slide, our assumption was that there's a one minus ϵ probability that pi θ' takes the same action as pi θ.
-So if we could express a probability that pi θ' and pi θ will take the same action when both of them are stochastic, then we can use that to generalize the result from the previous slide.
+So in the previous slide, our assumption was that there's a one minus ϵ probability that π_{θ'} takes the same action as π_θ.
+So if we could express a probability that π_{θ'} and π_θ will take the same action when both of them are stochastic, then we can use that to generalize the result from the previous slide.
 So essentially this says that px of x agrees with py of y with probability ϵ.
-And that means that pi θ' takes a different action from pi θ with probability at most ϵ.
+And that means that π_{θ'} takes a different action from π_θ with probability at most ϵ.
 In retrospect, this is actually kind of obvious, because if their total variation divergence is ϵ, and total variation divergence is the difference in probability, it kind of makes sense that the sliver of probability mass that is different between them would have a volume of ϵ.
 So if you're if you kind of have a more geometric way of thinking about it, just imagine the two distributions as bar graphs, overlay them on top of each other and look at the differences in the bars.
 The volume of those differences will be equal to ϵ, which means that your probability of doing something different to ϵ.
@@ -76,7 +76,7 @@ So that's kind of the geometric intuition.
 But if you prefer to think about things symbolically, then hopefully this lemma kind of puts your mind at ease.
 That, in fact, you will be able to figure out what is inside your answer sheet if you do that.
 If you have a problem, In fact, if the total variation divergence is ϵ, then the probability of a mistake is at most ϵ.
-So what this lemma allows us to do is it allows us to state the same result that we had on the previous slide, which is the total variation divergence between the state marginals is 1 minus 1 minus ϵ to the t times p mistake minus p θ, only now we can say this even when pi θ is stochastic, provided the total variation divergence between pi θ' and pi θ is bounded by ϵ.
+So what this lemma allows us to do is it allows us to state the same result that we had on the previous slide, which is the total variation divergence between the state marginals is 1 minus 1 minus ϵ to the t times p mistake minus p θ, only now we can say this even when π_θ is stochastic, provided the total variation divergence between π_{θ'} and π_θ is bounded by ϵ.
 So from here, everything is exactly the same.
 We can write the same bound, and we can say that the state marginals differ by at most 2 times ϵ t.
 So essentially the trick that we used on this slide was to use this lemma to express a probability that two policies will take different actions in terms of the state marginals.
@@ -87,10 +87,10 @@ What we want is we actually want to relate the two objectives expressed in terms
 Well, so for this I'm going to derive another little calculation, which describes the expected values of functions under distributions when the total variation divergence between those distributions is bounded.
 So we're going to have some function f of st, which in our case is this complicated thing that involves expectations over actions and advantage values, but it doesn't really matter what it is.
 Whatever it is that's called f of st, we can bound its expected value between the two distributions.
-So we can write the expected value under pi θ' of s_t of f of s_t as the sum over all possible states of pi θ' times f.
-And we know that this quantity, is greater than or equal to the sum over all the states of pi θ times f minus the total variation divergence between pi θ and pi θ' times the maximum value that f could possibly take on.
-So the way that I arrive at this calculation is I write pi θ' as being equal to pi θ' plus pi θ minus pi θ.
-I group the terms to get a pi θ times f minus a pi θ minus pi θ' times f.
+So we can write the expected value under π_{θ'} of s_t of f of s_t as the sum over all possible states of π_{θ'} times f.
+And we know that this quantity, is greater than or equal to the sum over all the states of π_θ times f minus the total variation divergence between π_θ and π_{θ'} times the maximum value that f could possibly take on.
+So the way that I arrive at this calculation is I write π_{θ'} as being equal to π_{θ'} plus π_θ minus π_θ.
+I group the terms to get A^{π_θ} times f minus A^{π_θ} minus π_{θ'} times f.
 And while I don't know the absolute value of the difference in the probabilities, I only bound the total variation divergence, if I multiply them by the largest value that f takes, I'm being as pessimistic as possible.
 So that's what allows me to write this inequality.
 If this is not clear to you, then I would recommend pausing the lecture now, getting out a piece of paper, and actually deriving this inequality yourself.
@@ -98,14 +98,14 @@ It's a good exercise to do to make sure that you understand how to manipulate to
 So pause the lecture and do that.
 And if you're having trouble doing that, then please ask a question in the comments, and we'll go over this in more detail in class.
 Okay.
-So then all we do is we take that first term, and we notice that it's just the definition of the expected value under pi θ, and we take the second term and we replace it by our bound.
-That's E on the total variation divergence, which means that the expected value under p_θ prime of f is bounded below by it's expected value under p θ, minus an error term which is 2 times ϵ times t, times the largest value that f can take on.
+So then all we do is we take that first term, and we notice that it's just the definition of the expected value under π_θ, and we take the second term and we replace it by our bound.
+That's E on the total variation divergence, which means that the expected value under p_{θ'} of f is bounded below by it's expected value under p θ, minus an error term which is 2 times ϵ times t, times the largest value that f can take on.
 Now this error term might seem pretty big, because the largest value of f might be huge, but remember that everything is multiplied by ϵ.
 So as the two policies get closer together, as ϵ gets small, that second partition becomes one team, and then we just keep multiplying.
 So we're going to take all that and add the derivative base, and then the derivative base can also be reduced to twofill elements, whose ratio tot 90 followed by….
 Mars, k, e, and v, so we get one-becca-y, and that ratio taken down to pistein, term can always be made arbitrarily small so long as f is bounded, basically, so long as f doesn't go off to infinity for any state.
 So this was the equation that we were originally concerned about.
-We were concerned about the expected value under p_θ prime of s_t of the expected value over the actions of the importance sampled estimator for the advantage.
+We were concerned about the expected value under p_{θ'}(s_t) of the expected value over the actions of the importance sampled estimator for the advantage.
 So by taking everything inside the brackets to be f, then we can bound this quantity below by the expected value under p_θ(s)t of the same quantity, and this thing now just looks exactly like the thing that we differentiate to get the policy gradient, minus an error term, and the error term is 2 times ϵ times t times a constant c, and the constant c is the largest value that the thing inside the brackets, the thing inside the state expectation, can take on.
 Take a moment to think about what the largest possible value for that quantity inside the brackets could be, basically.
 What should we use for c?
@@ -122,7 +122,7 @@ In an infinite horizon case, it's r max over 1 minus γ.
 By the way, as an aside here, if you're doing reinforcement learning theory, and you ever see a term that looks like 1 over (1-γ), just mentally substitute the time horizon for that, because 1 over (1-γ) is essentially the equivalent of a horizon in the infinite horizon case.
 It's basically the number of time steps, the effective number of time steps that you're summing rewards over.
 Okay.
-So essentially, all this says is the maximum maximizing this equation at the bottom maximizes a bound on the thing that we really want, which is the expectation under p_θ prime, which we've proven to be the same as maximizing the RL objective.
+So essentially, all this says is the maximum maximizing this equation at the bottom maximizes a bound on the thing that we really want, which is the expectation under p_{θ'}, which we've proven to be the same as maximizing the RL objective.
 And the thing that we have to watch out for is that we get this error term that scales as 2 ϵ t times a constant.
 Everything in that error term is a constant except for ϵ, and ϵ is the total variation divergence between your new policy and your old policy.
 So take a moment at this point to think about what kind of RL algorithm we should use informed by this derivation.
@@ -131,12 +131,12 @@ And this implies something about the sort of reinforcement learning algorithm th
 All right, so what we have so far is a good approximation of the true RL objective under certain circumstances.
 And this implies that we should be using a good approximation of the true RL objective under certain circumstances.
 And this implies that we should be using a good approximation of the true RL objective under certain circumstances.
-And this implies that maximizing this objective, basically the expected value under p θ, the expected value under pi θ of the importance weighted advantage, is a good way to maximize the RL objective so long as pi θ' is close to pi θ in terms of total variation divergence.
+And this implies that maximizing this objective, basically the expected value under p θ, the expected value under π_θ of the importance weighted advantage, is a good way to maximize the RL objective so long as π_{θ'} is close to π_θ in terms of total variation divergence.
 Essentially, if you restrict θ' to not go too far from θ so this constraint is satisfied, then maximizing this tractable objective is the same as maximizing the true RL objective under certain circumstances.
 So the problem is, how do we maximize this objective?
 Well, we take its derivative with respect to θ'.
 And θ' only appears in the importance weight, so when we take its derivative, we get exactly the policy gradient.
 So our derivation, what it has shown so far, is that this is a good thing to do if θ' stays close to θ.
-So for small enough ϵ, this is guaranteed to improve j θ' minus j θ, which means that the derivative is greater than that.
+So for small enough ϵ, this is guaranteed to improve J(θ') minus J(θ), which means that the derivative is greater than that.
 it's guaranteed to improve the RL objective.
 Okay, so in the next part of the lecture, we'll talk about how to actually do this in practice.

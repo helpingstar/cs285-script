@@ -2,7 +2,7 @@ Alright, now let's talk about how we can take these meta-learning ideas and appl
 So the generic learning picture that we had before is that regular learning is when you take the argmin of some loss function on a training set and that corresponds to some kind of learning function flearn, which is typically something like gradient descent.
 Generic meta-learning can be viewed as minimizing a loss function on a test set where the parameters that go into the loss function are given by a learned function ftheta applied to DTRAIN.
 So we can, by analogy, apply the same idea to reinforcement learning.
-We can say that regular reinforcement learning is when you maximize the expected reward under some policy, pi theta, and that can be viewed as a learning function frl, but frl is not applied to a training set anymore.
+We can say that regular reinforcement learning is when you maximize the expected reward under some policy, π theta, and that can be viewed as a learning function frl, but frl is not applied to a training set anymore.
 It's applied to an MDPM.
 So frl is a function of an MDP.
 Meta-reinforcement learning then can be viewed as maximizing the expected reward of a policy with some parameters ϕ i, where the parameters ϕ i are given by applying a learned function ftheta to an MDPMI.
@@ -21,7 +21,7 @@ Or it might be something much simpler.
 Maybe it involves the half-cheetah robot from your homework running at different speeds forward and backward.
 And then mtest would be a new speed.
 Meta-learning and contextual policies are very closely related.
-So you could imagine that one way to view meta-learning is as the problem of training a policy, pi theta, that is conditioned on all of your experience in the test MDP.
+So you could imagine that one way to view meta-learning is as the problem of training a policy, π theta, that is conditioned on all of your experience in the test MDP.
 So essentially what ftheta does is it takes the experience in the test MDP, or in the meta-training MDP, whatever MDP it's being run on, and summarizes it into some summary statistic that is then used to determine what your policy will do.
 And that's basically the same as having a policy that is conditioned on all the history that you've experienced in this MDP.
 So that's the first step.

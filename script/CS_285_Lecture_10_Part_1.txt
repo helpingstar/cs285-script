@@ -17,14 +17,14 @@ So the goals for today's lecture will be to understand how we can perform planni
 Okay, so let's start with a little recap.
 In the preceding lectures we learned about algorithms that optimize the reinforcement learning objective.
 And the reinforcement learning objective is given here on this slide.
-The objective is to maximize the expected value under the trajectory distribution p_θ τ induced by your policy pi θ of the total reward along that trajectory.
+The objective is to maximize the expected value under the trajectory distribution p_θ τ induced by your policy π_θ of the total reward along that trajectory.
 And we learned about a number of other objectives.
-We learned about the potential of the trajectory distribution p_θ τ induced by your policy pi θ of the total reward along that trajectory.
+We learned about the potential of the trajectory distribution p_θ τ induced by your policy π_θ of the total reward along that trajectory.
 And we learned about a number of other objectives.
 We learned about a number of other objectives.
 We learned variance on this basic recipe including methods that use discounts.
-The trajectory distribution is formed by multiplying together the initial state probability the policy probabilities pi θ at given s_t and the transition probabilities pst plus 1 given s_t 18.
-And I'm going to use p_θ of τ or interchangeably pi θ of τ to denote the trajectory distribution and make it clear that it depends on θ.
+The trajectory distribution is formed by multiplying together the initial state probability the policy probabilities π_θ at given s_t and the transition probabilities pst plus 1 given s_t 18.
+And I'm going to use p_θ of τ or interchangeably π_θ of τ to denote the trajectory distribution and make it clear that it depends on θ.
 And we learned that the trajectory distribution of p_θ of τ could be multiplied So in the algorithms that we've discussed so far, we've assumed a model-free formulation, meaning that we assume that we do not know P of s_t plus 1 given STAT, and not only that, but we don't even attempt to learn.
 So these were all algorithms that managed to get away with only sampling from P of s_t plus 1 given s_t along full trajectories without ever needing to actually know what the probabilities were or ever needing to make predictions about, for example, what would have happened if you had taken a different action from the same state.
 In fact, if you recall our discussion of Q learning, we managed to intentionally avoid this issue by switching over from value functions and policy iteration over to Q functions.
@@ -96,7 +96,7 @@ We will typically use notation for the following.
 The deterministic case is actually relatively straightforward.
 You have an agent and you have an environment.
 The environment tells your agent what state they're in.
-So the environment tells them you're in state S1.
+So the environment tells them you're in state s_1.
 And then the agent performs an optimization.
 Given that they are in state S1, can they imagine that they're in state S1?
 Can they imagine that they're in state S1?
@@ -108,7 +108,7 @@ I apologize, there's a small typo on this slide, that AT plus 1 should be an s_t
 Okay, so in the deterministic case, this is all good.
 But what happens in the stochastic case?
 So in the stochastic case, now you can define a distribution over a sequence of states, conditioned on a sequence of actions.
-So you can say that, well, the probability of S1 through S capital T, given A1 through A capital T, is given by probability of S1 times the product of the s_t plus 1 given ST, AT terms.
+So you can say that, well, the probability of s_1 through S capital T, given A1 through A capital T, is given by probability of s_1 times the product of the s_t plus 1 given ST, AT terms.
 Notice that the probability of AT given s_t doesn't appear here, because we are conditioning everything on a plan.
 We are conditioning everything on a sequence of actions.
 So in this case, we can select our sequence of actions as the sequence of actions that we want to use.
@@ -160,15 +160,15 @@ So if there is this closed-loop case and open-loop case, and so far we've talked
 In a closed-loop case, each time step, the agent observes a state and then responds with an action, which you could also think of as observing the first state and then committing to a closed-loop policy.
 So instead of sending a state, sending back a sequence of actions, you send back a relationship between states and actions, a mapping that tells the world, for every state the agent might be in, which action would they take.
 So reinforcement learning typically solves closed-loop problems.
-So in the closed-loop case, you create a policy, pi at given st, and now you don't condition on a fixed set of policies, sorry, on a fixed set of actions, but you condition on an entire policy.
+So in the closed-loop case, you create a policy, π at given st, and now you don't condition on a fixed set of policies, sorry, on a fixed set of actions, but you condition on an entire policy.
 And then your objective is exactly the same as the reinforcement learning objective from before.
-Now, there are many different choices we can make for the form of pi.
+Now, there are many different choices we can make for the form of π.
 So, so far in the course, we've talked about very expressive classes of policies like neural networks.
 But you can do near-optimal closed-loop planning with much less expressive policy classes.
 So you can think of a neural net as a kind of global policy.
 It tells the agent what to do in every state, and what to do in every possible state they might encounter.
 But you could also imagine a very local policy.
-So you could look at the initial state s1 and say, well, I'm going to stay in a fairly narrow state region if I start from this state.
+So you could look at the initial state s_1 and say, well, I'm going to stay in a fairly narrow state region if I start from this state.
 So I could produce a kind of a local policy, like for instance a time-varying linear policy.
 This is much more common in optimal control applications.
 For instance, if you are controlling a rocket to fly some trajectory, that is technically a stochastic setting because the rocket can deviate from the planned trajectory due to random perturbations in air currents, wind, and motor properties.

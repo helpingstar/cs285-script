@@ -1,9 +1,9 @@
 Alright, in the last portion of today's lecture we're going to go over another way to impose the constraint which is a little more approximate but leads to a pretty simple algorithmic framework called natural gradient.
-Okay, so so far we discussed this optimization problem maximize the expected value under the old policy state distribution of the expected value under the old policies action distribution of the important sampled estimator subject to a constraint that the KL divergence between pi θ' and pi θ is bounded by ϵ and we saw how if you can enforce this for a small enough ϵ then this is guaranteed to improve j θ' minus j θ.
+Okay, so so far we discussed this optimization problem maximize the expected value under the old policy state distribution of the expected value under the old policies action distribution of the important sampled estimator subject to a constraint that the KL divergence between π_{θ'} and π_θ is bounded by ϵ and we saw how if you can enforce this for a small enough ϵ then this is guaranteed to improve J(θ') minus J(θ).
 In the previous section we saw how we could impose this constraint by using something like a dual gradient descent method typical Lagrange multiplier and then essentially optimize the Lagrangian as a kind of penalized objective to find the new policy parameters.
 Now we're going to talk about a more approximate way of doing this which at first will seem a little bit worse because we're going to make a lot of approximations but in fact is actually highly desirable because it allows us to recover a very simple method that doesn't require any additional penalties and simply applies a linear transformation to the standard policy gradient that we saw earlier.
 In the previous section we saw how we could enforce the constraint by optimizing the gradient descent method to the same rule as we did back in lecture 3.
-Okay so as before I'm going to use a bar θ' to denote this whole objective.
+Okay so as before I'm going to use bar{A} θ' to denote this whole objective.
 When we calculate the gradient of some objective and we use gradient descent or gradient descent that can be interpreted as optimizing a first-order Taylor expansion of that objective.
 This might seem like a slightly silly statement because a first-order Taylor expansion is a fairly simple thing to do.
 It's just a gradient but when there's a constraint present it actually has some meaning.
@@ -33,35 +33,35 @@ So here's the equation for grad θ' a θ' and since only the importance weight d
 It depends on θ'.
 We just get the importance sampled policy gradient.
 But if we evaluate it at the point θ' equals θ then the importance weights actually cancel out, because we get the same thing in the numerator and the denominator.
-So here I just wrote it out for grad θ a bar θ and when they cancel out you're just left with the standard policy gradient equation which we saw in the previous lecture.
+So here I just wrote it out for grad θ bar{A} θ and when they cancel out you're just left with the standard policy gradient equation which we saw in the previous lecture.
 And this is very simple.
-This is essentially exactly the policy gradient that we had back in reinforce, except that we have some choice of advantage estimator for a pi θ.
+This is essentially exactly the policy gradient that we had back in reinforce, except that we have some choice of advantage estimator for A^{π_θ}.
 And we can use anything we want there.
 Okay.
 So that's nice.
 And that's just the thing that we're going to plug into our objective.
 That's just the regular policy gradient.
 Now, could we just use gradient ascent then?
-If we're just calculating the policy gradient, our objective is grad θ j θ transpose θ'.
+If we're just calculating the policy gradient, our objective is grad θ J(θ) transpose θ'.
 Does gradient ascent do something similar to this constraint optimization problem?
-So gradient ascent, we'll just take θ and set it to be the old θ plus alpha times grad θ j θ.
-One problem with doing this is that as we change θ, the probabilities of the new policy, the pi θ a given s, will change by different amounts.
+So gradient ascent, we'll just take θ and set it to be the old θ plus alpha times grad θ J(θ).
+One problem with doing this is that as we change θ, the probabilities of the new policy, the π_θ a given s, will change by different amounts.
 Because some parameters, some entries in θ affect the probabilities more than others.
 So in general, taking a step like this will usually not respect the KL divergence constraint, because you might have some very, very small change in some parameter, but that parameter might have a very, very large influence on the probabilities.
 But what does gradient ascent do?
 Well, my claim is that gradient ascent actually solves this constraint optimization problem, which is very simple.
 So let's take gradient descent.
 So gradient descent is basically the same as gradient descent, just the difference is that it's actually similar to our original one.
-So the difference is that our original constraint optimization problem had grad j θ' minus θ as its objective, but the constraint was the KL divergence between pi θ' and pi θ.
+So the difference is that our original constraint optimization problem had grad J(θ') minus θ as its objective, but the constraint was the KL divergence between π_{θ'} and π_θ.
 In gradient descent, the constraint is the square Euclidean distance between θ' and θ.
-So, in a policy whose distribution is close to the policy pi θ, gradient descent instead produces parameters that are close to the parameters θ.
+So, in a policy whose distribution is close to the policy π_θ, gradient descent instead produces parameters that are close to the parameters θ.
 Geometrically you can think of it like this, that in gradient descent we have our parameter space which here is represented by this 2D region, so there's two axes corresponding to two policy parameters.
 When we linearize our objective, we can visualize our objective as this kind of gradient field, as a colored gradient over the space, so lower right is better values, upper left is worse values, and this constraint corresponds to a circle in this space.
 So all the points that are ϵ away from the dot in the center all satisfy that constraint.
 So because your objective is linear and your constraint is a circle, then the solution will always lie on the surface of that circle in the direction of the objective.
 So that's the idea of the solution.
-So in the direction of grad j θ.
-So that means that when you do gradient ascent, you will take a step in the direction grad j θ, and the length of that step will be determined by ϵ.
+So in the direction of grad J(θ).
+So that means that when you do gradient ascent, you will take a step in the direction grad J(θ), and the length of that step will be determined by ϵ.
 In fact, the learning rate in gradient ascent can actually be obtained as the Lagrange multiplier for this constraint, and you can also derive a closed form equation for it.
 So if you perform gradient ascent like this, where your learning rate is given by the square root of ϵ divided by the square root of ϵ, and you can actually prove that you will exactly satisfy that constraint.
 And the way that you prove this is you take that equation for θ', substitute that into the constraint, the thetas will cancel, and you'll be left with the square root of ϵ divided by grad j squared, and then that whole thing's squared.
@@ -86,10 +86,10 @@ We don't want to use a first order Taylor expansion because the KL divergence ha
 It's actually flat but its second derivative is not zero.
 The second order Taylor expansion is a quadratic form with some matrix f and it turns out that the matrix that goes in there is something called the Fisher information matrix.
 The calculation for this is a bit involved but you basically start with a formula for the KL divergence and if you take the second derivative you can show that the correct thing to use for that matrix is the Fisher information matrix.
-So the Fisher information matrix is the expected value under pi θ of the outer product of the grad log π's.
+So the Fisher information matrix is the expected value under π_θ of the outer product of the ∇log π's.
 And one very convenient thing about the Fisher information matrix is that you can approximate it using samples.
-Because it's the expected value of some quantity you could simply use the same samples that you drew from pi θ to estimate your policy gradient to also estimate the Fisher information matrix.
-So the Fisher information matrix is the expected value of the grad log π's.
+Because it's the expected value of some quantity you could simply use the same samples that you drew from π_θ to estimate your policy gradient to also estimate the Fisher information matrix.
+So the Fisher information matrix is the expected value of the ∇log π's.
 Now if we're going to use this second order Taylor expansion as an approximation for our KL divergence constraint something that we can note is that gradient descent actually also has a quadratic constraint.
 Theta minus θ' squared can also be interpreted as θ' minus θ transpose times identity times θ' minus θ.
 And now we have the same thing only instead of identity we have f.

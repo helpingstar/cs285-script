@@ -54,38 +54,38 @@ So you might want to do some math to find the answer.
 If you can't find the answer, you should go into a deep neural network.
 To understand why that's the case, let's consider a simple example.
 Let's say that I'm trying to walk around on this mountain and I'd like to get to the top of the mountain.
-So my procedure will be to first run a base policy pi zero, like a random policy, to collect my dataset.
+So my procedure will be to first run a base policy π zero, like a random policy, to collect my dataset.
 So maybe I do essentially a random walk on the mountain.
 And I'm going to use the result of this random walk to learn my dynamics model.
-So this is my policy pi zero and then I'm going to use the result of this random walk to learn my dynamics model.
+So this is my policy π zero and then I'm going to use the result of this random walk to learn my dynamics model.
 maybe just a random policy that produced some data, and I'm going to use it to learn f.
 And I want to get to the highest point on the mountain, so I'm going to ask f to predict how high will I be if I take certain actions, and then I'll plan through that.
 Now for this part of the mountain that I walked on, it seems like going further to the right gets me higher up.
-So from this random data that I got from this pi zero policy, my model will probably figure out that the more right you go, the higher your altitude will be, which is a very reasonable inference based on that data.
+So from this random data that I got from this π zero policy, my model will probably figure out that the more right you go, the higher your altitude will be, which is a very reasonable inference based on that data.
 So when I then plan through that model to choose my actions, well what do you think is going to happen?
 Right, so I'm going to be in for a bad time.
 I'm going to be in for a bad time for a reason that we've actually seen before.
-So the data that I use to train my model comes from the distribution over states induced by the policy pi zero.
-We can call this p pi zero.
-Take a moment to think about why using a model trained on p pi zero s_t can lead to some really bad outcomes when we then use that model to plan.
+So the data that I use to train my model comes from the distribution over states induced by the policy π zero.
+We can call this p π zero.
+Take a moment to think about why using a model trained on p π zero s_t can lead to some really bad outcomes when we then use that model to plan.
 As a hint, the answer to this is something that we've seen before in several of our previous lectures.
 So the issue is basically the following.
 The issue is that when we plan through our model, you can think of that planning as executing another policy.
-We can call it pi f because f is the model and pi f is the policy induced by that model.
+We can call it π f because f is the model and π f is the policy induced by that model.
 Pi f is not a neural net.
 Pi f is just a planning algorithm run on top of the model f.
-So pi f is fully determined by f.
+So π f is fully determined by f.
 And it has its own state distribution.
-Its state distribution is p pi f of st.
+Its state distribution is p π f of st.
 And in this case, that distribution involves going very far to the right and falling off the mountain.
-The reason that the problem happens is because p pi f of s_t is not equal to p pi zero of st.
+The reason that the problem happens is because p π f of s_t is not equal to p π zero of st.
 So we are experiencing distributional shift.
-And the way the problems of this distributional shift manifest themselves is that our model is valid for estimating the outcomes of actions in the region that was visited during data collection, meaning for states with high probability p pi zero of st.
+And the way the problems of this distributional shift manifest themselves is that our model is valid for estimating the outcomes of actions in the region that was visited during data collection, meaning for states with high probability p π zero of st.
 But when we plan under that model, we can't do that.
 We can't do that.
 We can't do that.
 We can't do that.
-If we go back to the model, when we select the actions for which the model produces states with the highest reward, the ones that go the most up, we will end up going to states during our planning process virtually that have very low probability under p pi zero of st.
+If we go back to the model, when we select the actions for which the model produces states with the highest reward, the ones that go the most up, we will end up going to states during our planning process virtually that have very low probability under p π zero of st.
 And our model will make erroneous predictions at those states.
 And when it makes erroneous predictions at those states, then it will choose the best action in that erroneously predicted state, feed that back into itself.
 And that's what we call a what we call a prediction of the state.

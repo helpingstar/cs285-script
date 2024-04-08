@@ -21,9 +21,9 @@ We could also not worry about dynamic programming and instead go back to the ori
 And it's actually very straightforward to derive a policy gradient algorithm to optimize this objective.
 Of course, the expected reward portion of the objective, its gradient is exactly the standard policy gradient.
 The only new thing is the entropy.
-So the intuition behind this procedure is that the policy pi will be proportional to the exponentiated Q value, or equal to the exponentiated advantage, when pi minimizes the KL divergence between pi and the n-th derivative.
+So the intuition behind this procedure is that the policy π will be proportional to the exponentiated Q value, or equal to the exponentiated advantage, when π minimizes the KL divergence between π and the n-th derivative.
 So we're going to go back to the previous example and see what the and 1 over z times the exponentiated q.
-And of course the scale divergence is equal up to a constant to the expectation under pi of q minus the entropy of pi.
+And of course the scale divergence is equal up to a constant to the expectation under π of q minus the entropy of π.
 So this is actually often referred to as an entropy regularized policy gradient, and it can be a good idea for policy gradients because it combats premature collapse of the policy entropy.
 Remember that the on-policy policy gradient algorithm explores entirely with the stochasticity that's present in the policy.
 So if the policy becomes too deterministic too early, you'll get very bad results.
@@ -31,23 +31,23 @@ So this entropy regularizer that we're adding to the policy objective can be ver
 It turns out to be also very closely related to Q-learning algorithms, and this is discussed in a few previous works, which I will reference at the end of the last part of this lecture.
 Okay, let's talk a little bit about how policy gradients relate to Q-learning in this inference framework.
 So if we write out the objective, that here there's the objective again, and I called it j of theta, just like in the policy gradient lecture.
-The entropy is just the expected value under pi of negative log pi.
+The entropy is just the expected value under π of negative log π.
 So this is an equivalent way of writing this.
 When we take the gradient of this expression, we can write that gradient as the sum of two terms.
-The first one is the regularization, the regular policy gradient that treats r minus log pi as a reward, and the second term has the gradient going through the log pi term in the objective.
-Now, it turns out that if you actually crunch the numbers on this, the expression is actually equal to the regular policy gradient with r minus log pi as the reward, with the additional term added by the gradient through log pi simply being minus one.
+The first one is the regularization, the regular policy gradient that treats r minus log π as a reward, and the second term has the gradient going through the log π term in the objective.
+Now, it turns out that if you actually crunch the numbers on this, the expression is actually equal to the regular policy gradient with r minus log π as the reward, with the additional term added by the gradient through log π simply being minus one.
 Why is it minus one?
 Well, it's minus one if we apply the same identity that we use to derive policy gradient, but in reverse.
-Because we have a grad log pi outside the parentheses, so the derivative of minus log pi is just grad log pi times negative one.
+Because we have a ∇log π outside the parentheses, so the derivative of minus log π is just ∇log π times negative one.
 So that's where the minus one comes from.
 It's very, very, very simple.
 But remember that the policy gradient is equal in expectation if you add or subtract any quantity to the reward.
-So that minus one actually has no effect, which leads us to the surprising conclusion that if you want to do entropy regularized policy gradient, all you have to do is subtract log pi from the reward, and the gradient expression doesn't actually change.
+So that minus one actually has no effect, which leads us to the surprising conclusion that if you want to do entropy regularized policy gradient, all you have to do is subtract log π from the reward, and the gradient expression doesn't actually change.
 So that's where the one comes from, and you can ignore it because of the baseline.
 All right, so this quantity inside the parentheses, you can think of it as the Q value at the next time step, right?
 So this is the sum of all the rewards minus all the log pi's from T plus one until the end.
 And remember that the policy is given by the exponential of Q minus V in soft optimality.
-So we can substitute this in for log pi, and we can basically replacing log pi everywhere with Q minus V.
+So we can substitute this in for log pi, and we can basically replacing log π everywhere with Q minus V.
 We can write.
 This expression is following.
 We can write it as grad Q minus grad V times R plus next Q minus current Q plus current V.

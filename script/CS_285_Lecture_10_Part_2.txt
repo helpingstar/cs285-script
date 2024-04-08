@@ -168,18 +168,18 @@ like that random policy that I had before.
 How do you expand the leaf?
 Well, remember that the nodes in the tree correspond to action sequences.
 The same action sequence executed multiple times might actually lead to different states.
-So the way that you evaluate a leaf is you start in the initial state S1 and then you take all the actions on the path from that leaf to the root and then follow the default policy.
+So the way that you evaluate a leaf is you start in the initial state s_1 and then you take all the actions on the path from that leaf to the root and then follow the default policy.
 So you don't just teleport to some arbitrary state.
 You could do the teleporting thing too and that would also give you actually a well-defined algorithm but typically you would actually execute the same sequence of actions again to actually give them the chance to lead to a different random outcome.
 Because remember, you want the actions that are best in expectation.
-And then step three, update all the values in the tree between S1 and SL.
+And then step three, update all the values in the tree between s_1 and SL.
 And then repeat this process.
-And then once you're done, you take the best action from the root S1.
+And then once you're done, you take the best action from the root s_1.
 And typically in MCTS, you would actually rerun the whole planning process each time, each time step.
 So you would take the best action from the root and then the world would randomly present you with a different state and then you would do all the planning all over again.
 Okay, so our tree policy initially can't do anything smart.
 If we haven't expanded any of the actions, you just have to try action zero and then you evaluate the, using the default policy.
-And then you update all the values in the tree between S1 and SL.
+And then you update all the values in the tree between s_1 and SL.
 SL here is S2.
 And notice here that we collected a return, which is 10.
 And we also record how many times we visited that node, which is one.
@@ -192,20 +192,20 @@ So a very common choice for the tree policy is the UCT tree policy, which basica
 If some state has not been fully expanded, choose a new action in that state.
 Otherwise choose a child of that state with the best score and the score will be defined shortly.
 And then you apply this recursively.
-So essentially this tree policy starts at the root S1.
+So essentially this tree policy starts at the root s_1.
 If some action at the root is not expanded, then you expand it.
 Otherwise you choose a child with the best score and then recurse.
-So here, you know, for any reasonable value of score, we would have chosen S2 because they both have been visited the same number of times, but the value at S2 is larger.
+So here, you know, for any reasonable value of score, we would have chosen s_2 because they both have been visited the same number of times, but the value at s_2 is larger.
 So we would go and expand a new action for S2.
 And maybe we get a return of 10.
 Now the n value at that leaf is one, but remember step three in MCTS is to propagate all the values back up to the root.
-So we also update S2 to give it n equals two and q equals 22.
+So we also update s_2 to give it n equals two and q equals 22.
 So essentially every time we update a node, we add the new value to its old value and we add one to its count.
 That way we can always recover the average value at some node by dividing q by n.
 By the way, one thing I might mention is when you see these indices, S1, S2, S3, these numbers are just referring to the time step.
 They are...
 Remember, these nodes do not uniquely index states.
-If you take the same action sequence two times, you might get a different state, but I'm still referring to that as S2 or S3 because it's the state at time step two or three.
+If you take the same action sequence two times, you might get a different state, but I'm still referring to that as s_2 or S3 because it's the state at time step two or three.
 So the actual states are stochastic.
 All right, so now we have a choice to make.
 We have two possible choices from the root.
