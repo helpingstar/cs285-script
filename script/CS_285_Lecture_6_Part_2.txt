@@ -59,7 +59,7 @@ So the probability of entering the death state is (1-γ), which means that the m
 And that (1-γ) remaining slice accounts for entering the death state.
 So mechanically, the modification that we have with the discount factors just multiply our values by γ for every time step that we back them up.
 And what that does is it makes us prefer rewards that happen sooner rather than later.
-And mathematically, one way that we can interpret this is that we're actually modifying our MDP to introduce the probability of death with probability of 1 minus γ.
+And mathematically, one way that we can interpret this is that we're actually modifying our MDP to introduce the probability of death with probability of 1 - γ.
 All right.
 Let's dig into discount factors a little bit more.
 First, could we introduce discount factors into regular Monte Carlo policy gradients?

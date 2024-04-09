@@ -58,17 +58,17 @@ So how can we extend counts to this complex setting, where you either have a ver
 Well, the notion that we want to exploit is that some states are more similar than others.
 So even though we never visit the same exact state twice, there's still a lot of similarity between those states, and we can take advantage of that by using a generative model or a density estimator.
 So here's the idea.
-We're going to fit some density model to Pθ or Pθ , depending on whether we want state counts or state attributes.
-So we're going to fit some density model to Pθ or Pθ , depending on whether we want state counts or state attributes.
-So we're going to fit some density model to Pθ or Pθ , depending on whether we want state counts or state attributes.
+We're going to fit some density model to p_θ or p_θ , depending on whether we want state counts or state attributes.
+So we're going to fit some density model to p_θ or p_θ , depending on whether we want state counts or state attributes.
+So we're going to fit some density model to p_θ or p_θ , depending on whether we want state counts or state attributes.
 So a density model could be something simple, like a Gaussian, or it could be something really complicated.
 So a density model could be something simple, like a Gaussian, or it could be something really complicated.
 We'll talk about the particular choice of density model later, but for now we just need it to be something that produces an answer to the question, what is the density or the likelihood of this state?
-Now, if you learn a density model as, for example, some highly expressive model like a neural network, then Pθ might be a very similar model to the density model, but with a different density.
-Pθ might be high even for totally new states that you've never seen before, if they're very similar to states that you have seen before.
+Now, if you learn a density model as, for example, some highly expressive model like a neural network, then p_θ might be a very similar model to the density model, but with a different density.
+p_θ might be high even for totally new states that you've never seen before, if they're very similar to states that you have seen before.
 So maybe you've never seen the guy and the skull in precisely this position, but you've seen the guy in that position, and you've seen the skull in that position, just not together, so that state will probably have a higher density than if something totally weird happened, like if, for example, you suddenly picked up the key.
 You know, if in all prior states the key is always present, now suddenly it's absent, that'll have a very low density.
-So the question that we could ask then is, can we somehow use Pθ as a sort of pseudo-count?
+So the question that we could ask then is, can we somehow use p_θ as a sort of pseudo-count?
 Now, it's not a count, because it's not literally telling you how many times you've visited a particular state, but it kind of looks a little bit like a count, in that, you know, if you take P and you multiply it by the total number of states you've seen, that will be a kind of a density for that state.
 So, if you have a small m2, you can do this.
 So, if you have a small m2, you can do this.
@@ -97,16 +97,16 @@ So how do you get the pseudo-count?
 Well, we'll use the equations from the previous slide.
 So the equations in the previous slide describe how counts relate to probabilities.
 So we'll say that we want our pseudo-counts to also relate to probabilities in the same way.
-So we know pθ of s, and we know pθ' of s, because that's what we get by updating our density model.
+So we know p_θ of s, and we know p_{θ'} of s, because that's what we get by updating our density model.
 We don't know n-hat of s, and we don't know little n-hat.
 However, we have two equations and two unknowns.
 So we could actually solve this system of equations and recover n-hat of s and little n-hat.
 So we have two equations and two unknowns.
 If we do a bit of algebra, here's what the solution looks like.
-n-hat of s is equal to little n-hat times pθ of s.
+n-hat of s is equal to little n-hat times p_θ of s.
 That's kind of the obvious statement.
-And if you manipulate the algebra, you can solve for n-hat and find that it's equal to 1 over pθ' of s divided by pθ' of s minus pθ.
-And that whole thing multiplied by pθ of s.
+And if you manipulate the algebra, you can solve for n-hat and find that it's equal to 1 over p_{θ'} of s divided by p_{θ'} of s minus p_θ.
+And that whole thing multiplied by p_θ of s.
 It's a little bit of an opaque expression, but it's pretty easy to solve for.
 You basically take that expression for n-hat of s, substitute that in in place of n-hat of s for the top two equations, so then you can get two equations that are both expressed in terms of little n-hat, and then you solve them for little n-hat, and you get the solution at the bottom.
 So now every time step, you just use these equations to figure out big n-hat of s, and use that to calculate your bonus.
@@ -133,7 +133,7 @@ And so, as I mentioned before, in Montezuma's Revenge, the rooms are arranged in
 And you can see that without the bonus, you only visit two rooms.
 With the bonus, you actually visit more than half of the pyramid.
 So the method is doing something pretty sensible.
-What kind of model should you use for p-theta of s?
+What kind of model should you use for p_θ of s?
 Well, there are a few choices.
 There are choices to be made about this model that are a little peculiar than the trade-offs we typically consider for density modeling and generative modeling.
 Usually, when we want to train a generative model, like a GAN or a VAE, what we care about is being able to sample from that model.

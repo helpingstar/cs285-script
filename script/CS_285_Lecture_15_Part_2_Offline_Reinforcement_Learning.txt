@@ -52,7 +52,7 @@ But writing it in this way makes it a little bit more apparent that there are re
 The part that multiplies all the actions prior to little t, which you can think of as essentially accounting for the fact that π theta has a different probability of reaching the state s_t than π beta does.
 And then all the stuff afterwards, which basically accounts for the fact that your value, the value q had that you estimate by summing up the rewards in π beta, might be different from the value that you would get from π theta.
 So the second part of the weight accounts for the difference in reward to go.
-So the first part accounts for the difference in probability of landing in st, because we have states sampled from d π beta and we want states from d π theta.
+So the first part accounts for the difference in probability of landing in s_t, because we have states sampled from d π beta and we want states from d π theta.
 And the second part accounts for having the incorrect q hat, because q hat here in the classic Monte Carlo policy gradient is formed by just summing up the rewards that you saw from π beta.
 And instead, what you want is the rewards from π theta.
 So you could disregard the first term.
@@ -92,7 +92,7 @@ So, this is just the important sample value estimate from the previous slide, an
 So notice that it's multiplying together the action probabilities from little t to little t' and little t' goes from, you know, goes all the way up to capital T.
 So at the very last time step, you're still multiplying together O of capital T probabilities.
 Um, I will for simplicity, I'll just drop the indices and I will turn my T primes into T just to keep it simple.
-So before notice that I was writing V of ST.
+So before notice that I was writing V of s_t.
 Now I'll just write it as V of S zero.
 I'll just write it out for the initials time step.
 Most of this is just to declutter my notation, but you can basically substitute and replace the zero with T and you would get all the stuff from before.

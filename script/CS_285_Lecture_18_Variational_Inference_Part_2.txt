@@ -19,7 +19,7 @@ tight than it does.
 And we'll see later that under some conditions, the bound is in fact tight.
 But for now, let's just not worry about tightness.
 Let's just see how we can get a bound by using Q I of Z.
-So we can write out the log probability of X I as the log of the integral over all values of Z of P of X I given Z times P of Z.
+So we can write out the log probability of X I as the log of the integral over all values of Z of p(x) I given Z times P of Z.
 And the usual trick, if you want to bring in some quantity that is not currently in the equation, is to multiply by that quantity divided by itself.
 So Q I Z over Q I Z is equal to one.
 So we can multiply that in whenever we want.
@@ -28,7 +28,7 @@ So we can write that quantity as an expected value under Q I of Z.
 So we basically take the numerator in that ratio.
 That becomes, that turns into an expectation.
 And then everything else is left behind.
-So we have log of the integral over all values of P of X I.
+So we have log of the integral over all values of p(x) I.
 So we can write that quantity as an expected value under Q I of Z of P X I given Z times P of Z divided by Q I of Z.
 All right.
 So, so far, we haven't made any approximation.
@@ -81,7 +81,7 @@ Now, the other concept I want to recap here is KL divergence.
 KL divergence between two distributions Q and P is given by the expected value under the first distribution of the log of the ratio of the probability of the first distribution divided by the second.
 And again, by exploiting the fact that the logarithm of a product is a sum of logarithms, we can write this out as the expected value under Q of Q of X minus the expected value under Q of log P of X, which we could rewrite in a manner that looks a lot more like the equation on the previous slide if we just trade places and recognize the expected value of the Q of P of X.
 So the expected value under Q of log Q is just the negative entropy.
-So the KL divergence is the negative of the expected value under Q of log P of X and the entropy of Q.
+So the KL divergence is the negative of the expected value under Q of log p(x) and the entropy of Q.
 One intuition for what the KL divergence measures is how different two distributions are.
 You will notice that when Q and P are equal, the KL divergence is zero.
 It's easy to see why it's zero because you have Q over P equals one, log of one is zero.

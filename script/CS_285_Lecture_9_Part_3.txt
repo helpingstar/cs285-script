@@ -1,9 +1,9 @@
 Alright, let's talk about how we can actually implement policy gradients with constraints to instantiate the algorithm that we derived in the previous section.
-So the claim that we had was that pθ of s_t is close to pθ' of s_t when πθ is close to πθ' and close here was defined in terms of total variation divergence.
+So the claim that we had was that p_θ(s_t) is close to p_{θ'}(s_t) when π_θ is close to π_{θ'} and close here was defined in terms of total variation divergence.
 Now it would help us to get a slightly more convenient bound because for some policy classes imposing total variation divergence constraints is actually pretty difficult.
 So a more convenient bound that we could derive, you can use the fact that total variation divergence is actually related to KL divergence via an inequality.
-So if you bound the KL divergence between πθ' and πθ, that also bounds the total variation divergence as per this equation.
-So that means that the KL divergence between πθ' and πθ bounds the state marginal difference.
+So if you bound the KL divergence between π_{θ'} and π_θ, that also bounds the total variation divergence as per this equation.
+So that means that the KL divergence between π_{θ'} and π_θ bounds the state marginal difference.
 But for those of you that aren't familiar with the KL divergence, it's a basically the most widely used type of divergence measure between distributions and it can be very convenient because it has tractable expressions expressed as basically expected values of log probabilities and many continuous value distributions have tractable closed form solutions for the KL divergence.
 So this makes the KL divergence very convenient to use.
 So the expression for a KL divergence is the expected value of the log of the ratio between the distributions and one way to get some intuition for why this class of divergences is a little bit more manageable is that the total variation divergence is expressed in terms of absolute value which means that it's in general not differentiable everywhere whereas the KL divergence is differentiable so long as the two distributions are equal.

@@ -320,7 +320,7 @@ So if machine learning systems are really all about making decisions, perhaps re
 Because with reinforcement learning, we could say that this kind of garbage data that we scrape from all available sources is really telling us what could be done in the world rather than what should be done.
 And then a limited amount of supervision can specify the tasks that the agent should perform.
 So then our big data set from past interactions isn't necessarily something that we're going to learn to copy.
-We're not going to learn P of X the way the language model does, but instead we'll use it to understand the possibilities available to us.
+We're not going to learn p(x) the way the language model does, but instead we'll use it to understand the possibilities available to us.
 And then among those possibilities, we'll select the ones that are most optimal at accomplishing the tasks that we want to do.
 So this perspective is perhaps a little bit abstract.
 What it's arguing for is using data within an RL loop, whether it's a model-based RL loop or an offline RL loop or something like that.

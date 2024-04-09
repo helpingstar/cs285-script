@@ -47,7 +47,7 @@ And that's the idea we're going to build on.
 So let's take this equation, and let's manipulate it a little bit more.
 What I'm going to want to do is make this notion explicit.
 I'm going to want to construct a distribution that I'm going to call the distribution over future states.
-And it's a distribution that depends on pi, so that's why I'm going to write it as p pi, s future equals s, given st.
+And it's a distribution that depends on pi, so that's why I'm going to write it as p pi, s future equals s, given s_t.
 So s future is a random variable, and the distribution here is basically the probability that you will land in that state at some point in the future, with different points in the future, weighted by gamma to a different palette.
 Now, as a little detail, the quantity in parentheses there doesn't actually sum to one.
 In order for it to sum to one, you have to multiply it out front by one minus γ.
@@ -113,8 +113,8 @@ So for continuous state spaces, we'll need to have kind of a density version of 
 But let's first talk about how to scale this to large state spaces, and then from there we'll discuss a little bit how this can actually give us a little bit of benefit over standard model-free RL.
 Okay.
 So for this we need to talk about something called successor features.
-So for a successor representation, if you can learn these vectors μ π as a function of st, then you can recover your value function as an inner product.
-Take the vector μ π st, basically the probability of landing in all future states given you start in st, and take a dot product of it with a vector of all rewards.
+So for a successor representation, if you can learn these vectors μ π as a function of s_t, then you can recover your value function as an inner product.
+Take the vector μ π s_t, basically the probability of landing in all future states given you start in s_t, and take a dot product of it with a vector of all rewards.
 But of course these vectors might be really huge, so you probably don't want to construct them.
 So instead of constructing these vectors, what if we construct their projections onto some basis?
 So let's say that we're given some features, maybe our features are five, and we're given some features of ϕ.

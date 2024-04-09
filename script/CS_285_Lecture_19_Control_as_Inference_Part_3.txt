@@ -90,7 +90,7 @@ Okay.
 So here's the variational lower bound that we saw in the lecture last week.
 The log probability of X is greater than the probability of X being greater than the probability of X being greater than X.
 So we're going to write out our variational lower bound in terms of these things.
-So we'll say that the value of X is greater than or equal to the expected value under Q of Z of log P of X comma Z minus log Q of Z.
+So we'll say that the value of X is greater than or equal to the expected value under Q of Z of log p(x) comma Z minus log Q of Z.
 And this is actually true for any Q of Z, but of course, as we learned last week, the closer Q of Z is to the posterior P of Z given X, the tighter this bound becomes.
 And this last term is just the entropy of Q.
 So substituting in our definitions for X and Z we can write out log P of O1 through T, the log probability of our evidence, as being greater than or equal to the expected value under s_1 through T and A1 through T distributed according to Q of all of the probabilities in our graphical model, log P of s_1 plus the sum of the log probabilities of the transitions plus the sum of the log probabilities of the equations.

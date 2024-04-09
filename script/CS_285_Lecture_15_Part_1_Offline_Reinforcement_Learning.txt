@@ -295,7 +295,7 @@ And because those distributions don't match, you end up performing very poorly.
 So, whenever we train something with supervised learning, we typically use a training set.
 And the training set comes from some training distribution.
 So, let's say that you are learning a function, f theta of x, and you're regressing onto ground truth values y.
-And your x's come from a distribution p of x, and your y's come from a ground truth distribution p of y given x.
+And your x's come from a distribution p of x, and your y's come from a ground truth distribution p(y) given x.
 So, you would sample a training set from your training distribution and minimize the error on that.
 And this is what's referred to as empirical risk minimization.
 So, your sampled training set is giving you an empirical estimate of the risk, and that's what you're minimizing.
@@ -307,11 +307,11 @@ That might seem like the most basic question you could ask in a supervised learn
 And it's actually a surprisingly subtle question.
 So, as long as you didn't overfit, you know that the expected value of your error under the training distribution is low.
 In general, the expected value of your error under some other distribution p bar of x is not low if p bar of x is not equal to p of x.
-I mean, the easiest way to think about it is to imagine that p of x is an interval on x from like 0 to 1, and p bar of x is from like 1 to 2, right?
+I mean, the easiest way to think about it is to imagine that p(x) is an interval on x from like 0 to 1, and p bar of x is from like 1 to 2, right?
 If you've just never seen x, you know, you can't do that.
 If you've never seen any y values in that interval, there's no reason to expect to get correct answers.
 Now, what if x star is sampled from p of x?
-Well, the thing is, even then, you're actually not guaranteed to have low error because you could have low error in expectation under p of x and still have high error on some individual points that are within the support of p of x.
+Well, the thing is, even then, you're actually not guaranteed to have low error because you could have low error in expectation under p(x) and still have high error on some individual points that are within the support of p of x.
 So, even that is not guaranteed.
 Now, if you are a deep learning practitioner, at this point you might be saying, well, yeah, this is true, this is like a bunch of kind of dusty, boring statistics.
 But usually we're not worried about this because neural networks generalize really well.

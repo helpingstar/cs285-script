@@ -260,14 +260,14 @@ Again, this is exactly the same as any other sequence model, like language model
 So one way to implement is actually with a GPT-style decoder-only model.
 Now, why does this work?
 Well, the reason that this is a perfectly valid way to represent complex distributions is that it can be seen by looking at what probability is actually predicted each step.
-So the first time step predicts p of at0 given st, because you get s_t as input, and your output is at0.
+So the first time step predicts p of at0 given s_t, because you get s_t as input, and your output is at0.
 The second step predicts the probability of at1 given s_t and at0.
 So the dependence on s_t comes from the fact that it's passed in through the sequence model, and at0 is fed as input.
-The third time step, you predict at2 given st, at0, and at1.
-If you multiply all these things together, then by the chain rule of probability, their product is exactly the probability of at0, at1, and at2 given st, which is exactly the probability of the action given the state.
+The third time step, you predict at2 given s_t, at0, and at1.
+If you multiply all these things together, then by the chain rule of probability, their product is exactly the probability of at0, at1, and at2 given s_t, which is exactly the probability of the action given the state.
 So this is the policy.
 If you multiply together, the probability is at all the time steps.
-And that means that if you sample the different dimensions in sequence, then you will actually get a valid sample from the distribution p of at given st.
+And that means that if you sample the different dimensions in sequence, then you will actually get a valid sample from the distribution p of at given s_t.
 So autoregressive discretization is actually a great way to get complex distributions, but it's a little bit more heavyweight in the sense that you have to use these sequence models for outputting actions.
 All right.
 Next, let me talk about a few case studies of papers that use these kinds of formulations.

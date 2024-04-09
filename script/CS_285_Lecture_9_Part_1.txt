@@ -139,7 +139,7 @@ And one of them has an r, and the other one has γ V(s_{t+1}) - V(s_t).
 So I can group these two expectations together.
 I can distribute the expectation out, and I get a sum from zero to infinity, γ^t, and then a quantity inside the parentheses, which is exactly the advantage function.
 And crucially, because the value function here is the value for π_θ, the advantage is the advantage for π_θ as well.
-So that means that this is equal to the expected value under p_{θ'}(τ) of the sum from zero to infinity of γ^t of the advantage of π_θ s_t, a_t.
+So that means that this is equal to the expected value under p_{θ'}(τ) of the sum from zero to infinity of γ^t of the advantage of π_θ(s_t), a_t.
 So this proves the claim that we want to prove.
 And just to make sure everyone is on the same page, concretely what this proves is that if we maximize the expected value of the advantage of an old policy with respect to an expectation for the new policy, then we will optimize J(θ').
 We'll actually optimize the reinforcement learning objective.

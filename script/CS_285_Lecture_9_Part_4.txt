@@ -108,7 +108,7 @@ If something here is unclear, please make sure to write a question in the commen
 All right, now here what I want to do is I want to back up a little bit and just ask, well, is this even a problem in practice?
 Like, it kind of seemed like regular gradient ascent, regular vanilla policy gradient, already enforces some kind of constraint.
 Maybe that constraint is just good enough.
-I mean, it does keep θ' close to θ.
+I mean, it does keep_θ' close to θ.
 Maybe not quite in the right way, but maybe that's a reasonable approximation.
 Well, let's think back to that example that we had in the policy gradient lecture, where we had a one-dimensional state space and a one-dimensional action space, where you get to choose to go left or right.
 Your reward was given by negative s squared minus a squared, and you had two policy parameters, k and sigma, where the probability of the actions is normally distributed, where the mean is k times s, and sigma is the variance.

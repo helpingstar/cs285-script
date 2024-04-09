@@ -76,16 +76,16 @@ Pi f is not a neural net.
 Pi f is just a planning algorithm run on top of the model f.
 So π f is fully determined by f.
 And it has its own state distribution.
-Its state distribution is p π f of st.
+Its state distribution is p π f(s_t).
 And in this case, that distribution involves going very far to the right and falling off the mountain.
-The reason that the problem happens is because p π f of s_t is not equal to p π zero of st.
+The reason that the problem happens is because p π f(s_t) is not equal to p π zero of s_t.
 So we are experiencing distributional shift.
-And the way the problems of this distributional shift manifest themselves is that our model is valid for estimating the outcomes of actions in the region that was visited during data collection, meaning for states with high probability p π zero of st.
+And the way the problems of this distributional shift manifest themselves is that our model is valid for estimating the outcomes of actions in the region that was visited during data collection, meaning for states with high probability p π zero of s_t.
 But when we plan under that model, we can't do that.
 We can't do that.
 We can't do that.
 We can't do that.
-If we go back to the model, when we select the actions for which the model produces states with the highest reward, the ones that go the most up, we will end up going to states during our planning process virtually that have very low probability under p π zero of st.
+If we go back to the model, when we select the actions for which the model produces states with the highest reward, the ones that go the most up, we will end up going to states during our planning process virtually that have very low probability under p π zero of s_t.
 And our model will make erroneous predictions at those states.
 And when it makes erroneous predictions at those states, then it will choose the best action in that erroneously predicted state, feed that back into itself.
 And that's what we call a what we call a prediction of the state.

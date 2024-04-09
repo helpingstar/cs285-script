@@ -35,13 +35,13 @@ We'll discuss whether coverage of valid states, whether basically breadth and no
 And then we'll talk about how we can go beyond just covering states and actually covering the space of skills and what the distinction between those is.
 All right, but let's start with some definitions and concepts from information theory before we dive into the main technical portion of today's lecture.
 So first, some useful identities.
-As all of you probably know, we can use P of X to denote a distribution.
+As all of you probably know, we can use p(x) to denote a distribution.
 And of course, we'll see that a lot in today's lecture.
 We saw that a lot already.
 And you can think of a distribution as something that you fit to a bunch of points and you get maybe a density in continuous space or distribution in discrete space.
-H of P of X denotes entropy, and we've seen this before.
+H of p(x) denotes entropy, and we've seen this before.
 Entropy is defined as the negative of the expected value of the log probability of X.
-And H of P of X denotes entropy, and we've seen this before.
+And H of p(x) denotes entropy, and we've seen this before.
 Entropy is defined as the negative of the expected value of the log probability of X.
 Intuitively, the entropy quantifies how broad a distribution is.
 So if you have a discrete variable X, then the uniform distribution has the largest entropy.

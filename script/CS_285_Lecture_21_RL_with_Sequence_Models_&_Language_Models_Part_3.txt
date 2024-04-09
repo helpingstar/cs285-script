@@ -96,7 +96,7 @@ Here is an example, a slice of our dialogue.
 And let's say that we're at this step.
 Let's say that we're at the stage where the bot is saying, are they facing each other?
 What we're going to do is we're going to take the history of the conversation up until this point, which constitutes the state.
-That's the entire dialogue history, ST.
+That's the entire dialogue history, s_t.
 And we're going to pass it through some kind of sequence model.
 So it could be a pre-trained language model.
 It could be something like BERT.

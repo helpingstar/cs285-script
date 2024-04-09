@@ -60,7 +60,7 @@ So instead of just finding the most likely θ, what if we actually try to estima
 That is the right kind of uncertainty to get in this situation.
 So the entropy of this distribution will tell us the model uncertainty, and we can average out the parameters and get a posterior distribution over the next state.
 So when we then have to predict, we would actually integrate out our parameters.
-So instead of taking the most likely θ and outputting the probability of s_t plus one, given st, at, and that most likely θ, we'll output our parameters by integrating out θ, by taking the integral p of s_t plus one given st, at, θ, times p of θ given d, d θ.
+So instead of taking the most likely θ and outputting the probability of s_t plus one, given s_t, at, and that most likely θ, we'll output our parameters by integrating out θ, by taking the integral p of s_t plus one given s_t, at, θ, times p of θ given d, d θ.
 Now of course, for large high-dimensional parameter spaces of the sort that we would have with neural nets, performing this operation exactly is completely intractable.
 So we have to resort to a variety of different approximations, and that's what we're going to talk about in this lecture.
 So intuitively, you could imagine this is producing some distribution over next states, which is going to integrate out all the uncertainty in your model.

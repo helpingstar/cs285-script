@@ -108,7 +108,7 @@ I apologize, there's a small typo on this slide, that AT plus 1 should be an s_t
 Okay, so in the deterministic case, this is all good.
 But what happens in the stochastic case?
 So in the stochastic case, now you can define a distribution over a sequence of states, conditioned on a sequence of actions.
-So you can say that, well, the probability of s_1 through S capital T, given A1 through A capital T, is given by probability of s_1 times the product of the s_t plus 1 given ST, AT terms.
+So you can say that, well, the probability of s_1 through S capital T, given A1 through A capital T, is given by probability of s_1 times the product of the s_t plus 1 given s_t, AT terms.
 Notice that the probability of AT given s_t doesn't appear here, because we are conditioning everything on a plan.
 We are conditioning everything on a sequence of actions.
 So in this case, we can select our sequence of actions as the sequence of actions that we want to use.
@@ -160,7 +160,7 @@ So if there is this closed-loop case and open-loop case, and so far we've talked
 In a closed-loop case, each time step, the agent observes a state and then responds with an action, which you could also think of as observing the first state and then committing to a closed-loop policy.
 So instead of sending a state, sending back a sequence of actions, you send back a relationship between states and actions, a mapping that tells the world, for every state the agent might be in, which action would they take.
 So reinforcement learning typically solves closed-loop problems.
-So in the closed-loop case, you create a policy, π at given st, and now you don't condition on a fixed set of policies, sorry, on a fixed set of actions, but you condition on an entire policy.
+So in the closed-loop case, you create a policy, π at given s_t, and now you don't condition on a fixed set of policies, sorry, on a fixed set of actions, but you condition on an entire policy.
 And then your objective is exactly the same as the reinforcement learning objective from before.
 Now, there are many different choices we can make for the form of π.
 So, so far in the course, we've talked about very expressive classes of policies like neural networks.

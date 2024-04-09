@@ -52,7 +52,7 @@ We can write.
 This expression is following.
 We can write it as grad Q minus grad V times R plus next Q minus current Q plus current V.
 But remember, because of the baseline property, any state dependent function inside the parentheses can be removed.
-So this V of ST, we can simply get rid of it.
+So this V of s_t, we can simply get rid of it.
 And now remember what the Q learning objective is.
 The Q learning objective is grad Q times R plus the softmax of the next Q minus the current Q.
 So here we can see now that the policy gradient actually looks a lot like the Q learning objective under the soft optimality framework.

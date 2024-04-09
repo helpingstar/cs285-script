@@ -15,13 +15,13 @@ It has a distribution of next states given previous states in actions and distri
 And typically, when we're doing this, we're going to do a POMDP model.
 And typically, when we're doing this, we're going to do a POMDP model.
 When we're doing RL with images, we know the observations and actions, but we do not know the states.
-So we would like to learn the transition dynamics in state space, P of s_t plus 1 given ST, AT, but we don't even know what S is.
+So we would like to learn the transition dynamics in state space, P of s_t plus 1 given s_t, AT, but we don't even know what S is.
 So perhaps we could separately learn P of OT given s_t and P of s_t plus 1 given s_t comma AT.
 And that could be quite nice because P of OT given s_t handles all the high dimensionality.
 And that could be quite nice because P of OT given s_t handles all the high dimensionality.
 And that could be quite nice because P of OT given s_t handles all the high dimensionality.
 But it doesn't have to deal with the complexity of temporal dynamics.
-Whereas the P of s_t plus 1 given ST, AT has to deal with the dynamics, but doesn't have to deal with the high dimensional stuff.
+Whereas the P of s_t plus 1 given s_t, AT has to deal with the dynamics, but doesn't have to deal with the high dimensional stuff.
 And maybe this separation of roles can give us some viable model-based RL algorithms for image observations.
 I'll discuss such algorithms briefly and somewhat informally.
 But then at the end, I'll also talk about how maybe some of this is not actually true.
@@ -31,13 +31,13 @@ But first, let's talk about these kind of state-space models.
 So these are sometimes referred to as latent space or latent state models.
 In general, they're state-space models.
 So here we're going to learn two objects.
-We're going to learn a P of OT given ST.
+We're going to learn a P of OT given s_t.
 Basically, how does our state map to an image?
 That's the observation model.
-And a P of s_t plus 1 given ST, AT, which is our dynamics model.
+And a P of s_t plus 1 given s_t, AT, which is our dynamics model.
 In our unobserved state.
-So we're going to learn a P of RT given ST, AT.
-We will typically also need to learn a reward model, P of RT given ST, AT, because our reward depends on the state.
+So we're going to learn a P of RT given s_t, AT.
+We will typically also need to learn a reward model, P of RT given s_t, AT, because our reward depends on the state.
 And since we don't know what the state is, we don't know how the reward depends on it.
 So we typically also add a reward node to this and learn a reward model.
 All right.
@@ -45,11 +45,11 @@ So how should we train one of these things?
 Well, if we had a standard fully observed model, we would train it with maximum likelihood.
 We would basically take our data set of N, and we would train it to train the number of different transitions.
 And for each transition, we would maximize the log probability of s_t plus 1 comma I, given STI and ATI.
-If we have a latent space model, now we have a P of OT given s_t and a P of s_t plus 1 given ST, AT.
+If we have a latent space model, now we have a P of OT given s_t and a P of s_t plus 1 given s_t, AT.
 So we have to maximize the log probabilities of both of those, and potentially also the reward model, if we want to add that in.
 If we knew the states, then this would be easy.
 Then we would just add together log P5, P5, P5 and P5.
-st plus one given s_t at to log p ϕ ot given st.
+st plus one given s_t at to log p ϕ ot given s_t.
 The problem is that we don't know what s is, so we have to use an expected log likelihood objective where the expectation is taken over the distribution over the unknown states in our training trajectories.
 Those of you that are familiar with things like hidden Markov models, it's basically the same idea.
 So we would need some sort of algorithm that can compute a posterior distribution over states given our images and then estimate this expected log likelihood using states sampled from that approximate posterior.
@@ -76,7 +76,7 @@ I'll gloss over how to train these probabilistic encoders in this lecture, and I
 So we're going to talk about the single step encoder, and we're going to talk about a very simple special case of the single step encoder.
 So if we were to really do this right, then for every time step we would sample s_t from q of s_t given .
 And s_t plus 1 from q of s_t plus 1 given ot plus 1.
-And then using those samples, maximize log p of s_t plus 1 given s_t and log p of ot given st.
+And then using those samples, maximize log p of s_t plus 1 given s_t and log p of ot given s_t.
 But a very simple special case of this, if you believe that your problem is almost fully observed, is to actually use a deterministic encoder.
 So instead of outputting a distribution over s_t given ot, we would just output a single s_t for our current ot.
 The stochastic case requires variational inference, which I'll discuss next week, but the deterministic case is quite a bit simpler.
@@ -182,7 +182,7 @@ And this is after about 20 minutes of training.
 So these kinds of algorithms tend to be quite a bit more efficient than model-free algorithms that we discussed before.
 Okay.
 Now, so far, we've talked about algorithms that learn a latent state-space model.
-They learn some sort of encoder with an embedding g of ot equals st.
+They learn some sort of encoder with an embedding g of ot equals s_t.
 What if we dispense with the embedding altogether and actually go back to the original recipe and model-based RL, but in observation space?
 So what if we directly learn p of ot plus 1 given ot at?
 If we have partial observability, then we probably need to use a recurrent model.

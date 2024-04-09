@@ -13,7 +13,7 @@ So first we can take this equation for the backward message and we can insert th
 So the backward message is equal to the integral over all values of s_t plus 1 of p of o, t through big T, comma s_t plus 1 given s, d, a, t.
 And now what we'll do is we'll factorize this distribution using the CPF.
 And we'll use this to determine the order of the vectorization.
-So we'll do that by taking some of the TPFs that we have in our model and our goal on doing this factorization is to recover a recursive expression where we can represent beta t, st, a, t as some function of beta t plus 1 s plus 1.
+So we'll do that by taking some of the TPFs that we have in our model and our goal on doing this factorization is to recover a recursive expression where we can represent beta t, s_t, a, t as some function of beta t plus 1 s plus 1.
 So in order to factorize this expression the thing that we have to note is that future optimality variables, namely o, t plus 1 through capital T, are independent of every everything in the past when conditioned on sd plus one.
 And we can see this just from inspection of the graphical model.
 And that means that we can factorize this expression into three parts.
@@ -60,7 +60,7 @@ All right.
 Now let's take a closer look at this backward pass.
 So here's the recursive algorithm that I derived on the previous slide.
 And we're going to make some definitions with some very suggestive names that will help us understand this algorithm.
-First, we're going to define vt of s_t as the logarithm of beta t st.
+First, we're going to define vt of s_t as the logarithm of beta t s_t.
 And then we'll define qt of s_t a t as the logarithm of beta t s_t a t.
 And now we can write these equations in log space.
 So if we write the equation for the state backward message in log space, then we get vt of s_t is equal to the logarithm of the integral of the exponentiated qt s_t a t.
@@ -98,28 +98,28 @@ But intuitively, the reason that this problem happens is because when we ask the
 We'll come back to this later and discuss the stochastic case in more detail on how to fix this problem.
 But for now, the thing I would note is that at least the deterministic case perfectly matches the classic notion of the stochastic case.
 So we can just use the same kind of value iteration we saw before, with the exception that we use a softmax instead of a hardmax.
-Alright, so just to summarize the backward pass, we have these backward messages beta t of st, a, t, which are equal to the probability of O little t through capital T given st, a, t.
-That's the probability that we can be optimal at steps little t through capital T given that we take action a, t in state st.
-And we can calculate this via recursion by repeating these two steps, computing the state action backward message as the expected value of the next state message times p of O given st, a, t, and computing the state backward message as the expected value of the state action backward message under the action distribution, which is uniform.
+Alright, so just to summarize the backward pass, we have these backward messages beta t of s_t, a, t, which are equal to the probability of O little t through capital T given s_t, a, t.
+That's the probability that we can be optimal at steps little t through capital T given that we take action a, t in state s_t.
+And we can calculate this via recursion by repeating these two steps, computing the state action backward message as the expected value of the next state message times p of O given s_t, a, t, and computing the state backward message as the expected value of the state action backward message under the action distribution, which is uniform.
 So the log of beta t is kind of a Q-function-like object.
-And we can make this more apparent by setting vt to be log of beta t, st, and Qt to be log of beta t, st, a, t.
+And we can make this more apparent by setting vt to be log of beta t, s_t, and Qt to be log of beta t, s_t, a, t.
 Alright, let's discuss the action prior a little bit more, because I kind of brushed this under the rug a little bit, and this is something where I often get a lot of questions.
 So what if the action prior is not uniform?
 What if you believe the monkey is, maybe it's a lazy monkey, that even if it's not being optimal, it's more likely to take small actions than big actions?
 Well, if the action prior is not uniform, then our expression for v of s_t becomes a little bit more complex.
 Instead of being the log integral of the exponential to Q, now it's the log integral of the exponential to Q plus the log probability of the action given the state, where our Q is defined like this.
-So if we redefine Q to be a different quantity Q tilde, which is given by r plus log p, of a, t given st, plus the log expectation of the next value, then we get this expression that the corresponding value function is just the log of the integral of the exponentiated Q tilde.
+So if we redefine Q to be a different quantity Q tilde, which is given by r plus log p, of a, t given s_t, plus the log expectation of the next value, then we get this expression that the corresponding value function is just the log of the integral of the exponentiated Q tilde.
 So this makes it apparent that if we simply add log p of a, t given s_t to the reward, and then do everything the same way we did before, as though the action prior was uniform, we'll recover exactly the right answer as we would have if we had properly accounted for a non-uniform action prior.
 And this is basically why we don't worry about the action prior, because we can always construct a different reward function that accounts for the action prior, and then treat it from there on out as though it was uniform.
 So that's why we basically don't worry about that term.
 We can always fold the action prior into the reward, and a uniform action prior can therefore be assumed without any loss of generality.
 All right.
 Next, let's talk about how we can recover the policy from the backward messages.
-So the policy is the probability of a, t given st, and given that the entire trajectory is optimal.
+So the policy is the probability of a, t given s_t, and given that the entire trajectory is optimal.
 So this is basically our near-optimal policy.
 Now, as before, we can note that past optimality variables are conditionally independent given the state.
-Which means that we can equivalently write this query as p given st, o .
-So basically, all of those optimality variables 1 through t minus 1 do not affect a, t, because they are de-separated by st.
+Which means that we can equivalently write this query as p given s_t, o .
+So basically, all of those optimality variables 1 through t minus 1 do not affect a, t, because they are de-separated by s_t.
 And this makes it maybe a little more obvious why we can recover the policy using only the backward messages.
 Because all of the variables that appear in this expression now were all present in the backward messages.
 So what we're going to do is we're going to write this conditional probability using the definition of conditional probability as p given o , divided by p given o .
@@ -139,9 +139,9 @@ And that leaves us with these two expressions.
 Now remember that our backward message is o given sd .
 And our state backward message is o given s_t .
 So the first fraction in this expression is just the ratio of the state action backward message and the state backward message.
-The second ratio is just p given st, which is our action prior, which we've assumed to be uniform.
+The second ratio is just p given s_t, which is our action prior, which we've assumed to be uniform.
 So the second fraction goes away, because it's uniform, it's a constant, leaving us with just the first fraction.
-So that means that the optimum policy, π of a given st, can simply be recovered as the ratio between the state action message and the state message.
+So that means that the optimum policy, π of a given s_t, can simply be recovered as the ratio between the state action message and the state message.
 All right.
 Now, let's bring back this idea of expressing things in log space.
 So in log space, we saw that the logarithm of the state action backward message is kind of Q-like, and the logarithm of the state backward message is V-like.
@@ -149,7 +149,7 @@ So we can see that the logarithm of the state action backward message is kind of
 So what if we plug those into the policy?
 If we plug these into the policy, then we get that π of a given s_t is equal to the exponential of Q divided by the exponential of V, which is just the exponential of Q minus V, and Q minus V is an advantage-like function.
 So that's quite appealing.
-We're now able to express the policy, π of a given st, as the exponential of the advantage st.
+We're now able to express the policy, π of a given s_t, as the exponential of the advantage s_t.
 which means your probability of taking an action is the Boltzmann distribution in this soft advantage-like function.
 Actions with higher advantage are more likely, the action with the largest advantage is the most likely, and actions become exponentially less likely as their advantage decreases.
 That seems like a fairly intuitive notion.
@@ -171,7 +171,7 @@ So the forward message is the probability of the state given optimality from one
 The way that we're going to calculate forward messages will be similar to how we calculated backward messages.
 We'll put in the previous time step variables, integrate them out, and recover a recursive procedure.
 So the two variables that I'm going to put in are s_t minus one and at minus one.
-So I get p of st, s_t minus one, at minus one, given o one through t minus one.
+So I get p of s_t, s_t minus one, at minus one, given o one through t minus one.
 Again, I'm going to factorize this expression into terms that I can figure out.
 So I'm going to factorize it into s_t given s_t minus one, comma at minus one, comma o one through t minus one.
 So that's just the first term.
@@ -210,16 +210,16 @@ So that's how you can calculate the forward messages.
 Once we've calculated the forward messages, the next question we could ask is, well, what if we want to recover the state marginal?
 What if we want to recover the probability of a state given optimality everywhere from one through capital T?
 So in that case, now that we have both backward and forward messages, we can actually derive this equation pretty easily.
-So p of s_t given o one through capital T using the definition of conditional probability is p of s_t comma o one through capital T divided by p of st.
-So we can write p of s_t given s_t as the probability of s_t given st.
+So p of s_t given o one through capital T using the definition of conditional probability is p of s_t comma o one through capital T divided by p of s_t.
+So we can write p of s_t given s_t as the probability of s_t given s_t.
 Now we can factorize the numerator.
 And the way that we factorize the numerator is we're going to write it as p of o little t through capital T given s_t times the probability of s_t and all the other o's.
-And the reason we can do that is because we know that o through capital T is conditionally independent of past o's given st.
-Now here, the first one, the first term in the numerator is just the state backward message of st.
+And the reason we can do that is because we know that o through capital T is conditionally independent of past o's given s_t.
+Now here, the first one, the first term in the numerator is just the state backward message of s_t.
 So we can write this expression as following.
 We can write it as being proportional, if we disregard the denominator, to beta t s_t of p of s_t o one through t minus one times p of o one through t minus one.
 The second term is just the forward message.
-And the last term doesn't depend on st.
+And the last term doesn't depend on s_t.
 So if we're willing to accept it in an unknown normalizing constant, we can simply disregard that.
 So then we're left with the probability of a state given o one through t is proportional to the backward message multiplied by the forward message.
 Very simple, very elegant.
