@@ -26,12 +26,12 @@ For those of you that are not familiar with generative adversarial networks, the
 A generator network, which takes in a random sample, random noise Z, and turns it into some sample X, which ideally should correspond to samples that resemble the data distribution.
 So if you train this system on faces, the sample X's should look like realistic faces.
 The data consists of samples from the true unknown distribution P star of X.
-And the discriminator, there's a second network called the discriminator, which is a binary classifier that tries to assign the label true to all of the samples from the data, to all the samples from P star, and the label false to all the samples from the generator P theta.
+And the discriminator, there's a second network called the discriminator, which is a binary classifier that tries to assign the label true to all of the samples from the data, to all the samples from P star, and the label false to all the samples from the generator P θ.
 So here d psi of X is the binary classifier that represents the discriminator.
 And here d psi of X is basically the probability that this sample is true, meaning the probability that the discriminator thinks the sample is a real sample from P star, rather than a fake sample from the generator.
-So the objective for the discriminator is to maximize the log probability of the samples being true on P star, and minimize the log probability, or equivalently maximize the log of 1 minus the probability for all the samples from P theta.
-So it's trying to make the P theta equal to 1 minus the probability of the sample being true on P star.
-So it's designed to have the P theta and the P theta samples look fake.
+So the objective for the discriminator is to maximize the log probability of the samples being true on P star, and minimize the log probability, or equivalently maximize the log of 1 minus the probability for all the samples from P θ.
+So it's trying to make the P θ equal to 1 minus the probability of the sample being true on P star.
+So it's designed to have the P θ and the P θ samples look fake.
 The P star samples look real.
 So it's just another neural network that takes in X and outputs the probability of a Bernoulli variable.
 And then the generator is trained to fool the discriminator.
@@ -39,23 +39,23 @@ It's trained to produce images X, for which the discriminator gives a high proba
 Now this is very much like the inverse RL procedure that I outlined before.
 In fact, you can frame inverse RL as a kind of GAN.
 So one choice you have to make is what kind of discriminator should you use.
-So in GANs we can actually show that the optimal discriminator, the Bayes optimal discriminator, at convergence should represent the density ratio between P star and P theta.
-Now in practice we usually don't have an optimal discriminator, but if we were to train the discriminator at convergence we would expect it to converge to a network that for every X gives the probability as being P star of X divided by P theta of X plus P star of X.
+So in GANs we can actually show that the optimal discriminator, the Bayes optimal discriminator, at convergence should represent the density ratio between P star and P θ.
+Now in practice we usually don't have an optimal discriminator, but if we were to train the discriminator at convergence we would expect it to converge to a network that for every X gives the probability as being P star of X divided by P θ of X plus P star of X.
 Now you might say okay this is like this seems kind of weird like shouldn't the discriminator at convergence just give probability of 1 to all the samples from P star?
-Well not necessarily because if P theta generates some images that are identical to images that P star might produce, that are identical to images that might come from the real data distribution, then the discriminator can't give them a probability of 1.
+Well not necessarily because if P θ generates some images that are identical to images that P star might produce, that are identical to images that might come from the real data distribution, then the discriminator can't give them a probability of 1.
 So if you have a discriminator at convergence and you're going to have a discriminator at convergence and you're going to have a probability of 1.0 because they might actually be fake.
 So it has to produce probabilities according to this ratio.
-If P theta is very bad this is not a problem because usually in that case the realistic images will all have very low probability of P theta and the fake images will have very low probability of P star.
-But as P theta gets better and better the discriminator is going to produce values other than 0 and 1.
-In fact at convergence when P theta of X is actually equal to P star you would expect the discriminator to produce probabilities that are always 0.5.
+If P θ is very bad this is not a problem because usually in that case the realistic images will all have very low probability of P θ and the fake images will have very low probability of P star.
+But as P θ gets better and better the discriminator is going to produce values other than 0 and 1.
+In fact at convergence when P θ of X is actually equal to P star you would expect the discriminator to produce probabilities that are always 0.5.
 Okay this may be a little bit of an academic exercise.
 We can actually use this inference to cast inverse RL as a kind of GAN with a very peculiar kind of discriminator.
-So for IRL the optimal policy is going to approach P theta which is proportional to P of τ times the exponential of R psi of τ.
+So for IRL the optimal policy is going to approach P θ which is proportional to P of τ times the exponential of R psi of τ.
 So what we're going to do is we're going to choose this parameterization for our discriminator.
 We're going to say that the discriminator is equal to P of τ times 1 over Z times the exponential reward.
-So that's just the optimal policy distribution divided by P theta of τ plus P of τ times 1 over Z times the exponential reward.
+So that's just the optimal policy distribution divided by P θ of τ plus P of τ times 1 over Z times the exponential reward.
 So we've basically just directly used the formula for the optimal discriminator replacing P star with P of τ times the exponential reward which is reasonable because that's what we would expect to get at convergence.
-And if we expand the equation of P theta of τ just as before the trajectory probabilities which contain all those initial state and dynamics terms will cancel out leaving us with a discriminator that has the form 1 over Z times the exponential reward divided by the product of the policy's probabilities plus 1 over Z times the exponential reward.
+And if we expand the equation of P θ of τ just as before the trajectory probabilities which contain all those initial state and dynamics terms will cancel out leaving us with a discriminator that has the form 1 over Z times the exponential reward divided by the product of the policy's probabilities plus 1 over Z times the exponential reward.
 And something to note here is that this discriminator will only be equal to 0.5 when the policy probabilities are equal to the exponential reward, which means that the policy is converged.
 And then what we're going to do is we're going to optimize this discriminator, this ratio, with respect to the parameters of the reward with respect to psi.
 So we'll basically pick the reward such that this ratio is largest for the human samples and smallest for the policy samples.

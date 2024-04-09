@@ -8,28 +8,28 @@ And that's basically the idea behind gradient-based meta-learning.
 Essentially, if we have better features, then we can do faster learning of a new task, and we can actually optimize our features so that learning of the new task is faster.
 So here's how we could fit this into...
 into the framework of meta-learning that we've developed so far.
-So this is that view of meta-learning, meta-reinforced learning from before, where you are meta-training f-theta so that f-theta produces phi's that lead to high reward on the meta-training tasks.
-And in order for this to work, f-theta needs to be able to use the experience seen so far in the MDP-MI to produce this phi-i.
-So what if f-theta is itself...
+So this is that view of meta-learning, meta-reinforcement learning from before, where you are meta-training f-θ so that f-θ produces phi's that lead to high reward on the meta-training tasks.
+And in order for this to work, f-θ needs to be able to use the experience seen so far in the MDP-MI to produce this phi-i.
+So what if f-θ is itself...
 an RL algorithm?
 So it's not some kind of RNN that just reads in all the experience.
 It's actually like a reinforcement learning algorithm, like a policy gradient algorithm.
-And the parametrization of f-theta is really just the initial parameters of the policy that is fed into it.
-So standard RL would take the objective, what's called j-theta, and maybe we'll do standard RL with policy gradient.
+And the parametrization of f-θ is really just the initial parameters of the policy that is fed into it.
+So standard RL would take the objective, what's called j-θ, and maybe we'll do standard RL with policy gradient.
 So it will take the current task, compute the gradient of...
 j with respect to the parameters, and then update the parameters.
-So let's say that f-theta does the same thing.
-f-theta takes the parameters theta and adds to them the gradient of j-i, the objective for the MDP-MI, evaluated at theta.
-So that's f-theta.
-This is the definition of f-theta, this equation.
+So let's say that f-θ does the same thing.
+f-θ takes the parameters θ and adds to them the gradient of j-i, the objective for the MDP-MI, evaluated at θ.
+So that's f-θ.
+This is the definition of f-θ, this equation.
 And you could extend this of course to several gradient steps, but for now let's just say one gradient step.
-Okay, so f-theta updates the parameters theta with one gradient step.
-Can we find a theta so that this...
+Okay, so f-θ updates the parameters θ with one gradient step.
+Can we find a θ so that this...
 achieves high reward on all of the meta-training tasks?
-Now keep in mind that computing the gradient of j-i theta requires interacting with the MDP-MI.
+Now keep in mind that computing the gradient of j-i θ requires interacting with the MDP-MI.
 It turns out that we can actually do this optimization.
 This is called model agnostic meta-learning.
-So model agnostic meta-learning is basically just a kind of meta-learning where f-theta has this funny parametrization that matches the structure of a reinforcement learning algorithm, or if you're doing supervised learning, it matches the structure of a supervised learning algorithm.
+So model agnostic meta-learning is basically just a kind of meta-learning where f-θ has this funny parametrization that matches the structure of a reinforcement learning algorithm, or if you're doing supervised learning, it matches the structure of a supervised learning algorithm.
 Basically a gradient update.
 So let's think about this visually in pictures.
 So let's say that you have your neural network that reads in the state and outputs the action.
@@ -37,14 +37,14 @@ Let's just think about policy grading for now to keep it simple.
 And instead of training on a single task and updating with policy grading on that, we would have a variety of different tasks.
 So maybe for each task this ant needs to run in a different direction.
 And then for every task we will update the policy pattern.
-So we can look at these parameters theta with the gradient of the task theta evaluated at theta plus the gradient of the task theta.
-So we're essentially trying to optimize theta so that applying a gradient step on this task increases the reward on this task as much as possible.
+So we can look at these parameters θ with the gradient of the task θ evaluated at θ plus the gradient of the task θ.
+So we're essentially trying to optimize θ so that applying a gradient step on this task increases the reward on this task as much as possible.
 So it's a kind of a second order thing.
-Find the theta so that applying a gradient step increases the reward maximally.
+Find the θ so that applying a gradient step increases the reward maximally.
 And then we can do this.
 So we're going to do the same thing again.
 And if you do this for one gradient step, you can kind of visually think of it like this.
-That you have your space of parameters theta and you're finding a point in that space where the optimal solution for each task, theta one star, theta two star, theta three star, etc.
+That you have your space of parameters θ and you're finding a point in that space where the optimal solution for each task, θ one star, θ two star, θ three star, etc.
 is one gradient step away.
 Now, of course, you don't have to do one gradient step.
 You can do multiple gradient steps and it's a little bit more cumbersome to write out the algebra, but it's quite doable.
@@ -59,7 +59,7 @@ Supervised meta-learning maps d train in x to y, where x is a test point.
 So supervised learning maps d train in x to y, where x is a test point.
 So supervised learning maps d train in x to y, where x is a test point.
 Model agnostic meta-learning, at least in the supervised setting, can also be viewed as a function of d train in x, except that the function has a special structure.
-So f-mammal applied to d train in x is just f theta prime of x, where theta prime is obtained by taking a gradient step.
+So f-mammal applied to d train in x is just f θ prime of x, where θ prime is obtained by taking a gradient step.
 So what this makes clear is that this is really just another computation graph.
 It's just another architecture.
 It's just another architecture.

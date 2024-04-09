@@ -272,7 +272,7 @@ And if there is one algorithm, what does this one algorithm need to be able to d
 Well, it needs to interpret rich sensory inputs, and it needs to choose complex actions.
 And to do both of those things, we need large high-capacity models, because that's the only way we know how to deal with rich sensory inputs, and we need reinforcement learning, because that's the mathematical formulas we use to take actions.
 So, why deep reinforcement learning?
-Well, the deep part provides us with scalable learning from large complex data sets, and the reinforced learning gives us the optimization, the ability to take actions.
+Well, the deep part provides us with scalable learning from large complex data sets, and the reinforcement learning gives us the optimization, the ability to take actions.
 The combination of learning and search.
 Deep is great for learning.
 Reinforced learning is the way that we do the search.

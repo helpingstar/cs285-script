@@ -18,7 +18,7 @@ If you're not going to be allowed to update your strategy later, this is kind of
 So if you're in pure exploitation mode, the optimal thing to do is just keep picking the action that seemed on average to be the best.
 You could instead construct an optimistic estimate by taking the mean of the reward for that action and adding some constant C times a standard deviation.
 So what this will do is it'll select, select actions that have a very high mean or that have a lower mean but a very high standard deviation, meaning actions for which you're really uncertain about what reward you're going to get.
-So the sigma is some sort of variance estimate.
+So the σ is some sort of variance estimate.
 And if you do this, you're kind of being optimistic.
 You're saying, I would guess that anything that I haven't learned about thoroughly might be good.
 So if you think it might be good, just try it.
@@ -48,12 +48,12 @@ It's not trying to explicitly model any uncertainties, just counting how many ti
 It's asymptotically optimal, but in practice it's not always actually the best method.
 In practice there are some empirical differences.
 So one way that you could do exploration as an alternative is to actually do something that is a little closer to that POMDP.
-So you could actually maintain that, you could actually maintain a belief state over your thetas.
-So you could say, well, you have this POMDP with states theta, and you're going to maintain a belief over those thetas in some very approximate way.
+So you could actually maintain that, you could actually maintain a belief state over your θs.
+So you could say, well, you have this POMDP with states θ, and you're going to maintain a belief over those θs in some very approximate way.
 So this is a kind of model of your bandit.
-This P hat of theta is a distribution over possible bandits that you think you might have.
-The posterior sampling or probability matching strategy says the way that you should explore is you sample a vector of thetas from your belief and then pretend that that's the true MDP and take the optimal action.
-So if you sample a bunch of thetas and then take the action that is best according to that model, then you will either find that you got the right answer, meaning you'll find the model you sampled is pretty accurate and you did in fact get the higher reward that you expected, or you'll get a counterexample to that model.
+This P hat of θ is a distribution over possible bandits that you think you might have.
+The posterior sampling or probability matching strategy says the way that you should explore is you sample a vector of θs from your belief and then pretend that that's the true MDP and take the optimal action.
+So if you sample a bunch of θs and then take the action that is best according to that model, then you will either find that you got the right answer, meaning you'll find the model you sampled is pretty accurate and you did in fact get the higher reward that you expected, or you'll get a counterexample to that model.
 So if you sample the model and it says that action one is really good, you pull arm one and you find that arm one is actually terrible, now your belief is going to change and the next time around you won't sample that model anymore because it will have much lower probability.
 Now this is not nearly as hard as actually solving the POMDP because this strategy doesn't reason about the information that you will gain from actually pulling that arm.
 In a sense it kind of acts greedily.
@@ -95,10 +95,10 @@ So this is how much we learn about z from action a, given our current beliefs.
 So you would use a conditional expectation.
 So an example algorithm that uses this idea is described in this paper by Russo and Van Roy, called Learning to Optimize via Information-Directed Sampling.
 And the choice they have to make is, what do you gain information about, and what is the variable that you're going to actually observe?
-So they say that the variable that you observe is the reward for action a, and the variable that you want to learn is theta a, meaning the parameters for the model for action a.
+So they say that the variable that you observe is the reward for action a, and the variable that you want to learn is θ a, meaning the parameters for the model for action a.
 So when you observe a reward, you don't actually know what distribution that reward comes from.
 So what you want to learn about is the parameters for that reward, for that action, and what you observe is a sample from that distribution.
-So they define information gain about theta i from observing r a given the action a.
+So they define information gain about θ i from observing r a given the action a.
 So this is the information gain of some action a.
 And they define this quantity called δ a, which is the expected sub-optimality of some action a.
 So this is saying, under your current belief about the MDP, what is the difference between the optimal action, for what you think the model might be, and the action that you're currently considering.
@@ -118,7 +118,7 @@ Okay, so if you want to learn more about this strategy, check out the paper by R
 But the short versions that they show this strategy is also very, very good, although it's a bit more mathematically involved.
 All right, so the general themes that we learned about, we learned about upper confidence bound or optimistic exploration, which is when you take the average expected reward for some action, and you add a bonus to it.
 Which scales as the inverse of the number of times you've taken that action, meaning that actions that haven't been taken very often get a really large bonus, and then you're really incentivized to take them more.
-We learned about Thomson sampling, where you maintain a belief over theta, you sample from that belief, and then you take the optimal action according to that sample.
+We learned about Thomson sampling, where you maintain a belief over θ, you sample from that belief, and then you take the optimal action according to that sample.
 And we learned about information gain, where you try to estimate how much information you can gain about some quantity of interest z, based on some observation y, given some action a.
 And then you might want to, for example, gain information about the model, using the rewards as your observations.
 Now, most exploration strategies do require some kind of uncertainty estimation, as we saw.

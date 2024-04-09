@@ -61,7 +61,7 @@ So we'll assume that every iteration, we compute this approximate Bellman backup
 And I'll come back to this later.
 So this is, this assumption is kind of made out of convenience because it's difficult to do this with the L2 norm.
 Okay, so which Questions are we gonna want to study?
-Well, one question is, as the number of theta q iteration iterations approaches infinity, what is q hat k actually approach?
+Well, one question is, as the number of θ q iteration iterations approaches infinity, what is q hat k actually approach?
 In particular?
 How much does q hat k differ from q star?
 asymptotically as we take infinitely many approximate fitter Q iteration, iterations?

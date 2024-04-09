@@ -36,7 +36,7 @@ So I'm going to use X here, but S means the same thing.
 And then we have our latent variable distribution P .
 And when you train a variational autoencoder, as we'll learn a few weeks from now, you also need an inference network that maps back to Zs from states.
 So if you have a generative model like this, one of the ways you could propose a goal is you could just sample it from the model.
-So you could sample your latent variable from the latent variable prior, so sample Zg from P , and then reconstruct the corresponding image by sampling Xg from P theta Xg given Zg.
+So you could sample your latent variable from the latent variable prior, so sample Zg from P , and then reconstruct the corresponding image by sampling Xg from P θ Xg given Zg.
 So that'll give you an imagined image.
 And again, you don't have to do this with VAEs, any kind of generative model would work, something that can propose a goal.
 And then you could attempt to reach that goal using a policy.
@@ -77,9 +77,9 @@ Anyway, after the over publishing, in fact, we can decide how t걸 s, o2 Chiefé
 So for each of the data sets of the generative of theleigh population, we must estimate the total percentages determined at the coming number.
 And so that's the last example we have on a��uhs.
 Here's our test c, where this team demkeeped some state of clock, beispielsweise, assigns to that state x.
-So we'll set the weight to be p theta of x bar raised to some power alpha, where alpha is a negative number.
-So this will essentially be 1 over p theta of x bar to some positive power, or equivalently p theta of x bar to some negative power.
-And one of the things we can prove, I'm not going to go through the proof for this, but the proof is in these papers, it's possible to prove that if you use a negative exponent, then the entropy of p theta of x will increase, meaning that each time you go around this loop, you'll be proposing broader and broader goals.
+So we'll set the weight to be p θ of x bar raised to some power α, where α is a negative number.
+So this will essentially be 1 over p θ of x bar to some positive power, or equivalently p θ of x bar to some negative power.
+And one of the things we can prove, I'm not going to go through the proof for this, but the proof is in these papers, it's possible to prove that if you use a negative exponent, then the entropy of p θ of x will increase, meaning that each time you go around this loop, you'll be proposing broader and broader goals.
 And if your entropy always increases, that means that you eventually converge to the maximum entropy distribution, which would be a uniform distribution over possible valid states.
 Now a uniform distribution over valid states is not the same as a uniform distribution over x.
 So x might represent an image, totally random images, just kind of static.
@@ -90,7 +90,7 @@ So if you remember, in count-based exploration, our bonuses had this form like 1
 In general, they were the form of an equation.
 So if we look at this equation, we have an equation form n raised to some negative power, negative 1 half if you have 1 over square root, or negative 1 if you have 1 over n.
 So this looks an awful lot like that.
-By raising the p theta of x bar to some negative power, we're actually doing something that greatly resembles this count-based exploration, except instead of using it as a reward, we're using it to train our goal proposal mechanism to propose diverse goals.
+By raising the p θ of x bar to some negative power, we're actually doing something that greatly resembles this count-based exploration, except instead of using it as a reward, we're using it to train our goal proposal mechanism to propose diverse goals.
 So the main change we're going to make is we're going to fit our generative model with this weighting scheme, where the weight is the previous density for that state raised to some negative exponent.
 Now one question we could ask is, well, what's the overall objective of this entire procedure?
 It seems like we laid out a recipe, but in machine learning, we like to think of algorithms as optimizing objectives.

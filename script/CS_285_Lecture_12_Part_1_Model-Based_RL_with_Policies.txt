@@ -68,8 +68,8 @@ For example, if you have Gaussian models, you can use something called the repar
 But for now, let's just think about the deterministic case, so everything here can be implemented.
 You can call dot gradients on it, and it will actually give you the gradient of the reinforcement learning objective, at least for the stochastic case.
 So the question is, will this work?
-If you actually set this up, will you be able to optimize Pytheta?
-So will you be able to actually run back propagation from each of those reward nodes into all of the thetas, the parameters of those Pytheta nodes, and actually optimize your policy to yield a larger and larger reward?
+If you actually set this up, will you be able to optimize Pyθ?
+So will you be able to actually run back propagation from each of those reward nodes into all of the θs, the parameters of those Pyθ nodes, and actually optimize your policy to yield a larger and larger reward?
 In general, the answer is no.
 So let me just walk through this, I'm going to call this Model-Based RL Version 2.0, let me just make it very explicit, and then I'll explain what this algorithm is, and then I'll explain why, in general, this doesn't really work.
 So just like before, you would start off by running some base policy to collect the dataset, train a dynamics model on it, and then you would build this computation graph that I've drawn here, or something like it, back propagate through your dynamics into the policy to optimize the policy parameters, and then run the policy appending the visited data to the dataset, and then retrain.

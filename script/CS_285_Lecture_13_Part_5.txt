@@ -1,13 +1,13 @@
 All right, next I'm going to discuss algorithms for exploration in DeepRL that draw on the ideas from posterior sampling or Thomson sampling that I've discussed before.
 So as a reminder, Thomson sampling or posterior sampling in a bandit setting refers to the case where we actually estimate a model of our bandit.
-So if the theta is parametrized, the distribution over the bandit's rewards, we would actually maintain a belief over theta.
-And then at each step of exploration, we would sample the thetas based on our beliefs and take the action that is the argmax of the bandit described by that corresponding model.
+So if the θ is parametrized, the distribution over the bandit's rewards, we would actually maintain a belief over θ.
+And then at each step of exploration, we would sample the θs based on our beliefs and take the action that is the argmax of the bandit described by that corresponding model.
 So in the DeepRL setting, we could ask, well, what is it that we should sample and how do we represent the distribution?
 So in the bandit setting, there isn't really a choice to be made.
 The only thing that's unknown is the model of the rewards.
 And then, you know, that model is pretty simple, so it's not too hard to represent.
 In the DeepRL setting, this is, of course, a lot more complicated.
-So in the bandit setting, p hat theta 1 through theta n is a distribution of rewards.
+So in the bandit setting, p hat θ 1 through θ n is a distribution of rewards.
 The analog in MDPs would be a Q function, because in a bandit, the instantaneous reward is basically all you need to know, so you can choose your action as the argmax of the reward.
 In MDP, we don't choose our action as the argmax of the reward.
 We choose the action as the argmax of the Q function.

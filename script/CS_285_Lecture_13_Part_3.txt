@@ -78,18 +78,18 @@ So, it's n divided by n.
 So, the probability relates to the count and the total number of states you visited.
 Which means that after you see the state s, your new probability is the old count plus one divided by the old n plus one.
 So here's the question.
-Can you get p of theta of s and p of theta prime of s to obey these equations?
-So instead of keeping track of counts, we keep track of p of s's, but we'll update theta when we see s to get a new theta prime, meaning we'll update our density model, we'll change its parameters.
-So can we look at how p theta of s and p theta prime of s have changed and recover something that also obeys these equations, that essentially looks like a count?
+Can you get p of θ of s and p of θ prime of s to obey these equations?
+So instead of keeping track of counts, we keep track of p of s's, but we'll update θ when we see s to get a new θ prime, meaning we'll update our density model, we'll change its parameters.
+So can we look at how p θ of s and p θ prime of s have changed and recover something that also obeys these equations, that essentially looks like a count?
 It's not a count, but it looks like a count and it acts like a count, so it could be used as a count.
 So this is based on a paper called Unifying Count-Based Exploration by Belmar et al.
 The idea is this.
-We're going to fit a model, p theta of s, to all the states that we've seen so far in our data set D.
+We're going to fit a model, p θ of s, to all the states that we've seen so far in our data set D.
 Then we will take a step i and observe the new state si.
 Then we will fit a new state i and observe the new state si.
 Then we will take a step i and observe the new state si.
-So we can estimate the new model, p theta prime of s to D with the new state appended to it.
-And then we'll use p theta si and p theta prime of si to estimate a pseudocount, which I'm going to call n hat of s.
+So we can estimate the new model, p θ prime of s to D with the new state appended to it.
+And then we'll use p θ si and p θ prime of si to estimate a pseudocount, which I'm going to call n hat of s.
 And then we'll set R plus to be R plus some bonus determined by n hat of s.
 So this n hat of s is a pseudocount.
 And then we repeat this process.

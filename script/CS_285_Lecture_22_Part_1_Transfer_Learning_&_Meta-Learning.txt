@@ -187,7 +187,7 @@ We might simply have a few images that kind of anchor us to the real world.
 So we might not even know anything about the actions.
 They're just examples of real-world photographs.
 We can supervise the simulated experience with the correct answer.
-This could be supervised learning or it could be reinforced learning, so it could be the correct answer here means a target Q value.
+This could be supervised learning or it could be reinforcement learning, so it could be the correct answer here means a target Q value.
 That kind of doesn't matter.
 It's just some kind of loss that you put on top of your network.
 But, of course, when we then evaluate that model on the real-world image, we might get an incorrect answer because the real-world image looks different.
@@ -382,7 +382,7 @@ And furthermore, if you learn multiple different tasks and then you are provided
 Kind of a similar intuition as we've had with the randomization, if you have a greater variety of training situations, then it's more likely that the test situation will look somewhat familiar to you.
 So multitask learning can accelerate learning of all the tasks that are learned together, and it can provide better pre-training for downstream tasks.
 Now, there's not a heck of a lot more to say about this.
-The basic version of this really hinges on the ability to have a sufficiently effective reinforced learning algorithm that you can do this multitask training.
+The basic version of this really hinges on the ability to have a sufficiently effective reinforcement learning algorithm that you can do this multitask training.
 And, you know, that kind of amounts to scaling things up appropriately, choosing the right hybrid parameters, and so on.
 There are various techniques that people have proposed that are specifically designed to make multitask training better, but there isn't really kind of one killer technique that works across the board.
 So what I would say there is, if you're really interested in this, you can do a literature search and read up on multitask learning in RL, but the basic starting point is just to take the same kinds of algorithms that you would use in single task RL and try to scale them up.

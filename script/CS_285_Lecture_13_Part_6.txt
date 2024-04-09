@@ -18,11 +18,11 @@ And a lot of the technical complexity in using these methods is really in the na
 So there are a few approximations.
 One approximation we could make is something called prediction gain.
 Prediction gain is not the same as information gain, but it can be shown to be a crude approximation to information gain.
-Prediction gain is the difference between log p theta of s and log p theta prime of s and log p theta of s.
+Prediction gain is the difference between log p θ of s and log p θ prime of s and log p θ of s.
 So if we want to use information gain, we have to make some kind of approximation.
 Prediction gain is something called prediction gain.
-Prediction gain is something called a pseudo count of s and log p theta of s.
-So if you think back to the electron pseudo counts, theta prime denotes the new parameters of a density model that we get after updating on the latest state theta.
+Prediction gain is something called a pseudo count of s and log p θ of s.
+So if you think back to the electron pseudo counts, θ prime denotes the new parameters of a density model that we get after updating on the latest state θ.
 So if you just compare the log probabilities of that new state before and after updating on it, that refers to something called prediction gain.
 Prediction gain is something called prediction gain, which is an approximation for information gain.
 Specifically the information about the state density.
@@ -37,41 +37,41 @@ Whereas if they are very, very different, then you're learning a lot about z fro
 So in fact, it's exactly equivalent to the KL divergence.
 Now we're going to be learning about the dynamics.
 So the quantity of the dynamic is going to be the quantity of the dynamic.
-And the quantity of the Z is the parameter vector theta that describes the dynamics model.
-So we have some dynamics model P theta of s_t plus 1 given s_t at, using any of the techniques we discussed in the model-based RL lectures.
-And the quantity of interest z is theta.
+And the quantity of the Z is the parameter vector θ that describes the dynamics model.
+So we have some dynamics model P θ of s_t plus 1 given s_t at, using any of the techniques we discussed in the model-based RL lectures.
+And the quantity of interest z is θ.
 And the observation y is a transition.
 It's a tuple s_t at s_t plus 1.
-And the question we're going to ask is, well, which action should we be taking to get the most informative transitions, the transitions that are the most informative about theta?
+And the question we're going to ask is, well, which action should we be taking to get the most informative transitions, the transitions that are the most informative about θ?
 So then the KL divergence that we want is the following.
-We want to maximize the KL divergence between P theta, given our history, given all the data we've seen so far, and the new transition against P of theta given only our history.
+We want to maximize the KL divergence between P θ, given our history, given all the data we've seen so far, and the new transition against P of θ given only our history.
 So h here denotes basically our replay buffer without this new transition added to it.
-And theta denotes the model parameters.
+And θ denotes the model parameters.
 So we want the model parameters after observing a new transition to be the new transition.
 So we want the model parameters after observing a new transition to be very different from the model parameters from only observing the history without that new transition.
-So the intuition is that a transition is more informative if it causes a belief over theta to change.
+So the intuition is that a transition is more informative if it causes a belief over θ to change.
 Now the problem with this, of course, is that estimating a parameter posterior, as we've discussed multiple times now, is in general intractable.
-So if theta represents the parameters of some neural net, then we can't in general get a true posterior P theta, but we can get approximations to it.
-So the idea will be to use variational inference to estimate some approximate posterior that we're going to call Q of theta, given some variational parameters ϕ, which we're going to try to use to closely approximate P theta given h.
+So if θ represents the parameters of some neural net, then we can't in general get a true posterior P θ, but we can get approximations to it.
+So the idea will be to use variational inference to estimate some approximate posterior that we're going to call Q of θ, given some variational parameters ϕ, which we're going to try to use to closely approximate P θ given h.
 And then given a new transition, we'll update the variational parameters ϕ to get new variational parameters ϕ', and then we'll compare these two distributions.
-So we're going to have our approximate posterior, Q of theta given ϕ.
-And then we'll have our q of theta given ϕ, which is approximately equal to P theta given h.
-And then what we have to do is we have to actually train this approximate posterior, and we'll train it to optimize the variational lower bound, which is given by the KL divergence between Q theta given ϕ and P of h given theta times P of theta.
+So we're going to have our approximate posterior, Q of θ given ϕ.
+And then we'll have our q of θ given ϕ, which is approximately equal to P θ given h.
+And then what we have to do is we have to actually train this approximate posterior, and we'll train it to optimize the variational lower bound, which is given by the KL divergence between Q θ given ϕ and P of h given θ times P of θ.
 So this is the usual variational lower bound.
 If you're not familiar with variational lower bounds, don't worry, we'll cover them in a lot more detail in a subsequent lecture.
-So we're going to try to make Q of theta given ϕ to be close to P of theta given h.
-And by Bayes' rule, that's actually the same as trying to make it close to P of h comma theta, which factorizes as P of h given theta times P of theta.
+So we're going to try to make Q of θ given ϕ to be close to P of θ given h.
+And by Bayes' rule, that's actually the same as trying to make it close to P of h comma θ, which factorizes as P of h given θ times P of θ.
 So that's the objective for getting Q.
 Now, how do we represent Q?
 Well, as we discussed before in the model-based RL lecture, one of the ways we can represent a distribution over parameters is as a product of independent Gaussians.
 So for every number in our parameter vector, we have a Gaussian with a mean and a variance, and ϕ represents the mean.
 It could also represent the variance, but for now, let's just say it represents the mean.
 So this is this picture of the Bayesian neural network that we had in the model-based RL lectures.
-So P of theta given d is just the product over all of our parameter values of P of theta i given d.
+So P of θ given d is just the product over all of our parameter values of P of θ i given d.
 So i here indexes into the parameter vector.
 So the first number in the model is the variance, the second number is the variance, the third number is the variance, the fourth number is the variance, the fifth number is the variance, the sixth number is the variance, the seventh number is the variance, and so on.
 So we have the variance, the second number is the variance, and so on.
-And each of those independent marginals is just a Gaussian with some mean μ i and some variance sigma i, and that's what ϕ refers to, either just the mean or the mean and the variance.
+And each of those independent marginals is just a Gaussian with some mean μ i and some variance σ i, and that's what ϕ refers to, either just the mean or the mean and the variance.
 If we have just the mean, then it's a constant variance.
 All right.
 So one very simple method we could use, which I also referenced in the model-based RL slides, is this method by Blundell et al.
@@ -84,7 +84,7 @@ So we'll simply take that objective, that KL divergence, and we'll minimize it a
 So now we have two ϕ parameters, the old one before we saw the transition and the new one after we saw the transition.
 And they both define distributions over parameters, which means that we can compute a KL divergence between them.
 So when we observe a new transition, we update the means and variances of our Bayesian neural network.
-And then we can calculate the KL divergence between Q theta given ϕ' and Q theta given ϕ as our approximate bonus.
+And then we can calculate the KL divergence between Q θ given ϕ' and Q θ given ϕ as our approximate bonus.
 KL divergences between Gaussian distributions have a closed form equation.
 So we just look up the equations and plug it in.
 Intuitively, this equation is a closed form equation.

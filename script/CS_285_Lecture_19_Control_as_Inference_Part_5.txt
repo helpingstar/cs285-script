@@ -57,7 +57,7 @@ The blue line shows fine-tuning from soft Q-learning.
 The green line shows fine-tuning from the deterministic DDPG policy.
 The green line shows fine-tuning from the deterministic DDPG policy.
 The green line shows fine-tuning from the deterministic DDPG policy.
-Now, besides producing hilarious explosions of spiders for Halloween and enabling better fine-tuning, the framework of soft optimality can also simply lead to more performant, more effective, reinforced learning algorithms.
+Now, besides producing hilarious explosions of spiders for Halloween and enabling better fine-tuning, the framework of soft optimality can also simply lead to more performant, more effective, reinforcement learning algorithms.
 In fact, one of the most widely used off-policy continuous control algorithms today is something called soft actor critic, which is based on the principle of soft optimality.
 Soft actor critic is essentially the actor critic counterpart of soft Q-learning.
 Soft actor critic is essentially the actor critic counterpart of soft Q-learning.

@@ -29,7 +29,7 @@ And then they just do regular counting on these k-bit codes.
 And the resulting algorithm actually turns out to work decently well with a variety of different coding schemes.
 So that's kind of a nice way that you could adapt regular counts if you don't want to deal with pseudo counts.
 Another thing you could do is you could avoid density modeling altogether by actually exploiting classifiers to give you density scores.
-So remember that ptheta of s needs to be able to output densities, but it doesn't necessarily need to produce great samples.
+So remember that pθ of s needs to be able to output densities, but it doesn't necessarily need to produce great samples.
 And we can exploit this by devising a class of models that are particularly easy to use.
 And we can exploit this by devising a class of models that are particularly easy to train that can't produce samples at all, but can give reasonable densities.
 So this is from a paper called EX2 by Hu et al.
@@ -44,7 +44,7 @@ And we're going to do that by using the new state in the buffer.
 And then we'll use the classifier likelihood or the classifier error to obtain a density.
 So it turns out that if the probability that your classifier assigns to the state is given by d of s, and I have the subscript s because this is the classifier that's trying to classify the state s against all past states.
 So d subscript s of s is the probability this classifier assigns a new state.
-The density of the state turns out can be written as p theta of s is equal to 1 minus d s of s divided by d s of s.
+The density of the state turns out can be written as p θ of s is equal to 1 minus d s of s divided by d s of s.
 And the way that you obtain this equation is you write down the formula for the optimal classifier, which can be expressed in terms of the density ratio, and then do a bit of algebra.
 So this is the probability that the classifier assigns that s is a positive, meaning that s is a new state.
 And the classifier is going to be able to do the same thing.
@@ -66,7 +66,7 @@ The classifier is actually going to generalize a little bit, which means that if
 So that's why you can use a classifier to estimate densities like this.
 If you want to go through the algebra for how to derive the probability from the classifier, check out the paper.
 It's actually a fairly simple bit of algebra.
-The intuition is that you first write down the equation for a base optimal classifier, which is an expression in terms of p theta of s, and then you solve that expression to find an equation for p theta of s.
+The intuition is that you first write down the equation for a base optimal classifier, which is an expression in terms of p θ of s, and then you solve that expression to find an equation for p θ of s.
 As I mentioned before, aren't we just checking if s is equal to s?
 Well, if there are copies of s present in the data set, then the optimal d s of s is not one, as I mentioned before.
 And in fact, the optimal classifier is given by one over one plus p of s.
@@ -87,7 +87,7 @@ And this basic scheme actually works pretty well.
 It compares very favorably to some other exploration methods, including the hash-based exploration method I described before, and provides maybe an interesting perspective on how the type of density model we use for exploration doesn't necessarily need to be able to produce samples, and it could even be obtained from a classifier.
 And then in the paper, there's some experiments with using this for some visual navigation tasks in VisDoom, where you have to traverse, many different rooms before you find the treasure, and a good exploration algorithm should figure out when it's in a novel room, and then seek out more novel rooms that it hasn't seen too much.
 All right, now there are also more heuristic methods that we could use to estimate quantities that are not really counts, but that kind of serve a similar role as counts in practice, and can work pretty well.
-So remember that p theta of s needs to be able to output densities, but it doesn't necessarily need to produce great samples.
+So remember that p θ of s needs to be able to output densities, but it doesn't necessarily need to produce great samples.
 In fact, it doesn't even necessarily need to produce great densities.
 You could just think of it as a score, and you just want that score to be larger for novel states and smaller for non-novel states, or the other way around.
 So basically, you just need some number that is very predictive of whether a state is novel or not.
@@ -98,14 +98,14 @@ Don't worry about what this function is for now.
 Let's just say it's some scalar value function on states and actions.
 So maybe it's this function.
 And we take our buffer of states and actions that we've seen, and we fit an estimate to f star.
-So we fit some function f hat theta.
-So f hat theta is trying to match f star on the data.
-So maybe our data set contains these points, and we can use this data set to match f hat theta.
-So we can use our data set to match f hat theta.
-So we can use this data set to match f hat theta.
-And if we take our data set, f hat theta might look like this.
+So we fit some function f hat θ.
+So f hat θ is trying to match f star on the data.
+So maybe our data set contains these points, and we can use this data set to match f hat θ.
+So we can use our data set to match f hat θ.
+So we can use this data set to match f hat θ.
+And if we take our data set, f hat θ might look like this.
 So it's going to be similar to those points, close to the data, but far from the data, it's going to make mistakes because it hasn't been trained in those regions.
-So now we can use the error between f hat and f star as our bonus, because we expect this error to be large when we're very far away from states and actions that theta might make really big mistakes.
+So now we can use the error between f hat and f star as our bonus, because we expect this error to be large when we're very far away from states and actions that θ might make really big mistakes.
 So then we would say the novelty is low when the error is low, and the novelty is high when the error is high.
 So then we could ask, well, what kind of function should we use for f star?
 And there are a number of different choices that have been explored in the literature.

@@ -24,12 +24,12 @@ z is equal to the integral over all possible trajectories of p of τ times the e
 Now, of course, immediately we could say, well, let's just plug in this equation for z, take its gradient, and optimize.
 Very reasonable thing to do, but of course integrating over all possible trajectories is in general going to be intractable.
 So if you plug in the equation for z, and then take the derivative with respect to psi, you get this expression.
-You get 1 over n times the sum over all of your samples of the gradient of the reward of the trajectory τ i minus 1 over z, that just comes from the derivative of a logarithm, times the integral of p of τ times the exponential of the reward, times grad r.
+You get 1 over n times the sum over all of your samples of the gradient of the reward of the trajectory τ i minus 1 over z, that just comes from the derivative of a logarithm, times the integral of p of τ times the exponential of the reward, times ∇ r.
 But something pretty neat that you might note about this is that the second term can actually be viewed as an expected value under the distribution over trajectories induced by your current psi.
 Right?
 Because this expression, 1 over z times p of τ times exponential of r psi of τ, is exactly p of τ given optimality and psi.
-So you can equivalently write the gradient as the expected value, under the optimal policy π star of grad r, minus the expected value under p τ given your current psi of grad r.
-The first term is approximated with samples, and that turns into a sum of grad r's on the τ i's divided by n, and the second term turns into that integral.
+So you can equivalently write the gradient as the expected value, under the optimal policy π star of ∇ r, minus the expected value under p τ given your current psi of ∇ r.
+The first term is approximated with samples, and that turns into a sum of ∇ r's on the τ i's divided by n, and the second term turns into that integral.
 So that's a very appealing interpretation.
 Your gradient is just the difference between the expected value of the gradient under the expert's point, and the expected value of the gradient under your current reward.
 Note that p of τ given o1 through t comma psi is simply the distribution over trajectories that are softly optimal with respect to r psi.
@@ -46,7 +46,7 @@ So that's where we've seen this before.
 So the first term is just equal to the ratio of beta STAT divided by beta s_t, and if you don't remember how to compute beta, please go back to the lecture on Monday and re-watch the first inference problem.
 And the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the backward message over STAT.
 And again, if you don't remember how we derived this, go back to the lecture on Monday and watch the third inference problem.
-Now here the beta s_t in the denominator of the first expression cancels out with the beta s_t in the numerator of the second expression, and we just get the answer that this quantity is proportional to beta STAT times alpha s_t.
+Now here the beta s_t in the denominator of the first expression cancels out with the beta s_t in the numerator of the second expression, and we just get the answer that this quantity is proportional to beta STAT times α s_t.
 And then you have to normalize it over states and actions, but not over trajectories, crucial.
 So this is a much more tractable thing to normalize if you have a relatively small state space.
 Okay, so now the way that we can estimate this second term is by first calculating this quantity that I'm going to call μ T, the state action marginal, and we calculate that by multiplying the backward messages by the forward messages, and normalizing overall states and actions.
@@ -59,7 +59,7 @@ So this wouldn't work for unknown dynamics, and it wouldn't work for a large or 
 So this leads us to the classic maximum entropy inverse RL algorithm as proposed by Brian Ziebart in his 2008 paper.
 Given your current vector psi, compute your backward messages as described in the previous lecture, and compute your forward messages as described in the previous lecture.
 Then compute your μ by multiplying these messages and renormalizing.
-And then evaluate the gradient of the likelihood of the trajectories as the difference between the average over all the trajectories of grad psi r psi minus the inner product between μ and grad r.
+And then evaluate the gradient of the likelihood of the trajectories as the difference between the average over all the trajectories of ∇ psi r psi minus the inner product between μ and ∇ r.
 And then simply take a gradient ascent step on psi since you've just calculated the gradient of the likelihood.
 And then repeat this process until convergence.
 So this is basically an algorithm for computing the gradient of the likelihood of the demonstrated trajectories, and at convergence this will yield the reward parameters that maximize the likelihood of those trajectories and therefore produce the reward that best explains the potentially suboptimal behavior of the expert.

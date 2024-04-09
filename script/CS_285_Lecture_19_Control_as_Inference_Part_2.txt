@@ -155,16 +155,16 @@ Actions with higher advantage are more likely, the action with the largest advan
 That seems like a fairly intuitive notion.
 All right.
 So to summarize policy computation, it's the exponential of the advantage, you could add in a temperature.
-So if you put in a one over alpha in front of the exponent, then you can smoothly interpolate between hard optimality and soft optimality.
-So as alpha goes to zero, then the policy becomes deterministic on the optimal action.
-As the alpha goes to one, then you recover the classic inference framework.
+So if you put in a one over α in front of the exponent, then you can smoothly interpolate between hard optimality and soft optimality.
+So as α goes to zero, then the policy becomes deterministic on the optimal action.
+As the α goes to one, then you recover the classic inference framework.
 So that gives you interpolation between standard hard optimality and the soft optimality that we learned about.
 Better actions are more probable.
 You get random tie-breaking.
 So if two actions have exactly the same advantage, you'll take them with equal value.
 And it's kind of analogous to Boltzmann exploration.
 And of course, this approaches the greedy policy as the temperature decreases.
-So if you take alpha down to zero, then you recover the standard greedy optimal policy.
+So if you take α down to zero, then you recover the standard greedy optimal policy.
 All right.
 So lastly, let's talk about forward messages.
 So the forward message is the probability of the state given optimality from one through t minus one.

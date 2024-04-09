@@ -136,28 +136,28 @@ Maximizing the same evidence-lower bound with respect to QI minimizes KL diverge
 Maximizing with respect to P increases the log likelihood.
 So now this immediately suggests a practical learning algorithm.
 Take your variation-lower bound, your evidence-lower bound, maximize it with respect to QI to get the tightest bound, and then maximize it with respect to P to improve your model, to improve your log likelihood, and then alternate these two steps.
-Okay, so just to recap this, our goal is to maximize the log P theta of Xi, but that's intractable, so instead we're going to maximize the evidence-lower bound.
+Okay, so just to recap this, our goal is to maximize the log P θ of Xi, but that's intractable, so instead we're going to maximize the evidence-lower bound.
 So for each Xi, we'll calculate the gradient with respect to the model parameter, and then we'll use the gradient to estimate the gradient.
-So this is a single sample version, so you sample one Xi from QI of Xi, and then assuming your prior P of Xi doesn't depend on theta, then the gradient is just the gradient of log P theta Xi given that Xi.
-And then you improve your theta.
+So this is a single sample version, so you sample one Xi from QI of Xi, and then assuming your prior P of Xi doesn't depend on θ, then the gradient is just the gradient of log P θ Xi given that Xi.
+And then you improve your θ.
 And then you update QI to maximize the same evidence-lower bound.
 So this is the stochastic gradient descent version of variational inference.
-Just to state this again so that we're all on the same page, in order to estimate the gradient grad theta of Li P comma QI, sample a Z from the approximate posterior QI, calculate the gradient grad theta Li P comma QI as grad theta log P theta Xi given Z, and then take that gradient step.
+Just to state this again so that we're all on the same page, in order to estimate the gradient ∇ θ of Li P comma QI, sample a Z from the approximate posterior QI, calculate the gradient ∇ θ Li P comma QI as ∇ θ log P θ Xi given Z, and then take that gradient step.
 And then update your QI to the gradient gradient descent version of variational inference.
 So this is the stochastic gradient descent version of variational inference.
 And then you update your QI to maximize Li P comma QI.
 Alright, so everything here is straightforward except for the last line.
 How do you actually improve your QI?
-Well, let's say that QI is given by a Gaussian distribution with mean mui and variance sigma i.
+Well, let's say that QI is given by a Gaussian distribution with mean mui and variance σ i.
 Well, you could actually calculate the gradient with respect to the mean and variance of the evidence-lower bound.
-And then do gradient descent on mui and sigma i.
+And then do gradient descent on mui and σ i.
 So what's the problem with this?
 Well, how many parameters do we have?
 Remember that we have a separate QI for every data point Xi.
-And they each have a different μ and a different sigma.
+And they each have a different μ and a different σ.
 This is not a big deal if you have a few thousand data points, but it becomes a big problem if you have millions of data points.
 And in the deep learning setting, typically we would have a very large number of data points.
-So the total number of parameters if we have this Gaussian distribution is the number of parameters in the Model, theta.
+So the total number of parameters if we have this Gaussian distribution is the number of parameters in the Model, θ.
 plus the dimensionality of the mean plus the dimensionality of the variance, times the number of data points N.
 Okay, so that's maybe a little too large.
 N might be a pretty large number and this might be intractable, but remember that our intuition is that Q , needs to somehow approximate the posterior p of z given xi.

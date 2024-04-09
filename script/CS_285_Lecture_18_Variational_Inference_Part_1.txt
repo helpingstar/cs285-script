@@ -60,7 +60,7 @@ If we want to stick with discrete categorical variable z, one example of a model
 This is a model that we've already seen in the previous lecture, but it's a very simple model.
 We can't deal with multimodal situations like driving around the tree.
 So back in the second lecture of the course, we learned about how we could have neural networks that output distributions represented by mixtures of Gaussians.
-So the neural network outputs multiple mu's and sigma's, one for each mixture element, and multiple w's.
+So the neural network outputs multiple mu's and σ's, one for each mixture element, and multiple w's.
 Okay, let's say the input to the network is x, it is an itself performance Castrel some碼.
 So f is square root of cuál.
 And we should plug in a number well aboveไดں the expression including a mistaken number w., opposite of % means everything.
@@ -144,13 +144,13 @@ And it is much, much easier to represent a complex probability distribution as a
 So for that reason, while generative models do not need to be latent variable models, oftentimes it's very convenient when we have a complex generative model to model it as a latent variable model.
 All right, so now let's get to the meat of the lecture.
 Let's talk about how it is that we can train latent variable models, and why this is difficult.
-So let's say we have our model p theta of x.
-So theta here represents the parameters of a model.
+So let's say we have our model p θ of x.
+So θ here represents the parameters of a model.
 And we have data x1, x2, x3, etc.
 through xn.
 When we want to fit the data, what we typically want is a maximum likelihood fit.
-So the most natural generative modeling objective is to set theta to be the argmax of 1 over n, times the sum over all of your data points, of log papa of xi.
-So if you find theta that maximized the log probability of all of your data points, you will have found what's called the maximum likelihood fit, which in some sense is kind of the best model that you could have for your data.
+So the most natural generative modeling objective is to set θ to be the argmax of 1 over n, times the sum over all of your data points, of log papa of xi.
+So if you find θ that maximized the log probability of all of your data points, you will have found what's called the maximum likelihood fit, which in some sense is kind of the best model that you could have for your data.
 And your p is given by the integral over z of p<|zh|> So if I substitute this equation for P , into the maximum likelihood fit , I get this training objective.
 Now of course the first thing that you might notice that this training objective is quite difficult to calculate.
 If z is a continuous variable, calculating this integral every time you want to take a gradient step gets to be pretty intractable.
@@ -178,7 +178,7 @@ So you could say, well, this is the value of X and Z.
 Now, of course, in reality, you don't know the Z that goes with a particular X i exactly, but you might have a distribution over it.
 So instead of just taking the one value of Z that is the most likely, you would take the entire distribution over Z's and average the likelihood weighted by the probability of that Z.
 And that's what gives us the expected log likelihood calculation.
-So the objective we're going to use is the sum over all of our data points of the expectation over Z given X i, of the log p theta X i comma Z.
+So the objective we're going to use is the sum over all of our data points of the expectation over Z given X i, of the log p θ X i comma Z.
 So the intuition is you guess the most likely Z given X i and pretend it's the right one.
 Although, of course, in reality, you don't actually guess just one Z.
 You actually sum over all the Z's weighted by their probability of being the right one.

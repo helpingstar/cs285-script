@@ -1,7 +1,7 @@
 Alright, let's discuss a few reinforcement learning algorithms based on the ideas that I presented in the previous section, as well as some maybe more direct approaches.
 So first, we could imagine doing Q-learning with soft optimality.
 Standard Q-learning uses this update.
-So you set your new ϕ vector to be the old one plus some learning rate times grad ϕ Q times the Bellman error, r plus next v minus Q.
+So you set your new ϕ vector to be the old one plus some learning rate times ∇ ϕ Q times the Bellman error, r plus next v minus Q.
 Where your target value is just the max over the Q values of the next time step.
 You can implement a soft Q-learning procedure in exactly the same way.
 In fact, the Q function update is identical.
@@ -30,7 +30,7 @@ So if the policy becomes too deterministic too early, you'll get very bad result
 So this entropy regularizer that we're adding to the policy objective can be very helpful in practice.
 It turns out to be also very closely related to Q-learning algorithms, and this is discussed in a few previous works, which I will reference at the end of the last part of this lecture.
 Okay, let's talk a little bit about how policy gradients relate to Q-learning in this inference framework.
-So if we write out the objective, that here there's the objective again, and I called it j of theta, just like in the policy gradient lecture.
+So if we write out the objective, that here there's the objective again, and I called it j of θ, just like in the policy gradient lecture.
 The entropy is just the expected value under π of negative log π.
 So this is an equivalent way of writing this.
 When we take the gradient of this expression, we can write that gradient as the sum of two terms.
@@ -50,16 +50,16 @@ And remember that the policy is given by the exponential of Q minus V in soft op
 So we can substitute this in for log pi, and we can basically replacing log π everywhere with Q minus V.
 We can write.
 This expression is following.
-We can write it as grad Q minus grad V times R plus next Q minus current Q plus current V.
+We can write it as ∇ Q minus ∇ V times R plus next Q minus current Q plus current V.
 But remember, because of the baseline property, any state dependent function inside the parentheses can be removed.
 So this V of s_t, we can simply get rid of it.
 And now remember what the Q learning objective is.
-The Q learning objective is grad Q times R plus the softmax of the next Q minus the current Q.
+The Q learning objective is ∇ Q times R plus the softmax of the next Q minus the current Q.
 So here we can see now that the policy gradient actually looks a lot like the Q learning objective under the soft optimality framework.
-The main difference being the policy gradient subtracts the minus grad V, and the Q learning objective has the softmax.
+The main difference being the policy gradient subtracts the minus ∇ V, and the Q learning objective has the softmax.
 So the Q learning objective has this off policy correction.
 If you had an on policy Q learning method, you could omit this.
-And the policy gradient has the minus grad V term.
+And the policy gradient has the minus ∇ V term.
 But otherwise, they're actually quite similar.
 All right.
 So that's maybe a little bit of a tidbit involving the connection between these two approaches in the soft optimality framework.

@@ -56,7 +56,7 @@ And these mistakes will compound.
 And we learned when we discussed imitation learning that this issue really comes down to something called distributional shift.
 It comes down to the problem that the distribution over states under which your policy was trained with supervised learning differs from the distribution of states that it receives as input when it's actually executed in the environment.
 Now the same exact challenge applies to learned models.
-So we talked about this of course before when we discussed learned models that if the black curve now represents running π theta with the true dynamics and the red curve represents running it with a learned model, then when you run it with a learned model, the learned model will make some mistakes.
+So we talked about this of course before when we discussed learned models that if the black curve now represents running π θ with the true dynamics and the red curve represents running it with a learned model, then when you run it with a learned model, the learned model will make some mistakes.
 It'll put itself into slightly different states.
 And in those slightly different states, it'll make bigger mistakes.
 So if your model-based rollout is long enough, eventually it'll differ significantly from the real world because the mistakes get bigger and bigger.

@@ -49,8 +49,8 @@ In the case of text, you're learning about what people tend to type on keyboards
 Now, these are very good things to learn from if your goal is to generate content that is similar to what humans would have generated.
 If your goal is to generate the kinds of paintings that humans would have drawn or the kind of text that humans would have written, and that can give you a very powerful capability.
 But of course, it's not the only thing that we want from our autonomous systems.
-So what does reinforced learning do differently?
-Well, before we talk about that, we need a little bit of kind of historical background on what modern reinforced learning is and where it came from.
+So what does reinforcement learning do differently?
+Well, before we talk about that, we need a little bit of kind of historical background on what modern reinforcement learning is and where it came from.
 And really, modern reinforcement learning traces its lineage to two previous disciplines.
 The first one, which is the one that's actually called reinforcement learning, actually has its roots in psychology, and particularly in the study of animal behavior.
 So this is a photograph of Skinner, who was a very well-known researcher who studied the behavior of animals in response to various kinds of reinforcement.

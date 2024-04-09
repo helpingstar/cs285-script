@@ -155,28 +155,28 @@ So you don't know the reward for each arm, and you don't know the reward distrib
 So you could assume that the reward of each arm is distributed according to some probability distribution, and then you could imagine even learning this probability distribution.
 So there's an unknown per-action distribution for each arm.
 So how can we define the bandit?
-Well, we assume that the reward for each action is distributed according to some distribution, and the distribution for action a is parameterized by a parameter vector theta .
-So for example, if your rewards are , you might be in a setting where the probability of getting reward is theta , which is just a number, and the probability of getting reward is 1-theta .
+Well, we assume that the reward for each action is distributed according to some distribution, and the distribution for action a is parameterized by a parameter vector θ .
+So for example, if your rewards are , you might be in a setting where the probability of getting reward is θ , which is just a number, and the probability of getting reward is 1-θ .
 If your rewards are continuous, maybe you have some continuous distribution.
-And you don't really know what the theta are, but you could assume that you have a prior on them.
+And you don't really know what the θ are, but you could assume that you have a prior on them.
 You could use an uninformative prior if you like, but in general we'd say we have some prior p .
 So that's defining our bandit.
-Now the cool thing about this is that you could also view this as defining a POMDP for exploration, where the state is the vector of theta for all of your actions, and the state is the vector of theta for all of your actions.
+Now the cool thing about this is that you could also view this as defining a POMDP for exploration, where the state is the vector of θ for all of your actions, and the state is the vector of θ for all of your actions.
 Now you don't know this state, but if you knew this state, then you could figure out what the right action is.
 So instead of knowing the state, you have a belief.
-So you have some belief p hat over theta1 through theta n, and you can update your belief each time you pull an arm.
-So each time you pull an arm, you observe the reward of that arm, and you can update your belief about the theta corresponding to that arm.
+So you have some belief p hat over θ1 through θ n, and you can update your belief each time you pull an arm.
+So each time you pull an arm, you observe the reward of that arm, and you can update your belief about the θ corresponding to that arm.
 And you could solve this POMDP to basically figure out what is the right sequence of actions to maximize your reward in this POMDP.
 And this will yield the optimal exploration strategy, because if it is the optimal policy in the POMDP, it is the optimal thing to do under this kind of uncertainty.
 And that will be the optimal exploration strategy, the best exploration strategy you could possibly have.
 Now this is overkill.
 The belief state is huge, even for a simple POMDP.
 So you can do POMDP with binary rewards.
-Remember, your belief state is not the vector of thetas.
-It is actually a probability distribution over thetas.
-So even in the simple binary reward bandit, the thetas correspond to the probability of getting a reward of 1.
-The p hat of theta now needs to be some parametric class, maybe a bunch of beta distributions.
-You could have covariances between the different thetas.
+Remember, your belief state is not the vector of θs.
+It is actually a probability distribution over θs.
+So even in the simple binary reward bandit, the θs correspond to the probability of getting a reward of 1.
+The p hat of θ now needs to be some parametric class, maybe a bunch of beta distributions.
+You could have covariances between the different θs.
 So it is potentially a really complex belief state.
 And the cool thing about bandits is that you can provably do this.
 Very well with much simpler strategies than solving this full POMDP.

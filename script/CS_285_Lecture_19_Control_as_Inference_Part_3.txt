@@ -159,8 +159,8 @@ Now there are many variants of this.
 You could, for example, construct a discounted variant where you put a gamma in front of the expected value of the next value function.
 And that just corresponds to changing your dynamics to have a 1 minus gamma probability of death.
 You could also add an explicit temperature.
-So when you perform this value function computation, you can add an alpha where you multiply your Q value by 1 over alpha and then multiply the result by alpha at the end.
-And as alpha goes to 0, this will approach a hardmax.
+So when you perform this value function computation, you can add an α where you multiply your Q value by 1 over α and then multiply the result by α at the end.
+And as α goes to 0, this will approach a hardmax.
 Of course, you can also construct an infinite horizon formulation for this where instead of literally doing dynamic programming from the end of the structure to the beginning, you actually run an infinite horizon soft value iteration procedure.
 And that's also a perfectly reasonable, perfectly correct thing to do for the infinite horizon case.
 It basically works exactly as you would expect, exactly according to the procedure outlined on this slide.

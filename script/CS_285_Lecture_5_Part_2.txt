@@ -28,7 +28,7 @@ In that case you can write the log probability by basically using the formula fo
 So this is one way of writing the log probability of a multivariate normal distribution.
 And you can then calculate the derivative of this thing with respect to the the mean and you just get this equation.
 So the derivative of your multivariate normal is just negative one half times the inverse covariance times (f(s_t) - a_t) times df/dθ.
-And in practice the way that you would calculate this quantity is you would compute negative one half sigma inverse (f(s_t) - a_t) and then back propagate it through your network to get the derivative with respect to θ.
+And in practice the way that you would calculate this quantity is you would compute negative one half σ inverse (f(s_t) - a_t) and then back propagate it through your network to get the derivative with respect to θ.
 All right so that maybe gives us some intuition for what these ∇log π terms are actually doing both in the discrete action and continuous action case.
 In both cases they correspond to a kind of weighted version of the maximum likelihood gradient, if it's helpful for you to think about it that way.
 And you can compute them by basically using the formula for the log probability of whatever distribution class you choose to use.

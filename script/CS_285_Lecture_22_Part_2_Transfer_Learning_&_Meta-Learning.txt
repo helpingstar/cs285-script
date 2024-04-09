@@ -71,24 +71,24 @@ So if you're learning to learn, and then you take that and you deploy it on your
 So meta-learning is training this F.
 What is the learning part?
 Well, to try to understand this, let's imagine the following schematic picture for generic learning.
-Generic learning, you have some kind of parameter theta, and you're going to find the theta that minimizes some loss function on the training set.
+Generic learning, you have some kind of parameter θ, and you're going to find the θ that minimizes some loss function on the training set.
 And let's call this process of finding this argument FLEARN.
-So FLEARN takes in a training set and outputs the argument of your policy, of your model parameters theta.
+So FLEARN takes in a training set and outputs the argument of your policy, of your model parameters θ.
 Generic meta-learning can be thought of as finding the argmin of the loss over your test set for some parameters ϕ, where these parameters ϕ are a function of your training set.
-So you have some function F theta, which is now a learned function, it's no longer a fixed learning algorithm.
-F theta takes in a training set, which is now a learned function, it's no longer a fixed learning algorithm.
-F theta takes in a training set, and it produces some parameters ϕ.
+So you have some function F θ, which is now a learned function, it's no longer a fixed learning algorithm.
+F θ takes in a training set, which is now a learned function, it's no longer a fixed learning algorithm.
+F θ takes in a training set, and it produces some parameters ϕ.
 And those parameters ϕ are everything you need to know about the training set to do well on the test set.
-And the way you do meta-learning is you train F theta so that the loss on the test sets of the meta-training tasks is minimized.
+And the way you do meta-learning is you train F θ so that the loss on the test sets of the meta-training tasks is minimized.
 So it's kind of a second order thing.
-You're going to train F theta, which reads in D train, so that the output of F theta works well on D test.
-So F theta then becomes the learning procedure.
-So what is F theta for the RNN example?
-Well, F theta is the part of the RNN that reads in the training set.
-So you can think of the parameters of F theta, this theta star, as being the parameters of this RNN, and it's going to produce some sort of hidden activation.
+You're going to train F θ, which reads in D train, so that the output of F θ works well on D test.
+So F θ then becomes the learning procedure.
+So what is F θ for the RNN example?
+Well, F θ is the part of the RNN that reads in the training set.
+So you can think of the parameters of F θ, this θ star, as being the parameters of this RNN, and it's going to produce some sort of hidden activation.
 So once it reads in that training set, it has some hidden activation H i for the task i, and that hidden activation is then given to a little classifier that takes in the hidden activation, and a test image X, and produces Y.
-So this little bit at the end, that's your classifier, and its parameters ϕ are simply the combination of H, the hidden activations, and its own parameters theta p.
-So it has its own parameters, it's a little neural net, so that's theta p, and it takes in the hidden activations from the RNN encoder, and that's H i.
+So this little bit at the end, that's your classifier, and its parameters ϕ are simply the combination of H, the hidden activations, and its own parameters θ p.
+So it has its own parameters, it's a little neural net, so that's θ p, and it takes in the hidden activations from the RNN encoder, and that's H i.
 So that is what is ϕ i for this RNN meta-learner.
 Now there are other parameters.
 Let's look at this.

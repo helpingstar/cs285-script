@@ -4,7 +4,7 @@ So, a partially observed MDP, just to remind everybody, is an MDP that has obser
 So it has an observation space and an emission probability, which is the probability of observing a particular observation given a state.
 And this is the graphical model for a partially observed MDP from before.
 In a partially observed MDP, the policy has to act on observations, which typically requires either explicit observation or observation.
-So, let's say that we have a policy, π theta a given s comma z, where z is some variable that encapsulates the information that the policy needs to solve the current task.
+So, let's say that we have a policy, π θ a given s comma z, where z is some variable that encapsulates the information that the policy needs to solve the current task.
 Learning a task at this point amounts to inferring what z is.
 So, remember that.
 Winding back to contextual policies, z might represent something like, oh, it's time to do the laundry, it's time to do the dishes.
@@ -68,8 +68,8 @@ And then once we've acquired it, then we can explore via posterior sampling with
 So if you remember the discussion of posterior sampling from the exploration lecture, it amounts to sampling from our posterior belief and then acting optimally under that belief.
 So the way that we'll sample is we will actually randomly select a z from our posterior, and then we'll act according to that z.
 And that makes a lot of sense because initially you don't know what the task is, so you'll start off by basically trying to do random tasks, and as you gather more information, you will zero in on the right task to do.
-So the procedure will be to sample z from your belief about z, given your history, and that will use some approximate posterior, trained with variational inference, then act according to π theta a given s comma z to collect more data, basically act as though z was correct, and then repeat this process.
-And meta-training will consist of training π theta and training your variational approximation to the state estimator.
+So the procedure will be to sample z from your belief about z, given your history, and that will use some approximate posterior, trained with variational inference, then act according to π θ a given s comma z to collect more data, basically act as though z was correct, and then repeat this process.
+And meta-training will consist of training π θ and training your variational approximation to the state estimator.
 Now, this is not an optimal procedure, meaning this is not the best you could do for exploration.
 Take a moment to think about why.
 If it's not an optimal procedure, it's not clear yet.
@@ -120,7 +120,7 @@ So in that sense, it is actually very similar to the RNN-based meta-learning.
 Okay, if you want to learn more about this, here are a few papers that you could check out that take some version of this PUMDP view on the meta-learning problem.
 And they would go into this in more detail if you want to get the technical specifics.
 But one of the things I want to end on is to discuss how the three perspectives of meta-RL that we talked about all kind of fit together.
-So in all of the meta-RL methods we talked about, they can be represented as some kind of F theta that takes in an MDP-MI.
+So in all of the meta-RL methods we talked about, they can be represented as some kind of F θ that takes in an MDP-MI.
 And in reality, what that means is that it takes in experience in this MDP.
 And it needs to be able to improve from that experience and be able to choose actions that explore effectively.
 The first perspective we talked about is just a black box model, like an RNN, that can read in the entirety of that experience.
@@ -144,7 +144,7 @@ And the gradient-based approach can be instantiated as one of the other two, jus
 In fact, you can actually develop a stochastic version of model-agnostic meta-learning by adding noise to your gradients, and that will start looking a lot like the inference process.
 So they're actually pretty similar.
 The last thing I want to leave you off with is a few points about interesting observations on meta-RL in the literature.
-So far I talked a lot about methodology, but the other thing that people have studied a lot is how meta-reinforced learning can lead to interesting emergent phenomena.
+So far I talked a lot about methodology, but the other thing that people have studied a lot is how meta-reinforcement learning can lead to interesting emergent phenomena.
 And this often falls at the intersections of reinforcement learning and cognitive science.
 So the observation goes something like this.
 Humans and animals seemingly learn behaviors in a variety of ways, including highly efficient but apparently model-free RL, episodic recall, where they recall things that worked before and immediately do them, and model-based RL.

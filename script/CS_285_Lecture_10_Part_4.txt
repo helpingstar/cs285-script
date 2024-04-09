@@ -10,7 +10,7 @@ Now the states that you visit are actually stochastic, which means that you can'
 And it turns out that if you use that policy, that turns out to be the optimal closed-loop policy in the linear quadratic Gaussian case.
 That's quite an interesting result.
 So there's no change to the algorithm.
-You can ignore the sigma due to symmetry.
+You can ignore the σ due to symmetry.
 And if you want to check this on your own, the hint is that the expectation for quadratic function under a Gaussian actually has an analytic solution.
 You can look this up.
 And once you can express the expected value of your quadratic functions under these Gaussians, you can calculate their derivatives, set the derivative to zero, and you will find that the control law is the same.
@@ -95,21 +95,21 @@ Where in the iterative LQR algorithm can we perform this backtracking?
 So essentially what we want to do is we want to compute our solution, and then we want to check if the solution is actually better than what we had before.
 And if it's not better, then we want to somehow move closer to where we were before.
 It turns out that the forward pass is a very convenient place to do this.
-And a very simple way to modify the forward pass to perform this line search is to modify the constant term, the little k, by some constant alpha between 0 and 1.
+And a very simple way to modify the forward pass to perform this line search is to modify the constant term, the little k, by some constant α between 0 and 1.
 So this is the only change that we've made.
-This constant alpha allows us to control how much we deviate from our starting point.
-So imagine what would happen if I set alpha to 0.
-If I set alpha to 0, then at the first time step, my action would be x1 minus x1 hat, but x1 is always the same, so that's just 0.
+This constant α allows us to control how much we deviate from our starting point.
+So imagine what would happen if I set α to 0.
+If I set α to 0, then at the first time step, my action would be x1 minus x1 hat, but x1 is always the same, so that's just 0.
 Alpha is 0, so that means that my first action is just u hat 1.
 And because my first action is u hat 1, my second state is x hat 2, which means that x2 minus x hat 2 is also 0.
 Alpha is 0, which means my second control is also u hat 2.
-So if alpha goes to 0, I will execute exactly the same actions that I executed before.
-And in general, as I reduce alpha, I will come closer and closer to the action sequence that I had before.
-So you can search over alpha until you get improvement.
-Essentially, you can run the backward pass and then run the forward pass repeatedly with different values of alpha until you find one that you're happy with.
+So if α goes to 0, I will execute exactly the same actions that I executed before.
+And in general, as I reduce α, I will come closer and closer to the action sequence that I had before.
+So you can search over α until you get improvement.
+Essentially, you can run the backward pass and then run the forward pass repeatedly with different values of α until you find one that you're happy with.
 Now in practice, you actually want to be a little more ambitious.
-So a very simple way to do it is to just reduce alpha until the new cost is lower than the old cost.
-But the other thing you could do is you could calculate how much improvement in cost you would anticipate from your quadratic approximation, and you could actually reduce alpha until you get some fraction of that anticipated improvement.
+So a very simple way to do it is to just reduce α until the new cost is lower than the old cost.
+But the other thing you could do is you could calculate how much improvement in cost you would anticipate from your quadratic approximation, and you could actually reduce α until you get some fraction of that anticipated improvement.
 You could also do a bracketing line search where you basically assume that the true function looks roughly quadratic in between basically the blue circle and the red cross.
 And a bracketing line search will basically find the optimum of that function.
 So there are many other ways to do line searches, but if you want to implement this in practice, look up something like a bracketing line search, and that can be a pretty good choice.

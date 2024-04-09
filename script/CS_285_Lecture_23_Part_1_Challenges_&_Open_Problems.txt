@@ -240,7 +240,7 @@ And perhaps that we can use this data set with an offline RL procedure, where if
 And then if we have to tune something about the method, maybe we can do so without having to discard all of our data.
 Perhaps we could also approach this by building simulations and adapting those simulations to the real world, if that's the approach you want to take.
 And that's also something that, perhaps, merits more research.
-The multitask setting also presents challenges that are often not at the core of reinforced learning research, but I think are tremendously important.
+The multitask setting also presents challenges that are often not at the core of reinforcement learning research, but I think are tremendously important.
 So, generalization comes from training in many different settings.
 We talked about a variety of ways to set up multitask learning problems.
 For example, you could say that you have multiple MDPs, and you model them as one multitask MDP, where a different MDP is chosen at the first time step.

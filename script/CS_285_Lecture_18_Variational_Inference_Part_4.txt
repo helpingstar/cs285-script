@@ -7,21 +7,21 @@ Our encoder is a deep neural network that takes in x and produces the mean and v
 So the encoder defines a Gaussian distribution, pq , where the mean and the variance are given by the output of a neural network.
 The decoder is a neural network that's going to take in z and is going to produce a mean and variance over the observed variable x.
 So the idea is that if we want a sample, we would generate a z from the prior distribution, which is typically fixed to be a zero mean unit variance Gaussian, and then we would decode that using a latent variable.
-So we're going to be using the decoder ptheta , which basically means running it through the decoder neural network and then sampling from the resulting Gaussian distribution over the inputs.
+So we're going to be using the decoder pθ , which basically means running it through the decoder neural network and then sampling from the resulting Gaussian distribution over the inputs.
 For example, this could be used to build a generative model over images.
 Here you can see some examples of samples drawn from a variational autoencoder trained on pictures of faces.
 So here the x's are pixel images, so they're arrays of pixels, and the z's are going to be latent vectors with some dimensionality like 64 or 128.
 The architecture of the variational autoencoder.
 Essentially follows what we discussed in previous sections.
-So if we want to set this up as a computational graph for training, we would have the encoder q with parameters ϕ, take in the image xi, and that neural network would output the mean μ_ϕ of xi and the variance sigma ϕ of xi.
+So if we want to set this up as a computational graph for training, we would have the encoder q with parameters ϕ, take in the image xi, and that neural network would output the mean μ_ϕ of xi and the variance σ ϕ of xi.
 Then we would sample some noise from a zero mean unit variance distribution, and then we would form the resulting z by taking the mean and adding the noise ϵ times the z.
-So we would have the standard deviation sigma, and that gives us z.
-And then we can pass z through the decoder, p theta of x given z, and that would produce the image.
+So we would have the standard deviation σ, and that gives us z.
+And then we can pass z through the decoder, p θ of x given z, and that would produce the image.
 The training procedure trains this whole thing with the reparameterization trick.
-So it's trained to maximize the variational lower bound with respect to both the parameters of the decoder theta and the parameters of the encoder ϕ.
+So it's trained to maximize the variational lower bound with respect to both the parameters of the decoder θ and the parameters of the encoder ϕ.
 So the objective just ends up being the average over the entire data set of the log probability of the image from the decoder.
 And then we can write the result in the decoder, where the mean and standard deviation for the z comes from the encoder.
-So we use the reparameterization trick to backpropagate the error of this first log probability term all the way from the decoder back into the encoder, and thus train both theta and ϕ.
+So we use the reparameterization trick to backpropagate the error of this first log probability term all the way from the decoder back into the encoder, and thus train both θ and ϕ.
 And of course, we also have to subtract off the KL divergence regularizer, which basically accounts for the prior.
 And the KL divergence here is between the encoder distribution, q ϕ of z given xi, and the prior p of z.
 And since q ϕ of z given xi is Gaussian, and the prior p of z by convention is a zero mean unit variance Gaussian, this KL divergence can actually be computed in closed form using the analytic formula for the KL divergence between two Gaussians.
@@ -123,8 +123,8 @@ So the variable here that we're modeling is y, so p(y) given x comma z.
 is the decoder.
 Basically everything is the same as before, except now we're generating y and both the encoder and decoder get x as input.
 The prior can optionally depend on x, but there's really no need to do this.
-So the architecture now is you have your encoder with parameters ϕ, it takes in x and y, and it produces the mean and standard deviation of z, μ and sigma.
-We still have the noise, we still add μ plus ϵ times sigma to get our z, but now our decoder takes in both z and x as input and produces p theta of y given x comma z.
+So the architecture now is you have your encoder with parameters ϕ, it takes in x and y, and it produces the mean and standard deviation of z, μ and σ.
+We still have the noise, we still add μ plus ϵ times σ to get our z, but now our decoder takes in both z and x as input and produces p θ of y given x comma z.
 And just like before, the whole thing is trained with the variational lower bound shown at the top of the slide.
 So even though the model is conditional, very little actually changed.
 And then at test time, we could simply sample z from the prior, and then decode it using p(y) given x comma z.
