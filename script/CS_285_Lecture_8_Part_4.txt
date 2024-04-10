@@ -169,7 +169,7 @@ Okay.
 So let's talk about Q learning with these n-step returns.
 It's less biased because the target, because the Q values are multiplied by a small number, and it's typically faster early on because when the target values are bad, those sums of rewards really give you a lot of useful learning signal.
 Unfortunately, once you use n-step returns, this is actually only a correct estimate of the Q value when you have an on-policy sample.
-So the reason for this is that if you have a sample collected with a different policy, then that second step, T+1, might actually be different for your new policy, right?
+So the reason for this is that if you have a sample collected with a different policy, then that second step, t+1, might actually be different for your new policy, right?
 Because if on the second step you take a different action, that won't match what you're getting from your n-step return.
 So n-step returns technically are not correct with off-policy data anymore.
 With off-policy data, technically you're only allowed to use N equals 1.
