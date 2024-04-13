@@ -96,7 +96,7 @@ So this works even for off-policy samples.
 So this algorithm does not make any assumptions that the actions were actually sampled from the latest policy.
 The actions could have been sampled from anything.
 So you can store all the data you've collected so far.
-It doesn't need to come from your latest policy, unlike Actor-Critic, where we had a non-policy algorithm.
+It doesn't need to come from your latest policy, unlike Actor-Critic, where we had an on-policy algorithm.
 There's only one network.
 There's no policy gradient at all.
 There's no actor.

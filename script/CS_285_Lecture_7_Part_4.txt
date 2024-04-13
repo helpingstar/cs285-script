@@ -47,14 +47,14 @@ So will we reach it?
 So I won't go through the proof in detail in this lecture, but the high-level sketch behind how we argue that value iteration converges, is by arguing that it's a contraction.
 So we can prove that value iteration reaches V^{*} because B is a contraction.
 What does it mean to be a contraction?
-It means that if you have any two vectors, V and bar{V}, then applying B to both V and bar{V} will bring those vectors closer together, meaning that B V minus B bar{V}, their norm is less than or equal to the norm of V minus bar{V}.
+It means that if you have any two vectors, V and bar{V}, then applying B to both V and bar{V} will bring those vectors closer together, meaning that BV - B bar{V}, their norm is less than or equal to the norm of V - bar{V}.
 In fact, it's a contraction by some coefficient, and that coefficient happens to be γ.
-So not only is BV minus B bar{V} norm less than or equal to V minus bar{V} norm, it's actually less than or equal to V minus bar{V} norm times γ.
+So not only is BV - B bar{V} norm less than or equal to V - bar{V} norm, it's actually less than or equal to V - bar{V} norm times γ.
 So you will contract, and you'll actually contract by some non-trivial amount, which means that V and bar{V} will always get closer together as you apply B to them.
 Now, the proof that B is a contraction is not actually all that complicated.
 I just don't want to go through it on this slide, but you can look it up as a standard kind of textbook result.
 But just to very briefly explain why showing that it's a contraction implies that value iteration converges, if you choose V^{*} as your bar{V}, you know that V^{*} is a fixed point of B.
-So if you substitute in V^{*} for bar{V}, then you get the equation BV minus V^{*} norm is less than or equal to γ times V minus V^{*} norm.
+So if you substitute in V^{*} for bar{V}, then you get the equation BV - V^{*} norm is less than or equal to γ times V - V^{*} norm.
 Which means that each time you apply B to V, you get closer to V^{*}.
 So each time you change your value function by applying the non-linear operator B, you get closer to your optimum V^{*}.
 It's important to note here that the norm under which the operator B is a contraction is the infinity norm.
@@ -123,8 +123,8 @@ This actually happens in practice.
 So if you imagine that this is your starting point, the yellow star is the optimal value function, and you take a step, so your regular value iteration will gradually get closer and closer to the star.
 If you have a projected value iteration algorithm, a fitted value iteration algorithm, then you're going to restrict your value function to this line each step of the way.
 So your Bellman backup, BV, will get you closer to the star in terms of infinity norm, and then your projection will move you back onto the line.
-And while both of those operations are contractions, notice that V' is now actually further from the star than v is.
-And you can get these situations where each step of the way actually gets you further and further from V star.
+And while both of those operations are contractions, notice that V' is now actually further from the star than V is.
+And you can get these situations where each step of the way actually gets you further and further from V^{*}.
 And this is not just a theoretically idiosyncrasy, this can actually happen in practice.
 So the sad conclusions from all this are that value iteration does converge in the tabular case, fitted value iteration does not converge in general, and it doesn't converge in general, and it often doesn't converge in practice.
 Now what about fitted Q iteration?
@@ -168,6 +168,6 @@ Okay, so to review, we talked about some value iteration theory, we discussed th
 This is a typo on the slide, they're not actually linear operators, but they are operators.
 We talked about how the backup is a contraction, and how tabular value iteration converges.
 We talked about some convergence properties with function approximation, where the projection is also a contraction, but because it's a contraction in a different norm, backup followed by projection is not actually a contraction.
-And therefore, Fitted value iteration does not in general converge, and its implications for Q-learning are that Q-learning fitted to Q-iteration, et cetera, also do not converge when we use neural nets, when we have a projection operator.
+And therefore, Fitted value iteration does not in general converge, and its implications for Q-learning are that Q-learning, fitted  Q-iteration, et cetera, also do not converge when we use neural nets, when we have a projection operator.
 This might seem somewhat somber and depressing.
 We will find out in the next lecture that in practice, we can actually make all of these algorithms work very well, but their theoretical properties leave us with a lot to be desired.

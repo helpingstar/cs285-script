@@ -23,6 +23,7 @@ A^π(s_t,a_t) is our advantage.
 That's the difference between our Q value and our value.
 And intuitively the advantage says how much better is a_t than the average action according to the policy π, where π is the policy for which we calculated this advantage.
 So then argmax with respect to a_t of A^π(s_t,a_t) is the best action that we could take from s_t if we follow π thereafter.
+[2:39]
 Which means that the argmax with respect to a_t of the advantage is going to be at least as good as an action that we would have sampled from our current policy.
 We know it's at least as good because it's actually the best.
 So if it's the best action from s_t if we then follow π thereafter, then it's at least as good as whatever action π would have chosen.
@@ -93,6 +94,7 @@ For those of you that are a bit more mathematically inclined, I will also point 
 And the system of linear equations, can then be solved with any linear equation solver.
 So something that you could do as a homework assignment to understand this a little bit better is to actually write down the system of linear equations and work out its solution.
 It's fairly straightforward to do, but it's a good exercise to make sure that you really understand dynamic programming and policy evaluation.
+[12:01]
 Okay, so we have our tabular MDP, 16 states, 4 actions per state.
 We can store the full value function in a table.
 We can compute the value function using policy evaluation by repeatedly using this recursion.
