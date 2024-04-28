@@ -83,11 +83,11 @@ And to start on the path there, I'm going to substitute in the equations for the
 So remember that one way that we can express the RL objective is as the expected value of the value function under the initial state distribution.
 Because the value function captures the expected reward that π_θ would get if it starts in some state s_0.
 So if we averaged over all the s_0, then we'll get the RL objective.
-And the reason that I want to write it this way is because now, p_{s_0} doesn't depend on θ.
+And the reason that I want to write it this way is because now, p(s_0) doesn't depend on θ.
 So everything that depends on θ is inside the expectation.
 The distribution with respect to which the expectation is taken does not depend on θ.
-So what that means is I can change the distribution under which the expectation is taken to be any distribution whose marginal over the initial state is p_{s_0}.
-And this includes p_θ(τ), p_{θ'}(τ), and p any θ τ.
+So what that means is I can change the distribution under which the expectation is taken to be any distribution whose marginal over the initial state is p(s_0).
+And this includes p_θ(τ), p_{θ'}(τ), and p_{any θ}(τ).
 Basically, the trajectory distribution for any policy must have the same initial state marginal.
 So what I can do, going from the first line to the second line, is I can replace p(s_0) with any trajectory distribution that has the same initial state marginal.
 And the one that I'm going to pick is p_{θ'}(τ).
