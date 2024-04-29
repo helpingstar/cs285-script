@@ -1,10 +1,18 @@
+[p.07]
+
 Okay, so let's talk about the conditions under which we can use p_θ(s_t) in place of p_{θ'}(s_t) and still have a reasonable objective that accurately approximates the return of the new policy.
+
+[p.08]
+
 So to recap, what we want to do is we want to ignore the distribution mismatch.
 We want to use p_θ(s_t) instead of p_{θ'}(s_t) such that the only dependence on θ' in this whole equation is in the importance weight because we know from our previous policy gradient lecture that if we differentiate the thing on the right-hand side, we get exactly the policy gradient.
 So we want this to be true so that J(θ') minus J(θ) is well approximated by bar{A}(θ') this thing on the right-hand side so that we could just maximize bar{A}.
 And get a better new policy.
 And what we're going to try to show is that p_θ(s_t) is close to p_{θ'}(s_t) when π_θ is close to π_{θ'}.
 And when that's the case, then the right-hand side approximates the left-hand side, meaning the difference between them can be bounded by some quantity which is small if the difference between π_θ and π_{θ'} is small.
+
+[p.09]
+
 Okay, so this is what we're interested in.
 We want to show that π_θ(s_t) is close to π_{θ'}(s_t).
 Sorry, p_θ(s_t) is close to p_{θ'}(s_t) when π_θ is close to π_{θ'}.
@@ -30,7 +38,7 @@ So this is the probability we made no mistake, and this is some other distributi
 So hopefully this seems familiar to all of you.
 And just like before, this equation implies that we can write the total variation divergence between p_{θ'} and p_θ as essentially just the part that's different, right?
 So that (1 - ϵ)^t times p_θ(s_t) part has zero total variation divergence against p_θ(s_t).
-So it's only that second part, and that second part has a multiplier of (1 - ϵ)^t in front of it, and that multiplies the TV(total variation) divergence between p_{mistake} and p_θ.
+So it's only that second part, and that second part has a multiplier of (1 - (1 - ϵ)^t) in front of it, and that multiplies the TV(total variation) divergence between p_{mistake} and p_θ.
 Now we can't bound this TV divergence to p_{mistake} - p_θ because we're making no assumption on p_{mistake}.
 So the only bound we have is the trivial bound, which is that any total variation divergence always has to be less than or equal to 2.
 So that means that the total variation divergence between the state marginals is bounded by 2(1 - (1 - ϵ)^t).
@@ -41,6 +49,9 @@ Okay.
 So it's not a great bound, but it is a bound because it shows that as ϵ decreases, the state marginals become similar to one another.
 But of course, this was all for the case of the deterministic policy p_θ.
 In general, p_θ will not be deterministic.
+
+[p.10]
+
 So what we're going to do next is we're going to analyze the general case where π_θ is an arbitrary distribution.
 And this proof follows the proof in the trust region policy optimization paper, which is a reference to the bottom of the slide.
 Okay.
@@ -75,6 +86,9 @@ So what this lemma allows us to do is it allows us to state the same result that
 So from here, everything is exactly the same.
 We can write the same bound, and we can say that the state marginals differ by at most 2ϵt.
 So essentially the trick that we used on this slide was to use this lemma to express a probability that two policies will take different actions in terms of the total variation divergence.
+
+[p.11]
+
 So this is the result that we have on the state marginals.
 So what does this tell us about the actual objective value?
 What we want is we actually want to relate the two objectives expressed in terms of advantage values.
@@ -97,7 +111,7 @@ Now this error term might seem pretty big, because the largest value of f might 
 So as the two policies get closer together, as ϵ gets small, that second term can always be made arbitrarily small so long as f is bounded, basically, so long as f doesn't go off to infinity for any state.
 So this was the equation that we were originally concerned about.
 We were concerned about the expected value under p_{θ'}(s_t) of the expected value over the actions of the importance sampled estimator for the advantage.
-So by taking everything inside the brackets to be f, then we can bound this quantity below by the expected value under p_θ(s)t of the same quantity, and this thing now just looks exactly like the thing that we differentiate to get the policy gradient, minus an error term, and the error term is 2ϵt times a constant C, and the constant C is the largest value that the thing inside the brackets, the thing inside the state expectation, can take on.
+So by taking everything inside the brackets to be f, then we can bound this quantity below by the expected value under p_θ(s_t) of the same quantity, and this thing now just looks exactly like the thing that we differentiate to get the policy gradient, minus an error term, and the error term is 2ϵt times a constant C, and the constant C is the largest value that the thing inside the brackets, the thing inside the state expectation, can take on.
 Take a moment to think about what the largest possible value for that quantity inside the brackets could be, basically.
 What should we use for C?
 The thing inside the brackets is a really complicated equation, but notice that most of the terms in that equation are probabilities, and we know that probabilities have to sum to 1.
@@ -119,6 +133,9 @@ Everything in that error term is a constant except for ϵ, and ϵ is the total v
 So take a moment at this point to think about what kind of RL algorithm we should use informed by this derivation.
 Basically, this derivation suggests that a certain very tractable objective is a good approximation to the true RL objective under certain circumstances.
 And this implies something about the sort of reinforcement learning algorithm that we should be using if we want to get good performance.
+
+[p.12]
+
 All right, so what we have so far is that maximizing this objective, basically the expected value under p_θ, the expected value under π_θ of the importance weighted advantage, is a good way to maximize the RL objective so long as π_{θ'} is close to π_θ in terms of total variation divergence.
 Essentially, if you restrict θ' to not go too far from θ so this constraint is satisfied, then maximizing this tractable objective is the same as maximizing the true RL objective.
 How do we maximize this objective?

@@ -1,3 +1,5 @@
+[p.01]
+
 All right.
 So today's lecture is going to be on advanced policy gradient algorithms.
 And this is probably going to be one of the more technically nuanced lectures in the course.
@@ -7,6 +9,9 @@ So the goal in today's lecture is going to be to combine some of the policy grad
 Now, this lecture is primarily about policy gradients.
 But the insights that I think we get from this type of analysis can also be used for things like Actor-Critic algorithms and more generally, to gain a deeper understanding of RL methods.
 So if you have an interest in reinforcement learning theory, in understanding how and why to design algorithms in a certain way, and if you just want to get more in-depth knowledge about policy gradients, this is the lecture for you.
+
+[p.02]
+
 All right, so let's just recap the policy gradient material that we had before.
 So initially, we covered the basic REINFORCE algorithm, where the procedure is that we sample some trajectories from our current policy, our current suboptimal policy.
 Then for every one of those trajectories and every time step along each of those trajectories, we calculate the reward to go and then multiply the ∇log π's by the reward to go to get an estimate of the gradient.
@@ -17,6 +22,9 @@ They generate samples in the orange box, fit some estimate to the reward to go, 
 So this is kind of the most generic form of the policy gradient, where you have many choices about what goes in for ^{Q}.
 So that's our reward to go.
 So that's just a recap of what we covered before.
+
+[p.03]
+
 The question we're going to ask now is, why is it that policy gradient actually works?
 Why is it that we can count on policy gradient to improve our policy?
 Now, the obvious answer is that, well, you just calculated a gradient, and then you're doing gradient ascent.
@@ -49,6 +57,9 @@ So you could almost think of policy gradients as a kind of softened version of t
 And that might be desirable if you think that your advantage estimator is not perfect.
 If your advantage estimator is not perfect, perhaps what you would like to do is just slightly change your policy in the direction suggested by your advantage estimator, and then collect some more transitions, some more samples, and improve your advantage estimator.
 So, in a sense, what we're going to discuss today is how to formalize this notion and explain why we should expect this kind of softened policy iteration procedure, which is policy gradients, to work well.
+
+[p.04]
+
 Okay, so let's try to reinterpret the policy gradient as policy iteration.
 To get started on this, I'm going to show you a little calculation.
 I'm going to show you how we can write this expression, the difference between the RL objective for some new parameter θ' minus the objective for some old parameter, as an expression that describes the expected advantage under the new policy where the advantage is taken from the old policy.
@@ -145,6 +156,9 @@ And just to make sure everyone is on the same page, concretely what this proves 
 We'll actually optimize the reinforcement learning objective.
 So essentially this proof shows that policy iteration does the right thing.
 Okay.
+
+[p.05]
+
 So what does this all have to do with policy gradients?
 Well, so what we've shown is that the RL objective, maximizing the RL objective is the same as maximizing this equation, where the advantage is taken under π_θ and the expectation is taken under π_{θ'}.
 So this is our equation.
@@ -161,6 +175,9 @@ We can't sample from p_{θ'} because we don't yet know what θ' will be.
 So it's a big problem here that the expectation over states is with respect to θ' and not θ.
 If we could just use θ instead of θ', then we would recover the policy gradient expression that we had before.
 So that's the problem that we're left with.
+
+[p.06]
+
 Essentially, we need to somehow ignore the fact that we need to use state sampling from p_{θ'}(s_t) and instead get away with using state sampling from p_θ(s_t).
 So this is our problem.
 If we could only get rid of that θ, then the only remaining θ' would be in the importance weight.
