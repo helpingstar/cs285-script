@@ -1,4 +1,9 @@
+[p.17]
+
 Alright, in the last portion of today's lecture we're going to go over another way to impose the constraint which is a little more approximate but leads to a pretty simple algorithmic framework called natural gradient.
+
+[p.18]
+
 Okay, so so far we discussed this optimization problem maximize the expected value under the old policy state distribution of the expected value under the old policies action distribution of the important sampled estimator subject to a constraint that the KL divergence between π_{θ'} and π_θ is bounded by ϵ and we saw how if you can enforce this for a small enough ϵ then this is guaranteed to improve J(θ') minus J(θ).
 In the previous section we saw how we could impose this constraint by using something like a dual gradient descent method typical Lagrange multiplier and then essentially optimize the Lagrangian as a kind of penalized objective to find the new policy parameters.
 Now we're going to talk about a more approximate way of doing this which at first will seem a little bit worse because we're going to make a lot of approximations but in fact is actually highly desirable because it allows us to recover a very simple method that doesn't require any additional penalties and simply applies a linear transformation to the standard policy gradient that we saw back in lecture 3.
@@ -23,6 +28,9 @@ So our objective turned into a first-order Taylor approximation.
 By the way just as an aside why do we want to do all this?
 Well the reason we want to do all this is because we're going to get a very very simple algorithm.
 So we're going to introduce these additional steps of approximation but the payoff that we'll get is a simpler algorithm that still works quite well.
+
+[p.19]
+
 Okay so there's our new simplified constraint problem.
 And one really appealing thing about simplifying it in this way is that our gradient ∇_θ A θ is going to essentially become exactly the normal policy gradient.
 So here's the equation for ∇_{θ'} A θ' and since only the importance weight depends on θ'.
@@ -36,6 +44,9 @@ Okay.
 So that's nice.
 And that's just the thing that we're going to plug into our objective.
 That's just the regular policy gradient.
+
+[p.20]
+
 Now, could we just use gradient ascent then?
 If we're just calculating the policy gradient, our objective is ∇_θ J(θ) transpose θ'.
 Does gradient ascent do something similar to this constraint optimization problem?
@@ -67,6 +78,9 @@ And because different entries in θ might affect the distribution to different d
 So intuitively the constraint shape is a circle for gradient ascent but we want it to be a kind of ellipse.
 We want the ellipse to be squished along the highly sensitive direction so we want a tighter constraint in the direction of θ that results in big changes in probability and we want the ellipse to be elongated in the directions where large changes in θ result in small changes in probability.
 So that's what we're going to try to get next.
+
+[p.21]
+
 So what we're going to do, we're going to recognize that these are not the same and we're going to construct a tractable approximation to the KL divergence constraint which is the one that we actually want.
 So the way that we're going to do this is by doing the same thing to the constraint that we did to the objective.
 So for the objective we calculated a Taylor expansion, specifically a first order Taylor expansion.
@@ -82,6 +96,9 @@ Because it's the expected value of some quantity you could simply use the same s
 Now if we're going to use this second order Taylor expansion as an approximation for our KL divergence constraint something that we can note is that gradient ascent actually also has a quadratic constraint.
 (θ - θ') squared can also be interpreted as (θ' - θ) transpose times identity times (θ' - θ).
 And now we have the same thing only instead of identity we have F.
+
+[p.22]
+
 So we can estimate our Fisher information matrix with samples and then we can plug that in as a quadratic constraint just using the matrix F instead of identity.
 And visually you can think of it as turning that circle into some ellipse where the shape of the ellipse is determined by the matrix F.
 The matrix F basically describes which directions in θ space around the point θ lead to large changes in probability and which ones lead to small changes in probability.
@@ -93,6 +110,9 @@ And again you can check that the step size is correct by plugging in this equati
 So this expression is called the natural gradient so you take the regular gradient and you multiply it by the inverse of the Fisher information matrix and you get the natural gradient.
 Okay, so take a moment to look over the slide.
 If something here is unclear, please make sure to write a question in the comments.
+
+[p.23]
+
 All right, now here what I want to do is I want to back up a little bit and just ask, well, is this even a problem in practice?
 Like, it kind of seemed like regular gradient ascent, regular vanilla policy gradient, already enforces some kind of constraint.
 Maybe that constraint is just good enough.
@@ -113,6 +133,9 @@ The natural policy gradient largely resolves this issue.
 So if you just multiply the gradient by F inverse, then that correctly accounts for the fact that σ affects the parameters a lot more, and actually prioritizes k large, it actually increases the gradient component with respect to k and gets you to point to work in the right direction.
 So this really is a problem in practice, especially for continuous distributions like Gaussians.
 So in practice natural gradient really does give you a much more well-conditioned gradient direction and it makes it a lot easier to adjust learning rates.
+
+[p.24]
+
 Alright, a few practical notes.
 So natural policy gradient as classically described in the literature is an algorithm where you calculate the Fisher information matrix F approximately using samples and then manually select a step size α.
 It's generally a good choice to stabilize policy gradient training and if you want to learn more about this, check out this paper by Peters and Schall called Reinforcement Learning of Motor Skills with Policy Gradients.
@@ -127,6 +150,9 @@ Now, of course, you could just use the importance sampled objective directly wit
 So that can be interpreted as a kind of regularization to stay close to the old policy.
 And that's what I covered in the previous section.
 If you want to learn more about this, check out Proximal Policy Optimization.
+
+[p.25]
+
 Okay, so to review, we talked about how policy gradient can be interpreted as policy iteration.
 How you can optimize the advantage of the old policy under the new policy state distribution, and that is exactly policy iteration.
 But furthermore, if you use the old policy state distribution, then you're optimizing a bound if the policies are close enough.

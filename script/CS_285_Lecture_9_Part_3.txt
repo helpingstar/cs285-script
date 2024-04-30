@@ -1,4 +1,9 @@
+[p.13]
+
 Alright, let's talk about how we can actually implement policy gradients with constraints to instantiate the algorithm that we derived in the previous section.
+
+[p.14]
+
 So the claim that we had was that p_θ(s_t) is close to p_{θ'}(s_t) when π_θ is close to π_{θ'} and close here was defined in terms of total variation divergence.
 Now it would help us to get a slightly more convenient bound because for some policy classes imposing total variation divergence constraints is actually pretty difficult.
 So a more convenient bound that we could derive, you can use the fact that total variation divergence is actually related to KL divergence via an inequality.
@@ -9,7 +14,13 @@ So this makes the KL divergence very convenient to use.
 So the expression for a KL divergence is the expected value of the log of the ratio between the distributions and one way to get some intuition for why this class of divergences is a little bit more manageable is that the total variation divergence is expressed in terms of absolute value which means that it's in general not differentiable everywhere whereas the KL divergence is differentiable so long as the two distributions have the same support.
 So the KL divergence has some very convenient properties that make it much easier to approximate and much easier to use in an actual reinforcement learning algorithm as we'll see in the remainder of this lecture.
 So in practice if we actually want to have a constrained policy gradient method we're going to express our constraint as a KL divergence rather than as a total variation divergence but since the KL divergence bounds the total variation divergence this is a legitimate thing to do and it preserves our bound.
+
+[p.15]
+
 Okay so then the objective that we're going to want to optimize is our usual important sampled objective with the constraint that the KL divergence between π_{θ'} and π_θ is bounded by ϵ and if ϵ is small enough this is guaranteed to improve J(θ') minus J(θ) because the error term will be bounded.
+
+[p.16]
+
 So how can we enforce this constraint?
 Well, there are a number of different methods to do this.
 And you know one very simple one is to actually write out an objective in terms of the Lagrangian of this constrained optimization problem.
