@@ -3,7 +3,7 @@ And this formal explanation will actually help us to develop some of the solutio
 Okay, so let's go back to this intuitive picture, which I used to argue that the reason that behavioral cloning doesn't do so well is because even if you learn a very good policy, if that policy makes a small mistake, it'll put you into a situation that's a little bit different from the ones that it was trained on, where it's more likely to make a bigger mistake, which in turn will put you into an even more unfamiliar situation.
 And from there, the mistakes might build up and up.
 So to try to make this more precise, let's start introducing a little bit of notation.
-We have a policy, π_θ at given ot, and that policy is trained using a training set that comes from a particular distribution.
+We have a policy, π_θ a_t given ot, and that policy is trained using a training set that comes from a particular distribution.
 And that distribution is produced by a person providing demonstrations, like a person driving a car, for example.
 So I'm going to use p data ot to denote the distribution that produced the training set.
 Now, p data ot might be a very complex distribution.

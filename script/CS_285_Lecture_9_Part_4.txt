@@ -32,8 +32,8 @@ So we're going to introduce these additional steps of approximation but the payo
 [p.19]
 
 Okay so there's our new simplified constraint problem.
-And one really appealing thing about simplifying it in this way is that our gradient ∇_θ A θ is going to essentially become exactly the normal policy gradient.
-So here's the equation for ∇_{θ'} A θ' and since only the importance weight depends on θ'.
+And one really appealing thing about simplifying it in this way is that our gradient ∇_θ A(θ) is going to essentially become exactly the normal policy gradient.
+So here's the equation for ∇_{θ'} A(θ') and since only the importance weight depends on θ'.
 We just get the importance sampled policy gradient.
 But if we evaluate it at the point θ' equals θ then the importance weights actually cancel out, because we get the same thing in the numerator and the denominator.
 So here I just wrote it out for ∇_θ bar{A} θ and when they cancel out you're just left with the standard policy gradient equation which we saw in the previous lecture.
@@ -48,9 +48,9 @@ That's just the regular policy gradient.
 [p.20]
 
 Now, could we just use gradient ascent then?
-If we're just calculating the policy gradient, our objective is ∇_θ J(θ) transpose θ'.
+If we're just calculating the policy gradient, our objective is ∇_θ J(θ)^T(θ' ...).
 Does gradient ascent do something similar to this constraint optimization problem?
-So gradient ascent, we'll just take θ and set it to be the old θ plus α times ∇_θ J(θ).
+So gradient ascent, we'll just take θ and set it to be the old θ + α ⋅ ∇_θ J(θ).
 One problem with doing this is that as we change θ, the probabilities of the new policy, the π_θ(a|s), will change by different amounts.
 Because some parameters, some entries in θ affect the probabilities more than others.
 So in general, taking a step like this will usually not respect the KL divergence constraint, because you might have some very, very small change in some parameter, but that parameter might have a very, very large influence on the probabilities.
@@ -90,11 +90,10 @@ It's actually flat but its second derivative is not zero.
 The second order Taylor expansion is a quadratic form with some matrix F and it turns out that the matrix that goes in there is something called the Fisher information matrix.
 The calculation for this is a bit involved but you basically start with a formula for the KL divergence and if you take the second derivative you can show that the correct thing to use for that matrix is the Fisher information matrix which is given by this equation.
 So the Fisher information matrix is the expected value under π_θ of the outer product of the ∇log π.
-
 And one very convenient thing about the Fisher information matrix is that you can approximate it using samples.
 Because it's the expected value of some quantity you could simply use the same samples that you drew from π_θ to estimate your policy gradient to also estimate the Fisher information matrix.
 Now if we're going to use this second order Taylor expansion as an approximation for our KL divergence constraint something that we can note is that gradient ascent actually also has a quadratic constraint.
-(θ - θ') squared can also be interpreted as (θ' - θ) transpose times identity times (θ' - θ).
+(θ - θ')^2 can also be interpreted as (θ' - θ)^T ⋅ identity ⋅ (θ' - θ).
 And now we have the same thing only instead of identity we have F.
 
 [p.22]
@@ -104,7 +103,7 @@ And visually you can think of it as turning that circle into some ellipse where 
 The matrix F basically describes which directions in θ space around the point θ lead to large changes in probability and which ones lead to small changes in probability.
 And you can actually show that if your constraint is quadratic like this and you write out the Lagrangian if you know the Lagrange multiplier then the solution will be given by this equation.
 The reason for that of course is that the Lagrangian will have a linear term ∇ J transpose θ' and a quadratic term given by the quadratic KL divergence expansion and a second order polynomial function like this has a closed form solution which uses the inverse of the quadratic term times the linear term.
-So this is the closed form solution when the constraint is given by one half (θ' - θ) transpose times F times (θ' - θ).
+So this is the closed form solution when the constraint is given by one half (θ' - θ)^T ⋅ F ⋅ (θ' - θ).
 And furthermore if we want to enforce the constraint that this second order expansion be less than or equal to ϵ we can use the same general idea as we used in gradient descent and figure out the step size that satisfies that constraint.
 And again you can check that the step size is correct by plugging in this equation for α then plugging in the resulting equation for θ' into our KL divergence approximation and then you will be able to show that you end up with the constraint being satisfied.
 So this expression is called the natural gradient so you take the regular gradient and you multiply it by the inverse of the Fisher information matrix and you get the natural gradient.
@@ -124,13 +123,13 @@ So here your parameters are k and σ.
 In that setting, you're basically adding some Gaussian noise and walking left and right, in that setting we saw that the regular policy gradient actually looks very unfortunate.
 The regular policy gradient does have to point in the right direction, it always does, but it's extremely ill-conditioned.
 Essentially, as σ decreases, the gradient with respect to σ becomes much, much larger than the gradient with respect to k.
-So even though the optimal solution is that k equals negative 1, you might never reach that solution because you'll be too busy decreasing σ.
+So even though the optimal solution is that k = -1, you might never reach that solution because you'll be too busy decreasing σ.
 Intuitively, the reason this is happening is that k and σ affect the probabilities to different degrees.
 And because σ affects the probabilities so much more when it's small, then the corresponding gradient component is much larger.
 And, simply, staying within a fixed ball in θ space, even in this very simple 2-dimensional space, is just not enough.
 So it's essentially the same as a very ill-conditioned optimization problem.
 The natural policy gradient largely resolves this issue.
-So if you just multiply the gradient by F inverse, then that correctly accounts for the fact that σ affects the parameters a lot more, and actually prioritizes k large, it actually increases the gradient component with respect to k and gets you to point to work in the right direction.
+So if you just multiply the gradient by F^{-1}, then that correctly accounts for the fact that σ affects the parameters a lot more, and actually prioritizes k large, it actually increases the gradient component with respect to k and gets you to point to work in the right direction.
 So this really is a problem in practice, especially for continuous distributions like Gaussians.
 So in practice natural gradient really does give you a much more well-conditioned gradient direction and it makes it a lot easier to adjust learning rates.
 
@@ -139,12 +138,12 @@ So in practice natural gradient really does give you a much more well-conditione
 Alright, a few practical notes.
 So natural policy gradient as classically described in the literature is an algorithm where you calculate the Fisher information matrix F approximately using samples and then manually select a step size α.
 It's generally a good choice to stabilize policy gradient training and if you want to learn more about this, check out this paper by Peters and Schall called Reinforcement Learning of Motor Skills with Policy Gradients.
-Practical implementations require computing this product between F inverse and ∇ J, which is a little bit non-trivial to do without computing full matrix.
+Practical implementations require computing this product between F^{-1} and ∇ J, which is a little bit non-trivial to do without computing full matrix.
 But if you want to implement this in practice, check out this paper called Trust Region Policy Optimization.
 There are a few tricks that are very useful.
 So one trick is that you can actually solve for the step size α, which actually respects a particular value of ϵ.
 So if instead of picking α you want to pick ϵ, here's the formula.
-But even more importantly, one of the things you could do which makes this much more efficient to calculate is you can use the conjugate gradient method to calculate F inverse ∇ J and in the process of running conjugate gradient, you're actually going to get the step size α given by this equation automatically as a byproduct.
+But even more importantly, one of the things you could do which makes this much more efficient to calculate is you can use the conjugate gradient method to calculate F^{-1} ∇ J and in the process of running conjugate gradient, you're actually going to get the step size α given by this equation automatically as a byproduct.
 I'm not going to go into details about this and I would encourage you to check out the Trust Region Policy Optimization paper for details, but it's a fairly straightforward application of CG of conjugate gradient.
 Now, of course, you could just use the importance sampled objective directly with something like dual gradient descent, or even a heuristic selection of the Lagrange multiplier, and that works fairly well.
 So that can be interpreted as a kind of regularization to stay close to the old policy.

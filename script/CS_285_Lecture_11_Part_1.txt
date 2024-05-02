@@ -9,10 +9,10 @@ So all the algorithms we'll discuss in today's lecture learn only a model and th
 Whereas in the previous lecture we'll discuss how we can use model-based RL to learn policies.
 So the goals for today's lecture will be to understand how to build model-based RL algorithms, understand the important considerations for model-based RL, and understand the trade-offs between different model classes.
 So why should we learn the model?
-Well, if we had some estimate of the dynamics, for example a function f that returns s_t plus 1, then we could simply use all those tools from last week that we learned about the model-based RL.
+Well, if we had some estimate of the dynamics, for example a function f that returns s_{t+1}, then we could simply use all those tools from last week that we learned about the model-based RL.
 So we can use models to learn to control our system instead of having to deal with model-free RL algorithms.
 In the stochastic case we would learn a stochastic model of the form p given s_t .
-For most of the algorithms that I'll discuss in today's lecture, I'll present them as deterministic model algorithms of the form f equals s_t plus 1, but almost all of those ideas can just as well be used with probabilistic models that learn a distribution over the next state.
+For most of the algorithms that I'll discuss in today's lecture, I'll present them as deterministic model algorithms of the form f equals s_{t+1}, but almost all of those ideas can just as well be used with probabilistic models that learn a distribution over the next state.
 And when this distinction is salient, I'll make a distinction between the two.
 So let's think about how we can learn f from data and then plan through it to select our actions.
 We could imagine a very simple model-based RL algorithm prototype.

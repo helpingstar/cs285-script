@@ -9,8 +9,8 @@ And this will be important later for inverse RL.
 So let's start with the backward messages.
 These are really the most important ones because if you can calculate these, then you can recover near optimal policies.
 And the way that we will derive the backward message is just with a bit of recursion and probability theory and a little bit of algebra.
-So first we can take this equation for the backward message and we can insert the next state s_t plus 1 and integrate it out.
-So the backward message is equal to the integral over all values of s_t plus 1 of p of o, t through big T, comma s_t plus 1 given s, d, a, t.
+So first we can take this equation for the backward message and we can insert the next state s_{t+1} and integrate it out.
+So the backward message is equal to the integral over all values of s_{t+1} of p of o, t through big T, comma s_{t+1} given s, d, a, t.
 And now what we'll do is we'll factorize this distribution using the CPF.
 And we'll use this to determine the order of the vectorization.
 So we'll do that by taking some of the TPFs that we have in our model and our goal on doing this factorization is to recover a recursive expression where we can represent beta t, s_t, a, t as some function of beta t plus 1 s plus 1.
@@ -79,7 +79,7 @@ Now we see that in the inference perspective, the value function is the soft max
 We want to soften our notion of optimality so that slightly suboptimal things are still possible.
 Let's talk about the other expression.
 So if we write the other expression in log space, then we get the following equation.
-qt of s_t is equal to r of s_t plus the log of the expected value of the exponential of vt plus 1 at s_t plus 1.
+qt of s_t is equal to r of s_t plus the log of the expected value of the exponential of vt plus 1 at s_{t+1}.
 So that looks a lot like a Bellman backup because it has a reward and an expectation term, except that now you have this log around the expectation.
 Okay, so let's try to understand this equation a little bit better.
 There is a particular special case where it is exactly the same as the Bellman equation.
