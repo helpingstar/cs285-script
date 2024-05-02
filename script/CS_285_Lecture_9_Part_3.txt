@@ -29,7 +29,8 @@ So if you want to solve a constrained optimization problem one of the things you
 So the intuition is that you raise λ if the constraint is violated too much otherwise you lower it.
 Right?
 Because if the KL divergence is much larger than ϵ then you're going to add D_{KL} minus ϵ which is a positive number to λ.
-So λ will get bigger if the constraint is much lower than ϵ you'll add a negative number and λ will get smaller.
+So λ will get bigger.
+If the constraint is much lower than ϵ you'll add a negative number and λ will get smaller.
 So you essentially alternate between solving an unconstrained problem and adjusting your Lagrange multiplier to enforce the constraint more or less strictly depending on whether it's being violated or not.
 This procedure is called dual gradient descent and we'll actually talk about dual gradient descent in much more detail in a subsequent lecture but for now you can sort of take my word for it that this procedure will asymptotically find the right Lagrange multiplier which means that it will actually solve your constrained optimization problem.
 Now this is sort of the theoretically principled solution.

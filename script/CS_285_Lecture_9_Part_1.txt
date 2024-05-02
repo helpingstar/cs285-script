@@ -112,7 +112,7 @@ So I'm going to replace V^{π_θ}(s_0) with this funny quantity.
 So let's look at this quantity.
 This is a difference of two sums.
 The first sum is a sum from 0 to infinity, and the second sum is a sum from 1 to infinity.
-And what I'm summing in both cases is γ^t times V^{π_θ} evaluated at s_t.
+And what I'm summing in both cases is γ^t ⋅ V^{π_θ} evaluated at s_t.
 So I'm summing the same thing in both cases, just that one sum runs from 0 to infinity and the other runs from 1 to infinity.
 So that means when I take the difference of these two sums, all the elements in the first sum from 1 to infinity get cancelled out by the second sum.
 So that means that the difference of these two infinite sums is just V^{π_θ} evaluated at s_0.
