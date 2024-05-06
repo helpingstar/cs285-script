@@ -23,7 +23,7 @@ And there, you get a decoding, and at the end, the model outputs an end-of-seque
 So, that's basically a transformer.
 Now, for the purpose of this course, you don't really need to know anything about how the transformer works.
 So, you could simplify this diagram to essentially be some kind of box, which we call a transformer, that sequentially reads in tokens and predicts next tokens.
-So, at every time step, it's modeling the distribution p of x, t given x1 through t minus 1.
+So, at every time step, it's modeling the distribution p of x, t given x_1 through t minus 1.
 And by repeatedly sampling from that distribution, you end up with a sentence-like, i like omdp solvers.
 Notice that this model is not Markovian.
 So, every token depends on all previous tokens.
@@ -82,8 +82,8 @@ Now, the way it's representing it is by a product of probabilities.
 It's at every time step.
 Since it's not generating X1, X2, and X3, and X4, that's the prompt.
 It's only generating X5 and X6.
-So the probability of A given S is given by the probability of X5 given X1 through 4 and the probability of X6 given X1 through 5.
-And I've separated X1 through 4 from X5 because X5 is really the previous time step of the action, whereas X1 through 4 is the state.
+So the probability of A given S is given by the probability of X5 given x_1 through 4 and the probability of X6 given x_1 through 5.
+And I've separated x_1 through 4 from X5 because X5 is really the previous time step of the action, whereas x_1 through 4 is the state.
 So π of A given S is essentially our policy π θ.
 Now, something to note here is that there are now two notions of time step, and this is actually super confusing.
 The time step X1, you know, 1, 2, 3, 4, 5, 6, those are the time steps for the language generation for the transformer.

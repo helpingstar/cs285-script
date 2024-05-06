@@ -12,7 +12,7 @@ All they care about is that you have some maximization or minimization problem.
 So the way we'll abstract this away is we'll say that we're just solving some problem over some variables a1 through a capital T with an objective that I'm going to denote as J.
 So J, which is obviously the norm of A1, is the number which, if for that crime is immediate to the F-zone.
 The nya function that J sees thenostες where the value B, vinOK, you know right now clued up in both and we basically replace J in back to D2.
-And then we get this mathematical problem of this regular double function answering the paper again, but here J is an X1 squared netto store Y2 at the that point on the top.
+And then we get this mathematical problem of this regular double function answering the paper again, but here J is an x_1 squared netto store Y2 at the that point on the top.
 However, we'll define your problem just like we if of A1 to A2.
 It consoles and масers, it compots or composes the nagantum and Ano, just guess and check.
 So you just pick a set of action sequences from some distribution, maybe even uniformly at random.

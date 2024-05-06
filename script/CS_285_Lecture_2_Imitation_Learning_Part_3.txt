@@ -203,16 +203,16 @@ I could teach an entire class on diffusion models in principle, but for the purp
 Let's say that we have a particular training image.
 I'm going to denote the training image as x0, and the subscript here doesn't denote time.
 It denotes corruptions of the image.
-So x0 is the least corrupted, xt is the most corrupted.
+So x0 is the least corrupted, x_t is the most corrupted.
 So x0 is the true image.
 In a diffusion model, you construct a fake training set where you add noise to the image, and then you train the model to remove that noise.
 So the image xi plus 1 is going to be the image xi plus noise.
-So x1 is x0, which is the true image plus noise.
+So x_1 is x0, which is the true image plus noise.
 x2 is x1, which has some noise out of it, and it adds even more noise to it.
 And if you take an image and you add these different amounts of noise, now you have a training set where you can teach a neural network to go backwards.
 So the learned network looks at the image xi and it predicts xi minus 1.
-So it's going to look at the slightly noisy image x1 and predicts x0.
-It's going to look at the slightly more noisy image x2 and it's going to predict x1 and so on and so on.
+So it's going to look at the slightly noisy image x_1 and predicts x0.
+It's going to look at the slightly more noisy image x2 and it's going to predict x_1 and so on and so on.
 In reality, we actually often train it to go all the way back to x0, so there's a choice to be made there, but for simplicity, it helps us to think about it as just going back one step.
 And in reality, what we actually predict is just the noise itself.
 And that's not actually that different, because if you predict xi minus 1, you can get that by just predicting the noise and just subtracting the noise from xi.

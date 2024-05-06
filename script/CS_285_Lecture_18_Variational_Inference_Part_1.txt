@@ -116,7 +116,7 @@ We already saw an example of this when we talked about model-based RL with image
 So we saw these examples of latent state models where you observe images O, and you want to learn a latent state x that depends on actions u.
 And here, we actually have a more complex latent space.
 So we have our observation distribution p of O given x, and our prior p(x) actually models the dynamics.
-It actually models p of xt plus 1 given xt and p of x1.
+It actually models p of x_{t+1} given x_t and p of x1.
 So the prior on x is much more structured and more complex.
 The latent space for these models has structure.
 And we'll revisit this at the end of the lecture.

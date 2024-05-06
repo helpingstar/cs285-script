@@ -1,18 +1,23 @@
+[p.42]
+
 Alright, in the last portion of today's lecture I'm going to go over a little case study that demonstrates the power of optimal control algorithms in the case where we know the true dynamics.
 And the point that I want to make with this is just kind of partly to motivate why we want to study model-based RL and partly to show that these things really do work and they really do things that are pretty impressive compared to even the best model-free RL methods.
-So the case study that I'm going to talk about is this paper called Synthesis and Stabilization of Complex Behaviors through Online Trajectory Optimization by Yuval Tassa, Tom Merez and Emmanuel Todorov.
+
+[p.43]
+
+So the case study that I'm going to talk about is this paper called Synthesis and Stabilization of Complex Behaviors through Online Trajectory Optimization by Yuval Tassa, Tom Erez and Emmanuel Todorov.
 What this paper describes is a fairly simple, almost textbook algorithm, but implemented quite well, that uses iterative LQR as an inner loop in something called model predictive control.
-So model predictive control is a way to use a model-based planner in setting the model-based RL and the model-based RL in a way that is more predictable.
-So you can use a model-based planner in setting the model-based RL in settings where your state might be unpredictable.
-And the main idea of model predictive control is very simple.
-Every time step you observe your current state X , then you use your favorite planning or control method to figure out a plan, a sequence of actions u , etc.
-all the way out to u , and then you execute only the first action of that plan, discard the other actions, observe the next state that occurs, and replan all over again.
+So model predictive control is a way to use a model-based planner in settings  where your state might be unpredictable and the the main idea in model predictive control is very simple.
+Every time step you observe your current state x_t, then you use your favorite planning or control method to figure out a plan, a sequence of actions u_t, u_{t+1}, etc. all the way out to u_T, and then you execute only the first action of that plan, discard the other actions, observe the next state that occurs, and replan all over again.
 So model predictive control is a fancy way of saying replan on every single time step.
 And that's what this paper does.
 Most of the contributions in this paper are actually in the particular implementation of iterative LQR, and if you want to kind of know all the bells and whistles, all the tips and tricks for implementing iterative LQR effectively, I would encourage you to check it out.
+
+[p.44]
+
 What I want to show you today is the video of the result from that paper.
 So I'm going to play the video and narrate a little bit.
-So here what they're showing is a simple robot system using iterative LQR.
+So here what they're showing is a simple Acrobot system using iterative LQR.
 They're going to show a swimmer and a little hopper, as well as a more complex humanoid.
 So here's the acrobot, two degrees of freedom and only one control dimension, a very simple cost.
 And first they just run it passively, so no controls at all, and then they turn on the controller.
@@ -36,13 +41,18 @@ Here they're going to be controlling a 3D humanoid.
 The cost function here is, I should say, pretty heavily engineered, so it's still a fairly short-horizon control, or it's not planning far into the future, and the cost function therefore needs to be quite detailed.
 So here they turn it on, and it figures out how to stand up.
 It's a little bit slower than real time, so they had to speed up this video to play it back, but it manages to do some rudimentary stepping, balancing, and pretty intelligent reactions, even in the face of fairly extreme perturbations.
+
+[p.45]
+
 Okay, if you're interested in additional readings on these topics, here's what I would recommend.
-This monograph by Main and Jacobson called Differential Dynamic Programming is the original description of the DDP algorithm from which ILQR is inspired.
-This is the MBC paper for which I just presented the video.
-This is a paper that provides a probabilistic formulation and transfusion alternatives to the deterministic line search for LQR, so if you want to know how to handle these kind of LQR things in stochastic, this could be something to check out.
+This monograph by Mayne and Jacobson called Differential Dynamic Programming is the original description of the DDP algorithm from which iLQR is inspired.
+This is the MPC paper for which I just presented the video.
+This is a paper that provides a probabilistic formulation and transfusion alternatives to the deterministic line search for LQR, so if you want to know how to handle these kind of LQR things in stochastic settings, this could be something to check out.
+
+[p.46]
+
 And in next week's lectures, we will extend this to the case where the dynamics are perhaps not known.
 So what's wrong with known dynamics?
 Well, known dynamics are great if you're controlling some system that is easy to model, like the kinematics of a car, but if you're trying to get a robot to fold a towel, or sort some objects in a factory, maybe modeling all those exactly is very difficult or even impossible.
 And in those cases, maybe we can learn our models.
 So that's what we'll talk about next.
-Thank you.
