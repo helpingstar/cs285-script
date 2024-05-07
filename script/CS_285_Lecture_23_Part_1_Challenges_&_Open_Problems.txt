@@ -131,7 +131,7 @@ This was created maybe about five years ago.
 So some of this is a little bit out of date, but I think that the overall trends still hold.
 So we're going to start with the least efficient methods and then progress towards the most efficient methods.
 And the least efficient, and I'll say at the end why we might actually prefer less efficient methods in practice, but the least efficient methods in the sense that they require the most samples are gradient-free methods, which we didn't actually cover in this course.
-But these are methods like CMAES or natural evolutionary strategies, which actually don't use gradients through neural nets at all.
+But these are methods like CMA-ES or natural evolutionary strategies, which actually don't use gradients through neural nets at all.
 The next step towards more efficient methods are fully online, on policy methods like A2C and A3C.
 So these are methods that, run on policy and use essentially policy gradient updates with fully online updates.
 Policy gradient methods like TRPO, which are batch-mode policy gradient methods, tend to be a bit more efficient.
