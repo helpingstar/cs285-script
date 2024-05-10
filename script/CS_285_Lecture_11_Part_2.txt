@@ -1,6 +1,11 @@
+[p.10]
+
 All right, in the next portion of today's lecture, we're going to talk about the role of uncertainty in model-based reinforcement learning.
 Uncertainty plays a really important role in model-based RL because even though the model-based RL version 1.0 algorithm in principle can solve the model-based RL problem, in practice, it has some pretty major issues.
 So let's try to understand this with an example.
+
+[p.11]
+
 Here is an experiment that we actually did here at Berkeley a couple of years back.
 Studying deep model-based reinforcement learning methods, essentially methods like model-based RL version 1.5, which I presented before using a deep neural net model.
 So these experiments were conducted on that half cheetah simulation task, which you guys tried in homework one.
@@ -21,33 +26,36 @@ And here is what a reward of 5,000 looks like after the model-free training.
 So what's going on here?
 Why is it that the model-based learner is so much worse than the model-free learner?
 Well, in contrast to regular supervised learning problems, the model-based RL problem with this iterative data collection poses kind of a unique challenge to the neural net training algorithm.
+
+[p.12]
+
 See, the trouble is that we need to not overfit when we have small amounts of data over here in the beginning, but we still need to have enough capacity to do well once we have large amounts of data.
 And that turns out to be very difficult.
 See, the thing is, we're mitigating the distributional shift problem by using our model to collect additional data.
-So we're not going to be able to do that.
-So we're going to have to do that.
-We're going to have to do that.
-We're going to have to do that.
-We're not going to have to collect additional data.
 But that means that our model needs to be pretty good even early on when it doesn't have very much data.
 And high-capacity models like neural nets are very good in the high-data regime, but they don't really struggle in the low-data regime.
 So for this reason, they'll do pretty poorly in the early stages.
 And when they do poorly in the early stages, they essentially don't produce effective exploration, which means they end up actually getting stuck.
-So why is it that we're not able to do this?
-Why do we have this performance gap?
+
+[p.13]
+
+So why do we have this performance gap?
 Well, it really comes down to something like an overfitting problem exacerbated by distributional shift.
 So this is sort of the classic picture that we think of when we think of overfitting.
 We have a collection of points formed by a straight line plus noise, and we fit some really powerful function approximator into it, and we get something like the blue line.
 Now, in reality, in model-based RL, things are not quite that clear-cut, and distributional shift also plays a really big role.
-But, you know, basically the issue is along these lines.
+But, basically the issue is along these lines.
 So in model-based RL, since we're actually planning through our model, if our model makes mistakes that are kind of in the positive direction, so for instance, if the y-axis here is the predicted reward for different trajectories, it'll be very tempting for the planner to select those trajectories that result in the largest mistakes in the positive direction.
 So the planner will essentially exploit mistakes in a model, and if the model overfits, then it has lots of these little holes, lots of these little spurious peaks for the planner to exploit.
 So it's not quite as simple as the regular overfitting problem.
 It's actually in some ways worse, because the planner is going to exploit all those holes in our overfitted model.
+
+[p.14]
+
 Okay.
 So what I'm going to discuss in this part of the lecture is how appropriate uncertainty estimation can help us fix this problem.
 So how can uncertainty estimation help?
-Well, with uncertainty estimation, what you could imagine we'll be doing is, for every state-action pair, we will be predicting not just a single next state, S', but actually a distribution of possible next states that you could reach under your uncertainty about the model.
+Well, with uncertainty estimation, what you could imagine we'll be doing is, for every state-action pair, we will be predicting not just a single next state, s', but actually a distribution of possible next states that you could reach under your uncertainty about the model.
 So the reason this might be a good idea is, let's say that you'd like to walk up to the edge of the cliff to get a beautiful view of the ocean.
 So your goal is here, right at the edge of the cliff.
 Now, if you are very confident in your model, you might say, well, if I plan actions that get to the edge of the cliff, I'll be standing right on the edge and I'll get the highest reward.
@@ -64,13 +72,18 @@ This is about the setting where you don't know what the dynamics are.
 So there are many possible worlds that could be consistent with your data, and you'd like to take actions that are good in expectation under the distribution of those possible worlds given your data set.
 This is a fairly special kind of uncertainty.
 So we would expect the reward under high variance predictions to be very low when we approach the edge of the cliff if we're modeling the uncertainty correctly, even if the mean is the same.
+
+[p.15]
+
 Okay.
 So the only real change we're going to make is in step three, we'll only take actions for which we think we'll get high reward in expectation under our uncertain dynamics.
-And this is going to avoid the fact that we're going to have a lot of uncertainty.
 And this is going to avoid that exploitation problem, which is going to result in our algorithm doing much more sensible things, particularly in those early stages in training when model uncertainty is very high.
 And then the model will adapt and get better, and hopefully it'll become more confident in those regions where we're seeing high rewards.
 So then eventually we'll approach right to the edge of the cliff because we'll gradually refine our model.
 So intuitively you can think of this as you don't know quite where the cliff is, you walk a fairly safe distance to it, but you collect a little bit more data, refine your understanding, and then you can walk a little closer to it next time.
+
+[p.16]
+
 Now there are a few very important caveats.
 I mentioned before this is a very special kind of uncertainty.
 So one caveat is that you do need to explore to get better.

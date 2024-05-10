@@ -81,9 +81,9 @@ So π_f is fully determined by f.
 And it has its own state distribution.
 Its state distribution is p_{π_f}(s_t).
 And in this case, that distribution involves going very far to the right and falling off the mountain.
-The reason that the problem happens is because p_{π_f}(s_t) ≠ p_{π_f}(s_t).
+The reason that the problem happens is because p_{π_f}(s_t) ≠ p_{π_0}(s_t).
 So we are experiencing distributional shift.
-And the way the problems of this distributional shift manifest themselves is that our model is valid for estimating the outcomes of actions in the region that was visited during data collection, meaning for states with high probability p_{π_f}(s_t).
+And the way the problems of this distributional shift manifest themselves is that our model is valid for estimating the outcomes of actions in the region that was visited during data collection, meaning for states with high probability p_{π_0}(s_t).
 But when we plan under that model, when we select the actions for which the model produces states with the highest reward, the ones that go the most up, we will end up going to states during our planning process virtually that have very low probability under p_{π_0}(s_t).
 And our model will make erroneous predictions at those states.
 And when it makes erroneous predictions at those states, then it will choose the best action in that erroneously predicted state, feed that back into itself.
