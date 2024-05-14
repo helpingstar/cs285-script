@@ -18,8 +18,8 @@ So in order to factorize this expression the thing that we have to note is that 
 And we can see this just from inspection of the graphical model.
 And that means that we can factorize this expression into three parts.
 The first part is the probability of all of the optimality variables from t plus one until the end, given sd plus one.
-And we know that we don't have to condition this on s_t and at, because given s_t plus one, all of the future optimality variables are independent of s_t and at.
-Then we have the probability of s_t plus one, given s_t at.
+And we know that we don't have to condition this on s_t and at, because given s_{t+1}, all of the future optimality variables are independent of s_t and at.
+Then we have the probability of s_{t+1}, given s_t at.
 That's just the transition probability that we already know.
 And then we have the probability of the remaining optimality variable ot, given s_t at.
 And that just corresponds to the exponential rate of reward, because that's just one of the CBDs in our graphical model.
@@ -28,7 +28,7 @@ We know this thing, that's our transition probability.
 Although when we're doing RL, we might want to, compute backward messages without functional knowledge of this probability.
 For now, we'll assume that we know it.
 And that just leaves this remaining term.
-So the probability of optimality from t plus one to capital T given s_t plus one, can itself be written as the probability of optimality from t plus one to capital T, given s_t plus one and at plus one, times the probability of at plus one, given s_t plus one.
+So the probability of optimality from t plus one to capital T given s_{t+1}, can itself be written as the probability of optimality from t plus one to capital T, given s_{t+1} and at plus one, times the probability of at plus one, given s_{t+1}.
 Now this part, is simply the backward message of time step t plus one.
 So we've already gotten a little bit better.
 We've figured out something that's mostly a recursive expression, except it has this kind of weird term that we haven't defined yet.

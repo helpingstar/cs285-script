@@ -90,15 +90,15 @@ Now, of course, you can do a lot better if you get a policy that is not reactive
 So it's actually totally okay to use the this ∇log π equation.
 However, the advantage estimator takes a little bit of care because there are multiple ways to estimate the advantage in policy gradients and some of them can get us in trouble whereas others are totally fine to use.
 So the key point is that the advantage is a function of the state s_t.
-The advantage is not necessarily a function of the observation ot.
+The advantage is not necessarily a function of the observation o_t
 So the advantage does not depend on s_t minus 1 but if you don't have the state then you might get in trouble.
 So that's why it's totally okay to use rt plus the next value minus the current value as your advantage estimator with some function approximator for v because when you're training a function approximator for v as a function of state you're basically leveraging the property that every time you see the state s you're going to expect to get the same value.
-So you're going to get the same value for the function of the observation ot.
+So you're going to get the same value for the function of the observation o_t
 So that's why v hat only needs to be a function of the present state.
 It doesn't need to take past states into account because of the Markov property.
 The Markov property tells us the value is only going to be a function of the current state not dependent on how you got to that state.
 But of course that's not true for observations.
-So you can't simply swap out the argument to v hat and replace s_t with ot.
+So you can't simply swap out the argument to v hat and replace s_t with o_t
 So it's not okay to train v hat of ot because the value depends on might depend on past observations.
 Because the current state might depend on past observations.
 So what this means is that if you're going to use policy gradients, if you use the regular Monte Carlo estimate, if you just simply plug in the sum of rewards, that is okay because that derivation did not actually use the Markov property.
@@ -218,7 +218,7 @@ If it was good enough before to infer zt from O1 through OT.
 That means that O1 through OT contains all the information we need to get a Markovian should be a Markovian state itself.
 So does that work?
 And does that work basically amounts to asking does a history obey the Markov property?
-So the Markov property just says that the state s_t plus one is conditionally independent of state s_t minus one given the current state s_t.
+So the Markov property just says that the state s_{t+1} is conditionally independent of state s_t minus one given the current state s_t.
 And now the current state s_t is all the observations up to t, the previous state s_t minus one is all the observations up to t minus one.
 And what this shows us is that the previous observations tell us nothing that we can't infer from s_t itself, right?
 Because s_t contains s_t minus one inside of it.

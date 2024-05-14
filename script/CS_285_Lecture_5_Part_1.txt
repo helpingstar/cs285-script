@@ -68,7 +68,7 @@ But we're not done yet, because we still have this ∇log p(τ) term.
 So let's work on that a little bit.
 Let's bring up again our equation for the trajectory distribution.
 So p(τ), which is just another way of writing p(s_1,a_1,s_2,...) is equal to this product that we saw before.
-If we take the logarithm of both sides, the logarithm of a product is the sum of logarithms, which means that we can write log p(τ) as the sum log p(s_1) plus a summation from t equals 1 to T of the log probabilities under the policy plus the log transition probabilities.
+If we take the logarithm of both sides, the logarithm of a product is the sum of logarithms, which means that we can write log p(τ) as the sum log p(s_1) plus a summation from t=1 to T of the log probabilities under the policy plus the log transition probabilities.
 And now we'll substitute this whole thing in for ∇log p.
 And we're taking the derivative of this with respect to θ.
 Now the derivative with respect to θ of log p(s_1) is just 0, because p(s_1) does not depend on θ.

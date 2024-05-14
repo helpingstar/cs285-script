@@ -91,7 +91,7 @@ And remember, the 1 minus gamma is just a constant out front.
 So really the important thing is that the reward is just 1 for the state i, basically for the dimension of μ that you're learning, and 0 everywhere else.
 And in practice, since you would want to learn every entry in μ, you would use a vectorized backup.
 So for the 0th entry, it would be δ s_t equals 0.
-For entry 1, it would be δ s_t equals 1, etc., etc.
+For entry 1, it would be δ s_t=1, etc., etc.
 So you would learn that whole vector all at once.
 So you would have these vector-valued Bellman backups.
 And you can do things like value iteration with this and recover these mus.
@@ -128,28 +128,28 @@ So the jth successor feature at s, t is just the sum over all s of μ s, s, t, �
 So you're basically going to average over all the states, weighted by the feature values of those states.
 It's the expected value over the states of those states.
 of that feature.
-You can also write this with linear algebra, if you represent μ as a vector, then psi j of s, t is just μ s, t dotted with the vector ϕ j, where the vector ϕ j is of length equal to the number of states, with each entry corresponding to that state's feature value for ϕ j.
-So it's almost like ϕ j is like a pseudo-reward, and psi j is its pseudo-value function.
+You can also write this with linear algebra, if you represent μ as a vector, then ψ j of s, t is just μ s, t dotted with the vector ϕ j, where the vector ϕ j is of length equal to the number of states, with each entry corresponding to that state's feature value for ϕ j.
+So it's almost like ϕ j is like a pseudo-reward, and ψ j is its pseudo-value function.
 And you're going to construct many of these things.
 So now here's an interesting property.
 If we can express the reward function as a weighted combination of the features ϕ, so if r of s is equal to the sum over j of ϕ j of s times some weight w j, or put another way, if r of s is the dot product between the vector of features at state s and some weights w, then it turns out that the value function could be recovered, with those same weights w.
-It turns out that v π of s, t is psi π s, t dotted with the same w.
-This is actually quite easy to prove, so all we have to do is first write this dot product out as a sum, so it's a sum over all features j of psi j s, t times w j, and then we'll just take the definition of psi j up above, and plug that in.
-So psi j is just the inner product, and we'll just write it down as a sum over all features j of μ and ϕ j.
+It turns out that v π of s, t is ψ π s, t dotted with the same w.
+This is actually quite easy to prove, so all we have to do is first write this dot product out as a sum, so it's a sum over all features j of ψ j s, t times w j, and then we'll just take the definition of ψ j up above, and plug that in.
+So ψ j is just the inner product, and we'll just write it down as a sum over all features j of μ and ϕ j.
 Now ϕ j here is now a matrix.
 It's going to have one row for every possible state, and one column for every feature.
 Okay?
 Sorry, ϕ is going to have that.
 So ϕ j then is just a vector, which corresponds to rows of that matrix.
-So I've just substituted in the equation for psi up above.
+So I've just substituted in the equation for ψ up above.
 And now of course μ π s, t doesn't depend on j, so I can take μ π s, t out, so it's μ π s, t transpose times the sum over j of ϕ j w, but up above that's exactly how we define the reward.
 So this product between the phi's and w's is just the reward, so we can just write it down as a vector.
 So this is exactly μ s, t transpose times the vector of rewards.
-So this basically shows that instead of working with the successor representation itself, you can project the successor representation onto some basis, in this case the basis defined by the features ϕ, and as long as your reward function lies in that same basis, meaning that you have some weights w, such that the reward is equal to ϕ of s transpose w, then you can construct instead of the successor representation, these successor features psi, and for the same weights w you'll recover the value function.
-And of course the key to this is that the dimensionality of ϕ and psi can be a lot lower than the number of possible states, and this can give you a much more tractable algorithm.
+So this basically shows that instead of working with the successor representation itself, you can project the successor representation onto some basis, in this case the basis defined by the features ϕ, and as long as your reward function lies in that same basis, meaning that you have some weights w, such that the reward is equal to ϕ of s transpose w, then you can construct instead of the successor representation, these successor features ψ, and for the same weights w you'll recover the value function.
+And of course the key to this is that the dimensionality of ϕ and ψ can be a lot lower than the number of possible states, and this can give you a much more tractable algorithm.
 So if the number of features is much less than the number of states, learning this is much easier.
 So if you have let's say 10 million states, maybe doing vector valued backups on μ with 10 million dimensions is much easier, because it's less impractical, but maybe you summarize them with 100 features, and doing the backups on 100 features is much more tractable.
-So this is the Bellman backup equation for μ, the Bellman backup equation for psi is basically exactly the same.
+So this is the Bellman backup equation for μ, the Bellman backup equation for ψ is basically exactly the same.
 The only difference now is instead of this δ function s equals i, we just put in the feature ϕ j.
 And you can almost think of μ as a special case where ϕ is the δ function.
 So basically μ, the successor representation, is a special kind of successor feature where the phi's happen to be canonical vectors, vectors that are one in one state and zero everywhere else.
@@ -159,22 +159,22 @@ So these successor features are functions of only the state, and they can be use
 You can also construct successor features that are a function of the state and action.
 Exactly the same way, just use a Q backup instead of a value backup.
 So here the action is an input, and then the expectation is taken over the next state and the next action.
-Same exact idea, and then the Q function can be recovered as psi π transpose w, as long as the reward is ϕ transpose w.
+Same exact idea, and then the Q function can be recovered as ψ π transpose w, as long as the reward is ϕ transpose w.
 So how can we use successor features?
 Well, here's one idea.
 What if we use it to recover a Q function, very quickly?
-So step one, train psi pi, STAT, for a particular policy pi, with Bellman backups.
+So step one, train ψ pi, STAT, for a particular policy pi, with Bellman backups.
 So essentially what this means is that someone specifies a basis ϕ.
-We haven't defined how to specify that basis, that's a design choice you have to make, but let's say that you can specify a basis somehow, maybe you manually defined 128 features, you can learn their corresponding psi pi's, just with those Bellman backups, with some data.
-You can run your policy or just use some off-putting, and then you can run your policy data and recover psi π.
+We haven't defined how to specify that basis, that's a design choice you have to make, but let's say that you can specify a basis somehow, maybe you manually defined 128 features, you can learn their corresponding ψ pi's, just with those Bellman backups, with some data.
+You can run your policy or just use some off-putting, and then you can run your policy data and recover ψ π.
 Step two, someone gives you some reward samples, basically some tuples of state and reward.
 Maybe you gather these by running your policy, it doesn't matter, but somehow you obtain pairs of states and their rewards.
 Solve for a vector w, to minimize the difference between ϕ si times w, and the sampled reward.
 So essentially do least squares regression onto those rewards.
 And this is where it's important for your features ϕ to be a sufficiently expressive basis, so that you can actually approximate the reward accurately.
-And then you can recover the Q function just by taking those same w's, and multiplying your psi by them.
-Now the reason that this is quite elegant is because, conceivably you could reuse the same successor feature of psi pi, for many different rewards.
-So you can trade the psi π once, and then use it to evaluate Q functions for many different reward functions.
+And then you can recover the Q function just by taking those same w's, and multiplying your ψ by them.
+Now the reason that this is quite elegant is because, conceivably you could reuse the same successor feature of ψ pi, for many different rewards.
+So you can trade the ψ π once, and then use it to evaluate Q functions for many different reward functions.
 And then if you want to take an action, you could choose the argmax action, with respect to this approximate Q function.
 Now at this point we might ask, is this actually the optimal Q function?
 Meaning that if we choose the action this way, will we actually get the optimal policy for the reward that we've used to recover w?
@@ -190,7 +190,7 @@ And the, what we can do is we can actually take many policies to begin with.
 Let's say someone gives you features, let's say someone gives you 128 manually designed features, and a thousand policies.
 Where did you get those policies?
 Well, I don't know, maybe they're random policies, maybe they were obtained from some demonstrations, just a bunch of different candidate policies that you can play with.
-Different policies π k, for each policy you will learn a different successor feature, psi π k.
+Different policies π k, for each policy you will learn a different successor feature, ψ π k.
 And then like before you'll get some rewards, you'll solve for w, and then you'll recover a q π k for every policy π k.
 And then when it comes time to choose the action, what we'll do is we'll actually take the argmax over the action, over the max over the policies, for every single state, so for different states we might pick different policies.
 The intuition here is that you're finding the highest reward policy in each state.

@@ -121,7 +121,7 @@ and all of them are set to true.
 So then the inference problem we need to solve is what is the probability of a trajectory given that all of the optimality variables from time 1 to capital T are true.
 Or we might want to make this inference condition on an initial state.
 So we could either do P of τ given O1 through T or P of τ given O1 through T comma s_1.
-And the particular form of the distribution that we will choose for P of OT given s_t comma AT is that we will set the probability that OT is equal to true to be the exponential of the reward at s_t comma AT.
+And the particular form of the distribution that we will choose for p(o_t|s_t) comma AT is that we will set the probability that OT is equal to true to be the exponential of the reward at s_t comma AT.
 Now this again is going to seem like a somewhat arbitrary decision and we will see later that the seemingly arbitrary decision actually leads to a very convenient and elegant mathematical framework.
 But for now, we will just go ahead and do the same thing over and over again.
 So we will just have to take it as a given.

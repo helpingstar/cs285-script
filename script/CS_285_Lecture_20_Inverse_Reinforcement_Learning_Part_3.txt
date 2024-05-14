@@ -20,7 +20,7 @@ So this is the intractable procedure.
 Learn the policy using any MaxSend RL algorithm and then run the policy to sample the trajectories.
 What if we instead have some kind of lazy policy optimization procedure?
 What if instead of optimizing the MaxSend optimal policy to convergence every time we take a gradient step, what if we only optimize it a little bit each time we take a gradient step?
-So instead of learning PAT given STO1 through T, psi, we just improve starting from the policy we had from the previous psi.
+So instead of learning PAT given STO1 through T, ψ, we just improve starting from the policy we had from the previous psi.
 And maybe we improve it a little bit.
 Maybe we improve it even for just a single gradient step.
 The problem now is that our estimator is biased.
@@ -38,12 +38,12 @@ Bye.
 Bye.
 Bye.
 Bye.
-it turns out that the importance weights actually have a very appealing form, because we know that the optimal normalization constant, the probabilities of the structures from the optimal policy, are given by p of τ times the exponential of the reward, and we know the reward, well, not the true reward, but the reward for our current psi, so we can actually calculate these importance weights, provided that we have access to the policy that we just optimized to calculate the denominator, and we usually do.
+it turns out that the importance weights actually have a very appealing form, because we know that the optimal normalization constant, the probabilities of the structures from the optimal policy, are given by p of τ times the exponential of the reward, and we know the reward, well, not the true reward, but the reward for our current ψ, so we can actually calculate these importance weights, provided that we have access to the policy that we just optimized to calculate the denominator, and we usually do.
 So the importance weights, we can write them out like this.
 This is very similar to what we had before in the lecture on importance weighted policy gradients.
 So we have the initial state terms, the dynamics terms, and at the top we have the additional reward terms, at the bottom we have the additional policy terms.
 So the unknown terms all cancel out, and we're just left with a ratio of the exponential of the total reward of that trajectory under your current reward function, divided by the product, and then we have the So that's quite appealing.
-We can take the policy pi, and we can calculate the importance weights, and we can take gradient steps on psi, even with an incompletely optimized policy, but the more we optimize the policy, the better our importance weights get.
+We can take the policy pi, and we can calculate the importance weights, and we can take gradient steps on ψ, even with an incompletely optimized policy, but the more we optimize the policy, the better our importance weights get.
 So this idea is the basis of the guided cost learning algorithm by Finn et al., which was the first deep inverse RL algorithm that could scale to high-dimensional state and action spaces, and the design of this algorithm was the following.
 You have your initial guess of the policy pi, which might be just random, and you have some human demonstrations.
 Then you would sample from your current policy to generate the policy samples, and then you would use those policy samples and the human demonstrations to update the reward using essentially your samples and the demos.

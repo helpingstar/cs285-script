@@ -6,13 +6,13 @@ So, you know how we can apply the chain rule of probability to factorize the tra
 In the same way, we can...
 apply the chain rule and write out an expected value with respect to that distribution as a series of nested expectations.
 So, the outermost expectation here would be over P of s_1.
-Inside of it, we have an expected value with respect to A1, distributed according to π of A1 given s_1.
-And now, since we have an expectation for both s_1 and A1, we can put in the first reward, R of s_1 comma A1.
+Inside of it, we have an expected value with respect to A1, distributed according to π of a_1 given s_1.
+And now, since we have an expectation for both s_1 and A1, we can put in the first reward, R of s_1 comma a_1.
 And notice that this inner expectation, the one over A1, is conditional on s_1.
 I have a bunch of blank space here because I'm going to need to put in all the other rewards.
-But we already have R of s_1 A1.
-Now, we add to that all the other rewards, but those require putting in another expectation now over S2, distributed according to P of s_2 given s_1 A1.
-So, this expectation is conditioned on s_1 and A1.
+But we already have R of s_1 a_1.
+Now, we add to that all the other rewards, but those require putting in another expectation now over S2, distributed according to P of s_2 given s_1 a_1.
+So, this expectation is conditioned on s_1 and a_1.
 And inside of that, we have another expectation over A2, distributed according to π of A2 given S2.
 And now, since we have both s_2 and A2, we can put in R of S2.
 And then we add to that the expected value over S3, inside of which is the expected value over A3.
@@ -20,18 +20,18 @@ Inside of it is R of S3 A3, and so on and so on.
 And we have these nested expectations.
 Now, at first, it kind of seems like we just wrote a very concise expected value over trajectories as a really, really messy set of nested expectations.
 But one thing that we could think about is, well, what if we had some function that told us the stuff that goes inside of the second expectation?
-What if we had some function that told us R of s_1 comma A1 plus the expected value over s_2 plus et cetera, et cetera, et cetera?
+What if we had some function that told us R of s_1 comma a_1 plus the expected value over s_2 plus et cetera, et cetera, et cetera?
 So, what if we knew this part?
 So, let's define a symbol for this.
-Let's say that Q of s_1 comma A1 is equal to R of s_1 comma A1 plus the expectation over s_2 of the expectation over A2 of R of s_2 A2, et cetera.
+Let's say that Q of s_1 comma a_1 is equal to R of s_1 comma a_1 plus the expectation over s_2 of the expectation over A2 of R of s_2 A2, et cetera.
 So, basically, just this.
-This middle part, the part that goes inside the second set of square brackets, I'm just going to call that Q of s_1 comma A1.
-Then we can write our original RL objective as simply the expected value over s_1 of the expected value over A1 of Q of s_1 comma A1.
+This middle part, the part that goes inside the second set of square brackets, I'm just going to call that Q of s_1 comma a_1.
+Then we can write our original RL objective as simply the expected value over s_1 of the expected value over a_1 of Q of s_1 comma a_1.
 So, it's just a little bit of symbolic manipulation, a little bit of definition.
 But the important point about this definition is that if you knew Q, then optimizing the policy at the first time step would be very easy.
-So, if you had access to Q of s_1 comma A1 and you needed to select the policy π of A1 given S1, you would just select the policy for which this expected value is largest.
+So, if you had access to Q of s_1 comma a_1 and you needed to select the policy π of a_1 given S1, you would just select the policy for which this expected value is largest.
 You could simply test every action and just assign 100% probability to the best one, one with the largest value for Q.
-So, this basic idea is that Q of s_1 comma A1 is equal to R of s_2 of s_2 of s_1 comma A1.
+So, this basic idea is that Q of s_1 comma a_1 is equal to R of s_2 of s_2 of s_1 comma a_1.
 This basic idea can be extended to a more general concept.
 So, this is the simple rule that I said, you know, a simple way to get π here is just assign a probability of 1 to the argmax.
 So, the more general principle is what we're going to call the Q function.
@@ -46,7 +46,7 @@ The value function is defined in much the same way, only it's conditioned on onl
 So, the value function says if you start in state S, T and then roll out your policy, what will be your expected total value?
 And the value function can also be written as the expected value over actions of the Q function.
 Right, because if the Q function tells you the expected total reward if you start in S, T comma A, T, then taking the expectation of that with respect to A, T will give you the expected total reward if you start in S, T.
-So now, one observation we could make is the expectation of the value function at state s_1 is the entirety of the reinforcement learning objective, for the same reason that the expected value with respect to S1, A1 of Q S1, A1 was the RL objective on the previous slide.
+So now, one observation we could make is the expectation of the value function at state s_1 is the entirety of the reinforcement learning objective, for the same reason that the expected value with respect to S1, a_1 of Q S1, a_1 was the RL objective on the previous slide.
 Okay, so at this point, I would like everyone to pause for a minute and think about these definitions of Q functions and value functions.
 You might want to flip back to the previous slide if something here is unclear.
 Take a moment to think about that.

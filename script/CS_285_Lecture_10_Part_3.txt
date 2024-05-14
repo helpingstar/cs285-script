@@ -195,7 +195,7 @@ And when we get all the way to u_1, the nice thing at time step 1 is that we act
 x_1 is the one thing that we are given, which means that we know x_1 and therefore we can compute an numerical value for u_1.
 And once we know both x_1 and u_1, then we can use our known transition dynamics to calculate x_2.
 And once we know x_2, then we can calculate u_2 as capital K_2 times x_2 plus lowercase k_2.
-So once we know, once we get to the beginning, then we can perform a forward recursion where for every time step from t equals 1 to capital T, we can compute u_2 as K_t x_t plus little k_t, and we can calculate x_{t+1} by using our dynamics.
+So once we know, once we get to the beginning, then we can perform a forward recursion where for every time step from t=1 to capital T, we can compute u_2 as K_t x_t plus little k_t, and we can calculate x_{t+1} by using our dynamics.
 And then repeat this process.
 So, you can think of it as kind of unzipping everything, going backwards, expressing it in terms of x_t, and then zipping it back up going forward, plugging in those x_t as you compute them.
 And then we'll get you numerical values for a sequence of x's and u's that describes the optimal trajectory in this linear quadratic system.

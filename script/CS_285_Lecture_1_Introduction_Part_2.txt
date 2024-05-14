@@ -89,7 +89,7 @@ In supervised learning, you have an input x and you have an output y, and you ha
 The goal is to learn a function that takes an x and approximates y.
 And typically this function has some parameters which are referred to as θ.
 These might be, for example, the weights in a neural network.
-In reinforcement learning, we have a kind of a cyclical online learning procedure where an agent interacts with the world, the agent chooses actions, at, at every point in time, and the world responds with the resulting state, s_t plus one, and a reward signal.
+In reinforcement learning, we have a kind of a cyclical online learning procedure where an agent interacts with the world, the agent chooses actions, at, at every point in time, and the world responds with the resulting state, s_{t+1}, and a reward signal.
 And the reward signal simply indicates how good that state is, but it doesn't necessarily tell you if the action that you just took was a good or bad action.
 Perhaps you got lucky and landed in a good state, or perhaps you did something really good earlier that caused you to get into a good state now.
 The input to our agent is going to be the state s_t at each time step.

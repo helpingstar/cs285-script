@@ -197,20 +197,20 @@ So here's a thought.
 Can we use these kinds of preferences to design reward functions?
 Now, reward functions have to assign a number to a particular answer.
 Preferences are a function of two answers.
-So given S, A1, and A2, how likely is a person to prefer A1 over A2?
+So given S, A1, and A2, how likely is a person to prefer a_1 over A2?
 That is a well-defined probability.
 So if the state is, what is the capital of France?
 The actions are Paris and why is it such a stupid question?
 The preference A is the labor.
-We could simply model the probability that A1 is preferred over A2, and we can learn that.
-But since what we want in the end is a reward function, what we can do is not actually train a neural network that predicts whether A1 is preferred over A2, but we can describe this probability as a function of reward.
+We could simply model the probability that a_1 is preferred over A2, and we can learn that.
+But since what we want in the end is a reward function, what we can do is not actually train a neural network that predicts whether a_1 is preferred over A2, but we can describe this probability as a function of reward.
 And there's a choice that we have to make here.
-So one very popular choice that is actually derived from the same mathematical foundations as maximum entropy inverse RL that we discussed in the IRL lecture is to model the probability that A1 is preferred over A2 as the exponential of the reward of A1 divided by the exponential of the reward of A1 plus the reward of A2.
-So roughly speaking, this means that the probability that A1 is preferred over A2 is proportional to the exponential of its reward, which means that if one reward is clearly better than the other, then that one will definitely be preferred.
+So one very popular choice that is actually derived from the same mathematical foundations as maximum entropy inverse RL that we discussed in the IRL lecture is to model the probability that a_1 is preferred over A2 as the exponential of the reward of a_1 divided by the exponential of the reward of a_1 plus the reward of A2.
+So roughly speaking, this means that the probability that a_1 is preferred over A2 is proportional to the exponential of its reward, which means that if one reward is clearly better than the other, then that one will definitely be preferred.
 But if the rewards are about equal, then they're about equally likely to be preferred.
 And the reason for the exponential transformation mathematically is very similar to what we saw in the Max and IRL lectures.
 I won't go into the math about that, but that's basically the intuition.
-So now the way that we can actually train this is we just maximize the likelihood of the preferences expressed by the human on these S A1 A2 tuples, but where the predictor for that preference is parametrized by our psi using this ratio at the bottom of the slide.
+So now the way that we can actually train this is we just maximize the likelihood of the preferences expressed by the human on these S a_1 A2 tuples, but where the predictor for that preference is parametrized by our ψ using this ratio at the bottom of the slide.
 And then we just take the logarithm of that and maximize the likelihood with respect to psi.
 And that's a well-defined supervised learning problem.
 So that's a way that we can get numerical rewards out of pairwise preference.
@@ -219,7 +219,7 @@ So you can show the person four completions and get them to say which one they p
 In that case, you'll have four values in the sum in the denominator.
 You could also take four-way comparisons and turn them into all possible pairwise comparisons.
 And that's also another way that you could express this.
-So you could say, well, if you show someone A1, A2, A3, A4, and they prefer A1, then you say A1 is better than A2, A1 is better than A3, A1 is better than A4.
+So you could say, well, if you show someone A1, A2, A3, A4, and they prefer A1, then you say a_1 is better than A2, a_1 is better than A3, a_1 is better than A4.
 So you can turn that into three pairwise comparisons.
 That's also valid.
 So here's an overall method that we can use with this scheme.
@@ -231,7 +231,7 @@ And then for each question in your data set, for each s, you would sample k poss
 Then you would get humans to label each of those points, each of those s, a, 1 through a, k tuples to indicate which answer they prefer.
 And then you would use this to get a data set consisting of tuples with a prompt s, i, and k possible answers.
 And then you would use that labeled data set to train r, psi.
-And then you would update π θ using RL with r, psi as the reward.
+And then you would update π θ using RL with r, ψ as the reward.
 And then you would repeat this process some number of times.
 Now, typically when you do this, in step five, you would actually run many steps of policy optimization.
 So in step five, you wouldn't just optimize against that reward once with important sampling.
@@ -271,7 +271,7 @@ It needs to be powerful enough that it can resist all that optimization exploita
 Okay, so to recap an overview, we can train language models with policy gradients.
 We typically use importance sampling estimators.
 It's a banded problem for now, although we will make it multi-step in the next section.
-We can use a reward model which can be trained from human data and typically we'd actually train it with preferences rather than utility labels using this equation as the probability that the user prefers A1 over A2.
+We can use a reward model which can be trained from human data and typically we'd actually train it with preferences rather than utility labels using this equation as the probability that the user prefers a_1 over A2.
 And this can be more convenient than direct supervision of reward values.
 Now all this technically ends up being a model-based RL algorithm because we train the reward as essentially a model and then we optimize for many RL steps against that model.
 It could potentially be an offline model-based RL algorithm if we actually don't get additional samples from our policy and send them out for more labeling.

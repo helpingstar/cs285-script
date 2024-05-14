@@ -46,11 +46,11 @@ So one of the ways that we could approach this is we could say, can we find anot
 So in this approximate posterior Q, we want the dynamics to be the same as they were originally, unaffected by your knowledge of the reward, but we want the action probabilities to change.
 So where have we seen this before?
 Where have we seen the notion of approximating one probability distribution with another one that has some constraints?
-So if, for example, we say that X is O1 through T, and Z is s_1 through T and A1 through T, then this problem is equivalent to saying, find Q to approximate P .
+So if, for example, we say that X is O1 through T, and Z is s_1 through T and a_1 through T, then this problem is equivalent to saying, find Q to approximate P .
 Basically, find an approximate distribution that accurately approximates the posterior over unobserved variables.
 And that is basically the problem that variational inference solves.
 So can we shoehorn this problem?
-Can we find another distribution, Q, s_1 through T, A1 through T, that is close to the posterior P, but has the dynamics P given S, D, A, T?
+Can we find another distribution, Q, s_1 through T, a_1 through T, that is close to the posterior P, but has the dynamics P given S, D, A, T?
 Can we shoehorn this into the framework of variational inference?
 Take a few moments to think about this.
 Think about how you could use variational inference to address this.
@@ -59,7 +59,7 @@ And then check your answer against what I'm going to do next.
 And then I'll tell you on the next slide.
 All right.
 So what we're going to do in order to perform control using variational inference is we'll define a somewhat peculiar distribution class for Q.
-We'll define Q of s_1 through T and A1 through T as the product of P , the product of the transition probabilities P given S, D, A, T at every time step, and an action distribution, Q of A, T given S, D.
+We'll define Q of s_1 through T and a_1 through T as the product of P , the product of the transition probabilities P given S, D, A, T at every time step, and an action distribution, Q of A, T given S, D.
 Now this definition for the variational distribution is quite peculiar because typically when we use variational inference, we learn the entire variational distribution.
 But here we're actually fixing some parts of the variational distribution to be the same as P and only learning the action conditional.
 So we're going to have the same dynamics and the same initial state as P.
@@ -93,7 +93,7 @@ So we're going to write out our variational lower bound in terms of these things
 So we'll say that the value of X is greater than or equal to the expected value under Q of Z of log p(x) comma Z minus log Q of Z.
 And this is actually true for any Q of Z, but of course, as we learned last week, the closer Q of Z is to the posterior P of Z given X, the tighter this bound becomes.
 And this last term is just the entropy of Q.
-So substituting in our definitions for X and Z we can write out log P of O1 through T, the log probability of our evidence, as being greater than or equal to the expected value under s_1 through T and A1 through T distributed according to Q of all of the probabilities in our graphical model, log P of s_1 plus the sum of the log probabilities of the transitions plus the sum of the log probabilities of the equations.
+So substituting in our definitions for X and Z we can write out log P of O1 through T, the log probability of our evidence, as being greater than or equal to the expected value under s_1 through T and a_1 through T distributed according to Q of all of the probabilities in our graphical model, log P of s_1 plus the sum of the log probabilities of the transitions plus the sum of the log probabilities of the equations.
 So we can write out log P of O1 through T, the sum of the log probabilities of the optimality variables, minus the entropy, which is going to be minus log P of s_1.
 So this s_1 comes from our definition for Q, minus the log probabilities of the transitions, again, this comes from our definition for Q, and then minus the log Q of A given S .
 So now we can see why we made this particular choice for Q.

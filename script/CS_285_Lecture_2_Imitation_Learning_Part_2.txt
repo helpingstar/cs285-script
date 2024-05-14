@@ -10,13 +10,13 @@ Now, p data ot might be a very complex distribution.
 We don't really care about that.
 All we care about at this stage is that it is whatever distribution over observations comes from the human's drive.
 And then I'll use a different symbol to denote the distribution over observations that the policy itself sees when it's driving a car.
-And that's going to be denoted with p π_θ ot.
-And of course, because the policy doesn't drive exactly the same way that a person drives, p π_θ ot is not going to be the same as p data ot.
+And that's going to be denoted with p π_θ o_t
+And of course, because the policy doesn't drive exactly the same way that a person drives, p π_θ ot is not going to be the same as p data o_t
 So if we want to understand just how different these things are going to be, let's first discuss how π_θ is trained.
 Well, π_θ is trained under p data ot, which means that we can, if we're using some standard training objective, like supervised maximum likelihood or empirical risk minimization, basically, we can write the objective as the following.
 It's maximizing the log probability of the actions from the human given the observations.
-And the observations are sampled from p data ot.
-So the expectation is under p data ot.
+And the observations are sampled from p data o_t
+So the expectation is under p data o_t
 Now, we know from supervised learning theory that if we train our policy in this way and we don't overfit and we don't underfit, then we would expect the log probability of the actions under the distribution p data ot to be high.
 We would expect good actions to have high probability.
 Of course, the problem is that performance of the policy is not determined by the log probability that assigns to good actions under the experts observation distribution, but under the testing distribution which is p π_θ.

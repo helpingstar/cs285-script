@@ -99,15 +99,15 @@ And our goal is to learn π star, the optimal policy for that reward function.
 In inverse reinforcement learning, we are given trajectories τ sampled by running the optimal policy.
 We don't necessarily know what the optimal policy is, but we do assume that our sampling is correct.
 And we know that the sample trajectories came from that policy, or some approximation thereof.
-And our goal is to learn the reward function r psi that π star optimized to produce those taus, where psi is a parameter vector that parameterizes the reward.
+And our goal is to learn the reward function r ψ that π star optimized to produce those taus, where ψ is a parameter vector that parameterizes the reward.
 Now, there are many different choices we could make for the reward parameterization.
 In the kind of more classical inverse reinforcement learning literature, a very common choice is to use a linear reward function.
 A reward function that is a weighted combination of features.
-You can also write it as an inner product, psi transpose times bold f, where bold f is a vector of features.
+You can also write it as an inner product, ψ transpose times bold f, where bold f is a vector of features.
 You could intuitively think of these features as a bunch of things that the agent wants or does not want.
 And then what you're trying to determine is precisely how much do they want or not want each of those things.
 Now, these days in the world of deep reinforcement learning, we might also want to deal with neural network reward functions.
-Reward functions that map states and actions via a deep neural network, a nonlinear function, to a scalar valued reward, and that are parameterized by some parameter vector psi, which denotes the parameters of that neural network.
+Reward functions that map states and actions via a deep neural network, a nonlinear function, to a scalar valued reward, and that are parameterized by some parameter vector ψ, which denotes the parameters of that neural network.
 And then once we've recovered the reward function in inverse reinforcement learning, typically what we would want to do is use that reward function to learn the corresponding optimal policy, π star.
 All right.
 So, first, before I talk about the main topic of today's lecture, which is going to be inverse reinforcement learning algorithms based on the probabilistic model that we saw in the previous lecture, I want to provide a little bit of kind of historical background to discuss some ways that people have thought about solving the inverse reinforcement learning problem, prior to kind of the modern age of deep learning.
@@ -119,22 +119,22 @@ So, classically, when people started thinking about the inverse reinforcement le
 They said, well, let's say that we have some features and we're going to learn a linear reward function in those features.
 If the features f are important, what if the way that we disambiguate the inverse reinforcement learning problem is by saying, let's learn a reward function for which the optimal policy has the same expected values for those features.
 So, the features f are important, so the features are functions of states and actions.
-And you could say, let's let π r psi be the optimal policy for our learned reward r psi.
-And then we're going to select psi, such that the expected value under π r psi of our feature vector is equal to its expected value under π star.
+And you could say, let's let π r ψ be the optimal policy for our learned reward r psi.
+And then we're going to select ψ, such that the expected value under π r ψ of our feature vector is equal to its expected value under π star.
 Now, that's very reasonable.
 That's just saying that, well, if you saw that the, let's say, the optimal driver driving the car rarely experienced a crash, rarely ran red lights, and frequently overtook on the left rather than the right, then matching the expected values of those features will probably give you somewhat similar behavior if you were given the right features.
 Now, unfortunately, this formulation is still ambiguous.
 So, you could do this fairly easily because you have trajectories sampled from the optimal policy.
 So, while you don't know the optimal policy itself, you can approximate the right-hand side by averaging the feature vectors in your demonstrated trajectories.
-But it's still ambiguous because multiple different psi vectors could still result in the same feature expectations.
+But it's still ambiguous because multiple different ψ vectors could still result in the same feature expectations.
 So, think back to the example with the grid rule that I gave before.
 All of those different reward functions result in the same exact policy, which means they would all have the same exact expected values.
 So, one way that people thought about disambiguating this further is by using a maximum margin principle.
 So, the maximum margin principle for inverse RL is very similar to the maximum margin principle for support vector machines.
-And it states that you should choose psi so as to maximize the margin between the observed policy π star and all other policies.
-So, if the reward is psi transpose f, then the expected reward is psi transpose times the expected value of f, and you would like to get the expected value of f, you would want to pick psi, so that psi transpose times the expected value of f, meaning the expected reward under π star, is greater than or equal to the expected reward under any other policy plus the largest possible margin.
-And you would choose the margin and the psi so as to maximize this.
-So, this is basically saying, find me a weight vector psi so that the expert's policy is better than all other policies by the largest possible margin.
+And it states that you should choose ψ so as to maximize the margin between the observed policy π star and all other policies.
+So, if the reward is ψ transpose f, then the expected reward is ψ transpose times the expected value of f, and you would like to get the expected value of f, you would want to pick ψ, so that ψ transpose times the expected value of f, meaning the expected reward under π star, is greater than or equal to the expected reward under any other policy plus the largest possible margin.
+And you would choose the margin and the ψ so as to maximize this.
+So, this is basically saying, find me a weight vector ψ so that the expert's policy is better than all other policies by the largest possible margin.
 Now, this is a little bit of a heuristic, because this doesn't necessarily mean that you will recover the expert's weight vector, the expert's true reward function, but it's a reasonable heuristic.
 It's saying, you know, if you have two different rewards that have the same future expectations as the expert, pick the one that makes the expert look better than all the other policies.
 So, don't pick a reward for which the expert is just a little bit better than the alternatives.
