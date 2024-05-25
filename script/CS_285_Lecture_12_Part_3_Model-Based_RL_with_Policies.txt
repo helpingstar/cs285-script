@@ -1,4 +1,9 @@
+[p.16]
+
 All right, let's talk about some practical model-based RL algorithms that we can build based on the design that I described before.
+
+[p.17]
+
 So, again, to reiterate, this is the design that we're talking about, which I dubbed model-based RL version 3.0.
 But there are, of course, a number of design decisions we have to make to turn this method into a reality.
 For the discussion in this portion of the lecture, the particular off-policy RL method that we will use for step four will be based on Q-learning.
@@ -6,9 +11,11 @@ Although I want to emphasize that everything that I'm going to discuss could jus
 And it works in basically exactly the same way.
 And basically the way to see this is to recall how in the discussion of Q-learning, we talked about how, for example, training an actor as a learn maximizer basically looks more or less exactly like Q-learning.
 And that's the logic that we're going to follow here.
+
+[p.18]
+
 So, the classic algorithm.
-And classic.
-As far as I know, the method that first proposed this basic concept was something called Dyna, described by Richard Sutton in the, I believe, in the 1990s.
+And, as far as I know, the method that first proposed this basic concept was something called Dyna, described by Richard Sutton in the, I believe, in the 1990s.
 Dyna was a particular version of this kind of recipe, instantiated for online Q-learning, that used very short model-based rollouts.
 In fact, it used model-based rollouts that are exactly one time step in length.
 But even then, this provides significant benefit if you can learn a good model.
@@ -17,34 +24,34 @@ So, here's how Dyna works.
 It's very much going to follow online Q-learning, but then with a little modification.
 So, step one, in the current state, pick an action a using your exploration policy.
 This is exactly the same as online Q-learning.
-Step two, observe the resulting next state S' and the reward to get a transition tuple S, A, S' R.
+Step two, observe the resulting next state s' and the reward to get a transition tuple (s, a, s' r).
 Now, here's where the new stuff starts coming in.
 Use this transition tuple to update your model and your reward function.
-Now, Dyna was proposed.
-It's very much as an online method.
+Now, Dyna was proposed very much as an online method.
 So, in classic Dyna, both the model and the reward function would be updated with one step.
 Maybe one step of gradient descent if these are neural networks, or if it's a tabular model, maybe you would mix the old value in the table with some learning rate times the new value.
 But one step of update on just that transition.
 Then Dyna performs a classic Q-learning update.
 So, this is a Q-learning update on the transition that you just observed.
 But then here's the new thing.
-At this point, Dyna is going to repeat this model-based procedure, k times, where k is a hyperparameter, where it'll sample some old state action from the buffer, basically from previous states and actions that you've seen.
+At this point, Dyna is going to repeat this model-based procedure, K times, where K is a hyperparameter, where it'll sample some old state action from the buffer, basically from previous states and actions that you've seen.
 And then it will re-simulate the next state for that state action using the learned model.
-So, the expression here is exactly the same as the Q function updated before, except that S' and R, now are going to come from the learned model p-hat and r-hat.
+So, the expression here is exactly the same as the Q function updated before, except that s' and r, now are going to come from the learned model ^{p} and ^{r}.
 So, this is the Dyna procedure.
 Now, the Dyna procedure classically makes a few design choices, and those design choices don't have to be set in stone.
 For example, Dyna uses the state and action from the buffer.
 Now, a very reasonable alternative is to pick the action according to the latest policy, for example, the argmax policy for that Q function.
-Dyna also makes only one decision.
-So, if you want to make a decision based on the model, you could make multiple steps.
+Dyna also makes only one step on the model, you could make multiple steps.
 Now, the choices made in Dyna are a little bit optimized for highly stochastic systems.
-If you have deterministic systems, of course, then if you run the same state and action through the model, you should get exactly the S' that you saw before.
+If you have deterministic systems, of course, then if you run the same state and action through the model, you should get exactly the s' that you saw before.
 But for stochastic systems, this actually makes a difference.
 So, Dyna does make a few decisions that are maybe a little bit peculiar, and perhaps don't squeeze the maximum performance out of the model.
-Although these decisions are good if you expect your model to be very vulnerable to distributional shift, because for one step and for the action, it was the same.
-But if you run the same state and action in the buffer, it actually avoids all distributional shift issues.
+Although these decisions are good if you expect your model to be very vulnerable to distributional shift, because for one step and for the action, that was in the buffer, it actually avoids all distributional shift issues.
 So, in some statistical sense, this is actually a very safe algorithm.
 However, we can derive a generalized version of Dyna, and that's a lot closer to what people actually use.
+
+[p.19]
+
 This is not actually the original Dyna method proposed by Sutton, but we can call it kind of Dyna-style in that it follows a similar philosophy.
 So, here's kind of the generalized version.
 Collect some data consisting of transitions, and maybe this is just one time step, or maybe you're rolling out many trajectories.
@@ -60,20 +67,21 @@ So this is kind of a generalization of the Dyna procedure from before.
 It only requires short rollouts from the model, maybe as few as one step, and it still visits diverse states, because you're sampling the starting states for those rollouts directly from your buffer.
 So there's an entire class of modern model-based RL algorithms that are all essentially variants on this basic recipe.
 Now, when I describe this recipe in a kind of textual form like this, it might be a little hard to understand what all the moving parts are, so what I want to do on the next slide is actually present a more diagrammatic view of this method.
+
+[p.20]
+
 So let's think back to the diagram of deep Q-learning that we discussed a few lectures ago as a collection of parallel processes.
 So if you recall, we talked about how there is a process that collects data from the environment and pushes it into the buffer.
 There's a process that evicts old data from the buffer that's gotten too old.
 There's a process that updates the target network parameters using the latest network parameters.
-And of course, there's the process that performs Q-function regression by loading batches from the replay buffer, making updates on them using the latest network parameters, using the target network, and updating the current parameters.
+And of course, there's the process that performs Q-function regression by loading batches from the replay buffer, making updates on them using the target network, and updating the current parameters.
 So this is kind of the schematic diagram of Q-learning that we saw in a previous lecture.
 And now what we can do is we can take this schematic diagram and we can add model-based acceleration into this.
 So this is basically exactly the process on the previous slide.
 I'm just going to visualize it graphically.
 So we're going to have another process that performs model training.
 And that process is going to load transitions from the buffer of real transitions.
-So you have one of these.
-And then you have the other one.
-And you want to use real transitions to train your model.
+So you have one of these real transitions to train your model.
 You don't want to train the model on its own synthetic data because that would be very circular.
 Then there's a process that collects data using the model.
 So this process is going to sample a state from your buffer.
@@ -92,10 +100,13 @@ It looks like the real buffer is bigger, but typically the model-based buffer is
 You would also have a different eviction strategy for the model-based buffer because typically if you are mostly constrained by samples rather than compute, you would actually want to evict your model-based buffer each time you change your model.
 So if you improve your model, you might as well flush your model-based buffer and collect entirely new data.
 It costs you compute, but it doesn't cost you any real-world sample collection.
-Although if you are concerned about the data collection, you might be concerned about compute costs, and these kinds of methods do tend to be very computationally expensive, you could also reuse some of the model-based data even if your model is changing.
+Although if you are concerned about compute costs, and these kinds of methods do tend to be very computationally expensive, you could also reuse some of the model-based data even if your model is changing.
 But typically you would have a slightly different eviction strategy for these algorithms.
 So it looks like there's a lot going on here, but really this additional model-based process that we've added is just a way to populate an additional buffer that we're going to be using to load up our batches for the Q-learning process.
 So hopefully this diagram makes it a little clearer how these methods really work under the hood, kind of at a systems level.
+
+[p.21]
+
 Now there have been a variety of algorithms that have actually been proposed in the literature that make use of this idea.
 These are just a few examples.
 They differ a little bit in some of the design decisions, especially in regard to which data is actually used for the Q-learning process and how it's used.
@@ -107,8 +118,7 @@ I won't go into great detail about what exactly each of those design decisions a
 If you want to learn more about them, you can read the three papers that I have mentioned at the bottom.
 But at a high level, they all have this basic recipe.
 Take some action and observe a transition, add it to your buffer, sample a minibatch from your buffer uniformly, use that to update your model, sample some states from the buffer.
-For each of those states, perform a model.
-And then you can do a model-based rollout with actions coming from your policy, and those are those branched rollouts.
+For each of those states, perform a model-based rollout with actions coming from your policy, and those are those branched rollouts.
 And then use all the transitions along the rollout to update your Q function, perhaps in combination with a little bit of real-world transitions.
 Okay, so why is this a good idea?
 Well, generally the benefit of these kinds of methods is that they do tend to be more sample efficient, because they're using their samples to train this model, which is then being used to amplify the data set.

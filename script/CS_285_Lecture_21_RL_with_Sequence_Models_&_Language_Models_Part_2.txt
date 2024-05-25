@@ -231,7 +231,7 @@ And then for each question in your data set, for each s, you would sample k poss
 Then you would get humans to label each of those points, each of those s, a, 1 through a, k tuples to indicate which answer they prefer.
 And then you would use this to get a data set consisting of tuples with a prompt s, i, and k possible answers.
 And then you would use that labeled data set to train r, psi.
-And then you would update π θ using RL with r, ψ as the reward.
+And then you would update π_θ using RL with r, ψ as the reward.
 And then you would repeat this process some number of times.
 Now, typically when you do this, in step five, you would actually run many steps of policy optimization.
 So in step five, you wouldn't just optimize against that reward once with important sampling.
@@ -265,7 +265,7 @@ Well, the problem, of course, is what we saw before in the model-based RL discus
 The problem is distributional shift.
 And that's a problem that we see in RL per language models that is sometimes referred to as over-optimization, which basically means that you exploit the reward model after a while, and while the policy initially gets better, later on it gets worse.
 The other problem is that the reward model needs to be very good.
-So over-optimization is often tackled with a simple modification, where we simply add a penalty to our expected reward objective that penalizes the policy π θ from deviating from the original structure, so that we begin toto downstairs our veering commander model by saying if I give this signal, the interesante equation can hundred times more than that, because we leave a square meaning if I trade this region, I can askew it there.
+So over-optimization is often tackled with a simple modification, where we simply add a penalty to our expected reward objective that penalizes the policy π_θ from deviating from the original structure, so that we begin toto downstairs our veering commander model by saying if I give this signal, the interesante equation can hundred times more than that, because we leave a square meaning if I trade this region, I can askew it there.
 So in theiform region, this core building, so at the top is the value of thezcz and there's the total value of large transformer that is itself pre-trained to be a language model and then fine-tuned to output the reward because the reward model needs to be very good.
 It needs to be powerful enough that it can resist all that optimization exploitation pressure from reinforcement learning.
 Okay, so to recap an overview, we can train language models with policy gradients.

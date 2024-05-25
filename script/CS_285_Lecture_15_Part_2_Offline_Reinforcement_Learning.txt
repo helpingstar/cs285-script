@@ -19,11 +19,11 @@ We have our policy gradient, just like what we covered before, ∇log π times q
 And the problem that you're all hopefully familiar with by this point is that estimating the policy gradient requires samples from π θ.
 So if you only have samples from π beta, what you would do is importance sampling.
 And we learned all about importance sampling so far.
-We multiply our policy gradient by an importance weight, which is the ratio of the probabilities of a trajectory under π θ and π beta.
+We multiply our policy gradient by an importance weight, which is the ratio of the probabilities of a trajectory under π_θ and π beta.
 And as we saw before, when we write out those probabilities, all the terms that don't depend on the policy gradient are the same.
 cancel out.
 So this is just a recap of the policy gradient lecture.
-So the ratio of the trajectory probabilities under the two policies consists of a product of initial states, transitions, and policies, but because the initial states and transition probabilities are exactly the same for both π θ and π beta, it's only the ratio of the action probabilities that shows up.
+So the ratio of the trajectory probabilities under the two policies consists of a product of initial states, transitions, and policies, but because the initial states and transition probabilities are exactly the same for both π_θ and π beta, it's only the ratio of the action probabilities that shows up.
 And as we discussed before, this is a perfectly reasonable unbiased way to construct an estimator for the policy gradient using only samples from π beta, but it has a big problem because you are multiplying together these action probabilities and the number of probabilities that you're multiplying in general is O , which means that the weights are exponential in capital T, which means that the weights are likely to become degenerate as capital T becomes large.
 By degenerate I mean that one weight will become very big and all the other weights will become vanishingly small, which means effectively as T increases you're estimating your policy gradient.
 So this is a very simple way to do this.
@@ -38,7 +38,7 @@ In fact it is exponentially large, which of course means that you need exponenti
 And that the variance of the estimator that is defined by the policy gradient is very large because it needs exponentially many more samples to get an accurate estimate.
 Can we fix this?
 Well before I actually break down this equation, one comment I would make here is that we did see in our discussion of advanced policy gradients that a common way to use important sampling and practical modern policy gradient methods is to simply drop the P of A given S terms in those weights, for all the time steps prior to T.
-learned how this is reasonable to do if π θ and the policy that generated the data, which in our case is π beta, are similar.
+learned how this is reasonable to do if π_θ and the policy that generated the data, which in our case is π beta, are similar.
 That doesn't really apply to offline RL, because in offline RL, the whole point is to get a much better policy.
 So the short answer to can we fix this is no, we can't.
 But we can sort of ruminate on this point a little bit more.
@@ -49,7 +49,7 @@ Now, I didn't actually change anything.
 This is just because multiplication commutes, so this is just exploiting the commutative property.
 To just write the same exact importance weight in a different way.
 But writing it in this way makes it a little bit more apparent that there are really two parts to the importance weight.
-The part that multiplies all the actions prior to little t, which you can think of as essentially accounting for the fact that π θ has a different probability of reaching the state s_t than π beta does.
+The part that multiplies all the actions prior to little t, which you can think of as essentially accounting for the fact that π_θ has a different probability of reaching the state s_t than π beta does.
 And then all the stuff afterwards, which basically accounts for the fact that your value, the value q had that you estimate by summing up the rewards in π beta, might be different from the value that you would get from π θ.
 So the second part of the weight accounts for the difference in reward to go.
 So the first part accounts for the difference in probability of landing in s_t, because we have states sampled from d π beta and we want states from d π θ.
@@ -61,7 +61,7 @@ So that's what, for example, PPO does.
 These are methods that do collect active samples, but then they take many gradient steps with an important sampled estimator and then collect some more samples.
 And the justification for dropping that is basically if the policy that collected the data is close enough to your latest policy, then it's okay to disregard this because you have a bound as we discussed in the advanced policy.
 Gradient selection.
-So that's why that's what that could be a reasonable approximation, but only if you are willing to not have π θ deviate too much from π beta.
+So that's why that's what that could be a reasonable approximation, but only if you are willing to not have π_θ deviate too much from π beta.
 So we could talk about just the other term.
 Um, so the other term naively, you would estimate q hat by just summing up the rewards from π beta.
 But what you want is you want to sum up the rewards from π θ.
@@ -84,7 +84,7 @@ But that hasn't stopped various techniques in the literature from trying to stil
 None of them avoid the exponential problem altogether, but there are many ways to still reduce the variance to make it more manageable.
 So one of them is the one on the slide, which is to only, um, multiply together the action probabilities from T to T prime rather than from T to capital T for each for the reward of time step T prime.
 Um, but there are better ways to do it.
-So, later on, we'll talk about how this would work if you, uh, if you knew Q π θ or if you had to learn Q π θ.
+So, later on, we'll talk about how this would work if you, uh, if you knew Q π_θ or if you had to learn Q π θ.
 But first, let's conclude our discussion of importance sampling with a few other ideas that that have been explored in literature.
 So one idea that is worth discussing because, you know, it has served to inspire quite a few more more recent techniques is the idea of the doubly robust estimator.
 You can think of the doubly robust estimator as a little bit like a baseline, but for importance sampling.
@@ -133,7 +133,7 @@ And addition to group these terms together.
 So just a little bit of arithmetic.
 A little bit of algebra.
 And let's call this bar{V} superscript T.
-bar{V} superscript T is an important sampling estimator of V π θ S zero.
+bar{V} superscript T is an important sampling estimator of V π_θ S zero.
 And now you can notice that there is a recursion here.
 So bar{V} T plus one minus T is equal to rho T times R T plus gamma bar{V} capital T minus little t.
 OK.
@@ -232,7 +232,7 @@ But I want to just give you a taste for what the general gist of this is.
 So if you look at this consistency condition, you can see that on the left-hand side, you have the probability of seeing a state and an action s' A prime under the behavior policy π beta times the weight.
 Now, what's going on here?
 Well, if you multiply d π beta by the weight, you get d π θ, right?
-Because the weight is d π θ over d π θ.
+Because the weight is d π_θ over d π θ.
 So what this is really describing is a condition that state action marginals need to obey.
 When it comes time to actually optimize this in practice, of course, we're going to subtract the right-hand side from the left-hand side, and as long as we get a multiplier of d π beta in front of everything, then we can approximate it with samples.
 So in reality, we never actually estimate these d π beta terms directly.
@@ -240,7 +240,7 @@ We always use samples from our data set as samples from d π beta.
 So the left-hand side of this is just the probability of seeing s' A prime under the policy π θ.
 And the probability of seeing s' A prime is basically equal to the probability that you start in s' A prime, and that's what the first term captures.
 So it's the probability you start in s' times the probability that you take the action a prime plus the probability that you transition into s' A prime from another state.
-The probability you transition into s' A prime from another state, in this case S A, is given by the probability that you are in that state, which is d π θ S A, and that's exactly what the product of those last two terms gives you, times the probability that you make that transition, which is what you get by multiplying it by P of s', given S A, times π θ A prime, given s'.
+The probability you transition into s' A prime from another state, in this case S A, is given by the probability that you are in that state, which is d π_θ S A, and that's exactly what the product of those last two terms gives you, times the probability that you make that transition, which is what you get by multiplying it by P of s', given S A, times π_θ A prime, given s'.
 So this is the probability of starting in s' A prime, and this is the probability of transitioning into it from another state, multiplied by the probability that you leave it in s' A prime, that you are actually in that state, which is what the last two terms account for.
 So solving for WSA typically involves some kind of fixed point problem.
 So it involves subtracting the right-hand side from the left-hand side and minimizing the square difference.

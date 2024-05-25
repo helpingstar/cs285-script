@@ -140,7 +140,7 @@ They just update as they collect data.
 Policy gradient methods collect a batch of data and make batch-wise updates.
 Then we have a big step up in efficiency with T-SYS.
 So we have methods that use replay buffers and off-policy learning.
-So these are Q-learning methods, Q-function, active critic methods, and so on.
+So these are Q-learning methods, Q-function, actor-critic methods, and so on.
 These are all the methods that have replay buffers.
 Then we have model-based methods.
 And then we have shallow model-based methods, which are generally the most efficient, but also often the most limiting.

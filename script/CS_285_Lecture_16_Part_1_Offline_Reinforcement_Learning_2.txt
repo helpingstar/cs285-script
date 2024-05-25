@@ -8,7 +8,7 @@ In offline reinforcement learning, we assume that we are given a data set, and t
 So the definitions are D is our data set, which we can think of as just an unordered set of state, action, next state, and reward tuples.
 In practice, those tuples are typically arranged into trajectories, but value-based methods of the sort that we will describe in today's lecture generally do not make use of this.
 So they just assume that you're given transitions.
-We will use a D with a superscript π beta to denote a state distribution, or D superscript π θ for the current policy state distribution.
+We will use a D with a superscript π beta to denote a state distribution, or D superscript π_θ for the current policy state distribution.
 Pi beta represents the behavior policy, the policy that collected the data set.
 In general, we don't know what this is.
 We have our transition probabilities, our rewards, and the behavior policy.
@@ -185,13 +185,13 @@ So this essentially implements the constrained actor critic framework that I sho
 So this algorithm, with Qt, the Q function estimation goes under the name of advantage-weighted actor critic, or AWAKE.
 If you use Monte Carlo returns, which is also possible, you get an algorithm called advantage-weighted regression.
 And the citations, if you want to read more about this, are shown at the bottom of this slide.
-Now, the trouble with this kind of approach, well, let me rewind a little bit, the trouble with this kind of approach is that in order to estimate those advantage values, you do still need to query out-of-distribution actions, because there's no guarantee that at intermediate stages in training, your policy π θ will perfectly respect the constraint.
+Now, the trouble with this kind of approach, well, let me rewind a little bit, the trouble with this kind of approach is that in order to estimate those advantage values, you do still need to query out-of-distribution actions, because there's no guarantee that at intermediate stages in training, your policy π_θ will perfectly respect the constraint.
 If you choose λ appropriately, the constraint will be respected at convergence, but over the course of training, the constraint may not be respected.
 Which means that you can still get out-of-distribution actions with this.
 So there's actually two places where you end up querying out-of-distribution actions.
 One is in the target value, where you're computing the expectation under π θ.
-So as I said, at convergence, π θ should obey the constraint, but it may not obey the constraint over the course of training.
-And also when you're estimating the advantage, that's again q minus the expected value of q under π θ, so that also requires querying actions from π θ into the Q function.
+So as I said, at convergence, π_θ should obey the constraint, but it may not obey the constraint over the course of training.
+And also when you're estimating the advantage, that's again q minus the expected value of q under π θ, so that also requires querying actions from π_θ into the Q function.
 And both of those can have errors.
 Can we actually avoid that?
 Can we somehow avoid all out-of-distribution action queries when computing the target values?

@@ -4,7 +4,7 @@ So, a partially observed MDP, just to remind everybody, is an MDP that has obser
 So it has an observation space and an emission probability, which is the probability of observing a particular observation given a state.
 And this is the graphical model for a partially observed MDP from before.
 In a partially observed MDP, the policy has to act on observations, which typically requires either explicit observation or observation.
-So, let's say that we have a policy, π θ a given s comma z, where z is some variable that encapsulates the information that the policy needs to solve the current task.
+So, let's say that we have a policy, π_θ a given s comma z, where z is some variable that encapsulates the information that the policy needs to solve the current task.
 Learning a task at this point amounts to inferring what z is.
 So, remember that.
 Winding back to contextual policies, z might represent something like, oh, it's time to do the laundry, it's time to do the dishes.
@@ -68,8 +68,8 @@ And then once we've acquired it, then we can explore via posterior sampling with
 So if you remember the discussion of posterior sampling from the exploration lecture, it amounts to sampling from our posterior belief and then acting optimally under that belief.
 So the way that we'll sample is we will actually randomly select a z from our posterior, and then we'll act according to that z.
 And that makes a lot of sense because initially you don't know what the task is, so you'll start off by basically trying to do random tasks, and as you gather more information, you will zero in on the right task to do.
-So the procedure will be to sample z from your belief about z, given your history, and that will use some approximate posterior, trained with variational inference, then act according to π θ a given s comma z to collect more data, basically act as though z was correct, and then repeat this process.
-And meta-training will consist of training π θ and training your variational approximation to the state estimator.
+So the procedure will be to sample z from your belief about z, given your history, and that will use some approximate posterior, trained with variational inference, then act according to π_θ a given s comma z to collect more data, basically act as though z was correct, and then repeat this process.
+And meta-training will consist of training π_θ and training your variational approximation to the state estimator.
 Now, this is not an optimal procedure, meaning this is not the best you could do for exploration.
 Take a moment to think about why.
 If it's not an optimal procedure, it's not clear yet.

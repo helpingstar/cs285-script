@@ -113,7 +113,7 @@ It's perhaps most straightforward to actually have two separate encoders for the
 But they could also be encoded with the same encoder.
 And at the end, we have to predict a single number for them, which is the Q value.
 So this is the critic.
-Now, typically in this design, we could use either an active critic architecture, where we would have a separate actor network that is trained to maximize this critic.
+Now, typically in this design, we could use either an actor-critic architecture, where we would have a separate actor network that is trained to maximize this critic.
 And that could be trained with a separate actor network.
 And that could be trained with, for example, one of the algorithms in the previous section, treating this Q in place of the reward as the one step objective.
 Or we could directly decode from the Q function to find the action that has the highest Q value.
