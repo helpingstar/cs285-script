@@ -13,9 +13,7 @@ But it's important to remember that as a gradient estimator, it doesn't necessar
 Anytime that you have these kinds of stochastic computation graphs, you could use this type of estimator.
 Now before, the really convenient thing for us about this kind of gradient estimator is that it doesn't contain the transition probabilities.
 That's a little bit of a lie, of course, because in reality, you do need the transition probabilities to calculate the policy gradient because you need a sample.
-And those samples come from the policy and from the transition probabilities.
-But the transition probabilities themselves do not show up in the expression.
-Except insofar as they generate the samples.
+And those samples come from the policy and from the transition probabilities, but the transition probabilities themselves do not show up in the expression except insofar as they generate the samples.
 And in particular, we don't even know their derivatives.
 But there's nothing stopping you from using this gradient estimator with a learned model.
 So just the same way that you would sample from the real MDP before, now you could sample from the learned model.
