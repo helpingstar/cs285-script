@@ -170,11 +170,11 @@ But for finite values of λ, essentially what this is doing is it's making subop
 So any action that has a very low probability under πβ, even if it has a very high advantage, will end up with a very low probability.
 And then λ has to be chosen as a Lagrangian multiplier to satisfy that constraint.
 But as I mentioned before, this is a very simple equation, and it's treated directly as a hyperparameter of the algorithm, and just tuned based on the desired performance.
-Now, of course, directly creating the functional form of π star here requires knowing πβ, so we haven't actually done anything to simplify our problem yet.
-But looking at this equation, one of the things we can recognize is that we can approximate π star here by using samples from πβ.
+Now, of course, directly creating the functional form of π^{*} here requires knowing πβ, so we haven't actually done anything to simplify our problem yet.
+But looking at this equation, one of the things we can recognize is that we can approximate π^{*} here by using samples from πβ.
 Because anytime that you want some quantity, you can apply the product of a distribution and some other stuff, well, expected values under the distribution actually give you basically exactly that.
 So you can approximate the solution via weighted max likelihood.
-So to train πν, what you can do is you can sample from πβ, so that gives you the πβ term, π star, multiply that sample by a weight corresponding to all the other terms in the equation, put that weight on the sample, and then maximize the likelihood on that sample with that weight.
+So to train πν, what you can do is you can sample from πβ, so that gives you the πβ term, π^{*}, multiply that sample by a weight corresponding to all the other terms in the equation, put that weight on the sample, and then maximize the likelihood on that sample with that weight.
 So the loss function you're seeing here is basically the behavior cloning loss, that's why the log π shows up in there, except the samples are weighted by all the other terms in the equation above, which is 1 over z times the exponential of 1 over λ times the advantage.
 So in practice, what you would do is you would generate samples from the data set, so these are basically the data set you're given, use the critic to get the advantage, and that gives you a weight, and then you would put that weight on every sample from the data set, and then just do a weighted max likelihood, essentially weighted behavioral cloning, where the weights are given by the advantage function, and the advantage function comes from your critic.
 This has some interesting implications, because one of the things that this suggests is that a constrained critic, is a constrained actor update, really just corresponds to a kind of weighted behavior cloning, where the weights depend on how good the actions are.

@@ -95,11 +95,11 @@ In forward reinforcement learning and inverse reinforcement learning, in both ca
 Sometimes we are given the transition probabilities, and sometimes not.
 Sometimes we have to infer them from experience.
 In forward reinforcement learning, we are given a reward function.
-And our goal is to learn π star, the optimal policy for that reward function.
+And our goal is to learn π^{*}, the optimal policy for that reward function.
 In inverse reinforcement learning, we are given trajectories τ sampled by running the optimal policy.
 We don't necessarily know what the optimal policy is, but we do assume that our sampling is correct.
 And we know that the sample trajectories came from that policy, or some approximation thereof.
-And our goal is to learn the reward function r ψ that π star optimized to produce those taus, where ψ is a parameter vector that parameterizes the reward.
+And our goal is to learn the reward function r ψ that π^{*} optimized to produce those taus, where ψ is a parameter vector that parameterizes the reward.
 Now, there are many different choices we could make for the reward parameterization.
 In the kind of more classical inverse reinforcement learning literature, a very common choice is to use a linear reward function.
 A reward function that is a weighted combination of features.
@@ -108,7 +108,7 @@ You could intuitively think of these features as a bunch of things that the agen
 And then what you're trying to determine is precisely how much do they want or not want each of those things.
 Now, these days in the world of deep reinforcement learning, we might also want to deal with neural network reward functions.
 Reward functions that map states and actions via a deep neural network, a nonlinear function, to a scalar valued reward, and that are parameterized by some parameter vector ψ, which denotes the parameters of that neural network.
-And then once we've recovered the reward function in inverse reinforcement learning, typically what we would want to do is use that reward function to learn the corresponding optimal policy, π star.
+And then once we've recovered the reward function in inverse reinforcement learning, typically what we would want to do is use that reward function to learn the corresponding optimal policy, π^{*}.
 All right.
 So, first, before I talk about the main topic of today's lecture, which is going to be inverse reinforcement learning algorithms based on the probabilistic model that we saw in the previous lecture, I want to provide a little bit of kind of historical background to discuss some ways that people have thought about solving the inverse reinforcement learning problem, prior to kind of the modern age of deep learning.
 So, many of the previous algorithms for inverse reinforcement learning were focused around something called feature matching.
@@ -120,7 +120,7 @@ They said, well, let's say that we have some features and we're going to learn a
 If the features f are important, what if the way that we disambiguate the inverse reinforcement learning problem is by saying, let's learn a reward function for which the optimal policy has the same expected values for those features.
 So, the features f are important, so the features are functions of states and actions.
 And you could say, let's let π r ψ be the optimal policy for our learned reward r psi.
-And then we're going to select ψ, such that the expected value under π r ψ of our feature vector is equal to its expected value under π star.
+And then we're going to select ψ, such that the expected value under π r ψ of our feature vector is equal to its expected value under π^{*}.
 Now, that's very reasonable.
 That's just saying that, well, if you saw that the, let's say, the optimal driver driving the car rarely experienced a crash, rarely ran red lights, and frequently overtook on the left rather than the right, then matching the expected values of those features will probably give you somewhat similar behavior if you were given the right features.
 Now, unfortunately, this formulation is still ambiguous.
@@ -131,8 +131,8 @@ So, think back to the example with the grid rule that I gave before.
 All of those different reward functions result in the same exact policy, which means they would all have the same exact expected values.
 So, one way that people thought about disambiguating this further is by using a maximum margin principle.
 So, the maximum margin principle for inverse RL is very similar to the maximum margin principle for support vector machines.
-And it states that you should choose ψ so as to maximize the margin between the observed policy π star and all other policies.
-So, if the reward is ψ transpose f, then the expected reward is ψ transpose times the expected value of f, and you would like to get the expected value of f, you would want to pick ψ, so that ψ transpose times the expected value of f, meaning the expected reward under π star, is greater than or equal to the expected reward under any other policy plus the largest possible margin.
+And it states that you should choose ψ so as to maximize the margin between the observed policy π^{*} and all other policies.
+So, if the reward is ψ transpose f, then the expected reward is ψ transpose times the expected value of f, and you would like to get the expected value of f, you would want to pick ψ, so that ψ transpose times the expected value of f, meaning the expected reward under π^{*}, is greater than or equal to the expected reward under any other policy plus the largest possible margin.
 And you would choose the margin and the ψ so as to maximize this.
 So, this is basically saying, find me a weight vector ψ so that the expert's policy is better than all other policies by the largest possible margin.
 Now, this is a little bit of a heuristic, because this doesn't necessarily mean that you will recover the expert's weight vector, the expert's true reward function, but it's a reasonable heuristic.
@@ -140,7 +140,7 @@ It's saying, you know, if you have two different rewards that have the same futu
 So, don't pick a reward for which the expert is just a little bit better than the alternatives.
 Now, the trouble with this formulation still is that if the space of policies is very large and continuous, there are likely other policies that are very, very similar to the expert's policy.
 In fact, there are likely other policies that are almost identical.
-So, just maximizing the margin against all other policies is maybe not such a good idea by itself, and perhaps you want to weight this by some similarity between π star and π.
+So, just maximizing the margin against all other policies is maybe not such a good idea by itself, and perhaps you want to weight this by some similarity between π^{*} and π.
 Maybe what you want is to maximize the margin more against policies that are more distinct from the expert, whereas the margin against other policies that are very similar to the expert could be pretty small.
 Now, fortunately, this is again very similar to the kind of problems that we encounter in support vector machines, and much of the literature on this feature-matching IRL actually borrowed techniques from support vector machines to solve this problem.
 So, for those of you that are familiar with SVMs, you'll probably recognize this.
@@ -150,7 +150,7 @@ So, the SVM trick basically takes a maximum margin problem like this, which is g
 It's a little subtle why you can do this.
 It requires a little bit of Lagrangian duality, but you can take me at my word that these two problems are equivalent.
 And then it turns out that if you want to incorporate the similarity between policies into the second problem, all you do is you replace that 1 by some measure of divergence between policies.
-So that means that if you have another policy, pi, that is identical to π star, then it's okay for the left-hand side and right-hand side to be equal, because d will be 0.
+So that means that if you have another policy, pi, that is identical to π^{*}, then it's okay for the left-hand side and right-hand side to be equal, because d will be 0.
 But as the policies become more and more different, then you want to increase the margin to those policies.
 So, that's the first part.
 So, one good choice for d could be the difference in their feature expectations.

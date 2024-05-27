@@ -1,31 +1,39 @@
+[p.11]
+
 Part two of this lecture will be perhaps the most mathematically involved, because we're going to discuss some of the formal explanations behind why behavioral cloning doesn't in general produce good results.
 And this formal explanation will actually help us to develop some of the solutions in the future.
+
+[p.12]
+
 Okay, so let's go back to this intuitive picture, which I used to argue that the reason that behavioral cloning doesn't do so well is because even if you learn a very good policy, if that policy makes a small mistake, it'll put you into a situation that's a little bit different from the ones that it was trained on, where it's more likely to make a bigger mistake, which in turn will put you into an even more unfamiliar situation.
 And from there, the mistakes might build up and up.
 So to try to make this more precise, let's start introducing a little bit of notation.
-We have a policy, π_θ a_t given ot, and that policy is trained using a training set that comes from a particular distribution.
+We have a policy, π_θ(a_t|o_t), and that policy is trained using a training set that comes from a particular distribution.
 And that distribution is produced by a person providing demonstrations, like a person driving a car, for example.
-So I'm going to use p data ot to denote the distribution that produced the training set.
-Now, p data ot might be a very complex distribution.
+So I'm going to use p_{data}(o_t) to denote the distribution that produced the training set.
+Now, p_{data}(o_t) might be a very complex distribution.
 We don't really care about that.
 All we care about at this stage is that it is whatever distribution over observations comes from the human's drive.
 And then I'll use a different symbol to denote the distribution over observations that the policy itself sees when it's driving a car.
-And that's going to be denoted with p π_θ o_t
-And of course, because the policy doesn't drive exactly the same way that a person drives, p π_θ ot is not going to be the same as p data o_t
+And that's going to be denoted with p_{π_θ}(o_t).
+And of course, because the policy doesn't drive exactly the same way that a person drives, p_{π_θ}(o_t) is not going to be the same as p_{data}(o_t)
 So if we want to understand just how different these things are going to be, let's first discuss how π_θ is trained.
-Well, π_θ is trained under p data ot, which means that we can, if we're using some standard training objective, like supervised maximum likelihood or empirical risk minimization, basically, we can write the objective as the following.
+Well, π_θ is trained under p_{data}(o_t), which means that we can, if we're using some standard training objective, like supervised maximum likelihood or empirical risk minimization, basically, we can write the objective as the following.
 It's maximizing the log probability of the actions from the human given the observations.
-And the observations are sampled from p data o_t
-So the expectation is under p data o_t
-Now, we know from supervised learning theory that if we train our policy in this way and we don't overfit and we don't underfit, then we would expect the log probability of the actions under the distribution p data ot to be high.
+And the observations are sampled from p_{data}(o_t)
+So the expectation is under p_{data}(o_t)
+Now, we know from supervised learning theory that if we train our policy in this way and we don't overfit and we don't underfit, then we would expect the log probability of the actions under the distribution p_{data}(o_t) to be high.
 We would expect good actions to have high probability.
-Of course, the problem is that performance of the policy is not determined by the log probability that assigns to good actions under the experts observation distribution, but under the testing distribution which is p π_θ.
-So the log probability of good actions under p π_θ might be very different because p data and p π_θ are not the same.
+Of course, the problem is that the performance of the policy is not determined by the log probability that assigns to good actions under the experts observation distribution, but under the testing distribution which is p_{π_θ}.
+So the log probability of good actions under p_{π_θ} might be very different because p_{data} and p_{π_θ} are not the same.
 This is often referred to as distributional shift, which means that the distribution under which the policy is tested is shifted from the distribution under which it's trained.
 Now it just so happens that that shift is due to the policy's own mistakes, but this is the formal statement for why we can't in general expect it to be correct.
 And it's pretty easy to construct counter examples where this will be very bad.
+
+[p.13]
+
 So before I construct that counter example, let me set things up a little bit more precisely, which will make the analysis more concise.
-So first we have to define the what we want?
+So first we have to define what precisely we want?
 What determines whether our policy is good or bad?
 So it's trained to maximize the likelihood of the training actions, but presumably that's not all we want.
 We want some other notion of goodness, like it has to actually drive the car well.
@@ -37,29 +45,32 @@ And one measure that we can use is we can define a cost.
 And the cost is a function of states and actions, and we'll say that the cost is zero if the action is the same as the human driver's action.
 So let's assume the human driver has a deterministic policy.
 It's not hard to extend this to stochastic policies, but it makes a lot of the notation very complex.
-So we'll just say that say that the human driver has a deterministic policy, π star, the cost is zero if the action matches what they would have done, and it's 1 otherwise.
+So we'll just say that say that the human driver has a deterministic policy, π^{*}, the cost is zero if the action matches what they would have done, and it's 1 otherwise.
 And that's a very convenient cost to define, because you can basically say that whenever the policy that you learn makes a mistake, you pay a cost of 1.
 So the total cost is basically the number of mistakes you're going to make.
-Notice here that I started mixing up S and O.
+Notice here that I started mixing up s and o.
 Don't worry about that.
-So all of the analysis here will be in terms of S.
-It's a little bit involved to extend this to O, to extend it to partially observed settings.
-So this is one of those cases where the mock-up property is very useful.
+So all of the analysis here will be in terms of s.
+It's a little bit involved to extend this to to extend it to partially observed settings.
+So this is one of those cases where the Markov property is very useful.
 It is possible to do.
 It'll just make everything more complicated to write.
-So we'll kind of transparently switch from O to S for this section and not worry about it.
+So we'll kind of transparently switch from o to s for this section and not worry about it.
 I warned you that I would do that.
 Okay, so our goal now is going to be to minimize the expected cost, meaning the expected number of mistakes that our policy is going to make, but expect that under what distribution?
 Well, what we care about is the number of mistakes that the policy makes when it actually drives the car.
 We don't really care how many mistakes it would make when it's looking at the human's images, because that's not how it's going to be used.
-So what we care about is the cost in expectation under p π_θ, under the distribution of states the policy will actually see.
-And that's a very, very important distinction, because we're training the policy to assign high probability to the actions under p data.
-But what we really care about is to minimize the number of mistakes under p π_θ.
+So what we care about is the cost in expectation under p_{π_θ}, under the distribution of states the policy will actually see.
+And that's a very, very important distinction, because we're training the policy to assign high probability to the actions under p_{data}.
+But what we really care about is to minimize the number of mistakes under p_{π_θ}.
 Okay?
 So that's an important distinction.
-So in analyzing how good behavioral cloning is, what we're really trying to do is we're trying to say, well, if we succeeded in doing our supervised learning well, what can we say about this expected value of this cost under p π_θ?
+So in analyzing how good behavioral cloning is, what we're really trying to do is we're trying to say, well, if we succeeded in doing our supervised learning well, what can we say about this expected value of this cost under p_{π_θ}?
 So basically, will we successfully minimize the number of mistakes when we run the policy?
 Yes or no?
+
+[p.14]
+
 Okay.
 So let's work on that problem a little bit.
 So here's our picture.
@@ -67,7 +78,7 @@ Our total horizon length is capital T.
 So that's how long each of these trajectories are.
 This is our cost.
 And we're going to make some assumption, which basically amounts to saying, let's assume that supervised learning worked.
-So our assumption, the simple one that we'll start with is we'll just say that the probability assigned to any action that is not the expert's action is less than or equal to ϵ if the state S is one of the training states.
+So our assumption, the simple one that we'll start with is we'll just say that the probability assigned to any action that is not the expert's action is less than or equal to ϵ if the state s is one of the training states.
 So this basically says that on the training states, your probability of making a mistake is small.
 It's going to be some small number ϵ.
 In general, we can extend this to say the probability is small for any state that's sampled from the training distribution.
@@ -94,91 +105,120 @@ So how many mistakes will you make over the course of a trajectory on average if
 So what we want to do is we want to write down a bound on the total cost.
 So on the first time step, your probability of making a mistake is ϵ.
 If you make a mistake, you fall off the tightrope, all of the remaining time steps are also in general going to be mistakes because you have no idea what to do.
-So for the first time step, you incur at least ϵ times capital T mistakes on average.
-Now with probability 1 - ϵ, you didn't make a mistake.
+So for the first time step, you incur at least ϵT mistakes on average.
+Now with probability (1 - ϵ), you didn't make a mistake.
 So then you move on to the next time step, the second square.
 And in the second square, you again have an ϵ probability of making a mistake, in which case, you fall off the tightrope.
-And the remaining T minus one time steps are spent flailing around off the tightrope and making capital T minus one mistakes because that's how many time steps are left.
-And then with probability 1 - ϵ, you go on to the third step and so on and so on.
+And the remaining (T-1) time steps are spent flailing around off the tightrope and making (T-1) mistakes because that's how many time steps are left.
+And then with probability (1 - ϵ), you go on to the third step and so on and so on.
 So you have this series where you add up all these terms.
 There are capital T terms.
-And each of those capital T terms is on the order of ϵ T.
-Because if you assume that ϵ is a small number, 1 - ϵ is negligibly small.
-So the order of all these terms, 1 - ϵ is negligibly close to one.
-So the order of all these terms is going to be about ϵ times capital T.
+And each of those capital T terms is on the order of ϵT.
+Because if you assume that ϵ is a small number, (1 - ϵ) is negligibly small.
+So the order of all these terms, (1 - ϵ) is negligibly close to one.
+So the order of all these terms is going to be about ϵT.
 And there is capital T of those terms.
-So that means that the number of mistakes on the order of ϵ capital T squared.
-It's like ϵ capital T squared over two with some correction term for 1 - ϵ.
+So that means that the number of mistakes on the order of ϵT^2.
+It's like ϵT^2 over two with some correction term for (1 - ϵ).
 But this is basically the order of that for small values of ϵ.
 Now, what does this tell us about behavioral cloning?
 Well, it tells us that it's actually very bad because if you make a very long tightrope, this quadratic increase in the number of mistakes will really get you in trouble.
 What we would really like is a linear increase in the number of mistakes.
 So it's reasonable that the longer you go, the more mistakes you're going to accumulate.
 But if the rate is more than linear, then long horizons are getting us into a lot of trouble.
-Okay, so we're getting ϵ T squared.
+Okay, so we're getting ϵT^2.
 Now, this is a counterexample.
-This shows that in the worst case, you will get ϵ T squared.
-It turns out that in general, ϵ capital T squared is actually the bound.
-So you won't do worse than ϵ T squared.
+This shows that in the worst case, you will get ϵT^2.
+It turns out that in general, ϵT^2 is actually the bound.
+So you won't do worse than ϵT^2.
 That's not actually necessary to understand that behavioral cloning is bad, but we can actually bound how bad it is.
 It's just not a very good bound.
 And we're actually going to derive that because the kind of analysis that we'll use for that can be pretty useful in all sorts of other topics in reinforcement learning.
 So I like to go through it.
 Just to give a sense for how these dynamical systems can be analyzed.
-Okay, so we showed that in the worst case, you get ϵ T squared.
-Next, we'll show that you won't do worse than ϵ T squared, meaning that there's a bound of ϵ T squared in general.
+Okay, so we showed that in the worst case, you get ϵT^2.
+Next, we'll show that you won't do worse than ϵT^2, meaning that there's a bound of ϵT^2 in general.
+
+[p.15]
+
 Okay, so here we will actually have a more general analysis.
-So instead of saying that all of your states literally come from your training set, we'll say our states are sampled from P train.
-So for any state sampled from P train, uh, your error is less than or equal to ϵ.
-It's actually enough to just assume that the expected value of the error is less than or equal to ϵ, which is more realistic, of course, because typically you train for the expected value of the, uh, of the loss.
-And with DAG, with, uh, with DAG, which we'll talk about later, it's an algorithm that we'll introduce at the end of the lecture.
-It'll make this problem go away because it'll make P train and P by θ the same, but for now they're not the same.
+So instead of saying that all of your states literally come from your training set, we'll say our states are sampled from p_{train}.
+So for any state sampled from p_{train} your error is less than or equal to ϵ.
+It's actually enough to just assume that the expected value of the error is less than or equal to ϵ, which is more realistic, of course, because typically you train for the expected value of the loss.
+And with Dagger which we'll talk about later, it's an algorithm that we'll introduce at the end of the lecture.
+It'll make this problem go away because it'll make p_{train} and p_{π_θ} the same, but for now they're not the same.
 So that's going to be a problem.
-We're going to show that the expected number of mistakes is, uh, going to be ϵ T squared in the worst case.
-And then of course with DAG, or when they become equal, it will be ϵ T.
-Uh, so that'll the DAG stuff, don't worry about it yet.
+We're going to show that the expected number of mistakes is going to be ϵT^2 in the worst case.
+And then of course with Dagger, or when they become equal, it will be ϵT.
+So that'll the Dagger stuff, don't worry about it yet.
 That'll come at the end of the lecture.
-Uh, but if P train is not equal to p_θ, uh, then here's what happens.
-What we can do if we want to figure out the expected value of the cost, uh, is we can describe the distribution over states at time step T as a sum of two terms.
+But if p_{train} is not equal to p_θ then here's what happens.
+What we can do if we want to figure out the expected value of the cost is we can describe the distribution over states at time step T as a sum of two terms.
 And one of those terms is going to be easy to analyze and the other term will be really complicated and we'll just use a bound for that.
 So we can say that at time step T there's some probability that you didn't make any mistakes at all, meaning some probability that you stayed on the tightrope, that you did everything right.
-And if the probability of making a mistake at each step step is ϵ and you start off at an indistribution state, uh, meaning you start off at a state sample from P train, then the probability that you made no mistakes for T time steps is just 1 - ϵ to the power T, little t.
-So we can say that p_θ s_t is equal to 1 - ϵ to the power T times P train s_t because that's the probability that you didn't make a mistake.
-And if you didn't make a mistake that you're still in the distribution P train plus one minus that one minus 1 - ϵ to the T times some other distribution.
+And if the probability of making a mistake at each step step is ϵ and you start off at an in-distribution state meaning you start off at a state sample from p_{train}, then the probability that you made no mistakes for T time steps is just (1 - ϵ)^t, little t.
+So we can say that p_θ(s_t) is equal to (1 - ϵ)^t ⋅ p_{train}(s_t) because that's the probability that you didn't make a mistake.
+And if you didn't make a mistake that you're still in the distribution p_{train} + (1 - (1 - ϵ)^t) times some other distribution.
 So it's just saying that, there's some part of your distribution for all the possibilities where you didn't do anything wrong and then there's everything else.
-And the weight on the part where you did nothing wrong is 1 - ϵ to the T and the distribution there is P train.
+And the weight on the part where you did nothing wrong is (1 - ϵ)^t and the distribution there is p_{train}.
 Okay?
 So this is a decomposition you can make.
 Now p_{mistake} is something really complicated, right?
 So we don't really understand what p_{mistake} is.
-It's like the part of p_θ that is separate from P train.
-So we're not going to make any assumptions on p_{mistake} other than that it only constitute a one minus 1 - ϵ to the T portion of your distribution, okay?
-and of course if ϵ is very very small then the sum is dominated by the first term so if ϵ is very small then 1 - ϵ is almost 1 so most of it is in p train but of course the larger t is the more that exponent is going to hurt okay so that's what we've got and now what i'm going to do is i'm going to relate the distribution p_θ(s_t) to the distribution p train s_t now when you see me using this absolute value sign what i'm in general going to be referring to is a total variation divergence a total variation divergence is just a sum over all of the states of the absolute value of the difference in their probabilities it can be viewed as a very simple notion of divergence between distributions but for now we're just going to do this at one state so at any given state the absolute value of p_θ(s_t) minus p train st
-Well it's pretty to work out if you just substitute in the equation above for p_θ(s_t) you'll see there's a p train term that cancels out so you get a (1 - ϵ)^t p train minus p train so that you can take out as a 1 minus (1 - ϵ)^t and now you end up with this equation you get it up with 1 minus (1 - ϵ)^t times the absolute value of p_{mistake} minus p train okay now that's still a kind of a cryptic equation we don't know what this absolute value is but we know that all probability all probabilities have to be between 0 and 1.
-so the biggest difference between two probabilities can be at most 1 right because the worst case is p_{mistake} is 1 and p train is 0 or vice versa and the largest total variation divergence meaning if you sum over all of the states and you try to evaluate the absolute value of their difference is going to be 2 because the worst case is that in one state one of the probabilities one the other is 0 and in some other state it's the other way around one of them is 0 is the other one so the worst possible difference between two distributions when you sum over all the states is 2.
-so that means that this whole thing is bounded by 2 times 1 minus (1 - ϵ)^t so what we've shown is that the total variation divergence between p_θ(s_t) and p train s_t is 2 times 1 minus (1 - ϵ)^t and these exponents are a little hard to deal with but for values of ϵ between 0 and 1 there's a very convenient identity that (1 - ϵ)^t is greater than or equal to 1 - ϵ times t so that's true for any ϵ between 0 and 1 is just an algebraic identity so if we substitute that into the inequality above we can further bound this by 2ϵt and that's just an algebraic convenience so that we can get rid of these exponents it gives us a slightly looser bound but it's a little easier to think about so what we've shown now is that the total variation divergence between p_θ(s_t) and p train s_t is bounded by 2ϵt and remember total variation divergence is just the sum over all of the s's of the absolute value of the difference of their probabilities
-Okay, so now let's talk about the quantity that we actually care about what is uh what kind of bound can we derive based on this for the sum over all of the time steps of the expected value of our cost.
-Well, uh to figure that out we'll substitute in the equation for an expected value so an expected value is just a sum over all the states of the probability of that state times its cost and what i'm going to do is i'm going to replace p_θ with p_θ minus p train plus p train so I can subtract p train.
-I can add p train in both cases that's totally fine to do.
-And then I'll put an absolute value symbol around the p_θ minus b train part because if you have some quantity you take its absolute value you can only make it bigger because if it was positive it stays where it is and if it was negative it becomes a larger value okay and that gets us this bound so in this bound what i've done is i've replaced the sum over s_t of the absolute value of p_θ(s_t) minus p train s_t times ct with the total variation divergence times c max the largest value of the cost in any state so i have one portion which is p train times the cost and then i have another portion which is the total variation divergence times the maximum cost in any state so just to repeat how this step was produced first you replace p_θ(s_t) with p_θ(s_t) plus p train minus p train the plus p train term becomes that first term in the bound and and then I'm left with p_θ minus p train.
+It's like the part of p_θ that is separate from p_{train}.
+So we're not going to make any assumptions on p_{mistake} other than that it only constitute a (1 - (1 - ϵ)^t) portion of your distribution, okay?
+And of course if ϵ is very very small then the sum is dominated by the first term so if ϵ is very small then (1 - ϵ) is almost 1.
+So, most of it is in p_{train} but of course the larger t is the more that exponent is going to hurt.
+
+[p.16]
+
+Okay, so that's what we've got and now what i'm going to do is i'm going to relate the distribution p_θ(s_t) to the distribution p_{train}(s_t) now when you see me using this absolute value sign what i'm in general going to be referring to is a total variation divergence.
+A total variation divergence is just a sum over all of the states of the absolute value of the difference in their probabilities.
+It can be viewed as a very simple notion of divergence between distributions.
+But for now we're just going to do this at one state so at any given state the absolute value of p_θ(s_t) - p_{train}(s_t)
+Well it's pretty to work out if you just substitute in the equation above for p_θ(s_t) you'll see there's a p_{train} term that cancels out.
+So you get a (1 - ϵ)^t p_{train} - p_{train} so that you can take out as a (1 - (1 - ϵ)^t) and now you end up with this equation
+You get it up with (1 - (1 - ϵ)^t) times the absolute value of (p_{mistake} - p_{train})
+Okay.
+Now that's still a kind of a cryptic equation we don't know what this absolute value is but we know that all probabilities have to be between 0 and 1.
+So the biggest difference between two probabilities can be at most 1, because the worst case is p_{mistake} is 1 and p_{train} is 0 or vice versa.
+And the largest total variation divergence meaning if you sum over all of the states and you try to evaluate the absolute value of their difference is going to be 2 because the worst case is that in one state one of the probabilities one the other is 0 and in some other state it's the other way around one of them is 0 is the other one.
+So the worst possible difference between two distributions when you sum over all the states is 2.
+So that means that this whole thing is bounded by 2 ⋅ (1 - (1 - ϵ)^t) so what we've shown is that the total variation divergence between p_θ(s_t) and p_{train}(s_t) is 2 ⋅ (1 - (1 - ϵ)^t) and these exponents are a little hard to deal with but for values of ϵ between 0 and 1 there's a very convenient identity that (1 - ϵ)^t ≥ (1 - ϵt).
+So that's true for any ϵ between 0 and 1 is just an algebraic identity so if we substitute that into the inequality above we can further bound this by 2ϵt and that's just an algebraic convenience so that we can get rid of these exponents.
+It gives us a slightly looser bound but it's a little easier to think about.
+So what we've shown now is that the total variation divergence between p_θ(s_t) and p_{train}(s_t) is bounded by 2ϵt and remember total variation divergence is just the sum over all of the 's's of the absolute value of the difference of their probabilities
+Okay, so now let's talk about the quantity that we actually care about.
+What kind of bound can we derive based on this for the sum over all of the time steps of the expected value of our cost.
+Well, to figure that out we'll substitute in the equation for an expected value so an expected value is just a sum over all the states of the probability of that state times its cost and what i'm going to do is i'm going to replace p_θ with p_θ minus p_{train} plus p_{train} so I can subtract p_{train}.
+I can add p_{train} in both cases that's totally fine to do.
+And then I'll put an absolute value symbol around the (p_θ - p_{train}) part because if you have some quantity you take its absolute value you can only make it bigger because if it was positive it stays where it is and if it was negative it becomes a larger value.
+Okay?
+And that gets us this bound.
+So, in this bound what i've done is i've replaced the sum over s_t of the absolute value of (p_θ(s_t) - p_{train}(s_t)) times ct with the total variation divergence times c_{max} the largest value of the cost in any state.
+So, I have one portion which is p_{train} times the cost and then i have another portion which is the total variation divergence times the maximum cost in any state.
+So, just to repeat how this step was produced first you replace p_θ(s_t) with (p_θ(s_t) + p_{train} - p_{train}) the plus p_{train} term becomes that first term in the bound and and then I'm left with (p_θ - p_{train}).
 I can take the absolute value of that.
 I can sum it over all the states, and that gives me the total variation divergence.
 And to account for the fact that in every state I have a different cost, I'll just replace that cost with the maximum cost, which I can take outside of the summation.
 And that gives me a valid upper bound.
-Now, at this point, I'm going to use my bound for that total variation divergence for the difference between p_θ and p train, and that's 2 ϵ t.
-And, of course, I know that my cost in p train, my expected cost, is ϵ because that's my initial assumption.
-So the first term becomes, the first term sum over s_t of p train times c is ϵ.
-The second term is 2 ϵ t times c max, and c max, of course, is 1.
+Now, at this point, I'm going to use my bound for that total variation divergence for the difference between p_θ and p_{train}, and that's 2ϵt.
+And, of course, I know that my cost in p_{train}, my expected cost, is ϵ because that's my initial assumption.
+So the first term becomes, the first term sum over s_t of p_{train} times c is ϵ.
+The second term is 2ϵt times c_{max}, and c_{max}, of course, is 1.
 So the largest cost I can get in any state is 1 because I can make at least one mistake in any state.
 So that's my bound.
 Now, notice that this is summed over t.
-So I have t terms that are each on the order of ϵ t.
-So that means that this is going to have a linear term and a quadratic term, which means that the overall order is ϵ t squared.
+So I have t terms that are each on the order of ϵt.
+So that means that this is going to have a linear term and a quadratic term, which means that the overall order is ϵT^2.
 So what have I actually shown?
-I've shown on the previous slide that in the worst case, you're going to get ϵ t squared, and that's the tightrope walk, for example.
-I've also shown that ϵ t squared is, in fact, a bound, meaning that you will not do worse than ϵ t squared.
+I've shown on the previous slide that in the worst case, you're going to get ϵT^2, and that's the tightrope walk, for example.
+I've also shown that ϵT^2 is, in fact, a bound, meaning that you will not do worse than ϵT^2.
 So that's the behavioral cloning result.
-The behavioral cloning is ϵ t squared in the worst case, and ϵ t squared is, in fact, the bound for behavioral cloning.
+The behavioral cloning is ϵT^2 in the worst case, and ϵT^2 is, in fact, the bound for behavioral cloning.
+
+[p.17]
+
 Okay, so that's the analysis, and it's good to understand this analysis.
 We'll talk about it more in class.
 But the next point I want to make about this is that this is rather pessimistic.

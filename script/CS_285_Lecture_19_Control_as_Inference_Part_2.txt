@@ -21,7 +21,7 @@ The first part is the probability of all of the optimality variables from t plus
 And we know that we don't have to condition this on s_t and at, because given s_{t+1}, all of the future optimality variables are independent of s_t and at.
 Then we have the probability of s_{t+1}, given s_t at.
 That's just the transition probability that we already know.
-And then we have the probability of the remaining optimality variable ot, given s_t at.
+And then we have the probability of the remaining optimality variable o_t, given s_t at.
 And that just corresponds to the exponential rate of reward, because that's just one of the CBDs in our graphical model.
 So we know this thing.
 We know this thing, that's our transition probability.

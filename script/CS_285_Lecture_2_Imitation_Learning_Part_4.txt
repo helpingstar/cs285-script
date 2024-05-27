@@ -36,8 +36,8 @@ So you just feed in two states instead of one.
 Now, one thing I will note here is that while in practice, this often makes things work better.
 In theory, this methodology is actually a little bit problematic because now we actually see distributional shift in two places.
 We see distributional shift as before in the sense that our state distribution is different.
-Our P train is different from...
-Sorry, our P data is different from P π_θ.
+Our p_{train} is different from...
+Sorry, our p_{data} is different from p_{π_θ}.
 But we also see distributional shift in another place when we do relabeling like this.
 And I'll leave that part as an exercise to the reader and something we could discuss in class.
 So as a hint, we see distributional shift actually in two places.

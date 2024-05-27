@@ -28,7 +28,7 @@ You get 1 over n times the sum over all of your samples of the gradient of the r
 But something pretty neat that you might note about this is that the second term can actually be viewed as an expected value under the distribution over trajectories induced by your current psi.
 Right?
 Because this expression, 1 over z times p of τ times exponential of r ψ of τ, is exactly p of τ given optimality and psi.
-So you can equivalently write the gradient as the expected value, under the optimal policy π star of ∇ r, minus the expected value under p τ given your current ψ of ∇ r.
+So you can equivalently write the gradient as the expected value, under the optimal policy π^{*} of ∇ r, minus the expected value under p τ given your current ψ of ∇ r.
 The first term is approximated with samples, and that turns into a sum of ∇ r's on the τ i's divided by n, and the second term turns into that integral.
 So that's a very appealing interpretation.
 Your gradient is just the difference between the expected value of the gradient under the expert's point, and the expected value of the gradient under your current reward.

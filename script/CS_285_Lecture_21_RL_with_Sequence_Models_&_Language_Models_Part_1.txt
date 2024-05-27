@@ -99,7 +99,7 @@ It doesn't need to take past states into account because of the Markov property.
 The Markov property tells us the value is only going to be a function of the current state not dependent on how you got to that state.
 But of course that's not true for observations.
 So you can't simply swap out the argument to v hat and replace s_t with o_t
-So it's not okay to train v hat of ot because the value depends on might depend on past observations.
+So it's not okay to train v hat of o_t because the value depends on might depend on past observations.
 Because the current state might depend on past observations.
 So what this means is that if you're going to use policy gradients, if you use the regular Monte Carlo estimate, if you just simply plug in the sum of rewards, that is okay because that derivation did not actually use the Markov property.
 But if you try to put in a value function estimator that is no longer okay because that value function estimator for the advantage function is not a function of the observations, a function of the state and the state depends on past observations.
@@ -215,7 +215,7 @@ So if we use the observation history itself as our state representation, it will
 So what if we just define our state that way?
 What if we say that our state s_t is just all the observations O1 through OT.
 If it was good enough before to infer zt from O1 through OT.
-That means that O1 through OT contains all the information we need to get a Markovian should be a Markovian state itself.
+That means that O1 through o_t contains all the information we need to get a Markovian should be a Markovian state itself.
 So does that work?
 And does that work basically amounts to asking does a history obey the Markov property?
 So the Markov property just says that the state s_{t+1} is conditionally independent of state s_t minus one given the current state s_t.

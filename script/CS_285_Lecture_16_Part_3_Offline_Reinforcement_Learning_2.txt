@@ -78,7 +78,7 @@ So if δ for that is very low.
 It's a close to zero.
 Then we would expect that this equation 12 would essentially guarantee that the learned the behavioral policy, or at least we don't do worse.
 The other thing that this can quantify is the optimality gap.
-So if we plug in the optimal policy π star, then the policy that we learn is at least as good as π star minus a penalty for how wrong the model is on the states that π star visits.
+So if we plug in the optimal policy π^{*}, then the policy that we learn is at least as good as π^{*} minus a penalty for how wrong the model is on the states that π^{*} visits.
 So if the model is very accurate for the states and actions visited by the optimal policy, then this would guarantee that we will recover something close to the optimal policy.
 So these are interesting results to show.
 Essentially, these results tell us that this method will improve the behavior policy, and it can get something close to the optimal policy if your model is accurate for the states and actions visited by the optimal policy.
