@@ -47,7 +47,7 @@ So that's where the one comes from, and you can ignore it because of the baselin
 All right, so this quantity inside the parentheses, you can think of it as the Q value at the next time step, right?
 So this is the sum of all the rewards minus all the log pi's from T plus one until the end.
 And remember that the policy is given by the exponential of Q minus V in soft optimality.
-So we can substitute this in for log pi, and we can basically replacing log π everywhere with Q minus V.
+So we can substitute this in for log π, and we can basically replacing log π everywhere with Q minus V.
 We can write.
 This expression is following.
 We can write it as ∇ Q minus ∇ V times R plus next Q minus current Q plus current V.

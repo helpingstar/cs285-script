@@ -43,9 +43,9 @@ So the importance weights, we can write them out like this.
 This is very similar to what we had before in the lecture on importance weighted policy gradients.
 So we have the initial state terms, the dynamics terms, and at the top we have the additional reward terms, at the bottom we have the additional policy terms.
 So the unknown terms all cancel out, and we're just left with a ratio of the exponential of the total reward of that trajectory under your current reward function, divided by the product, and then we have the So that's quite appealing.
-We can take the policy pi, and we can calculate the importance weights, and we can take gradient steps on ψ, even with an incompletely optimized policy, but the more we optimize the policy, the better our importance weights get.
+We can take the policy π, and we can calculate the importance weights, and we can take gradient steps on ψ, even with an incompletely optimized policy, but the more we optimize the policy, the better our importance weights get.
 So this idea is the basis of the guided cost learning algorithm by Finn et al., which was the first deep inverse RL algorithm that could scale to high-dimensional state and action spaces, and the design of this algorithm was the following.
-You have your initial guess of the policy pi, which might be just random, and you have some human demonstrations.
+You have your initial guess of the policy π, which might be just random, and you have some human demonstrations.
 Then you would sample from your current policy to generate the policy samples, and then you would use those policy samples and the human demonstrations to update the reward using essentially your samples and the demos.
 And then the updated reward would be used to update the policy.
 So at the end this would produce a reward function, and a policy actually, and if the policy was optimized to convergence, the policy would actually be a good policy, for that reward function, and the reward function would hopefully be a good explanation of expert behavior.

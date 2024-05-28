@@ -92,7 +92,7 @@ So even though the largest values that it takes on are actually over there on th
 And we might say that the values here in the middle are maybe more reliable.
 Although remember what I said before, that in general, you're not guaranteed to have low error, for indistribution actions, you're only guaranteed low error in expectation.
 But nonetheless, we might surmise that the values are more reliable here in the middle.
-If we train a new policy pi, that maximizes the Q values and minimizes the divergence to π beta, we might get something like this green curve.
+If we train a new policy π, that maximizes the Q values and minimizes the divergence to π beta, we might get something like this green curve.
 Notice that the green curve doesn't concentrate entirely on the good action, because it is forced to stay somewhat close to π beta.
 So if we were to reduce the variance further, if we were to tighten up that green curve around that really good action, we would increase the KL divergence to π beta, and perhaps violate our constraint.
 So this might be the best policy we can get under our constraint.
@@ -128,9 +128,9 @@ Maximize the expected value under the policy of the Q values where the states ar
 Now let's write down the form of the KL divergence between π and π beta.
 I know I said before the KL divergence is not a great choice, but it is simple, so it's much easier to discuss this first.
 The KL divergence between π and π beta is just the expected value under π of log π minus log π beta, which we can also write as the negative of the expected value of log π beta minus the entropy of π.
-Now notice that there is a close similarity between this equation and the actor objective I have written above, in that both of them are expected values under pi, although the KL divergence also has this additional entropy term.
+Now notice that there is a close similarity between this equation and the actor objective I have written above, in that both of them are expected values under π, although the KL divergence also has this additional entropy term.
 So what I can do is I can incorporate the KL divergence into the actor objective.
-The log π beta term simply gets added to the Q values because it doesn't depend on pi, and then I have this additional entropy term.
+The log π beta term simply gets added to the Q values because it doesn't depend on π, and then I have this additional entropy term.
 Both of them are multiplied by a Lagrange multiplier λ.
 Remember that if we have a constrained optimization problem, you know, maximize f of x subject to c of x equals 0, we can write it as an unconstrained problem where the constraint is multiplied by a Lagrange multiplier So if we can find the value of this Lagrange multiplier, then solving this problem will actually enforce the constraint.
 And in practice, we can either use the dual gradient descent approach that we covered before to find λ, or we can even treat λ as a hyperparameter and just tune the value of λ directly.

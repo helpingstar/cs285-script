@@ -106,7 +106,7 @@ To learn more about how to train them, check out these papers, or hang on until 
 Today we're instead going to talk about a simpler method that from my experience actually works a little bit better in model-based reinforcement learning, and that's to use bootstrap ensembles.
 Here is the basic idea behind bootstrap ensembles.
 I'll present it first intuitively, and then discuss a little bit more mathematically what it's doing.
-What if instead of training one neural network to give us the distribution over the next state given the current state in action, we instead train many different neural networks, and we somehow diversify them so that each of those neural networks learns a slightly different function?
+What if instead of training one neural network to give us the distribution over the next state given the current state and action, we instead train many different neural networks, and we somehow diversify them so that each of those neural networks learns a slightly different function?
 Ideally, they would all do similar and accurate things on the training data, but they would all make different mistakes outside of the training data.
 If we can train this kind of ensemble of models, then we can get them to essentially vote on what they think the next state will be, and the dispersion in their votes will give us an estimate of uncertainty.
 Mathematically, this amounts to estimating your parameter posterior, p(θ|D), as a mixture of Dirac δ distributions.

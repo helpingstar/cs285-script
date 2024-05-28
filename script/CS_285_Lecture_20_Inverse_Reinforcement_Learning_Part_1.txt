@@ -150,7 +150,7 @@ So, the SVM trick basically takes a maximum margin problem like this, which is g
 It's a little subtle why you can do this.
 It requires a little bit of Lagrangian duality, but you can take me at my word that these two problems are equivalent.
 And then it turns out that if you want to incorporate the similarity between policies into the second problem, all you do is you replace that 1 by some measure of divergence between policies.
-So that means that if you have another policy, pi, that is identical to π^{*}, then it's okay for the left-hand side and right-hand side to be equal, because d will be 0.
+So that means that if you have another policy, π, that is identical to π^{*}, then it's okay for the left-hand side and right-hand side to be equal, because d will be 0.
 But as the policies become more and more different, then you want to increase the margin to those policies.
 So, that's the first part.
 So, one good choice for d could be the difference in their feature expectations.

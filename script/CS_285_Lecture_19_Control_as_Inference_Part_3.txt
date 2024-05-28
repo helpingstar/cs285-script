@@ -156,8 +156,8 @@ Our Q values are backed up normally, like in the regular Bellman backup.
 And you can read more about this in this tutorial article from 2018 called Reinforced Learning and Controlless Probabilistic Inference tutorial and review.
 But this basically gets us a dynamic programming algorithm that is a soft analog to value iteration.
 Now there are many variants of this.
-You could, for example, construct a discounted variant where you put a gamma in front of the expected value of the next value function.
-And that just corresponds to changing your dynamics to have a 1 minus gamma probability of death.
+You could, for example, construct a discounted variant where you put a γ in front of the expected value of the next value function.
+And that just corresponds to changing your dynamics to have a 1 minus γ probability of death.
 You could also add an explicit temperature.
 So when you perform this value function computation, you can add an α where you multiply your Q value by 1 over α and then multiply the result by α at the end.
 And as α goes to 0, this will approach a hardmax.

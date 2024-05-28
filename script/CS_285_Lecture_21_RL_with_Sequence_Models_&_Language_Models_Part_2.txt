@@ -105,7 +105,7 @@ So this is our objective.
 We're going to take its gradient, and we'll use exactly the formulas from the policy gradient lecture.
 So we know that the gradient of the expected reward is the expectation of ∇log π times R.
 Now we saw before that π was just a product, a product of the probability of all the tokens in the completion.
-So when we take the gradient of the log of pi, that's just the sum of the gradients of the log probabilities of all the completion tokens.
+So when we take the gradient of the log of π, that's just the sum of the gradients of the log probabilities of all the completion tokens.
 Okay, so that's pretty straightforward because these are exactly the kinds of gradients that you compute when you do a backward pass from the cross-entropy loss.
 And of course, we can estimate this with samples.
 So if we use a standard reinforced estimator, then the samples need to come from π θ.

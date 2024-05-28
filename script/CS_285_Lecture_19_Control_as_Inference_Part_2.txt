@@ -85,8 +85,8 @@ Okay, so let's try to understand this equation a little bit better.
 There is a particular special case where it is exactly the same as the Bellman equation.
 Take a moment to think about what that special case would be.
 In which setting is the equation that I have on the right side of the slide exactly the same as the Bellman backup?
-Well, it turns out to be the case in the setting where the next state is a deterministic function of the current state in action.
-Because if the next state is a deterministic function of the current state in action, then the expected value only has one non-zero element in the sum, which means that the log and the exponent cancel out.
+Well, it turns out to be the case in the setting where the next state is a deterministic function of the current state and action.
+Because if the next state is a deterministic function of the current state and action, then the expected value only has one non-zero element in the sum, which means that the log and the exponent cancel out.
 So in the deterministic setting, it is exactly the Bellman equation.
 So we saw before how the value iteration algorithm alternates between computing the Q function using the Bellman equation and computing the value function by taking a max.
 In the case of a deterministic transition, this expression for q is basically the same as the value function for the Bellman equation.

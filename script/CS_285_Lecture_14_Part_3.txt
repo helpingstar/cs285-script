@@ -34,7 +34,7 @@ And then the policy will go and do something else.
 And then the density estimator will fit what that policy did.
 And then it will go and do something else.
 And so on and so on.
-So the density estimator, this p π of s, it will eventually have high coverage.
+So the density estimator, this p_π of s, it will eventually have high coverage.
 It will assign reasonably high probabilities to all states.
 But the policy that you'll end up with will kind of be arbitrary.
 The policy will end up kind of chasing its tail all around the space.
@@ -48,7 +48,7 @@ So this is not by itself a great way of solving that original problem I posed, w
 So what if you actually do want a policy that gets good coverage?
 So you don't just want a density estimator that has uniform coverage over the state space, but you actually want a policy that will randomly go to different states and will have about equal probability.
 However, it doesn't give you an optimal estimated probability of landing in all possible states.
-So the state marginal matching problem can be posed as learning a policy π e given s so as to minimize the KL divergence between state marginal, p π of s, and some target state marginal, p star of s.
+So the state marginal matching problem can be posed as learning a policy π e given s so as to minimize the KL divergence between state marginal, p_π of s, and some target state marginal, p star of s.
 If p star of s is uniform, then you're just maximizing state entropy.
 But if it's not uniform in general, you might be matching some target state entropy.
 These are very similar problems.
@@ -57,16 +57,16 @@ If it is not uniform, then you might match some target state.
 intrinsic motivation idea from before?
 Can you essentially use one of these novelty-seeking exploration objectives?
 So let's construct our reward analogously to before.
-So we're going to construct it as log p star which is the desired state distribution minus log p π which is our current state distribution.
+So we're going to construct it as log p star which is the desired state distribution minus log p_π which is our current state distribution.
 Now right off the bat something you might notice if you're up to speed on your information theory definitions is that the RL objective will be the expected value of this under the stationary distribution.
-So it'll be the expectation under p π of s of R tilde and the expectation under p π of s of R tilde is exactly that KL divergence up there.
+So it'll be the expectation under p_π of s of R tilde and the expectation under p_π of s of R tilde is exactly that KL divergence up there.
 So that's kind of interesting.
 It seems like the RL objective is exactly the quantity that we want.
 So does that imply that RL will optimize this?
 Well not exactly.
 Because RL is not aware of the fact that the reward itself depends on the policy.
 So this does not by itself perform state marginal matching for a very subtle reason.
-Even though the objective is exactly the state marginal matching objective, the algorithm, the RL algorithm, is not aware of the fact that the minus log p π of s depends on π.
+Even though the objective is exactly the state marginal matching objective, the algorithm, the RL algorithm, is not aware of the fact that the minus log p_π of s depends on π.
 So as a result you get this tail chasing problem that I had on the previous slide.
 You get this issue where the policy will keep jumping to different places and at the end will not actually minimize the KL divergence.
 But let's try to sketch out what that algorithm will look like anyway, and then we'll see that there's actually a very simple fix that will fix this problem.
@@ -89,9 +89,9 @@ Like you'd think that the last policy would be the best one.
 Why are we randomly selecting from among all the policies we saw during learning?
 Well, it turns out that this procedure does perform marginal matching, and proving this requires a little bit of game theory.
 So the thing is that the last...
-The state distribution where p π of s is equal to p star of s is the Nash equilibrium of a two-player game.
+The state distribution where p_π of s is equal to p star of s is the Nash equilibrium of a two-player game.
 The players in that game are the state density estimator and the policy.
-So this is a game between π k and p π k.
+So this is a game between π k and p_π k.
 There's a special case here.
 If...
 p star of s is a constant, then you have a uniform target.
@@ -107,7 +107,7 @@ And in self-play, what you're supposed to do is you're supposed to return the hi
 So the final iterate is not the Nash equilibrium, but the mixture of all the iterates is the Nash equilibrium.
 And this is a very well-known result in game theory.
 So essentially, you can prove that this π^{*} that I have in step three, which is a mixture of all the π k's, is the Nash equilibrium for this two-player game.
-And that means that it's going to be minimizing the scale divergence between p π and p star.
+And that means that it's going to be minimizing the scale divergence between p_π and p star.
 If you want to learn more about this, if you want to go into more detail about this, check out these two papers linked at the bottom of the slide, Efficient Exploration via State Marginal Matching and Provably Efficient Matching.
 So now it should be exploration.
 Okay, so a few experiments.

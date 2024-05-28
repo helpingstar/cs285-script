@@ -104,26 +104,26 @@ I'm going to try to reduce the variance of these importance weights further.
 So I'm going to introduce a little bit of notation.
 I'm going to introduce rho T prime and rho T prime will denote P θ A T prime given S T prime divided by π beta A T prime given S T prime.
 So I'll just condense that ratio into rho T prime.
-So now we can see that this important sampled value estimator is a sum over all the time steps of a product of all the rows up until that time step times gamma T R T.
+So now we can see that this important sampled value estimator is a sum over all the time steps of a product of all the rows up until that time step times γ T R T.
 And it's that product of rows that we're concerned about.
 So if we were to actually write this out, just like actually expand the sum, you would get the first term, which is rho zero times R zero.
-Then you get the second term, which is rho zero times gamma times rho one times R one.
-And then you would get rho zero times gamma rho one gamma rho two gamma, et cetera, R two.
+Then you get the second term, which is rho zero times γ times rho one times R one.
+And then you would get rho zero times γ rho one γ rho two gamma, et cetera, R two.
 And I wrote it in kind of a slightly.
 counterintuitive way intentionally where I actually interleave the gammas with the rows.
-So I could also just collect all the gammas and just write gamma to the T.
-But I intentionally wrote it this way so that you get this alternating pattern of rho gamma rho gamma rho γ.
+So I could also just collect all the gammas and just write γ to the T.
+But I intentionally wrote it this way so that you get this alternating pattern of rho γ rho γ rho γ.
 And this is going to be important later.
 So what we can then do is we can put some parentheses around.
 You'll notice that every term in the sum starts with rho zero.
 So you can just take all the rho zero out and collect all the other terms in parentheses.
 So now you have rho.
 Zero times in parentheses, a big sum, which consists of all the other stuff.
-R zero plus gamma plus all the future stuff.
+R zero plus γ plus all the future stuff.
 And then you can repeat the process.
 You can collect all the terms that have rho zero and rho one.
 And that's the second set of parentheses.
-So that's that's why you have gamma rho one.
+So that's that's why you have γ rho one.
 And then in parentheses are one plus all the other stuff.
 And you can just keep going like this and you get all these nested summations.
 Right.
@@ -135,7 +135,7 @@ A little bit of algebra.
 And let's call this bar{V} superscript T.
 bar{V} superscript T is an important sampling estimator of V π_θ S zero.
 And now you can notice that there is a recursion here.
-So bar{V} T plus one minus T is equal to rho T times R T plus gamma bar{V} capital T minus little t.
+So bar{V} T plus one minus T is equal to rho T times R T plus γ bar{V} capital T minus little t.
 OK.
 So essentially bar{V} to the capital T minus little t.
 That's the stuff in parentheses after the γ.
@@ -191,7 +191,7 @@ So let's do that.
 So we're going to define, in the same way that we define bar{V} capital T plus one, minus little t, we're going to define a doubly robust version, bar{V} capital T plus one minus little t.
 And the way we're going to do that is we will directly substitute in the bandit case into this.
 So in the bandit case, we're doing an important sampled estimate of r(s,a).
-Now we're doing an important sampled estimate of RT plus gamma bar{V} capital T minus little t.
+Now we're doing an important sampled estimate of RT plus γ bar{V} capital T minus little t.
 So essentially, this equation that I have, the bar{V} dr, is exactly the bandit case in the blue box, but with R replaced by R plus gamma, bar{V} capital T minus little t.
 So it's essentially a recursive version of the bandit case for the multi-step problem.
 So in order to do this, you need to construct an estimate Q hat STAT, and Q hat STAT could be some neural net, your favorite function approximator, and you need to get its expected value with respect to the actions, distributed according to your policy π θ, and that gives you V hat.
@@ -219,7 +219,7 @@ I haven't seen it used very much for policy learning, although I think that, you
 So the biggest challenge with this is, of course, how to determine WSA.
 And typically, since we don't know the state marginals of either our policy or the behavior policy, what we would typically do is we would write down some kind of consistency condition on W and then solve that consistency condition.
 You can think of this consistency condition as kind of the equivalent of the Bellman equation, but for importance weights.
-So the Bellman equation describes the consistency condition on value functions, that like, for example, QSA should be equal to r(s,a) plus gamma QS prime A prime.
+So the Bellman equation describes the consistency condition on value functions, that like, for example, QSA should be equal to r(s,a) plus γ QS prime A prime.
 That's a consistency condition.
 And if you can make that equality hold true everywhere, then you will recover a valid Q function.
 In the same way, you can write down a consistency condition for W, and if you can make that condition hold true everywhere, then you will have recovered the true state or state action importance weights.

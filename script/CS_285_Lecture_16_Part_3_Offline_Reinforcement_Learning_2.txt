@@ -142,7 +142,7 @@ And the model that's used there actually is a transformer model.
 And in order to model multimodal distributions, it actually discretizes.
 the entire trajectory.
 Now you can't discretize the trajectory as a whole because there will be exponentially many discrete states.
-So instead the discretization is done per dimension of every state in action.
+So instead the discretization is done per dimension of every state and action.
 So it's not a sequence model over time steps, it's actually a sequence model over dimensions of states and actions.
 So transformers and other sequence models operate at the level of tokens.
 So the first token is the first dimension of the state of the first time step.

@@ -75,7 +75,7 @@ Value-based methods.
 Could we simply take, let's say, the Q, learning equation, and simply replace S with O?
 Is that a valid thing to do?
 And model-based RL methods.
-Let's say the simplest kind of model-based RL method, where we train a model that predicts the next state, given the current state in action, and then plan through that model.
+Let's say the simplest kind of model-based RL method, where we train a model that predicts the next state, given the current state and action, and then plan through that model.
 Can we simply replace S with O in this case?
 And of course, this is a little bit of a trick question, because before we can even begin answering this for each of these three methods, we have to understand what does handle actually mean?
 What does it mean to handle partial observability correctly?

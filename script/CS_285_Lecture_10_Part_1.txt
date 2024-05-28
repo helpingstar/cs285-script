@@ -91,7 +91,7 @@ If you're only concerned with selecting those actions, you don't care about the 
 So you can express this as the problem of selecting a sequence of actions to minimize a sum of costs or maximize a sum of rewards.
 But if we simply formulate an unconstrained problem, which is to select a sequence of actions to minimize c(s_t, a_t), then we're not really accounting for the fact that future states are influenced by past actions.
 So in order to turn this into an optimization problem, you have to actually write it as a constrained optimization problem.
-Minimize with respect to a_1 through a_T the sum of the costs from time step 1 to T, subject to the constraint that every successive state is equal to the dynamics applied to the previous state in action.
+Minimize with respect to a_1 through a_T the sum of the costs from time step 1 to T, subject to the constraint that every successive state is equal to the dynamics applied to the previous state and action.
 This is the formulation for the deterministic dynamics case.
 We can also extend it to the stochastic dynamics case by expressing things in terms of distributions and expectations.
 We will typically use notation for the deterministic case in this lecture.

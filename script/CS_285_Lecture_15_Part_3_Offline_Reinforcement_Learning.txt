@@ -93,7 +93,7 @@ So it's a policy-specific thing.
 Everything here is policy-specific.
 So essentially, we're doing policy evaluation, and then we'll do policy improvement in alternating phases.
 So the true transitions are obtained by taking this state-to-state transition matrix and multiplying it by ϕ.
-Because if you multiply the matrix ϕ by p pi, then you will get the features of the next states, the next states for your current policy.
+Because if you multiply the matrix ϕ by p_π, then you will get the features of the next states, the next states for your current policy.
 And what you want to find is a matrix p ϕ.
 And you want to find a matrix p ϕ that, when you multiply ϕ by it, will approximate this as closely as possible.
 So p ϕ is, you can think of it as a feature space transition matrix.
@@ -102,16 +102,16 @@ And this is really important.
 It's really important that p ϕ is k by k.
 Because essentially what you're doing is you're embedding your original MDP into this feature space.
 And, you know, typically k would be much smaller than the cardinality of s.
-So you can think of p π ϕ as a k by k matrix.
-And you can think of p π ϕ as a k by k matrix.
+So you can think of p_π ϕ as a k by k matrix.
+And you can think of p_π ϕ as a k by k matrix.
 Just like w r was a k by 1 vector.
 So w r when multiplied into ϕ gave you a vector of rewards.
 p ϕ when multiplied into ϕ will give you a matrix of features at the next time step.
 And all of this is for a fixed policy behind.
 Now if you're wondering how you solve for p ϕ, it's the same normal equations as before.
 So the same least squares formula can be applied to solve for p ϕ.
-It's just our targets now instead of being r are p π ϕ.
-So p π ϕ is what we want this to be equal to.
+It's just our targets now instead of being r are p_π ϕ.
+So p_π ϕ is what we want this to be equal to.
 Same exact normal equations.
 The fact that our matrix value doesn't actually change anything.
 So exactly the same logic applies.
@@ -124,12 +124,12 @@ w v is just some vector of weights.
 Just like w r is a vector of weights, w v is some vector of weights.
 By the way, here's a little aside.
 This doesn't have anything to do with linear function approximation, but it's a useful formula to know.
-So if we want to solve for v π in terms of p π and r, there's actually a really neat solution.
+So if we want to solve for v π in terms of p_π and r, there's actually a really neat solution.
 So we can write our Bellman equation in vector form.
 You can probably think back to our theoretical analysis of Q-learning from before.
 The same exact idea.
 You can write everything in terms of vectors and matrices.
-So the vector-valued version of the Bellman equation is that v π is equal to r plus gamma p π times v π.
+So the vector-valued version of the Bellman equation is that v π is equal to r plus γ p_π times v π.
 And this is not policy improvement.
 This is not doing the math.
 This is just evaluating.
@@ -138,23 +138,23 @@ And now some of you might have noticed that this is actually a linear equation.
 v π is a vector.
 By the way, what's the dimensionality of v pi?
 Well, the dimensionality of v π is the same as the dimensionality of r, which means it's s by 1.
-The dimensionality of p π is s by s.
+The dimensionality of p_π is s by s.
 So everything works out.
 So we have s linear equations.
 We have s unknowns, the s entries in v π.
 So we can actually solve them.
-So we can subtract gamma p π v π from both sides.
-And we get identity minus gamma p π times v π is equal to r.
+So we can subtract γ p_π v π from both sides.
+And we get identity minus γ p_π times v π is equal to r.
 So then you just invert that matrix.
-And you get v π is equal to the identity minus gamma p π inverse times r.
-It's not entirely trivial to show, but it is actually true that i minus gamma p π is always invertible, which means that the solution always exists and it's always unique.
+And you get v π is equal to the identity minus γ p_π inverse times r.
+It's not entirely trivial to show, but it is actually true that i minus γ p_π is always invertible, which means that the solution always exists and it's always unique.
 So that's pretty cool.
 You can recover the value function as a solution to a system of linear equations.
 Now you can apply the same idea in feature space.
 So in feature space, you can write down a feature space Bellman equation.
-And by the same logic, you get wv is equal to i minus gamma p ϕ inverse wr.
+And by the same logic, you get wv is equal to i minus γ p ϕ inverse wr.
 So you replaced r with wr.
-We replaced p π by p ϕ.
+We replaced p_π by p ϕ.
 And all the same stuff works out.
 But then we could say, well, hang on a minute.
 So we spent all this time describing models, describing how you can fit the reward, how you can fit the transitions.
@@ -216,11 +216,11 @@ The way you estimate...
 You can estimate your value function is by using those LSTD equations.
 But the problem is that this actually requires samples from π.
 Right.
-Notice that we said this is p π.
+Notice that we said this is p_π.
 So that's actually a little bit of a problem.
 So we can use all that stuff on the previous slide to estimate the value function of the policy that collected the data.
-But we can't actually use it to estimate the value function for some other policy because we need p π.
-And p π actually depends on π.
+But we can't actually use it to estimate the value function for some other policy because we need p_π.
+And p_π actually depends on π.
 But we're trying to evaluate some other policy that we're learning, not the one that collected the data.
 So what we're going to do is exactly the same thing that we did when we talked about value iteration versus Q iteration.
 Instead of estimating the value function, we're going to estimate the Q function.
@@ -258,7 +258,7 @@ But ϕ' does change.
 For ϕ', we always featurize the same s', the one we have in the data set.
 But a different action because that action depends on our policy π.
 So ϕ' is actually the only thing in here that depends on π.
-So you would encode the action pi, not the action in the data.
+So you would encode the action π, not the action in the data.
 So then LSBI proceeds like this.
 Compute WQ for your current policy.
 Let's call it π k.

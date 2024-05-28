@@ -5,7 +5,7 @@ All right, in the last portion of today's lecture, we're going to shift gears a 
 [p.29]
 
 So what happens with complex image observations, things like images in Atari or pictures from a robot's camera performing some manipulation task?
-Well, with the algorithms that we talked about before, they all have some form of model that predicts the next state from the previous state in action and then plans over these states.
+Well, with the algorithms that we talked about before, they all have some form of model that predicts the next state from the previous state and action and then plans over these states.
 What is hard about doing this with images?
 Well, first, images have very high dimensionality, which can make prediction difficult.
 Images also have a lot of redundancy.

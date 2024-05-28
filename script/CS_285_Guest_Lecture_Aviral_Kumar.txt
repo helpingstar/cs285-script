@@ -366,7 +366,7 @@ Yeah.
 OK, so yeah, so now the point is, well, OK, I talked about all this intuition for value learning.
 But what can you do?
 What kind of value functions can you even train on the data?
-A simple value function technically looks like a function of the state, which tells you some cumulative reward that you would get by executing a given policy, in that case, pi, for a given reward function.
+A simple value function technically looks like a function of the state, which tells you some cumulative reward that you would get by executing a given policy, in that case, π, for a given reward function.
 Because a value function sums up the cumulative reward for a given reward.
 Now, in this case, I can choose to define some kind of a reward function, potentially.
 I can just say, well, my reward function is whenever the human hand is close to a particular object, some specific function like that.
@@ -375,17 +375,17 @@ I can just define arbitrary reward functions here, but they are going to be very
 So somehow, I want to go away from this particular way of defining values.
 And I want to not have a reward function out there at all.
 So for doing that, what I can do is, I can instead try to take a general formulation of value function, such as goal-reaching value.
-I can say, well, I want to train a value function on video data that tells me what's the total value I would get if I were to execute a given policy, pi, for reaching arbitrary frames, or reaching arbitrary goals in the video, as well.
+I can say, well, I want to train a value function on video data that tells me what's the total value I would get if I were to execute a given policy, π, for reaching arbitrary frames, or reaching arbitrary goals in the video, as well.
 This is a very general reward function, because it's a goal-reaching reward function.
 I can define goals as any arbitrary frame in the video that I have seen.
 It's pretty simple.
 It's even across frames, across not appearing in the same video clip at all.
 But that also ends up being quite specific.
 And the reason why this is quite specific is because it only considers one policy.
-I'm only training the value function for one policy, which means I'm only learning features that can represent values for one particular policy, pi, even though it's for a multiple-reviewed function in this case.
+I'm only training the value function for one policy, which means I'm only learning features that can represent values for one particular policy, π, even though it's for a multiple-reviewed function in this case.
 So well, I also don't want to do this, because this is too specific.
 So the obvious next step is, well, I can say, OK, what if I train value functions, these goal-reaching value functions, that can work well for all policies?
-So I want to train a value function that can, I want to train this network that can represent value functions for all possible policies, pi, and for all possible goals in this case, so for all possible goal-reaching reward functions.
+So I want to train a value function that can, I want to train this network that can represent value functions for all possible policies, π, and for all possible goals in this case, so for all possible goal-reaching reward functions.
 This ends up being overly broad.
 And the reason is because when you think about robots, they're not going to operate, and they're not going to run any arbitrary sequence of random actions out there.
 All they're going to do is they're going to run some very specific kinds of actions, that are going to accomplish tasks out there, not arbitrary random actions, which is what this particular formulation will still consider, because it's training value functions for all possible policies.
@@ -648,15 +648,15 @@ Yes.
 Is it just a coincidence that the two parts of the implicit regularization are weighted the same?
 That's a good question.
 So yeah, I think I was probably a bit emphasized there.
-So there's a gamma discoloring there, which probably makes sense now, I think.
+So there's a γ discoloring there, which probably makes sense now, I think.
 So yeah.
-So I didn't put it up here because I did not introduce gamma rotation at all.
-So there's a gamma in there.
-But basically, what ends up happening is, if you had a gamma here.
-And then you get a gamma here.
-And then you get a gamma here.
-And then you get a gamma here.
-And then you get a gamma here.
+So I didn't put it up here because I did not introduce γ rotation at all.
+So there's a γ in there.
+But basically, what ends up happening is, if you had a γ here.
+And then you get a γ here.
+And then you get a γ here.
+And then you get a γ here.
+And then you get a γ here.
 Any other questions?
 Excellent.
 Let's give a round of applause.
