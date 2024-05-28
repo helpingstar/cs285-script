@@ -7,7 +7,7 @@ So in the bandit setting, there isn't really a choice to be made.
 The only thing that's unknown is the model of the rewards.
 And then, you know, that model is pretty simple, so it's not too hard to represent.
 In the DeepRL setting, this is, of course, a lot more complicated.
-So in the bandit setting, p hat θ 1 through θ n is a distribution of rewards.
+So in the bandit setting, ^{p} θ 1 through θ n is a distribution of rewards.
 The analog in MDPs would be a Q function, because in a bandit, the instantaneous reward is basically all you need to know, so you can choose your action as the argmax of the reward.
 In MDP, we don't choose our action as the argmax of the reward.
 We choose the action as the argmax of the Q function.

@@ -75,17 +75,17 @@ But we can't look at z directly.
 So z might be maybe the optimal action or the value of the optimal action, some unknown quantity.
 But we can take actions.
 And the question is, which actions should we take, to learn about z?
-So we're going to use h of p hat of z to denote the current entropy of our z estimate.
-So this is how uncertain we are about p hat of z.
-And then we can use h of p hat of z given y to be the entropy of our z estimate after some observation y.
+So we're going to use h of ^{p} of z to denote the current entropy of our z estimate.
+So this is how uncertain we are about ^{p} of z.
+And then we can use h of ^{p} of z given y to be the entropy of our z estimate after some observation y.
 So if y is informative about z, then this entropy of z given y will be lower than the entropy of z.
 So y might be the reward that we actually observed.
 So the lower this conditional entropy is, the more precisely we know z.
 So intuitively, we would like to do things that result in y's for which the conditional entropy of z given y is as low as possible.
-So information gain is quantified as the difference between the entropy of p hat of z now, and the entropy we get after observing y.
+So information gain is quantified as the difference between the entropy of ^{p} of z now, and the entropy we get after observing y.
 The problem is, we don't know which y we're going to observe.
 If we knew which y we're going to observe, we would have already observed it, and our belief would have changed.
-So the information gain about z from y is defined as the expected value, under our distribution over y, of the difference in the entropy of p hat of z, and the entropy of p hat of z given y.
+So the information gain about z from y is defined as the expected value, under our distribution over y, of the difference in the entropy of ^{p} of z, and the entropy of ^{p} of z given y.
 So it's saying you don't know y, but you have some belief about y, and you can measure, under your belief about y, how your entropy over z will change.
 So this information gain will allow us to quantify how much we want to observe y.
 If we can choose to observe y, will that tell us a lot about z?

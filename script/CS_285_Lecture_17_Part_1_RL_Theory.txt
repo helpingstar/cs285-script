@@ -153,7 +153,7 @@ And ideally we'd like to see that that's bounded by some ϵ.
 So q hat star is the optimal Q function we learn under our learned model, which is basically what happens if we do RL with this method.
 And as I mentioned before, we could also ask, how good is the resulting policy, which is not the same.
 So if we take the policy π hat, which corresponds to q hat star, and we take the true Q function of π hat, how different is that from q star, meaning how suboptimal is the policy we get by running q-value iteration under p hat?
-And that last question is really the one that quantifies the performance of RL, because that's really telling us how much worse is the policy we get under the model p hat than the best policy we could have gotten anywhere.
+And that last question is really the one that quantifies the performance of RL, because that's really telling us how much worse is the policy we get under the model ^{p} than the best policy we could have gotten anywhere.
 Now it turns out that actually the first question, the policy evaluation question, gives us a tool that is very good for answering the other two questions.
 So we'll mostly focus on the first question, how close is q hat π to q π for a given policy π, and then we'll see how to utilize that as a tool to answer the other two questions.
 Okay.
@@ -222,7 +222,7 @@ d is the number of possible values.
 And they're distributed according to q.
 So q is a vector of probabilities that are all greater than 0 and sums to 1.
 And there are d values in q.
-So if you write it as a vector where the jth entry is the probability that z takes on its jth value, and you assume that you have n i hat, and that the empirical estimate is given by basically counting the number of times you get each value, so exactly the way that we're estimating p hat up above, then you have a concentration inequality that looks kind of similar to Hoeffding's inequality, but for estimating the probabilities of these random variables.
+So if you write it as a vector where the jth entry is the probability that z takes on its jth value, and you assume that you have n i hat, and that the empirical estimate is given by basically counting the number of times you get each value, so exactly the way that we're estimating ^{p} up above, then you have a concentration inequality that looks kind of similar to Hoeffding's inequality, but for estimating the probabilities of these random variables.
 So it's really the second one that we care about.
 So the first one is a probability that your error in the 2-norm is going to be bounded.
 The second one has to do with the error in the 1-norm.
@@ -263,7 +263,7 @@ But as long as we don't care about the constants, as long as you don't care abou
 And that'll make it a little bit convenient.
 So then we have fewer terms flying around.
 OK.
-So now that we've got our concentration inequalities out of the way and we can understand how accurate our learned model is going to be as a function of the number of samples, let's relate the error in p hat to the error in q hat π.
+So now that we've got our concentration inequalities out of the way and we can understand how accurate our learned model is going to be as a function of the number of samples, let's relate the error in ^{p} to the error in q hat π.
 And this is where we actually get into the RL-centric part of the analysis.
 So so far, all of our discussion dealt with just general machine learning theory.
 Now we're going to get into the parts that are really specific to reinforcement learning.
@@ -315,16 +315,16 @@ It's a nonlinear function, but...
 we have this relationship, and then we can use it to describe how errors in p will affect errors in q.
 Okay?
 Now, this is true for any dynamics.
-So just like we can write q π is equal to i minus γ p_π inverse R, we can also write q hat π is equal to i minus γ p hat π inverse times R.
+So just like we can write q π is equal to i minus γ p_π inverse R, we can also write q hat π is equal to i minus γ ^{p} π inverse times R.
 Because remember, q hat π was obtained just by solving the learned MDP determined by p hat.
-So now we're going to introduce a little lemma that we're going to use to understand the relationship between errors in p hat and errors in q hat.
+So now we're going to introduce a little lemma that we're going to use to understand the relationship between errors in ^{p} and errors in q hat.
 We'll actually introduce two lemmas, and then we'll put them together and get our conclusion.
 So the first lemma is what's called the simulation lemma.
 The simulation lemma describes how a Q function in the true MDP, q π, differs from the Q function in the learned MDP, q hat π.
 Okay.
 This is the statement of the simulation lemma.
 It might be a little opaque, but I'll unpack this shortly.
-So the simulation lemma says that q π minus q hat π is equal to γ times i minus γ p hat π inverse times p minus p hat times v π.
+So the simulation lemma says that q π minus q hat π is equal to γ times i minus γ ^{p} π inverse times p minus ^{p} times v π.
 So this part is the difference in probabilities.
 This is basically the difference between the true model and the learned model.
 This is the true value.
@@ -344,21 +344,21 @@ Well, notice how the right-hand side of this equation in the simulation lemma do
 It contains v π.
 So we're going to get v π out of q π, of course.
 And it also contains p hat.
-So we need to somehow get p hat in there.
-So what we're going to do is we're going to take q hat π, and we'll replace it by this equation, i minus γ p hat π inverse r, because that contains p hat, and it lets us get rid of q hat π.
-And for q π, what we're going to do is we're going to stick in a p hat in there too, because remember, we need to get a p hat in front of everything.
-So we'll just stick in i minus γ p hat π inverse times i minus γ p hat π, because that's a matrix inverse times itself, which is identity, so we can always put that in.
+So we need to somehow get ^{p} in there.
+So what we're going to do is we're going to take q hat π, and we'll replace it by this equation, i minus γ ^{p} π inverse r, because that contains p hat, and it lets us get rid of q hat π.
+And for q π, what we're going to do is we're going to stick in a ^{p} in there too, because remember, we need to get a ^{p} in front of everything.
+So we'll just stick in i minus γ ^{p} π inverse times i minus γ ^{p} π, because that's a matrix inverse times itself, which is identity, so we can always put that in.
 Okay, so now we're getting somewhere.
-We have an i minus γ p hat π inverse in front of both terms, and we have a q π in there, so hopefully that'll go somewhere.
+We have an i minus γ ^{p} π inverse in front of both terms, and we have a q π in there, so hopefully that'll go somewhere.
 So now what I'm going to do is I'm going to take that r at the end, and I'll replace the r with i minus γ p_π times q π, right?
 Because q π is equal to i minus γ p_π inverse r, so I can multiply both sides by i minus γ p_π, and that'll turn that r into an i minus γ p_π q π.
 So now I'm really getting somewhere.
 I've got two terms.
-They both have an i minus γ p hat π inverse in front of them, just like the simulation lemma.
+They both have an i minus γ ^{p} π inverse in front of them, just like the simulation lemma.
 One of the terms has a p hat, and the other one has a p.
-So when I group them together, I can basically, since they both have an i minus γ p hat π inverse in front of them, I get an i minus γ p hat π inverse.
-Then in parentheses I have i minus γ p hat π minus i minus γ p_π, and the whole thing is multiplied by q π.
-So the identities cancel out, and since that second one becomes a minus minus γ p_π, I can switch the order, and I get p_π minus p hat π, that is all multiplied by gamma, so I take the γ out front, and that leaves me with γ i minus γ p hat π inverse times p_π minus p hat π times q π.
+So when I group them together, I can basically, since they both have an i minus γ ^{p} π inverse in front of them, I get an i minus γ ^{p} π inverse.
+Then in parentheses I have i minus γ ^{p} π minus i minus γ p_π, and the whole thing is multiplied by q π.
+So the identities cancel out, and since that second one becomes a minus minus γ p_π, I can switch the order, and I get p_π minus ^{p} π, that is all multiplied by gamma, so I take the γ out front, and that leaves me with γ i minus γ ^{p} π inverse times p_π minus ^{p} π times q π.
 Now remember that q π, that p_π, is just p times this matrix π, and it's the same matrix π for both p and p hat.
 So that gives me this equation.
 And v π is just capital π times q π.
@@ -417,9 +417,9 @@ And remember, w is i minus γ p_π inverse times v.
 And that completes the proof.
 So now, putting these pieces together, we've got our two lemmas, i minus γ p_π inverse v in the infinity norm, is less than or equal to v in the infinity norm over (1-γ).
 And we've got the simulation lemma.
-So now what we'll do is we'll plug in p minus p hat v π from the simulation lemma into this second lemma in place of v.
+So now what we'll do is we'll plug in p minus ^{p} v π from the simulation lemma into this second lemma in place of v.
 And that will tell us that the infinity norm of q π minus q hat π, that the infinity norm of the left-hand side of the simulation lemma, is of course equal to the infinity norm of the right-hand side, because if the left-hand side is equal to the right-hand side, then their infinity norms are equal.
-But then if we apply this top-left equation using p minus p hat v π as little v, then this is less than or equal to gamma, that comes from the fact that the whole thing is multiplied by gamma, over one minus gamma, that comes from the top-left equation, times p minus p hat times v π in the infinity norm.
+But then if we apply this top-left equation using p minus ^{p} v π as little v, then this is less than or equal to gamma, that comes from the fact that the whole thing is multiplied by gamma, over one minus gamma, that comes from the top-left equation, times p minus ^{p} times v π in the infinity norm.
 So now we've related q π to q hat π, to the difference between p and p hat, but that difference is weighted by this v π thing.
 So what we can do is we can say, well, if you have some kind of matrix times a vector, their product is going to be less than or equal to the product of the largest entries.
 So you could say that this is less than or equal to γ over (1-γ) of the max over s a, so that that's taking a max over the, taking a max over the, the rows of the matrix of the one norm between the difference between the entries, times the largest possible entry in v π.

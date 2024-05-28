@@ -32,7 +32,7 @@ So for every sample, we would have something like q S i a i minus r i plus γ ma
 And we would average them all together.
 So what we're doing in this idealized model is we're basically saying that, you know, we're going to have a very simple, very simple, very simple, very simple, very simple, very simple, very simple model.
 The effect of averaging together these different losses kind of looks like doing a backup under this empirical model.
-So p hat and r hat are basically empirical models of the reward and transitions.
+So ^{p} and r hat are basically empirical models of the reward and transitions.
 Technically, this is what you would get if you were to average together all the target values for a given state action tuple S a, right?
 So if you've seen a given S a five times and you average together the target values for those five instances of that same S a, you would get exactly the same thing as if you were to employ this version of r hat and p hat.
 Okay.
@@ -41,9 +41,9 @@ So from here on out, we're just going to deal with r hats and p hats.
 So all that explanation was just to justify why viewing approximate fit of q iteration as doing this t hat backup is reasonable.
 It's reasonable because if you were to just average together the target values for that state action tuple over all the samples that contain that state action tuple, this is exactly what you would get.
 Okay.
-Now at this point, what we're actually going to see in our analysis is that the fact that r hat and p hat are not exactly the same as r and p is going to induce some error.
-And we call that sampling error because the reason for the error is that r hat and p hat are inexact because we have a finite number of samples.
-If we had an infinite number of samples, then r hat would be equal to r and p hat would be equal to p.
+Now at this point, what we're actually going to see in our analysis is that the fact that r hat and ^{p} are not exactly the same as r and p is going to induce some error.
+And we call that sampling error because the reason for the error is that r hat and ^{p} are inexact because we have a finite number of samples.
+If we had an infinite number of samples, then r hat would be equal to r and ^{p} would be equal to p.
 But for a finite number of samples, we incur sampling error.
 But that's not the only source of error.
 This minimization will also be inexact.
@@ -73,21 +73,21 @@ One is the t is not equal to T hat.
 So that's �ongjaland Emergency sed dalam hedger keep findingeu 61 s there.
 Then there's them.
 T is also here, but there are not great mathematics.
-era error and the other one is that q hat k plus 1 is not equal to t hat q hat k and that's we call it approximation error basically when we approximate the backed up previous Q function meaning the target values with some new Q function we incur some approximation error and we can try to quantify that right so let's first analyze just the sampling error so we'll just analyze the problems we get from the fact that t is not equal to t hat and this is going to look pretty similar to what we saw in the previous section so we're basically going to figure out how the real thing that we're doing the one that has t hat q hat is different from what we would have gotten if we used t times q hat so in particular we want to understand this difference how different will t hat q be from t q for some Q function q we don't care what q is at this point we just want to understand the difference between applying t hat to it and applying t to it so if we were to write that out well let's just substitute in the denominator so let's subtract out the denominator so let's just substitute in the denominator so let's just subtract out the denominator so let's just substitute in the definition of t hat and t in there, and we'll collect the terms so we'll collect the r terms and the next value terms we get r hat minus r plus γ times the expected value of the max under p hat minus the expected value of the max under p.
+era error and the other one is that q hat k plus 1 is not equal to t hat q hat k and that's we call it approximation error basically when we approximate the backed up previous Q function meaning the target values with some new Q function we incur some approximation error and we can try to quantify that right so let's first analyze just the sampling error so we'll just analyze the problems we get from the fact that t is not equal to t hat and this is going to look pretty similar to what we saw in the previous section so we're basically going to figure out how the real thing that we're doing the one that has t hat q hat is different from what we would have gotten if we used t times q hat so in particular we want to understand this difference how different will t hat q be from t q for some Q function q we don't care what q is at this point we just want to understand the difference between applying t hat to it and applying t to it so if we were to write that out well let's just substitute in the denominator so let's subtract out the denominator so let's just substitute in the denominator so let's just subtract out the denominator so let's just substitute in the definition of t hat and t in there, and we'll collect the terms so we'll collect the r terms and the next value terms we get r hat minus r plus γ times the expected value of the max under ^{p} minus the expected value of the max under p.
 And by the triangle inequality as usual we can bound this the norm of this sum with the sum of their norms so we get r hat minus r the norm of that plus γ times the norm of the difference of expectations.
 Now the first value here is exactly the estimation error of a continuous random variable.
 What did we learn about that allows us to bound the approximation error of a continuous random variable?
 Well this is exactly Hoeffding's inequality.
 So if we just directly plug in the formula for Hoeffding's inequality we get that the difference between r hat and r is just going to be less than or equal to 2 times the max of impossible reward, that's basically the range of rewards of the b plus minus b minus, times the square root of 1 over δ over 2n.
 So our familiar bound, the error will scale as 1 over root n.
-For the second part this is just the sum over all next states of the difference of p hat and p times the maximum over the action of qs prime a prime.
+For the second part this is just the sum over all next states of the difference of ^{p} and p times the maximum over the action of qs prime a prime.
 And we can bound that by a replacing the max over a prime with a max over s' and a prime.
 So that'll make this this q term independent of s', right?
 Because if you average together the you know the values of some vector that's the same that that's bounded by summing together the maximum values of that vector because any entry in the vector is less than or equal to its maximum.
-And now looking at this equation hopefully you'll recognize this as the total variation divergence between p hat and p.
+And now looking at this equation hopefully you'll recognize this as the total variation divergence between ^{p} and p.
 So we can just use the constant quantity of q times some quantity that depends on q, some constant quantity.
 And in particular that constant quantity is just the infinity norm of q.
-So this is exactly equal to the total variation divergence between p hat and p times the infinity norm of q.
+So this is exactly equal to the total variation divergence between ^{p} and p times the infinity norm of q.
 And we already had a bound for that so that's basically going to use that concentration inequality for estimating categorical distributions and therefore this is bounded by some constant times the infinity norm of q times the square root of the log of q.
 And we can literally dec огромal divide the past PETER by d seldom, okay?
 So π plus q times the of rho times the valor of change of neutral Hello the answer is 1 or δ 0.

@@ -1,8 +1,13 @@
+[p.01]
+
 Alright, welcome to lecture 13 of CS285.
 Today, we're going to talk about exploration.
 Today's lecture is going to be a little bit on the longer side, but to make up for it, the next lecture, which is going to be part 2 of exploration, will be quite a bit shorter.
 So, if this lecture feels like it's going on for a while, we're going to give you a little bit of a break for Wednesday's lecture, where it won't be quite as long.
 Alright, let's get started.
+
+[p.02]
+
 So, what's the problem that we're going to talk about today?
 Well, the problem can be illustrated with an example like this.
 If you're working on Homework 3, if you're finishing it up now, you might have tried a few different Atari games.
@@ -17,6 +22,9 @@ Well, it's not because the game itself is necessarily harder.
 For a person playing Montezuma's Revenge, you know, I've played it myself, I don't think it's a very good game, but it's not a particularly difficult one.
 In fact, getting that trick shot in Breakout, where it bounces, bounces around up top, is probably harder actually than playing Montezuma's Revenge.
 But it's very hard for an RL agent to play this game.
+
+[p.03]
+
 So, in Montezuma's Revenge, the goal is to traverse this pyramid that's made up of multiple different rooms, and each room has a different challenge.
 So, in this first room, there's a skull that bounces around that kills you if you step on it, and you have to go fetch this key and then open one of the doors at the top.
 Now, we understand some of these things.
@@ -31,6 +39,9 @@ So, the reward structure of the game doesn't really guide you each step of the w
 The trouble is that finishing the game only weakly correlates with rewarding events.
 It's not that you get little pieces of reward when you're on the right track and negative reward when you're on the wrong track.
 So, we know what to do because we understand what all these little sprites and pictures mean, but the RL algorithm has to figure it out through trial and error.
+
+[p.04]
+
 To try to understand kind of how the algorithm feels when trying to play one of these games, let's think of a different example, an example that's a lot less intuitive for humans.
 So, there's a card game called Mao.
 It's also similar in principle to a game called Calvin Ball.
@@ -51,12 +62,18 @@ Now, you're pretty unlikely to just sort of randomly go and do this.
 So, this is essentially the exploration problem.
 The exploration problem relates to this setting where you have temporally delayed rewards where the structure of the task doesn't really tell you what are the things you need to do to get larger rewards in the future.
 Alright.
+
+[p.05]
+
 Here's another example that looks very different at first but actually describes kind of a similar type of problem.
 So, this is a continuous control task.
 So, here this robotic hand is supposed to pick up a ball and move it to this location.
 Now, this is also a difficult exploration problem because in order to figure out how to get reward by putting the object in the right place, the hand needs to essentially wiggle the joints on the fingers randomly.
 And again, just like a priori, we don't understand the rules of the game Mao, here the hand doesn't understand that moving and picking up objects is actually a thing.
 All it knows is that it can wiggle its fingers around and the reward is so delayed that it gets very little intermediate signal for actually grasping objects.
+
+[p.06]
+
 Alright.
 So, let's talk a little bit more about this exploration thing.
 In RL, we often refer to the exploration versus exploitation problem as one where at each trial, the agent has to essentially choose whether they want to do a better job of exploring by trying something they don't know how to do yet or whether they just want to do the thing that gets them the largest reward.
@@ -78,6 +95,9 @@ So, for example, in some cases you might want to exploit a little bit so that yo
 If you've figured out how to go to the second room in Montezuma's Revenge, a good way to explore is to exploit a bit to go into that second room and then explore from there.
 So, it's not like you just have to flip a coin and decide between exploitation and exploration.
 It's really kind of a dynamic and persistent decision you have to keep making.
+
+[p.07]
+
 So, here are a few examples which I borrowed from some of David Silver's lecture notes.
 Imagine that you have to select which restaurant to go to.
 Perhaps not something that you're doing in 2020, but, you know, in the previous year we lived in, back when going to restaurants was a thing.
@@ -93,7 +113,10 @@ Oil drilling.
 Exploitation.
 Maybe you drill at the best known location.
 Exploration.
-Maybe you drill at a new location to drill at, which might not contain oil, or it might contain even more oil.
+Find a new location to drill at, which might not contain oil, or it might contain even more oil.
+
+[p.08]
+
 Now, exploration is very hard, both practically and also theoretically.
 It's a theoretically hard and intractable problem.
 So a question that we might ask when we go to devise exploration algorithms is, can we derive an optimal exploration strategy?
@@ -120,24 +143,30 @@ You observe something about the user, maybe you have a feature vector about the 
 Next step up are small finite MDPs.
 So these are MDPs that can be solved exactly, maybe using value iteration.
 These are not nearly as theoretically tractable as bandits, but there are some things we could say about exploration in small finite MDPs.
-And then of course the next step up, the setting we are really concerned with in Deep RL, are large infinite MDPs, perhaps with continuous state spaces, or very large state spaces like imagers.
+And then of course the next step up, the setting we are really concerned with in Deep RL, are large infinite MDPs, perhaps with continuous state spaces, or very large state spaces like images.
 And generally for these problems, there isn't much that we can say theoretically.
 But what we can do is we can take inspiration from the theoretically principled algorithms that we can devise in the bandit setting, and then kind of adapt similar techniques in the large infinite MDPs and hope that they work well.
+
+[p.09]
+
 So what makes an exploration problem tractable?
 Well, for multi-armed bandits and contextual bandits, one of the things we can do is we can formalize the exploration problem as another kind of MDP, or rather a partially observed MDP, a POMDP.
 So while the multi-armed bandit is a single step problem, you can view the problem of exploring in the multi-armed bandit as a multi-step problem, because even though your actions don't affect your state, they do affect what you know.
 So if you explicitly reason about the evolution of your beliefs, that now forms a temporal process, which is technically a partially observed MDP, and then you could solve it using POMDP methods.
 And because these multi-armed bandits are fairly simple, even the POMDP can actually be solved tractably, at least in theory.
 And then the next step are small finite MDPs.
-Here you can frame exploration as part of a multi-arm bandit, or as a sub-Asian model identification, and then reason explicitly about things like value of information, kind of extending similar ideas to the ones we had in bandits.
+Here you can frame exploration as Bayesian model identification, and then reason explicitly about things like value of information, kind of extending similar ideas to the ones we had in bandits.
 For large or infinite MDPs, these optimal methods don't work, in the sense that we can't prove anything about them, but we can still take inspiration from the optimal methods in the simpler settings, and adapt them to these larger settings, and find that they actually work well, at least empirically, even though we can't say anything about them theoretically.
-And of course, we use lots of how-to's, as we always do in deep reinforcement learning.
+And of course, we use lots of hacks, as we always do in deep reinforcement learning.
 And that's the theme that you're going to find in this lecture, that we'll have some very principled approaches in simpler, smaller problems like multi-armed bandits, we'll sort of adapt those approaches by analogy in larger MDPs, and then use some hacks to make them work well in practice.
+
+[p.10]
+
 Okay, so let's start with a little discussion of bandits.
 What's a bandit anyway?
 So the bandits that we're talking about when we talk about exploration are not these guys.
 The bandit is actually kind of the Drosophila of exploration problems.
-So in the same way that biologists study fruit flies as their kind of symbol model organism, in reinforcement learning, we study the bandit as our symbol model organism.
+So in the same way that biologists study fruit flies as their kind of simple model organism, in reinforcement learning, we study the bandit as our simple model organism.
 And the bandit that we're referring to is this thing.
 So the term multi-armed bandit is kind of one of these quaint American colloquialisms that stems from the term one-armed bandit.
 So the one-armed bandit is a slot machine.
@@ -154,43 +183,46 @@ Maybe in general that machine gives very high payoff, and if you pull the arm re
 So you don't know the reward for each arm, and you don't know the reward distribution for each arm.
 So you could assume that the reward of each arm is distributed according to some probability distribution, and then you could imagine even learning this probability distribution.
 So there's an unknown per-action distribution for each arm.
+
+[p.11]
+
 So how can we define the bandit?
-Well, we assume that the reward for each action is distributed according to some distribution, and the distribution for action a is parameterized by a parameter vector θ .
-So for example, if your rewards are , you might be in a setting where the probability of getting reward is θ , which is just a number, and the probability of getting reward is 1-θ .
+Well, we assume that the reward for each action is distributed according to some distribution, and the distribution for action a_i is parameterized by a parameter vector θ_i.
+So for example, if your rewards are 0 and 1, you might be in a setting where the probability of getting reward is θ_i, which is just a number, and the probability of getting reward is 1-θ_i.
 If your rewards are continuous, maybe you have some continuous distribution.
-And you don't really know what the θ are, but you could assume that you have a prior on them.
-You could use an uninformative prior if you like, but in general we'd say we have some prior p .
+And you don't really know what the θ_i are, but you could assume that you have a prior on them.
+You could use an uninformative prior if you like, but in general we'd say we have some prior p(θ).
 So that's defining our bandit.
-Now the cool thing about this is that you could also view this as defining a POMDP for exploration, where the state is the vector of θ for all of your actions, and the state is the vector of θ for all of your actions.
+Now the cool thing about this is that you could also view this as defining a POMDP for exploration, where the state is the vector of θ for all of your actions.
 Now you don't know this state, but if you knew this state, then you could figure out what the right action is.
-So instead of knowing the state, you have a belief.
-So you have some belief p hat over θ1 through θ n, and you can update your belief each time you pull an arm.
+So instead of knowing the state, you will belief.
+So you have some belief ^{p}(θ_1, ..., θ_n), and you can update your belief each time you pull an arm.
 So each time you pull an arm, you observe the reward of that arm, and you can update your belief about the θ corresponding to that arm.
 And you could solve this POMDP to basically figure out what is the right sequence of actions to maximize your reward in this POMDP.
 And this will yield the optimal exploration strategy, because if it is the optimal policy in the POMDP, it is the optimal thing to do under this kind of uncertainty.
 And that will be the optimal exploration strategy, the best exploration strategy you could possibly have.
 Now this is overkill.
-The belief state is huge, even for a simple POMDP.
-So you can do POMDP with binary rewards.
+The belief state is huge, even for a simple POMDP with binary rewards.
 Remember, your belief state is not the vector of θs.
 It is actually a probability distribution over θs.
 So even in the simple binary reward bandit, the θs correspond to the probability of getting a reward of 1.
-The p hat of θ now needs to be some parametric class, maybe a bunch of beta distributions.
+The ^{p}(θ) now needs to be some parametric class, maybe a bunch of beta distributions.
 You could have covariances between the different θs.
 So it is potentially a really complex belief state.
-And the cool thing about bandits is that you can provably do this.
-Very well with much simpler strategies than solving this full POMDP.
+And the cool thing about bandits is that you can provably do very well with much simpler strategies than solving this full POMDP.
 And the way that you would quantify doing well is by quantifying the regret of your strategy relative to how well actually solving the POMDP does.
 So when we say that a particular exploration strategy is optimal, what we really mean is that it is not much worse than actually solving the POMDP.
-And not much worse is usually defined in a kind of a big O, but it is not much worse than actually solving the POMDP.
-So what we really mean is that it is not much worse than actually solving the POMDP.
+And not much worse is usually defined in a kind of a big O sense.
 So how do we measure the goodness of an exploration algorithm?
 Well, we do it in terms of regret.
 And regret is the difference from the optimal policy at time step capital T.
-So you can write the regret as capital T times the expected value of the reward of A star, that is the optimal policy, minus the sum of rewards that you actually got.
-So the optimal policy will always take A star, and that means that if you are going for capital T steps, it will be capital T times the expected reward of A star.
+So you can write the regret as capital T times the expected value of the reward of a^{*}, that is the optimal policy, minus the sum of rewards that you actually got.
+So the optimal policy will always take a^{*}, and that means that if you are going for capital T steps, it will be capital T times the expected reward of a^{*}.
 So that is what the optimal policy will do.
 And then your regret is the difference between that and the sum of rewards that you have actually gotten from running your strategy.
 So this is the expected reward of the best action, the best you can hope for in expectation, and this is the actual reward of the action that was actually taken.
+
+[p.12]
+
 All right.
 So in the next portion, I am going to talk about how we can minimize regret in terms of closing the gap between our tractable strategies and this POMDP that we have defined.

@@ -5,7 +5,7 @@ We're going to go away from these classic models that try to represent the proba
 Now, this part of the lecture is a little bit more advanced, and it really does deviate a little bit from the mainstream in model-based RL, but I wanted to tell you about these ideas because I do think they're quite interesting, and they might give you some ideas for final projects, or more generally directions where model-based RL could go in the future.
 But keep in mind that as I discuss these, this is getting very much into sort of the current state of research and things that are not yet fully formed model-based RL algorithms, but just some ideas that are good to know about and some concepts in RL that could be useful perhaps in the future.
 
-[p.22]
+[p.23]
 
 So let's start with this question.
 What kind of model do we need to evaluate a policy?
