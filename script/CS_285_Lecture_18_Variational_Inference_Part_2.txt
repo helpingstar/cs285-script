@@ -75,7 +75,7 @@ So if this graph is showing pxi comma z, so the thing inside the first expectati
 All right, so this is what we would get if we just maximized the value of the expected value of this function.
 So we could imagine that the expected value of this function would be maximized just by putting a lot of probability mass on the tallest peak.
 right.
-p of vi and c of xi can mainlyzieh the'vep_π and y of t volume is equal to intended volume, which are the properties of no, not the Fang talent of theíp shape of the mask rot.
+p of vi and c of x_i can mainlyzieh the'vep_π and y of t volume is equal to intended volume, which are the properties of no, not the Fang talent of theíp shape of the mask rot.
 Here's the intake function part where the registers andvous are frozen add that because of this, the QI of Z that maximizes this quantity will kind of cover the PXI comma Z distribution.
 Now, the other concept I want to recap here is KL divergence.
 KL divergence between two distributions Q and P is given by the expected value under the first distribution of the log of the ratio of the probability of the first distribution divided by the second.

@@ -13,7 +13,7 @@ Here you can see some examples of samples drawn from a variational autoencoder t
 So here the x's are pixel images, so they're arrays of pixels, and the z's are going to be latent vectors with some dimensionality like 64 or 128.
 The architecture of the variational autoencoder.
 Essentially follows what we discussed in previous sections.
-So if we want to set this up as a computational graph for training, we would have the encoder q with parameters ϕ, take in the image xi, and that neural network would output the mean μ_ϕ of xi and the variance σ ϕ of xi.
+So if we want to set this up as a computational graph for training, we would have the encoder q with parameters ϕ, take in the image xi, and that neural network would output the mean μ_ϕ of x_i and the variance σ ϕ of xi.
 Then we would sample some noise from a zero mean unit variance distribution, and then we would form the resulting z by taking the mean and adding the noise ϵ times the z.
 So we would have the standard deviation σ, and that gives us z.
 And then we can pass z through the decoder, p θ of x given z, and that would produce the image.
@@ -24,7 +24,7 @@ And then we can write the result in the decoder, where the mean and standard dev
 So we use the reparameterization trick to backpropagate the error of this first log probability term all the way from the decoder back into the encoder, and thus train both θ and ϕ.
 And of course, we also have to subtract off the KL divergence regularizer, which basically accounts for the prior.
 And the KL divergence here is between the encoder distribution, q ϕ of z given xi, and the prior p of z.
-And since q ϕ of z given xi is Gaussian, and the prior p of z by convention is a zero mean unit variance Gaussian, this KL divergence can actually be computed in closed form using the analytic formula for the KL divergence between two Gaussians.
+And since q ϕ of z given x_i is Gaussian, and the prior p of z by convention is a zero mean unit variance Gaussian, this KL divergence can actually be computed in closed form using the analytic formula for the KL divergence between two Gaussians.
 So that's pretty straightforward to do.
 All right, so that's the variational autoencoder.
 And what the variational autoencoder allows us to do is it allows us to train a latent variable model representing some inputs, which are typically taken to be images.

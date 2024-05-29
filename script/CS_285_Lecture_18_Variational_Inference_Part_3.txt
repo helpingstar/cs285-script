@@ -1,8 +1,8 @@
 All right.
 Now let's talk about how amortized variational inference can allow us to basically learn this Q of Z given X and thereby make variational inference an applicable tool, even in settings where the data set size is extremely large.
 So to recap what we had before, our variational inference procedure for training the model parameters θ basically looks something like this.
-For every image xi or data point xi in our data set, or more generally for every mini-batch, you would estimate the gradient with respect to θ of your variational lower bound Li, P, Q.
-And the way you would do this is by sampling a Z from the approximate posterior QI of Z, then estimating the gradient, which would simply be the gradient with respect to θ of log P θ of xi given Z, which is the single sample estimator using the one sample that you just got from QI.
+For every image x_i or data point x_i in our data set, or more generally for every mini-batch, you would estimate the gradient with respect to θ of your variational lower bound Li, P, Q.
+And the way you would do this is by sampling a Z from the approximate posterior QI of Z, then estimating the gradient, which would simply be the gradient with respect to θ of log P θ of x_i given Z, which is the single sample estimator using the one sample that you just got from QI.
 of the expectation.
 Then you take a gradient step using this estimated gradient ∇ θ Li, and then you update QI to maximize the bound Li and thereby tighten it.
 And the issue, of course, is with how you maximize the bound.
@@ -14,16 +14,16 @@ So in this case, we're still going to have a Gaussian posterior for every x.
 But instead of storing the mean invariant, we would have a neural network that takes in that data point and outputs μ of ϕ of x and σ of ϕ of x, the parameters of the Gaussian posterior for the data point x.
 All right, so that's the basic idea for amortized variational inference.
 You have two networks, the network that you're trying to learn, your generative model, p θ of x given z, and what we would call your inference network, Q subscript ϕ of z given x.
-So we know from our discussion before that you can formulate a lower bound on log p of xi using really any Q, but this lower bound is tightest when this Q is close to the posterior.
+So we know from our discussion before that you can formulate a lower bound on log p of x_i using really any Q, but this lower bound is tightest when this Q is close to the posterior.
 So now, just like before, we had QI of z.
 Now we have Q_ϕ of z given xi.
 And now our variational lower bound is a function of two distributions, p θ.
-So we have QI of xi given z and Q_ϕ of z given xi.
+So we have QI of x_i given z and Q_ϕ of z given xi.
 So our training procedure, which is just a modification of the one from the previous slide, will look like this.
 First, calculate the gradient of the variational lower bound with respect to θ.
 And that's going to work basically the same way as before.
 Sample z from Q_ϕ of z given xi, and then calculate the gradient with respect to θ, which is approximated by the gradient with respect to θ.
-So we have a gradient of log p θ of xi given z, where z is the z that you just sampled.
+So we have a gradient of log p θ of x_i given z, where z is the z that you just sampled.
 And then you can do a gradient ascent step on θ, the parameters of your generative model.
 And then, what you need to do is take a gradient step on ϕ.
 And the gradient step on ϕ is also doing gradient ascent on the variational lower bound, L.
@@ -91,7 +91,7 @@ And when we do this, we can get a better gradient estimator.
 So what we can do is we can write our expectation with respect to Z as instead an expectation with respect to ϵ.
 Where I simply plugged in the equation for Z expressed in terms of ϵ into R.
 So this is a strict equality, this is not an approximation.
-The expected value over Z distributed according to a Gaussian with mean μ and variance σ is equal to the expected value over ϵ distributed according to a Gaussian with mean 0 and variance 1, where you evaluate your R at xi comma μ of xi plus ϵ σ xi.
+The expected value over Z distributed according to a Gaussian with mean μ and variance σ is equal to the expected value over ϵ distributed according to a Gaussian with mean 0 and variance 1, where you evaluate your R at x_i comma μ of x_i plus ϵ σ xi.
 So now we are very close to being able to compute a better gradient for J of ϕ.
 Because ϕ here now parametrizes only deterministic quantities.
 So think for a minute for how we could write a better gradient estimator based on this expectation over ϵ.
@@ -100,7 +100,7 @@ First, sample ϵs from a zero mean unit variance Gaussian.
 Sample ϵ 1 through ϵ m.
 A single sample actually works pretty well.
 So you could just generate one sample for every data point in your mini-batch, and that is actually what we would usually do.
-Then, calculate the gradient with respect to ϕ as simply the average over all of your samples of ∇ ϕ of R evaluated at xi comma μ_ϕ xi plus ϵ j σ ϕ xi.
+Then, calculate the gradient with respect to ϕ as simply the average over all of your samples of ∇ ϕ of R evaluated at x_i comma μ_ϕ x_i plus ϵ j σ ϕ xi.
 So this requires R to be differentiable with respect to Z.
 And of course it requires μ_ϕ and σ ϕ to be differentiable with respect to ϕ, which they are because they are neural networks.
 We generally can't use this in reinforcement learning because in reinforcement learning we don't assume that we can calculate the derivative of your return.
@@ -112,15 +112,15 @@ This gradient estimator has a lower variance because we are actually using the d
 The policy gradient that we had before didn't use the derivatives of R.
 So this is a better gradient estimator.
 And most automatic differentiation software, like TensorFlow or PyTorch, will calculate this for you.
-So you don't need to know how to differentiate p θ of xi comma z yourself.
+So you don't need to know how to differentiate p θ of x_i comma z yourself.
 You just implement it in Auditiv and let Auditiv take care of everything.
 So this is actually a very simple way to calculate derivatives.
 The only unusual thing is that you have to sample these ϵs.
 Otherwise it looks like just any other neural network.
 Here's another way you can look at it.
-You can take your original variational lower bound, the expected value with respect to z of log p θ xi given z plus log p of z plus the entropy of q.
+You can take your original variational lower bound, the expected value with respect to z of log p θ x_i given z plus log p of z plus the entropy of q.
 Write it out as three terms.
-So there's an expectation under z of the decoder, p θ xi given z, plus an expectation under z of the prior, log p of z plus the entropy.
+So there's an expectation under z of the decoder, p θ x_i given z, plus an expectation under z of the prior, log p of z plus the entropy.
 The second term is essentially the equation for the KL divergence between q ϕ of z given x and p of z.
 Because KL divergence has an entropy term and an expected value term.
 And if our prior p of z is also Gaussian, the KL divergence between two Gaussian distributions has a convenient analytic form.
@@ -135,15 +135,15 @@ And now everything in this equation is deterministic except for ϵ.
 So we'll approximate the first expectation with a single sample, with a single Gaussian sample, ϵ.
 And here's the equation we're left with.
 And now everything in this equation you can directly code up in your automatic differentiation software.
-So the log p θ of xi given q ϕ xi plus ϵ, σ ϕ xi.
+So the log p θ of x_i given q ϕ x_i plus ϵ, σ ϕ xi.
 That is just calling the neural network representation for p θ with an input dependent on the neural network representation for μ_ϕ and σ ϕ.
 So everything here can be back propped through, and ϵ is just treated as a constant.
 The second term, the KL divergence, has a closed form equation for it, expressed in terms of the means and variances of q and p of z.
 So you could think of it like this.
-You have your inference network, parameterized by ϕ, which takes in xi and it outputs two quantities.
-A mean μ_ϕ of xi and a σ ϕ of xi.
+You have your inference network, parameterized by ϕ, which takes in x_i and it outputs two quantities.
+A mean μ_ϕ of x_i and a σ ϕ of xi.
 Then you sample your ϵ from your zero mean unit variance Gaussian, and you combine that together with a μ and σ to get you z.
-And the z is then fed into p θ of xi given z to produce a distribution over x.
+And the z is then fed into p θ of x_i given z to produce a distribution over x.
 So this is a complete computation graph, and everything here has known derivatives, so you can back prop through this whole thing with respect to both ϕ and θ.
 So what this means is that you can actually code this up in your automatic differential software and just call that gradient from this whole thing, and this will give you derivatives of L with respect to both θ and ϕ.
 Okay.

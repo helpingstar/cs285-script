@@ -128,13 +128,13 @@ So this is somewhat analogous to what we did in LQR.
 We're starting at the back, solving for the optimal policy, and then substituting in the corresponding expression.
 So what this tells us is that the expression is just the value function.
 So we can just write out the expression and then substitute it in the corresponding expression.
-So what this tells us is that for the last time step, the contribution this last time step makes to the overall objective is V of s capital T, where little q of a t given s t is given by this expression.
+So what this tells us is that for the last time step, the contribution this last time step makes to the overall objective is V of s capital T, where little q of a t given s_t is given by this expression.
 And then we can proceed with the recursive case.
-We can say that at any given time step, the Q of a little t given s t at that time step is the argmax of the expected value under Q of s t of the expected value under Q of a t given s t of the reward at that time step, plus the expected value of the value function at the next time step, plus the entropy of Q of a t given s t.
-And of course, if we do that, we can always say that we have this quantity Qt s t a t, which is R plus next V.
+We can say that at any given time step, the Q of a little t given s_t at that time step is the argmax of the expected value under Q of s_t of the expected value under Q of a t given s_t of the reward at that time step, plus the expected value of the value function at the next time step, plus the entropy of Q of a t given s t.
+And of course, if we do that, we can always say that we have this quantity Qt s_t a t, which is R plus next V.
 That's just the regular Bellman backup, which is not optimistic anymore.
 And we substitute that into this equation.
-And again, we get an expression that looks like the expected value under Q of a t s t of some quantity minus log Q.
+And again, we get an expression that looks like the expected value under Q of a t s_t of some quantity minus log Q.
 So we know that again, the solution is the exponentiated Q value and the normalizer is again the value function.
 So again, we get the same expression for Q of a t given s t, and we can repeat this recursion backwards in time.
 So this gives us a dynamic programming solution.

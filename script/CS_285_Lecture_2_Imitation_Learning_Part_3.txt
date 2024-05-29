@@ -1,8 +1,19 @@
+[p.18]
+
 All right, the remainder of today's lecture will focus on more practical methods that can make behavioral cloning work, as well as some other algorithms that we could use.
+
+[p.19]
+
 So we talked about a little bit of theory, but now we'll talk about how the problem can be addressed in a few ways.
 By being smart about collecting your data, by using very powerful models that make comparatively fewer mistakes, by using multitask learning, and by changing the algorithm.
+
+[p.20]
+
 And I'll go through these pretty fast, so my aim with this portion of the lecture is not really to go in great detail about how to actually implement some of these methods, but just to give you a sense for the types of methodologies that people employ.
 The one method that you will implement in homework is Dagger, and I'll go through that somewhat more precisely.
+
+[p.21]
+
 Okay, so what makes behavioral cloning easy and what makes it hard?
 As I mentioned in the previous part of the lecture, if you have very perfect data, then these accumulating errors are a big problem, because as soon as you make even a small mistake, you're outside of that distribution of perfect data.
 But if you actually already have a bunch of mistakes in your data set, and corrections for those mistakes, then when you make a small mistake, you'll be in a state that is somewhat similar to other mistakes that you've seen in the data set, and the labels in that portion of the data set will tell you how to correct that mistake.
@@ -20,15 +31,21 @@ And that camera trick from before can be thought of as a kind of data augmentati
 And that can be done with it by leveraging some sort of domain knowledge about the problem you're solving to create some additional fake data.
 And roughly speaking, the effect of these two tricks is kind of the same.
 In both cases, the aim is to provide examples in states that the expert is unlikely to visit, but that the policy might end up landing in.
+
+[p.22]
+
 Now, there isn't really much more to this methodology than that.
 So in discussing these tricks, I'm going to just show you two examples of previous papers that use tricks like this to good effect.
 So the first one I'll mention is a data augmentation-based approach in this paper, which focused on flying a drone through the forest.
 So the output action space is discrete.
 It's just go left, go straight or turn right.
+
+[p.23]
+
 And here's a video from their work.
 So they're going to fly these drones through hiking trails in Switzerland, this is from the University of Zurich.
 And the idea is pretty straightforward.
-So they have a cognate and the cognate looks at the image and it predicts one of three discrete labels, left, right and straight.
+So they have a ConvNet and the ConvNet looks at the image and it predicts one of three discrete labels, left, right and straight.
 Now, these are examples from the training set.
 So they're labelled.
 And where do they get the labels?
@@ -42,17 +59,27 @@ That is the entirety of the method.
 So there's no attempt to record the human's actions, and that actually worked pretty well, and I think this is a really nice illustration of how that data augmentation approach can enable imitation learning to work well, and it wouldn't surprise me in the least if, had they actually flown the quadcopter through the forest and only used a forward-facing camera, if their results would have actually been somewhat worse.
 So this is a similar thing with a handheld camera.
 Here is their drone.
+
+[p.24]
+
 Here's another interesting example.
-This is a robotic manipulation example, and here the authors of this paper are using a very low cost, very cheap, and relatively inaccurate arm, and a very simplistic teleoperation system based on a kind of a hand motion detector, and they're teaching the robot various skills like using a cloth to wipe down a box of screwdrivers, picking up and pushing objects, things like this, and they're using a game controller here, and one of the things that they do is they illustrate a lot of mistakes in their demonstrations, kind of inevitably just because they have such a low cost and imperfect teleoperation system, and because they illustrate so many mistakes, they actually end up in a situation where the robot, when it makes mistakes, actually recovers from them.
+This is a robotic manipulation example, and here the authors of this paper are using a very low cost, very cheap, and relatively inaccurate arm, and a very simplistic teleoperation system based on a kind of a hand motion detector.
+And they're teaching the robot various skills like using a cloth to wipe down a box of screwdrivers, picking up and pushing objects, things like this, and they're using a game controller here, and one of the things that they do is they illustrate a lot of mistakes in their demonstrations, kind of inevitably just because they have such a low cost and imperfect teleoperation system, and because they illustrate so many mistakes, they actually end up in a situation where the robot, when it makes mistakes, actually recovers from them.
 So they have some examples where it picks up objects, sometimes it picks them up incorrectly, sometimes a human actually perturbs it, but the robot is actually pretty good at recovering from perturbations, including ones that are introduced by the person.
 So here the person is messing with it, but the robot just is unworried about that and keeps trying to do the task.
 So here it has to slide the wrench into a particular spot.
 So sometimes imperfect data collection can actually be better than highly perfect data collection.
+
+[p.25]
+
 Okay, now that trick for getting behavioral cloning to work is not very reliable, and it takes a little bit of domain-specific expertise, although it does provide kind of a guidance anytime you're collecting data for imitation learning.
 Keep in mind that having ways to put the system in states where the expert can demonstrate corrections can be a very good thing, and it's also worth thinking about data augmentation tricks.
 But let's talk about some more technical solutions.
+
+[p.26]
+
 Why might you fail to fit the expert behavior?
-Because if you can minimize the number, that value ϵ, perhaps even ϵ t squared might still be a small number.
+Because if you can minimize the number, that value ϵ, perhaps even ϵT^2 might still be a small number.
 So if you can understand why you might fail to fit the expert behavior, maybe you can get a model that's so powerful that it's probably that if mistakes are so low that even that quadratic cost doesn't actually worry you too much.
 So why might you fail to fit the expert?
 Well one reason is what I'll refer to as non-Markovian behavior.
@@ -73,11 +100,17 @@ Or maybe even more problematic, if someone just cut them off and they got a litt
 So generally humans are actually very non-Markovian in the sense that human behavior is very strongly affected by the temporal context.
 So if we're training a policy that only looks at the current image, it's unaware of all that context.
 And it might simply not be able to learn a single distribution that captures human behavior accurately because human behavior doesn't depend on just the current observation.
+
+[p.27]
+
 So how can we use the whole history?
 Well, it's actually pretty straightforward.
 We just need a policy representation that can read in the history of observations.
 So we might have a variable number of frames.
 And if we just simply combine all the frames into one giant image with like three thousand channels, that might be difficult because you might have too many weights.
+
+[p.28]
+
 So what we would typically do is use some kind of sequence model.
 So we would have our, let's say if we're using images, we would have our convolutional encoder.
 If you're not using images, you would have some other kind of encoder.
@@ -88,6 +121,9 @@ Exactly the same kinds of approaches can be used here, whether it's LSTMs or tra
 Again, I won't talk about those architectural details in detail because they're actually not imitation learning specific.
 So anything that you learned about before for sequence modeling could just as well be used for imitation learning.
 There is however an important caveat that I want to mention, which is that using histories of observations does not always make things better and the reason that if sometimes makes things worse is that it might exacerbate correlations that occur in your data.
+
+[p.29]
+
 This is a little bit of an aside.
 I don't necessarily expect all of you to kind of to know this in detail, but I do think it's an interesting aside.
 It's something that perhaps might inspire some ideas for things like final projects.
@@ -97,7 +133,7 @@ Let's say that you have a strange kind of car where there's a dashboard indicato
 So whenever you press the brakes, there's a light bulb that lights up inside the cabin.
 And the camera that is recording your data for imitation learning is inside the cabin so the camera can see out of the window and it can also see the brake indicator.
 So whenever the person steps on the brake, the light lights up.
-Now in this case there's a person standing in front of the car and the driver stepped on the brakes because there was a person there @ what the policy @ in the training data is it'll see one frame where the person is visible, but the brake indicator is not on, and the brake is pressed.
+Now in this case there's a person standing in front of the car and the driver stepped on the brakes because there was a person there but what the policy sees in the training data is it'll see one frame where the person is visible, but the brake indicator is not on, and the brake is pressed.
 And then we'll see many steps after that where the brake indicator is pressed, is lit, and the brake is pressed.
 So there's a very strong association between the brake indicator and the brake being pressed.
 If you're reading in histories, the situation is a lot worse because now you don't even need the brake indicator.
@@ -116,6 +152,9 @@ And I'll leave this as an exercise for you at home.
 Another exercise is at the end of this lecture, we'll talk about a method called Dagger.
 And after we talk about that, I want you to come back to this point and think about whether the method Dagger will actually address this problem or make it worse.
 So I'll leave that as an exercise for you to think about.
+
+[p.30]
+
 All right, so that's non-Markovian behavior.
 You can address it by using histories.
 Keep in mind that that's not unequivocally always a good thing, but if you're what you're worried about is non-Markovian behavior, that's the thing to do.
@@ -135,6 +174,9 @@ We can use more expressive continuous distributions.
 So instead of outputting the mean and variance of a single Gaussian, we can output something more elaborate.
 Or we can actually use discretization, but make it feasible in high dimensional action spaces.
 And I'll talk about both solutions a little bit next.
+
+[p.31]
+
 So first, let's talk about some examples of continuous distributions we can use.
 And again, I won't go into great detail about each of these methods.
 So for details about how to actually implement them, I'll have some pointers and references, and I would encourage you to look that up yourself if you want to actually try it.
@@ -147,12 +189,15 @@ And I'll talk about how to set that up with neural nets.
 A more sophisticated one is to use latent variable models.
 And then something that has recently become very popular is to use diffusion models because diffusion models have gotten a lot more...
 effective and a lot easier to train in recent years.
+
+[p.32]
+
 But let's start with a mixture of Gaussians because that is probably the simplest thing to implement, although it's not quite as powerful as the others.
 So the idea here is the following.
 A mixture of Gaussians is... can be described as a set of means, covariances, and weights.
 Okay?
-So let's say you have n different Gaussians that you want to output.
-Let's say, maybe it's n equals 10.
+So let's say you have N different Gaussians that you want to output.
+Let's say, maybe it's N equals 10.
 Let's say you're going to output 10 means, 10 covariances, and a weight on each of those 10 mixture elements to indicate how large each of them is.
 So you probably learn about mixture of Gaussians in the context of something like clustering, where the means and the variances are just vectors and matrices that you learn.
 Here, everything is conditional on the observation.
@@ -174,6 +219,9 @@ But what if you have 100 modes?
 What if you have extremely high dimensional action spaces?
 Perhaps you're not driving a car, but you're controlling a humanoid robot with 50 degrees of freedom, and you want 1,000 different modes.
 Now you have to do something a little smarter.
+
+[p.33]
+
 Latent variable models provide us a way to represent a much broader class of distributions.
 In fact, you can actually show that latent variable models can represent any distribution as long as the neural network is big enough.
 The idea behind a latent variable model is that the output of the neural network is still a Gaussian, but in addition to the image, it receives another input, which is sampled from some prior distribution, like a zero mean unit variance Gaussian.
@@ -194,6 +242,9 @@ That's the intuition.
 The particular technical way of making this work is a little bit more involved and requires more technical background, so we'll talk about that in the second half of the course.
 But the high-level idea behind latent variable models is that you have an additional input to the model, and that additional input tells it which mode to output.
 And then of course at test time, if you want to actually make this work, you can choose that random variable at random and then you'll randomly choose to go around the tree on the left or on the right.
+
+[p.34]
+
 The third class of distributions I'll talk about, which has gotten a lot of attention in recent years because these kinds of models have started working really well, is diffusion models.
 Diffusion models are somewhat similar to latent variable models, but there are some differences.
 Some of you might have heard about diffusion models as a way of generating images.
@@ -201,47 +252,56 @@ So things like DALL-E, stable diffusion, those are all methods that use diffusio
 The way that diffusion models work for image generation, and this is a very high-level summary, so if this feels vague to you, it's because it is.
 I could teach an entire class on diffusion models in principle, but for the purpose of covering it in two slides, I'm going to provide a very high-level overview.
 Let's say that we have a particular training image.
-I'm going to denote the training image as x0, and the subscript here doesn't denote time.
+I'm going to denote the training image as x_0, and the subscript here doesn't denote time.
 It denotes corruptions of the image.
-So x0 is the least corrupted, x_t is the most corrupted.
-So x0 is the true image.
+So x_0 is the least corrupted, x_t is the most corrupted.
+So x_0 is the true image.
 In a diffusion model, you construct a fake training set where you add noise to the image, and then you train the model to remove that noise.
-So the image xi plus 1 is going to be the image xi plus noise.
-So x_1 is x0, which is the true image plus noise.
+So the image x_{i+1} is going to be the image x_i + noise.
+So x_1 is x_0, which is the true image plus noise.
 x2 is x1, which has some noise out of it, and it adds even more noise to it.
 And if you take an image and you add these different amounts of noise, now you have a training set where you can teach a neural network to go backwards.
-So the learned network looks at the image xi and it predicts xi minus 1.
-So it's going to look at the slightly noisy image x_1 and predicts x0.
-It's going to look at the slightly more noisy image x2 and it's going to predict x_1 and so on and so on.
-In reality, we actually often train it to go all the way back to x0, so there's a choice to be made there, but for simplicity, it helps us to think about it as just going back one step.
+So the learned network looks at the image x_i and it predicts x_{i-1}.
+So it's going to look at the slightly noisy image x_1 and predicts x_0.
+It's going to look at the slightly more noisy image x_2 and it's going to predict x_1 and so on and so on.
+In reality, we actually often train it to go all the way back to x_0, so there's a choice to be made there, but for simplicity, it helps us to think about it as just going back one step.
 And in reality, what we actually predict is just the noise itself.
-And that's not actually that different, because if you predict xi minus 1, you can get that by just predicting the noise and just subtracting the noise from xi.
-So you can either have f directly output xi minus 1 or you can have f output the noise, in which case xi minus 1 is just xi minus f .
+And that's not actually that different, because if you predict x_{i-1}, you can get that by just predicting the noise and just subtracting the noise from x_i.
+So you can either have f(x_i) directly output x_{i-1} or you can have f(x_i) output the noise, in which case x_{i-1} is just x_i - f(x_i).
 And that's a much more common choice to make.
 Okay, now this is image generation.
 What we actually want to do is not generate images, we want to of course generate actions.
+
+[p.35]
+
 So what we can do is we can extend this framework to handle actions.
 Now actions of course also have a temporal subscript, so I'm going to use the subscript t to denote time in the temporal process for control, and I'm going to use the second subscript to denote the diffusion time step.
-So a t comma zero is the true action in the same way that x zero was the true image.
-a t comma i plus one is a t i plus noise, and just like before we can learn a network that now takes in the current observation or state s t and a t i and it outputs a t i minus one.
-Or just like before we would actually get it to output the noise, so then a t i minus one is a t i minus f of s t a t i.
+So a_{t,0} is the true action in the same way that x_0 was the true image.
+a_{t,i+1} is a_{t,i} + noise, and just like before we can learn a network that now takes in the current observation or state s_t and a_{t,i} and it outputs a_{t,i-1}.
+Or just like before we would actually get it to output the noise, so then a_{t,i-1} is a_{t,i} - f(s_t,a_{t,i}).
 So the training set is produced by taking all the actions, adding noise to them, teaching the network to predict what that noise was while also looking at the image, and then at test time if we want to actually figure out the action, then we feed in completely random noise and run this model for many steps to get it to denoise.
-So turning the network over on its side, it gets as input a t i, it outputs a t i minus one, which is a slightly denoised version of that action, and it also gets to look at the image.
-We start off with noise at test time, we feed that into this box as the first value of a t i, and then we repeat this process.
+So turning the network over on its side, it gets as input a_{t,i}, it outputs a_{t,i-1}, which is a slightly denoised version of that action, and it also gets to look at the image.
+We start off with noise at test time, we feed that into this box as the first value of a_{t,i}, and then we repeat this process.
 We denoise it, put it back in, denoise some more, and repeat this process many times, and then at the end out comes a clean, good action.
 And during training, we add all this noise to ground truth actions, and we teach the network to undo the noise.
 So that's the essential idea of a diffusion model.
 Actually implementing it takes a number of additional design decisions, which I won't have time to go into here, but I'll reference some papers, and you can look at those papers for details.
+
+[p.36]
+
 The last trick I'm going to talk about is discretization.
 Discretization is, in general, a very good way to get complex distributions, but it's very difficult to apply discretization naively in high dimensions.
 So remember, in that Zurich paper, where the actions were to go left, go right, and go straight, this multimodality problem basically didn't exist.
 But of course, that was for 1d actions.
 In higher dimensions, if you have, let's say, 10-dimensional actions, discretizing the action space is impractical, because the number of bins you need increases exponentially, and so does the number of dimensions.
+
+[p.37]
+
 So the solution is to discretize one dimension at a time.
 And that's the idea behind autoregressive discretization.
 So here's how we can do it.
 Let's say our action is a 3-dimensional vector.
-I'm going to use at0 to denote dimension 0, at1 to denote dimension 1, and at2 to denote dimension 2.
+I'm going to use a_{t,0} to denote dimension 0, a_{t,1} to denote dimension 1, and a_{t,2} to denote dimension 2.
 Don't be confused with the notation from diffusion models before, this has nothing to do with that.
 So the second number is just a dimension, and it's just a scalar value, right?
 So here's how we're going to set up our network.
@@ -251,8 +311,8 @@ So it's just one dimension, discretizing a number line is pretty easy.
 So we have one bin for every possible value.
 You could have 10 bins, you could have 100 bins.
 Since it's one-dimensional, it's very easy to do.
-And then at the second time step in the sequence, we feed in the value at0, and we output at1, again with a discretization.
-And at the next time step, we input at1, and we output at2.
+And then at the second time step in the sequence, we feed in the value a_{t,0}, and we output a_{t,1}, again with a discretization.
+And at the next time step, we input a_{t,1}, and we output a_{t,2}.
 So just like in a sequence model and something like a language model, you would output the next token, the next letter, here you would output the next dimension of the action space.
 And now each dimension is discretized, and the number of bins is no longer exponential in the dimensionality, it's actually still linear in the dimensionality.
 And then at test time, if we want a sample, then we do exactly what we do with any other sequence model, is instead of feeding in the ground truth value of each dimension, which we don't have, we would feed in the prediction from the previous time step.
@@ -260,15 +320,18 @@ Again, this is exactly the same as any other sequence model, like language model
 So one way to implement is actually with a GPT-style decoder-only model.
 Now, why does this work?
 Well, the reason that this is a perfectly valid way to represent complex distributions is that it can be seen by looking at what probability is actually predicted each step.
-So the first time step predicts p of at0 given s_t, because you get s_t as input, and your output is at0.
-The second step predicts the probability of at1 given s_t and at0.
-So the dependence on s_t comes from the fact that it's passed in through the sequence model, and at0 is fed as input.
-The third time step, you predict at2 given s_t, at0, and at1.
-If you multiply all these things together, then by the chain rule of probability, their product is exactly the probability of at0, at1, and at2 given s_t, which is exactly the probability of the action given the state.
+So the first time step predicts p(a_{t,0}|s_t), because you get s_t as input, and your output is a_{t,0}.
+The second step predicts the probability of (a_{t,1}|s_t,a_{t,0}).
+So the dependence on s_t comes from the fact that it's passed in through the sequence model, and a_{t,0} is fed as input.
+The third time step, you predict (a_{t,2}|s_t,a_{t,0},a_{t,1}).
+If you multiply all these things together, then by the chain rule of probability, their product is exactly the probability of (a_{t,0},a_{t,1},a_{t,2}|s_t), which is exactly the probability of the action given the state.
 So this is the policy.
 If you multiply together, the probability is at all the time steps.
-And that means that if you sample the different dimensions in sequence, then you will actually get a valid sample from the distribution p of at given s_t.
+And that means that if you sample the different dimensions in sequence, then you will actually get a valid sample from the distribution p(a_t|s_t).
 So autoregressive discretization is actually a great way to get complex distributions, but it's a little bit more heavyweight in the sense that you have to use these sequence models for outputting actions.
+
+[p.38]
+
 All right.
 Next, let me talk about a few case studies of papers that use these kinds of formulations.
 The first case study I'll talk about is a paper from 2023 from Chi et al.
@@ -283,11 +346,14 @@ And then the robot follows that trajectory and performs the task.
 And they can use this for imitation learning, for learning things like picking up cups, or, you know, putting some sauce on a pizza.
 This is maybe with like a cooperative person that kind of helps you make sure the sauce doesn't go all over the place.
 But the point is that by using these fairly expressive multimodal diffusion policies, they can actually get pretty good behaviors out of their imitation learning system.
+
+[p.39]
+
 Here's an example of a method that uses latent variables.
 Here, the latent variables are actually used in conjunction with the transformer, but it's not using that action discretization from before.
 It's just outputting the continuous values of the actions.
 So the transformer is just used to provide a more elaborate representation.
-The latent variable here is this letter Z that you can see at the end of the input sequence.
+The latent variable here is this letter z that you can see at the end of the input sequence.
 And the paper treats it as a kind of style variable to account for the fact that human experts might perform the task with different styles on different trials.
 And that's used to improve the expressivity of the model.
 And imitation learning here uses this bimanual manipulation rig, which can then be used to provide demonstrations to teach the robot to do things like put a shoe on a foot.
@@ -298,9 +364,12 @@ So here's the shoe.
 And it's, of course, going to buckle the shoe, because you need to make sure the shoe is buckled.
 And here's another example, putting some batteries into a remote while an annoying graduate student distracts the robot by throwing objects into the background.
 I guess this is the kind of thing you want to do to stress test your policies to make sure that they're pretty good with the distractors.
+
+[p.40]
+
 And here's the last case study that I'll present.
 This is a autoregressive discretization method.
-And in this work called RT1, the model is actually a transformer model that reads in a history of prior images and the language instruction and actually outputs a per-dimension discretization of the arm and base motion commands.
+And in this work called RT-1, the model is actually a transformer model that reads in a history of prior images and the language instruction and actually outputs a per-dimension discretization of the arm and base motion commands.
 So it's a wheeled robot, so it can move the base and it can actually move the arm.
 And all of those dimensions are discretized.
 And that makes the entire control problem kind of a sequence to sequence problem.
@@ -308,7 +377,10 @@ So it's a sequence of images and text, converted into a sequence of per-dimensio
 And because it's language condition, it can actually learn to perform a wide variety of different tasks when provided with a suitably large data set.
 And when it's language condition, you can actually do fun things like connect it up to a large language model that will then parse complex instructions like bring me the rice chips from the drawer.
 And then say, well, to do that, you have to first go to the drawer and then things like open the drawer.
-And that's then commanded to this RT1 model, which then selects the per-dimension actions using that action discretization trick.
+And that's then commanded to this RT-1 model, which then selects the per-dimension actions using that action discretization trick.
 There's, of course, a lot more going on in this paper than just autoregressive discretization.
 But I wanted to show this as just one example of that method really working in practice.
+
+[p.41]
+
 Okay, so I'll pause there and I'll resume in the next part.

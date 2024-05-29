@@ -5,7 +5,7 @@ Okay, so what are language models, and why should we care about them?
 Well, a language model at its basic level is a model that predicts next tokens.
 You can roughly think of tokens as words, although in reality they're not words, they're more like combinations of characters.
 It's actually a little complex as to what a token is, but roughly speaking, it's some granular representation of natural language.
-Typically, we use transformers for language models, and the way this works is we take our sequence of words, and we take our sequence of tokens, x0, x1, x2, x3.
+Typically, we use transformers for language models, and the way this works is we take our sequence of words, and we take our sequence of tokens, x_0, x1, x2, x3.
 At every position, we have a little encoder that encodes discrete tokens into a continuous space, along with an encoding of their place in the sequence.
 Basically, their place in the sequence is an integer, 0, 1, 2, 3, 4.
 And those are encoded into a continuous representation, which is then passed to what is called a masked self-attention layer, which is essentially a transformer that can produce a representation at each position, conditional representation.
@@ -14,7 +14,7 @@ Those are then transformed with some per-position nonlinear transformations, and
 And that's essentially what a transformer is.
 And then at the end, at every position, we read out a distribution over the token to predict, which is basically just a softmax.
 And then we predict the next token.
-So, at the first time step, we read in x0 and p0, and then we make a prediction about x1.
+So, at the first time step, we read in x_0 and p0, and then we make a prediction about x1.
 And if we're decoding, then, for example, we would start off with some token like the word i.
 We decode some word like like.
 That word is then used as the conditioning information for the second time step.
