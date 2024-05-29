@@ -1,23 +1,28 @@
+[p.12]
+
 All right, so let's talk about some actual exploration algorithms.
 And for now, we'll still be in the multi-armed bandit setting, and we will be concerned with theoretically principled strategies, strategies that theoretically get good regret, good meaning not too far off from actually solving the POMDP.
+
+[p.13]
+
 So how can we beat the bandit?
 How can we minimize this measure of regret?
 Well, it turns out there are a variety of relatively simple strategies that provably get regret that is optimal in the big O sense.
 And we can often provide theoretical guarantees on their regret.
 Now, these algorithms are optimal up to a constant factor, so we're going to do kind of a big O thing.
 But their actual empirical performance could vary, and not all of them perform the same when you actually use them in numerical simulations.
-The exploration strategies that we will then learn about from more complex MDP domains will then be inspired.
-So let's talk about the MDPs.
-So the MDPs are the ones that are inspired by these tractable strategies.
+The exploration strategies that we will then learn about from more complex MDP domains will then be inspired by these tractable strategies.
+
+[p.14]
+
 Okay, so the first one I'll talk about is optimistic exploration.
 So in optimistic exploration, here's what we're going to do.
-Normally, if you are just trying to do pure exploitation, one of the ways you could do it is you could estimate for each of your actions the average reward that that action gets.
-And if you just want to exploit, if you don't care about exploring very well, you could do that.
-You could just pick the action that has the largest current average reward.
+Normally, if you are just trying to do pure exploitation, one of the ways you could do it is you could estimate for each of your actions the average reward that action gets.
+And if you just want to exploit, if you don't care about exploring very well, you could just pick the action that has the largest current average reward.
 If you're not going to be allowed to update your strategy later, this is kind of the best you can do.
 So if you're in pure exploitation mode, the optimal thing to do is just keep picking the action that seemed on average to be the best.
 You could instead construct an optimistic estimate by taking the mean of the reward for that action and adding some constant C times a standard deviation.
-So what this will do is it'll select, select actions that have a very high mean or that have a lower mean but a very high standard deviation, meaning actions for which you're really uncertain about what reward you're going to get.
+So what this will do is it'll select actions that have a very high mean or that have a lower mean but a very high standard deviation, meaning actions for which you're really uncertain about what reward you're going to get.
 So the σ is some sort of variance estimate.
 And if you do this, you're kind of being optimistic.
 You're saying, I would guess that anything that I haven't learned about thoroughly might be good.
@@ -28,19 +33,21 @@ The intuition is you try each arm until you're sure that it's not good.
 Once you're convinced that an arm is bad, then you stop trying it.
 So it turns out that there are many very tractable ways to estimate this uncertainty that still work very well.
 And some of them are really, really simple.
-So one very, very simple way to estimate this uncertainty is to simply add some quantity to your mean that scales as the inverse of the number of times you've got.
-So you can do this by taking the number of times that you've pulled that arm.
-So this particular bonus is the square root of two times the natural log of the number of time steps divided by n of a, where n of a is the number of times you've pulled arm a.
+So one very, very simple way to estimate this uncertainty is to simply add some quantity to your mean that scales as the inverse of the number of times you've pulled that arm.
+So this particular bonus is the square root of two times the natural log of the number of time steps divided by N(a), where N(a) is the number of times you've pulled arm a.
 So intuitively, this bonus will decrease as you pull an arm more often.
 But for arms that you've pulled very rarely, the bonus is very, very large.
-And the log of t in the numerator is there to basically ensure that you explore less and less as you've taken more steps.
-And this kind of very simple bonus that you add to your mean turns out to theoretically get O of log t regret, which is probably as good as any algorithm.
-So O of log t regret is actually the best that you can do asymptotically for multi-armed bandit, and this algorithm gets that regret.
+And the log of T in the numerator is there to basically ensure that you explore less and less as you've taken more steps.
+And this kind of very simple bonus that you add to your mean turns out to theoretically get O(logT) regret, which is probably as good as any algorithm.
+So O(logT) regret is actually the best that you can do asymptotically for multi-armed bandit, and this algorithm gets that regret.
 So that's the same big O regret as actually solving the POMDP in general.
 So that's very nice.
 This suggests that a very, very simple strategy that simply adds a bonus to arms that you haven't pulled very much ends up getting asymptotically optimal regret.
 And many of the practical exploration algorithms that we'll learn about for Deep RL build on this intuition of optimistic exploration.
 This is also sometimes called optimism in the face of uncertainty.
+
+[p.15]
+
 Okay.
 Another strategy that we can use to explore for bandit problems is what's called probability matching or posterior sampling.
 So optimistic exploration, like I described before, is a very model-free approach.
@@ -48,10 +55,10 @@ It's not trying to explicitly model any uncertainties, just counting how many ti
 It's asymptotically optimal, but in practice it's not always actually the best method.
 In practice there are some empirical differences.
 So one way that you could do exploration as an alternative is to actually do something that is a little closer to that POMDP.
-So you could actually maintain that, you could actually maintain a belief state over your θs.
+So you could actually maintain a belief state over your θs.
 So you could say, well, you have this POMDP with states θ, and you're going to maintain a belief over those θs in some very approximate way.
 So this is a kind of model of your bandit.
-This P hat of θ is a distribution over possible bandits that you think you might have.
+This ^{p}(θ) is a distribution over possible bandits that you think you might have.
 The posterior sampling or probability matching strategy says the way that you should explore is you sample a vector of θs from your belief and then pretend that that's the true MDP and take the optimal action.
 So if you sample a bunch of θs and then take the action that is best according to that model, then you will either find that you got the right answer, meaning you'll find the model you sampled is pretty accurate and you did in fact get the higher reward that you expected, or you'll get a counterexample to that model.
 So if you sample the model and it says that action one is really good, you pull arm one and you find that arm one is actually terrible, now your belief is going to change and the next time around you won't sample that model anymore because it will have much lower probability.
@@ -62,9 +69,12 @@ And then of course you update your model and then repeat.
 So this is called posterior sampling, probability matching, or sometimes it's called Thompson sampling.
 So if someone says Thompson sampling, what they really mean is maintain a belief over your model, sample a model, pretend that model is the right one, take the optimal action under that model, and then update the model distribution based on what you observed.
 Now this is much harder to analyze theoretically, but it can work very well empirically.
-So to learn more about this, check out this paper by Chepet and Kovacic.
-It's called the empirical evaluation of Thompson sampling.
+So to learn more about this, check out this paper by Chapelle and Li.
+It's called "An Empirical Evaluation of Thompson Sampling".
 And in general, exploration methods based on Thompson sampling are a very large class of exploration methods very commonly studied both in Bandits and in deep reinforcement learning.
+
+[p.16]
+
 Alright, the third class of methods that we're going to discuss are methods that use some notion of information gain.
 So these methods are even more explicitly model-based.
 The idea here is based on something called Bayesian experiment design.
@@ -75,47 +85,53 @@ But we can't look at z directly.
 So z might be maybe the optimal action or the value of the optimal action, some unknown quantity.
 But we can take actions.
 And the question is, which actions should we take, to learn about z?
-So we're going to use h of ^{p} of z to denote the current entropy of our z estimate.
-So this is how uncertain we are about ^{p} of z.
-And then we can use h of ^{p} of z given y to be the entropy of our z estimate after some observation y.
+So we're going to use H(^{p}(z)) to denote the current entropy of our z estimate.
+So this is how uncertain we are about ^{p}(z).
+And then we can use H(^{p}(z)|y) to be the entropy of our z estimate after some observation y.
 So if y is informative about z, then this entropy of z given y will be lower than the entropy of z.
 So y might be the reward that we actually observed.
 So the lower this conditional entropy is, the more precisely we know z.
-So intuitively, we would like to do things that result in y's for which the conditional entropy of z given y is as low as possible.
-So information gain is quantified as the difference between the entropy of ^{p} of z now, and the entropy we get after observing y.
+So intuitively, we would like to do things that result in 'y's for which the conditional entropy of z given y is as low as possible.
+So information gain is quantified as the difference between the entropy of ^{p}(z) now, and the entropy we get after observing y.
 The problem is, we don't know which y we're going to observe.
 If we knew which y we're going to observe, we would have already observed it, and our belief would have changed.
-So the information gain about z from y is defined as the expected value, under our distribution over y, of the difference in the entropy of ^{p} of z, and the entropy of ^{p} of z given y.
+So the information gain about z from y is defined as the expected value, under our distribution over y, of the difference in the entropy of ^{p}(z), and the entropy of ^{p}(z) given y.
 So it's saying you don't know y, but you have some belief about y, and you can measure, under your belief about y, how your entropy over z will change.
 So this information gain will allow us to quantify how much we want to observe y.
 If we can choose to observe y, will that tell us a lot about z?
 Now typically, if we're doing some kind of exploration thing, we want this to depend on the action.
 So we would have the information gain about z from y given some action a, in which case we would make all these distributions conditional on a.
+
+[p.17]
+
 So this is how much we learn about z from action a, given our current beliefs.
 So you would use a conditional expectation.
-So an example algorithm that uses this idea is described in this paper by Russo and Van Roy, called Learning to Optimize via Information-Directed Sampling.
+So an example algorithm that uses this idea is described in this paper by Russo and Van Roy, called "Learning to Optimize via Information-Directed Sampling".
 And the choice they have to make is, what do you gain information about, and what is the variable that you're going to actually observe?
-So they say that the variable that you observe is the reward for action a, and the variable that you want to learn is θ a, meaning the parameters for the model for action a.
+So they say that the variable that you observe is the reward for action a, and the variable that you want to learn is θ_a, meaning the parameters for the model for action a.
 So when you observe a reward, you don't actually know what distribution that reward comes from.
 So what you want to learn about is the parameters for that reward, for that action, and what you observe is a sample from that distribution.
-So they define information gain about θ i from observing r a given the action a.
+So they define information gain about θ_a from observing r_a given the action a.
 So this is the information gain of some action a.
-And they define this quantity called δ a, which is the expected sub-optimality of some action a.
+And they define this quantity called Δ(a), which is the expected sub-optimality of some action a.
 So this is saying, under your current belief about the MDP, what is the difference between the optimal action, for what you think the model might be, and the action that you're currently considering.
-So this is called δ a.
-Now crucially, you don't know a star, so δ a is an expectation, but the expectation is in expectation over your model distribution.
-So g a is saying, how informative is this action?
-Delta a is saying, how sub-optimal do you think this action might be?
+So this is called Δ(a).
+Now crucially, you don't know a{*}, so Δ(a) is in expectation over your model distribution.
+So g(a) is saying, how informative is this action?
+Δ(a) is saying, how sub-optimal do you think this action might be?
 And the intuition will be that you want to take actions that are informative, but you don't want to take actions that are highly sub-optimal.
-So the particular decision rule that they analyze in this paper, and they show this to be quite good, is δ a squared divided by g of a.
+So the particular decision rule that they analyze in this paper, and they show this to be quite good, is Δ(a)^2 / g(a).
 And then you take the min of this.
-So intuitively, you want to choose the least important, least sub-optimal action, but you divide by the information gain.
+So intuitively, you want to choose the least sub-optimal action, but you divide by the information gain.
 So if the information gain is very, very large, then because you're dividing, you would have a small value, which means that might be the min, even if its sub-optimality is large.
 So don't bother taking actions if you know that you won't learn anything.
-So if g of a is very small, then this will blow up this value.
-But don't take actions if you're sure that they're sub-optimal, because if δ a is extremely small, then you won't take this action either.
-Okay, so if you want to learn more about this strategy, check out the paper by Russo and Van Roy, called Learning to Optimize via Information-Directed Sampling.
+So if g(a) is very small, then this will blow up this value.
+But don't take actions if you're sure that they're sub-optimal, because if Δ(a) is extremely small, then you won't take this action either.
+Okay, so if you want to learn more about this strategy, check out the paper by Russo and Van Roy, called "Learning to Optimize via Information-Directed Sampling".
 But the short versions that they show this strategy is also very, very good, although it's a bit more mathematically involved.
+
+[p.18]
+
 All right, so the general themes that we learned about, we learned about upper confidence bound or optimistic exploration, which is when you take the average expected reward for some action, and you add a bonus to it.
 Which scales as the inverse of the number of times you've taken that action, meaning that actions that haven't been taken very often get a really large bonus, and then you're really incentivized to take them more.
 We learned about Thomson sampling, where you maintain a belief over θ, you sample from that belief, and then you take the optimal action according to that sample.
@@ -127,11 +143,14 @@ Usually you assume some kind of value to new information.
 And this is essential, because if you don't know where the reward is, kind of the best thing you can do is just say, learning stuff is good.
 Because you can't just say, explore to maximize reward, because the whole point is that you don't know where the reward is.
 So usually you have to assume some kind of value to gaining new information.
-So in the case of Optimus, you assume that unknown things are good.
+So in the case of optimism, you assume that unknown things are good.
 In the case of Thomson sampling, you assume that your sample is kind of the ground truth.
 In the case of information gain, you assume that information gain is desirable.
 Now these assumptions might seem a little arbitrary, but the reason that we're comfortable making those assumptions is because in these theoretically tractable bandit settings, we can show that the resulting algorithms are provably optimal.
 We won't be able to show that same thing in the more complex domains I'll talk about next, but we'll sort of have the intuition to guide us from these more principled algorithms.
+
+[p.19]
+
 All right.
 So why should we care about these multi-armed bandit settings?
 Well, bandits are much easier to analyze and understand, and you can use them to derive foundations for more practical exploration algorithms.

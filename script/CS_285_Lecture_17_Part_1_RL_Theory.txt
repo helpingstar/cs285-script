@@ -111,7 +111,7 @@ So we'll start with some basic sample complexity analysis and a lot of what I'll
 So we'll start with the oracle exploration assumption, meaning that for every state action tuple we can sample the next state s' n times.
 And the algorithm that we'll start with is a very basic kind of model-based algorithm.
 Now I use the term model-based rather loosely, this is actually a pretty idealized algorithm.
-So what we're going to do is we're going to estimate the transition probabilities P hat s' given S a simply by counting the number of times that we transition into s' from S a.
+So what we're going to do is we're going to estimate the transition probabilities ^{p} s' given S a simply by counting the number of times that we transition into s' from S a.
 A very simple tabular estimation strategy.
 So there's no function approximation here, there's no neural net, we're just doing tabular estimation, we're literally counting, how many times we land in a particular state s'.
 This, of course, only makes sense if the states are discrete and the actions are discrete, and we can build a table with all these numbers.
@@ -487,7 +487,7 @@ And then we apply this convenient identity, and we see that this is less than or
 But we know from our main result that Q π minus Q hat π is less than or equal to ϵ for all policies π, which means that this whole thing is also less than or equal to ϵ.
 Okay, so that's pretty convenient.
 We just directly took our result, and we used it to relate the optimal Q functions.
-But this doesn't actually tell us what the performance of the policy that we find under P hat will be in the true MDP.
+But this doesn't actually tell us what the performance of the policy that we find under ^{p} will be in the true MDP.
 So that's the other question.
 What is the difference between Q star and the true Q function corresponding to π hat star, corresponding to the policy that we get by doing the argmax action under Q hat star?
 Here, the analysis is a little bit more involved.
