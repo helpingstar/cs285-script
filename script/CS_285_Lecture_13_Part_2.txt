@@ -134,7 +134,7 @@ But the short versions that they show this strategy is also very, very good, alt
 
 All right, so the general themes that we learned about, we learned about upper confidence bound or optimistic exploration, which is when you take the average expected reward for some action, and you add a bonus to it.
 Which scales as the inverse of the number of times you've taken that action, meaning that actions that haven't been taken very often get a really large bonus, and then you're really incentivized to take them more.
-We learned about Thomson sampling, where you maintain a belief over θ, you sample from that belief, and then you take the optimal action according to that sample.
+We learned about Thompson sampling, where you maintain a belief over θ, you sample from that belief, and then you take the optimal action according to that sample.
 And we learned about information gain, where you try to estimate how much information you can gain about some quantity of interest z, based on some observation y, given some action a.
 And then you might want to, for example, gain information about the model, using the rewards as your observations.
 Now, most exploration strategies do require some kind of uncertainty estimation, as we saw.
@@ -144,7 +144,7 @@ And this is essential, because if you don't know where the reward is, kind of th
 Because you can't just say, explore to maximize reward, because the whole point is that you don't know where the reward is.
 So usually you have to assume some kind of value to gaining new information.
 So in the case of optimism, you assume that unknown things are good.
-In the case of Thomson sampling, you assume that your sample is kind of the ground truth.
+In the case of Thompson sampling, you assume that your sample is kind of the ground truth.
 In the case of information gain, you assume that information gain is desirable.
 Now these assumptions might seem a little arbitrary, but the reason that we're comfortable making those assumptions is because in these theoretically tractable bandit settings, we can show that the resulting algorithms are provably optimal.
 We won't be able to show that same thing in the more complex domains I'll talk about next, but we'll sort of have the intuition to guide us from these more principled algorithms.

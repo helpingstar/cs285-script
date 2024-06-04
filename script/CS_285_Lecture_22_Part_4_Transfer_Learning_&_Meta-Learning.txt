@@ -59,7 +59,7 @@ Supervised meta-learning maps d train in x to y, where x is a test point.
 So supervised learning maps d train in x to y, where x is a test point.
 So supervised learning maps d train in x to y, where x is a test point.
 Model agnostic meta-learning, at least in the supervised setting, can also be viewed as a function of d train in x, except that the function has a special structure.
-So f-mammal applied to d train in x is just f θ prime of x, where θ prime is obtained by taking a gradient step.
+So f-mammal applied to d train in x is just f θ' of x, where θ' is obtained by taking a gradient step.
 So what this makes clear is that this is really just another computation graph.
 It's just another architecture.
 It's just another architecture.

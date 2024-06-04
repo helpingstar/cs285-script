@@ -1,5 +1,5 @@
-All right, next I'm going to discuss algorithms for exploration in DeepRL that draw on the ideas from posterior sampling or Thomson sampling that I've discussed before.
-So as a reminder, Thomson sampling or posterior sampling in a bandit setting refers to the case where we actually estimate a model of our bandit.
+All right, next I'm going to discuss algorithms for exploration in DeepRL that draw on the ideas from posterior sampling or Thompson sampling that I've discussed before.
+So as a reminder, Thompson sampling or posterior sampling in a bandit setting refers to the case where we actually estimate a model of our bandit.
 So if the θ is parametrized, the distribution over the bandit's rewards, we would actually maintain a belief over θ.
 And then at each step of exploration, we would sample the θs based on our beliefs and take the action that is the argmax of the bandit described by that corresponding model.
 So in the DeepRL setting, we could ask, well, what is it that we should sample and how do we represent the distribution?
@@ -12,7 +12,7 @@ The analog in MDPs would be a Q function, because in a bandit, the instantaneous
 In MDP, we don't choose our action as the argmax of the reward.
 We choose the action as the argmax of the Q function.
 So the way that we could adapt...
-adopt posterior sampling or Thomson sampling, and this is not the only way, but this is one particularly simple way, is to sample a Q function from a distribution over Q functions, and then act according to that Q function for one episode, and then update your Q function distribution.
+adopt posterior sampling or Thompson sampling, and this is not the only way, but this is one particularly simple way, is to sample a Q function from a distribution over Q functions, and then act according to that Q function for one episode, and then update your Q function distribution.
 And then repeat.
 Now, since the Q learning is off policy, we actually don't care which Q function was used to collect that episode.
 We can train all, you know, our whole distribution over Q functions, on the same data.
