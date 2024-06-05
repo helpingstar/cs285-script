@@ -79,7 +79,7 @@ All right, so let's tie this into RL a little bit.
 So the kind of information theoretic quantities that will be useful in our discussion today's lecture will be the following.
 I'll use π of s to denote the entropy of X.
 And I'll use π of s to denote the state marginal distribution of policy π.
-In previous lectures, I also referred to this sometimes as p θ of s.
+In previous lectures, I also referred to this sometimes as p_θ(s).
 Same exact thing.
 When I write h of π of s, this refers to the state marginal entropy of the policy π.
 Now, this is kind of an interesting quantity because it quantifies the coverage that our policy gets.

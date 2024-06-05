@@ -18,10 +18,10 @@ And a lot of the technical complexity in using these methods is really in the na
 So there are a few approximations.
 One approximation we could make is something called prediction gain.
 Prediction gain is not the same as information gain, but it can be shown to be a crude approximation to information gain.
-Prediction gain is the difference between log p θ of s and log p θ' of s and log p θ of s.
+Prediction gain is the difference between log p_θ(s) and log p θ' of s and log p_θ(s).
 So if we want to use information gain, we have to make some kind of approximation.
 Prediction gain is something called prediction gain.
-Prediction gain is something called a pseudo count of s and log p θ of s.
+Prediction gain is something called a pseudo count of s and log p_θ(s).
 So if you think back to the electron pseudo counts, θ' denotes the new parameters of a density model that we get after updating on the latest state θ.
 So if you just compare the log probabilities of that new state before and after updating on it, that refers to something called prediction gain.
 Prediction gain is something called prediction gain, which is an approximation for information gain.
