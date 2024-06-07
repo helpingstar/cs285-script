@@ -2,7 +2,7 @@ All right.
 Now let's talk about how amortized variational inference can allow us to basically learn this Q of Z given X and thereby make variational inference an applicable tool, even in settings where the data set size is extremely large.
 So to recap what we had before, our variational inference procedure for training the model parameters θ basically looks something like this.
 For every image x_i or data point x_i in our data set, or more generally for every mini-batch, you would estimate the gradient with respect to θ of your variational lower bound Li, P, Q.
-And the way you would do this is by sampling a Z from the approximate posterior QI of Z, then estimating the gradient, which would simply be the gradient with respect to θ of log P θ of x_i given Z, which is the single sample estimator using the one sample that you just got from QI.
+And the way you would do this is by sampling a Z from the approximate posterior QI of Z, then estimating the gradient, which would simply be the gradient with respect to θ of log p_θ of x_i given Z, which is the single sample estimator using the one sample that you just got from QI.
 of the expectation.
 Then you take a gradient step using this estimated gradient ∇ θ Li, and then you update QI to maximize the bound Li and thereby tighten it.
 And the issue, of course, is with how you maximize the bound.
@@ -118,12 +118,12 @@ So this is actually a very simple way to calculate derivatives.
 The only unusual thing is that you have to sample these ϵs.
 Otherwise it looks like just any other neural network.
 Here's another way you can look at it.
-You can take your original variational lower bound, the expected value with respect to z of log p θ x_i given z plus log p of z plus the entropy of q.
+You can take your original variational lower bound, the expected value with respect to z of log p θ x_i given z plus log p(z) plus the entropy of q.
 Write it out as three terms.
-So there's an expectation under z of the decoder, p θ x_i given z, plus an expectation under z of the prior, log p of z plus the entropy.
-The second term is essentially the equation for the KL divergence between q ϕ of z given x and p of z.
+So there's an expectation under z of the decoder, p θ x_i given z, plus an expectation under z of the prior, log p(z) plus the entropy.
+The second term is essentially the equation for the KL divergence between q ϕ of z given x and p(z).
 Because KL divergence has an entropy term and an expected value term.
-And if our prior p of z is also Gaussian, the KL divergence between two Gaussian distributions has a convenient analytic form.
+And if our prior p(z) is also Gaussian, the KL divergence between two Gaussian distributions has a convenient analytic form.
 So if you look up KL divergence between two Gaussians, you'll just find an equation expressed in terms of the means of the variances of those Gaussians.
 Just like you'll find an equation for the entropy.
 So that means that you don't need any fancy gradient estimator for this.
@@ -138,7 +138,7 @@ And now everything in this equation you can directly code up in your automatic d
 So the log p θ of x_i given q ϕ x_i plus ϵ, σ ϕ xi.
 That is just calling the neural network representation for p θ with an input dependent on the neural network representation for μ_ϕ and σ ϕ.
 So everything here can be back propped through, and ϵ is just treated as a constant.
-The second term, the KL divergence, has a closed form equation for it, expressed in terms of the means and variances of q and p of z.
+The second term, the KL divergence, has a closed form equation for it, expressed in terms of the means and variances of q and p(z).
 So you could think of it like this.
 You have your inference network, parameterized by ϕ, which takes in x_i and it outputs two quantities.
 A mean μ_ϕ of x_i and a σ ϕ of xi.

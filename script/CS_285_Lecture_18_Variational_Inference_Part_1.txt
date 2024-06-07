@@ -45,7 +45,7 @@ This is a type of latent variable model.
 Take a moment to think about what the latent variable here is.
 So in this case the latent variable is actually a categorical discrete variable that can take on one of three values corresponding to the three cluster identities.
 And we can represent this latent variable model as a sum over all the possible values of the latent variable of the conditional distribution over the variable that we're modeling which is x given the latent variable z times the probability of that.
-So here p(x) is given by sum over z of p(x) given z times p of z.
+So here p(x) is given by sum over z of p(x) given z times p(z).
 Z is a categorical variable that takes on one of three values corresponding to the identity of the cluster and x is a two-dimensional continuous variable of course a superposition.
 corresponding to the actual location of the point.
 We can do the same exact thing for conditional models.
@@ -68,35 +68,35 @@ belongs to itself.
 Once again, công� Lauta-umi is a division Utilize perform the n Zusammenalt The equation ⋅ .
 stands for this Зап educación.
 means and variances of the Gaussians, and it's also outputting the W's, the probabilities of each mixture element.
-So in fact, this model is given by a sum over z of p(y) given x comma z times p of z given x.
+So in fact, this model is given by a sum over z of p(y) given x comma z times p(z) given x.
 So it's actually a little different than the equation I've written here.
-Here in the picture right there, the p of z actually depends on x.
+Here in the picture right there, the p(z) actually depends on x.
 So it's a design choice that we make.
 All right, so in general, if you have a latent variable model, you could think about it like this.
 You have some complicated distribution over x, represented by this picture.
 So p(x) is some complicated thing.
-You have some prior over z, p of z.
+You have some prior over z, p(z).
 Typically, we would choose this prior to be a simpler distribution.
-Maybe z is categorical, so p of z is a simpler distribution.
-Maybe z is a discrete distribution, or maybe z is continuous, but p of z is some very simple class of distributions, like a Gaussian distribution.
+Maybe z is categorical, so p(z) is a simpler distribution.
+Maybe z is a discrete distribution, or maybe z is continuous, but p(z) is some very simple class of distributions, like a Gaussian distribution.
 And then we might represent the mapping from z to x, the p(x) given z, as some simple conditional distribution.
 So p(x) given z maybe could be a neural network, where the mean is given by a neural net function of z, and the variance is given by a neural net function of z.
 Now, those functions might be very complicated, but the actual distribution, x given z, could be very simple.
 It could be, for example, a Gaussian, a normal distribution.
-So p of z is a simple distribution.
+So p(z) is a simple distribution.
 P of x given z is also a simple distribution.
 The parameters of that simple distribution might be complicated, but the distribution is simple.
 For example, something that can be parametrized explicitly.
 This is a very important point to understand, especially what I mean by the word simple.
 Here, p(x) is not simple, because it is very hard to find a single parametrization, like a Gaussian distribution or a beta distribution, that perfectly captures p of x.
-P of z is simple, because a simple distribution like a Gaussian captures it perfectly.
+p(z) is simple, because a simple distribution like a Gaussian captures it perfectly.
 P of x given z is also simple, because you could represent it with a Gaussian distribution, although the parameters of that Gaussian distribution may be very complex.
 Now, of course, I'm using Gaussian distributions as an example here.
 These could be different kinds of distributions, different parametrizations.
 They could be discrete or continuous.
 So this is just an example.
-But in general, p(x) would be given by some sum or integral over all possible values of z, of p(x) given z times p of z.
-So what's going on here is that both p of z and p(x) given z are simple, but their product, when you integrate them, is a simple distribution.
+But in general, p(x) would be given by some sum or integral over all possible values of z, of p(x) given z times p(z).
+So what's going on here is that both p(z) and p(x) given z are simple, but their product, when you integrate them, is a simple distribution.
 So what's going on here is that both p(x) and p(x) are simple, but their product, when you integrate them, is a simple distribution.
 And this is a very powerful idea, because it allows us to represent complicated distributions as products of simple distributions that we can learn and parametrize.
 All right.
@@ -104,10 +104,10 @@ So we have two easy distributions.
 Multiply them and integrate out z.
 The same exact thing can happen in the conditional case.
 So in the example I had before, conditional latent variable models for multimodal policies, you could have a Gaussian mixture on the output, or more generally, you could have some latent variable, let's call it z, that serves as an additional input into the model.
-And you have some prior p of z.
+And you have some prior p(z).
 And you have your conditional p(y) given x comma z.
 And the same exact logic as on the previous slide would apply.
-So p of z would be simple.
+So p(z) would be simple.
 p of y given x comma z would be simple.
 But the result of integrating out z, meaning the resulting distribution p(y) given x, could be extremely complex.
 Another case where these kinds of things come up is model-based reinforcement learning.
@@ -182,19 +182,19 @@ So the objective we're going to use is the sum over all of our data points of th
 So the intuition is you guess the most likely Z given X i and pretend it's the right one.
 Although, of course, in reality, you don't actually guess just one Z.
 You actually sum over all the Z's weighted by their probability of being the right one.
-So there are many possible values of Z, so you use the distribution p of Z given X i.
+So there are many possible values of Z, so you use the distribution p(z) given X i.
 Alright, so first of all, why is a subjective more tractable?
 Well, because expected values can be estimated with samples.
 Right, so that expected value, if you want to get an unbiased estimate of the expected value, you don't need to actually consider all Z's.
-You can simply sample from the posterior p of Z given X i, and then average together the log probabilities of those samples.
+You can simply sample from the posterior p(z) given X i, and then average together the log probabilities of those samples.
 You can't do that trick on the previous slide.
 You can't do that trick if you have the log of the integral, because the log of an integral or sum doesn't decompose linearly.
 But the sum does, so you can estimate it with samples.
 So the tractable algorithm for estimating this, just like we saw with policy gradient, is to just sample from Z given X i and average together the log probabilities, and you can do, of course, the same thing for the gradient.
-So if you can get this posterior p of Z given X i, then you can calculate the expected log likelihood in a tractable way, and calculate its gradient in a tractable way.
-But then the big challenge becomes, how do we calculate p of Z given X i?
+So if you can get this posterior p(z) given X i, then you can calculate the expected log likelihood in a tractable way, and calculate its gradient in a tractable way.
+But then the big challenge becomes, how do we calculate p(z) given X i?
 If we could just calculate that quantity, then we could estimate the expected log likelihood.
 So this is going to be the topic for the next part of the lecture.
-So when you want to estimate p of Z given X i, what you're really saying is, given some point in X, map it back to distribution over Z's, which might be some fairly complex distribution, and then calculate the expected log likelihood under that distribution.
+So when you want to estimate p(z) given X i, what you're really saying is, given some point in X, map it back to distribution over Z's, which might be some fairly complex distribution, and then calculate the expected log likelihood under that distribution.
 All right, so that's what we're going to talk about.
 In the next part of the lecture.

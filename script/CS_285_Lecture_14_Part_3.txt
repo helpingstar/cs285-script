@@ -107,7 +107,7 @@ And in self-play, what you're supposed to do is you're supposed to return the hi
 So the final iterate is not the Nash equilibrium, but the mixture of all the iterates is the Nash equilibrium.
 And this is a very well-known result in game theory.
 So essentially, you can prove that this π^{*} that I have in step three, which is a mixture of all the π k's, is the Nash equilibrium for this two-player game.
-And that means that it's going to be minimizing the scale divergence between p_π and p star.
+And that means that it's going to be minimizing the KL divergence between p_π and p star.
 If you want to learn more about this, if you want to go into more detail about this, check out these two papers linked at the bottom of the slide, Efficient Exploration via State Marginal Matching and Provably Efficient Matching.
 So now it should be exploration.
 Okay, so a few experiments.

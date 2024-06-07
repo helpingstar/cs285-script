@@ -33,7 +33,7 @@ So for example, policy gradients are a classic example of this.
 Every iteration, they collect some trials, they use those trials to improve the policy, and then they discard them and collect some more.
 We learned about off-policy RL techniques like Q-learning, which you can kind of think of it as a buffered version of on-policy RL.
 So for off-policy methods, they buffer all their data into the replay buffer, and then they replay from that buffer, which is great for improving data efficiency.
-But the off-policy RL methods that we learned about so far in the course actually do require additional online collection, meaning that after you update the policy, you do need to use that policy to collect some more data, perhaps with some exploration scheme like Epsilon Greedy.
+But the off-policy RL methods that we learned about so far in the course actually do require additional online collection, meaning that after you update the policy, you do need to use that policy to collect some more data, perhaps with some exploration scheme like ϵ-greedy.
 It might not be completely obvious why this is the case, and we'll actually analyze this shortly.
 We'll actually discuss what happens if you simply run an off-policy RL algorithm, but then stop collecting more data.
 So the main topic for today's lecture will be to figure out how to devise offline RL algorithms, and these are also sometimes called batch reinforcement learning algorithms, and also less often fully off-policy reinforcement learning algorithms.

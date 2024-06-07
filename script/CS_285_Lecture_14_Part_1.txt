@@ -53,9 +53,9 @@ The mutual information between two variables X and Y, which we write with a semi
 So you can have mutual information between X together with Z and Y, in which case you would write I of X comma Z semicolon Y.
 This is defined as the KL divergence, and remember KL divergence is a measure of how different two distributions are.
 It's defined as the KL divergence between the joint distribution over X and Y and the product of their marginals.
-So intuitively, if X and Y are independent of each other, then their joint will just be their product of marginals and the scale divergence will be zero.
+So intuitively, if X and Y are independent of each other, then their joint will just be their product of marginals and the KL divergence will be zero.
 As X and Y depend on each other more and more, their joint distribution will be more and more different from their product of marginals.
-In which case you'll see the scale divergence go up.
+In which case you'll see the KL divergence go up.
 Now we can write the mutual information as the expected, you know, just using the definition of KL divergence, as the expected value under the joint distribution over X and Y of the log of the ratio of the joint and the product of marginals.
 Intuitively, you can think of it like this.
 If these green dots represent samples from our distribution, here looking at this picture, you notice that there is a clear trend.

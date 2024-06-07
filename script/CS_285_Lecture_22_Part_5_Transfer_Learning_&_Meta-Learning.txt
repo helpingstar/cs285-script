@@ -60,7 +60,7 @@ was...
 as...
 but let's talk about the other category of pump DP solvers, ones that perform explicit state estimation.
 It turns out that this will also lead to a class of meta-learning algorithms with some interesting properties.
-So, these meta-learning algorithms will aim to directly estimate P of Zt given a history of states, a history of actions, and a history of rewards.
+So, these meta-learning algorithms will aim to directly estimate p(z)t given a history of states, a history of actions, and a history of rewards.
 Now, in reality, you don't know what Z is.
 Z is some kind of latent variable.
 so we're going to train in a similar way as we trained latent variable models from before, where we're going to use variational inference to acquire a learned representation of tasks.

@@ -23,7 +23,7 @@ Of course, the expected reward portion of the objective, its gradient is exactly
 The only new thing is the entropy.
 So the intuition behind this procedure is that the policy π will be proportional to the exponentiated Q value, or equal to the exponentiated advantage, when π minimizes the KL divergence between π and the n-th derivative.
 So we're going to go back to the previous example and see what the and 1 over z times the exponentiated q.
-And of course the scale divergence is equal up to a constant to the expectation under π of q minus the entropy of π.
+And of course the KL divergence is equal up to a constant to the expectation under π of q minus the entropy of π.
 So this is actually often referred to as an entropy regularized policy gradient, and it can be a good idea for policy gradients because it combats premature collapse of the policy entropy.
 Remember that the on-policy policy gradient algorithm explores entirely with the stochasticity that's present in the policy.
 So if the policy becomes too deterministic too early, you'll get very bad results.

@@ -102,7 +102,7 @@ I'm going to try to do a little bit of a test.
 I'm going to try to do a little bit of a test.
 I'm going to try to reduce the variance of these importance weights further.
 So I'm going to introduce a little bit of notation.
-I'm going to introduce rho T prime and rho T prime will denote P θ A T prime given S T prime divided by π beta A T prime given S T prime.
+I'm going to introduce rho T prime and rho T prime will denote p_θ A T prime given S T prime divided by π beta A T prime given S T prime.
 So I'll just condense that ratio into rho T prime.
 So now we can see that this important sampled value estimator is a sum over all the time steps of a product of all the rows up until that time step times γ T R T.
 And it's that product of rows that we're concerned about.

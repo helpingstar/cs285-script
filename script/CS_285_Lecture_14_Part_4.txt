@@ -26,12 +26,12 @@ And that will ensure that for every z, you do something unique.
 Another way of putting this is, if you look at what states the policy visited, you should be able to guess which z it was trying to fulfill.
 So one of the ways to do this is to have the reward be a classifier.
 A classifier that guesses which z you are doing based on which state you're in.
-So this classifier predicts p of z given s and will assign rewards as log p of z given s.
+So this classifier predicts p(z) given s and will assign rewards as log p(z) given s.
 So we want to basically make it easy to guess which skill you were doing and therefore you should visit states that have low probability for other skills.
 So the way that we can instantiate it, we can view it graphically like this.
 We have our usual RL loop, we have our policy and our environment.
 The skill is given to the policy in the beginning and there's a discriminator, this classifier, that looks at the state and tries to predict which skill you were given when you reached that state.
-And every iteration, you update the discriminator to be a better discriminator and you update the policy to be better at maximizing log p of z given s.
+And every iteration, you update the discriminator to be a better discriminator and you update the policy to be better at maximizing log p(z) given s.
 We can imagine what this algorithm will do with a little visualization.
 So let's say that we have just two skills, green and blue.
 And initially they're kind of random and they kind of do similar things.
@@ -65,7 +65,7 @@ So you select uniformly from among the n.
 So that will very easily maximize the first term.
 So then all you have to do is minimize the second term.
 And the second term is minimized.
-By maximizing log P of Z given S.
+By maximizing log p(z) given S.
 If Z is very easy to predict from the state, that means that you are reaching, you're taking states where the entropy over Z is very low.
 So simply being good at predicting the state, both by changing the policy and by changing your classifier, actually minimizes H of Z given S, which means that the entire algorithm maximizes the mutual information between Z and S.
 So to summarize, let me just describe some of the themes that many of you might have already noticed.

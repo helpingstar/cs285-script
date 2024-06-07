@@ -1,10 +1,10 @@
 Alright, so now let's get into the main technical part of today's lecture, which is to discuss the variational inference framework.
-So this framework is basically concerned with this question, how do we calculate p of z given x i?
+So this framework is basically concerned with this question, how do we calculate p(z) given x i?
 But in the process of deriving this, we'll also see why the expected log likelihood is actually a reasonable objective.
 So let's think about making some crude approximation.
-So p of z given x i is in general a pretty complex distribution, right, because a single point x might come from many different places in the space of z's.
+So p(z) given x i is in general a pretty complex distribution, right, because a single point x might come from many different places in the space of z's.
 But let's make a really simplistic approximation.
-Let's say that we're going to approximate p of z given x i with some distribution q i of z, which is a Gaussian, or in general some very simple tractable parametrized distribution class.
+Let's say that we're going to approximate p(z) given x i with some distribution q i of z, which is a Gaussian, or in general some very simple tractable parametrized distribution class.
 And notice that I'm calling it q subscript i of z.
 So it's a distribution over z, and it is a distribution that's going to be specific to this point x i.
 All right, so instead of having this complicated thing, we're going to try to approximate it with just a single peak.
@@ -12,14 +12,14 @@ And I chose this picture intentionally just to make it clear that this approxima
 It turns out that if you approximate the distribution class, you're going to get a very simple distribution class.
 So if you approximate the distribution class, you're going to get a very simple distribution class.
 So this is a distribution that's going to give a very simple distribution class.
-And if you approximate p of z given x i with any q i z, you can actually construct a lower bound on the log probability of x i.
+And if you approximate p(z) given x i with any q i z, you can actually construct a lower bound on the log probability of x i.
 And this is going to be a very powerful idea, because if you can construct a lower bound on the log probability of x i, then maximizing that bound will push up on the log probability of x i.
 Now in general, maximizing lower bounds does not increase the quantity you care about, but if the bound is sufficiently tight, you will be able to apply the distribution class to a greater probability of x i.
 tight than it does.
 And we'll see later that under some conditions, the bound is in fact tight.
 But for now, let's just not worry about tightness.
 Let's just see how we can get a bound by using Q I of Z.
-So we can write out the log probability of X I as the log of the integral over all values of Z of p(x) I given Z times P of Z.
+So we can write out the log probability of X I as the log of the integral over all values of Z of p(x) I given Z times p(z).
 And the usual trick, if you want to bring in some quantity that is not currently in the equation, is to multiply by that quantity divided by itself.
 So Q I Z over Q I Z is equal to one.
 So we can multiply that in whenever we want.
@@ -29,7 +29,7 @@ So we basically take the numerator in that ratio.
 That becomes, that turns into an expectation.
 And then everything else is left behind.
 So we have log of the integral over all values of p(x) I.
-So we can write that quantity as an expected value under Q I of Z of P X I given Z times P of Z divided by Q I of Z.
+So we can write that quantity as an expected value under Q I of Z of P X I given Z times p(z) divided by Q I of Z.
 All right.
 So, so far, we haven't made any approximation.
 These are just, this is just a little bit of algebraic manipulation.
@@ -90,26 +90,26 @@ Now, why entropy?
 Well, for the same reason that we saw before, because if you don't have the entropy term, then Q will just want to sit at the most likely point under P.
 But if we have the entropy, then it wants to cover it.
 So the variational approximation says that log P of XI is greater than the expected value under Q of Q of X.
-So the Q of Q of X is greater than or equal to the expected value under Q of log P of XI given Z plus log P of Z plus the entropy of Q.
+So the Q of Q of X is greater than or equal to the expected value under Q of log P of XI given Z plus log p(z) plus the entropy of Q.
 And we call this the evidence lower bound or variational lower bound, which I'm going to denote as LI of P comma QI.
 And as we saw in the previous slide, it's also the negative KL divergence.
 So what makes for a good QI of Z?
-Well, the intuition is that a good QI of Z should approximate the expected value of the expected value of the expected value of the expected value of P of Z given XI, because then you get the tightest bound.
+Well, the intuition is that a good QI of Z should approximate the expected value of the expected value of the expected value of the expected value of p(z) given XI, because then you get the tightest bound.
 Approximate in what sense?
 Well, you can compare them in terms of KL divergence.
 So you can say, well, KL divergence measures the difference between two distributions.
 When the KL divergence is zero, then the two distributions are exactly equal.
-So let's pick QI to minimize the KL divergence between QI of Z and the posterior P of Z given X.
+So let's pick QI to minimize the KL divergence between QI of Z and the posterior p(z) given X.
 Why?
-Well, because if we write out this KL divergence using the definition from before, we'll see that it is equal to the expected value under QI of Z of log QI of Z divided by P of Z given XI.
-Now, P of Z given XI can be written as P of XI comma Z divided by P of XI.
+Well, because if we write out this KL divergence using the definition from before, we'll see that it is equal to the expected value under QI of Z of log QI of Z divided by p(z) given XI.
+Now, p(z) given XI can be written as P of XI comma Z divided by P of XI.
 And since we're doing one over that, we flip the ratio and we get this equation here.
 And again, applying the property that the sum of log, the log of a product is the sum of logs, we get this equation on this side.
-So we have the first term, the negative expected value under QI of Z of log PXI given Z plus log P of Z.
+So we have the first term, the negative expected value under QI of Z of log PXI given Z plus log p(z).
 Then we have the entropy term.
 And then we have this prior term.
 So substituting in the equation for entropy, we get this.
-So that means that the KL divergence between these two quantities is equal to the expected value of the QI of Z of log PXI given Z plus log P of Z.
+So that means that the KL divergence between these two quantities is equal to the expected value of the QI of Z of log PXI given Z plus log p(z).
 And then we have the second term, the negative expected value of the QI of Z of log PXI given Z plus log PXI given Z.
 Notice, however, that the log probability of XI doesn't actually depend on QI.
 So we can rearrange the terms a little bit and we can express log P of XI as being equal to the KL divergence between QI and P plus the evidence lower bound.
@@ -118,12 +118,12 @@ Now, we know that KL divergences are always positive.
 So this is actually another way to derive the evidence lower bound, right?
 Because you know that log P of XI is equal to some positive quantity plus L, which means that L is a lower bound on log P of XI.
 But furthermore, this equation shows that if we drive the KL divergence to zero, then the evidence lower bound is actually equal to log P of XI, which means that minimizing that KL divergence is an effective way.
-So we can use the expected log likelihood to justify the P of Z given XI to tighten the bound.
-So this justifies why we want to choose QI of Z to approximate P of Z given XI.
+So we can use the expected log likelihood to justify the p(z) given XI to tighten the bound.
+So this justifies why we want to choose QI of Z to approximate p(z) given XI.
 And it also justifies why we want to use the expected log likelihood.
-Because when we use the expected log likelihood, that's like taking the expectation under P of Z given X, which is the point at which the bound is tightest.
+Because when we use the expected log likelihood, that's like taking the expectation under p(z) given X, which is the point at which the bound is tightest.
 Okay, so here's the equation we had before.
-So we can see that the P of Z given XI is equal to the KL divergence.
+So we can see that the p(z) given XI is equal to the KL divergence.
 And this is what I saw before.
 We used it to derive this bound.
 And the KL divergence, we can write out like this.
@@ -136,13 +136,13 @@ Maximizing the same evidence-lower bound with respect to QI minimizes KL diverge
 Maximizing with respect to P increases the log likelihood.
 So now this immediately suggests a practical learning algorithm.
 Take your variation-lower bound, your evidence-lower bound, maximize it with respect to QI to get the tightest bound, and then maximize it with respect to P to improve your model, to improve your log likelihood, and then alternate these two steps.
-Okay, so just to recap this, our goal is to maximize the log P θ of Xi, but that's intractable, so instead we're going to maximize the evidence-lower bound.
+Okay, so just to recap this, our goal is to maximize the log p_θ of Xi, but that's intractable, so instead we're going to maximize the evidence-lower bound.
 So for each Xi, we'll calculate the gradient with respect to the model parameter, and then we'll use the gradient to estimate the gradient.
-So this is a single sample version, so you sample one Xi from QI of Xi, and then assuming your prior P of Xi doesn't depend on θ, then the gradient is just the gradient of log P θ Xi given that Xi.
+So this is a single sample version, so you sample one Xi from QI of Xi, and then assuming your prior P of Xi doesn't depend on θ, then the gradient is just the gradient of log p_θ Xi given that Xi.
 And then you improve your θ.
 And then you update QI to maximize the same evidence-lower bound.
 So this is the stochastic gradient descent version of variational inference.
-Just to state this again so that we're all on the same page, in order to estimate the gradient ∇ θ of Li P comma QI, sample a Z from the approximate posterior QI, calculate the gradient ∇ θ Li P comma QI as ∇ θ log P θ Xi given Z, and then take that gradient step.
+Just to state this again so that we're all on the same page, in order to estimate the gradient ∇ θ of Li P comma QI, sample a Z from the approximate posterior QI, calculate the gradient ∇ θ Li P comma QI as ∇ θ log p_θ Xi given Z, and then take that gradient step.
 And then update your QI to the gradient gradient descent version of variational inference.
 So this is the stochastic gradient descent version of variational inference.
 And then you update your QI to maximize Li P comma QI.
@@ -160,7 +160,7 @@ And in the deep learning setting, typically we would have a very large number of
 So the total number of parameters if we have this Gaussian distribution is the number of parameters in the Model, θ.
 plus the dimensionality of the mean plus the dimensionality of the variance, times the number of data points N.
 Okay, so that's maybe a little too large.
-N might be a pretty large number and this might be intractable, but remember that our intuition is that Q , needs to somehow approximate the posterior p of z given xi.
+N might be a pretty large number and this might be intractable, but remember that our intuition is that Q , needs to somehow approximate the posterior p(z) given xi.
 So what if instead of learning a separate qi of z, a separate mean and variance for every data point, what if you train a separate neural network model that approximates qi of z?
 So instead of having a separate qi of z for every data point xi, we have one network q of z given xi, which aims to approximate the posterior.
 So then in our generative model, we would have one neural network that maps from z to x, and another neural network that maps from x to z.

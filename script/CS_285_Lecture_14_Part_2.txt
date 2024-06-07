@@ -36,7 +36,7 @@ So I'm going to use X here, but S means the same thing.
 And then we have our latent variable distribution P .
 And when you train a variational autoencoder, as we'll learn a few weeks from now, you also need an inference network that maps back to Zs from states.
 So if you have a generative model like this, one of the ways you could propose a goal is you could just sample it from the model.
-So you could sample your latent variable from the latent variable prior, so sample Zg from P , and then reconstruct the corresponding image by sampling Xg from P θ Xg given Zg.
+So you could sample your latent variable from the latent variable prior, so sample Zg from P , and then reconstruct the corresponding image by sampling Xg from p_θ Xg given Zg.
 So that'll give you an imagined image.
 And again, you don't have to do this with VAEs, any kind of generative model would work, something that can propose a goal.
 And then you could attempt to reach that goal using a policy.
