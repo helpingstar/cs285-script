@@ -1,100 +1,126 @@
+[p.01]
+
 All right, so on Monday we had kind of a longer lecture about core topics in exploration.
 In today's lecture, we're going to do something a little different.
 I'm actually going to discuss a different perspective on exploration, which is quite distinct from the one on Monday and a little bit unusual.
 This is not how most people think about exploration problems, but I think it offers a different perspective that might get us thinking about what exploration really is.
 So this lecture is much more of kind of a state-of-the-art research-focused lecture, partly to get you thinking about final project topics, partly to just get you thinking about how else we could consider the exploration problem differently from how it is considered conventionally.
 And this lecture will be probably a little bit shorter and a little bit quicker to get through.
+
+[p.02]
+
 All right, so what's the exploration problem?
 Just to recap from Monday.
 Well, the exploration problem can be kind of summarized with these two animations.
 So in homework 3, you used your Q-learning algorithm to learn a variety of Atari games, and probably some of them work pretty well.
 But some games are easy to learn, whereas others are seemingly impossible.
 And we learn on Monday how this is due in part to the fact that some of these games have highly delayed rewards, where intermediate reward signals don't really correlate with what you're supposed to be doing.
-So that's all on Monday's lecture.
-So I hope you enjoyed this lecture.
-And I hope you found it useful.
-And if you did, please give it a thumbs up.
-And if you haven't, please subscribe to our channel.
-And I'll see you in the next lecture.
-Bye-bye.
-Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community Subtitles by the Amara.org community come home in the evening and you say, well, now I need you to do my dishes, whatever the robot practiced during this unsupervised phase, it can repurpose to very efficiently figure out how to clean your dishes.
+So, that's what Monday's lecture was about.
+And conventionally, we think about exploration as this problem where you have to trade off exploration exploitation and figure out some way to incentivize your RL agent to visit novel unusual states or states where it has a lot of information gain.
+
+[p.03]
+
+But here is a different way we can think about the exploration problem. 
+What if we don't just consider delayed rewards or sparse rewards but we consider a setting where the rewards are absent altogether? What if we want to recover diverse behaviors without any reward signal at all?
+So, you could imagine this from kind of a more of an AI or kind of scientific perspective. 
+You could say, well, human children, for example, seem to be able to, you know, spend copious amounts of time playing with things in their environment. 
+Presumably, they're not acting randomly and presumably they're getting something out of this. 
+You know, it's a energy intensive activity both for them and their parents, so there must be a reason why this is something that people do. 
+Probably there is something that is learned through play, through undirected exploration, and it's not just random. 
+There's some notion of goals being set, some notion of goals being accomplished, and some presumably very useful body of knowledge that is that is distilled the brain through this activity.
+So, why might we want to learn without any reward function at all well perhaps we could acquire a variety of different skills without any explicit reward supervision create a repertoire of those skills and then use them to accomplish new goals when those goals are given to us.
+Maybe we can use some sub skills that we can use with perhaps a hierarchical reinforcement learning scheme.
+And perhaps we can explore the space of possible behaviors to build up a large data set a large buffer that can then be used to acquire other tasks.
+So, this is a pretty different way of thinking about exploration conventional exploration is thought of as this problem where you just have to seek out the states that have reward here we're thinking about instead as the problem of acquiring skills that could then be repurposed later.
+
+[p.04]
+
+If you want a kind of a more practically minded example, you could imagine that you have a robot in your home.
+You buy that robot, you put it in your kitchen, and then you turn it on. 
+The robot's job is to figure out what it can do in this environment that could potentially be useful, so that when you come home in the evening and you say, well, now I need you to do my dishes, whatever the robot practiced during this unsupervised phase, it can repurpose to very efficiently figure out how to clean your dishes.
 So if you can prepare for an unknown future goal, then when that goal is given to you, you can accomplish it quite quickly.
+
+[p.05]
+
 All right.
 So in today's lecture, we're going to cover a few concepts that might help us start thinking about this problem.
 This is a big open area of research.
 There are no fixed, known, and perfect solutions, but perhaps some of the concepts I'll discuss might help you start thinking about how formal mathematical tools and reinforcement learning algorithms could be brought to bear on this kind of problem.
-So we'll discuss first some definitions and concepts from information theory, which many of you might already be familiar with, but getting a refresher on those will be important for everyone to be on the same page as we talk about the more important concepts that we'll discuss.
-So let's get started.
-So let's get started.
-So let's get started.
-You know, sophisticated algorithms that come next.
+So we'll discuss first some definitions and concepts from information theory, which many of you might already be familiar with, but getting a refresher on those will be important for everyone to be on the same page as we talk about the more sophisticated algorithms that come next.
 Then we'll discuss how we can learn without a reward function to figure out strategies for reaching goals.
 So we'll have an algorithm that proposes goals, attempts to reach them, and through that process acquires a deeper understanding of the world.
 Then we'll talk about a state distribution matching formulation of reinforcement learning, where we can match desired state distributions and in the process perform unsupervised exploration.
 We'll discuss whether coverage of valid states, whether basically breadth and novelty is a good exploration objective by itself and why it might be.
 And then we'll talk about how we can go beyond just covering states and actually covering the space of skills and what the distinction between those is.
+
+[p.06]
+
 All right, but let's start with some definitions and concepts from information theory before we dive into the main technical portion of today's lecture.
+
+[p.07]
+
 So first, some useful identities.
 As all of you probably know, we can use p(x) to denote a distribution.
 And of course, we'll see that a lot in today's lecture.
 We saw that a lot already.
 And you can think of a distribution as something that you fit to a bunch of points and you get maybe a density in continuous space or distribution in discrete space.
-H of p(x) denotes entropy, and we've seen this before.
-Entropy is defined as the negative of the expected value of the log probability of X.
-And H of p(x) denotes entropy, and we've seen this before.
-Entropy is defined as the negative of the expected value of the log probability of X.
-Intuitively, the entropy quantifies how broad a distribution is.
-So if you have a discrete variable X, then the uniform distribution has the largest entropy.
+H(p(x)) denotes entropy, and we've seen this before.
+Entropy is defined as the negative of the expected value of the log probability of x.
+And intuitively, the entropy quantifies how broad a distribution is.
+So if you have a discrete variable x, then the uniform distribution has the largest entropy.
 Whereas a distribution that is peaked on exactly one value and zero everywhere else has the lowest entropy.
 So intuitively, the entropy is kind of the width of this distribution.
+
+[p.08]
+
 So that's stuff that hopefully all of you are already familiar with.
 Now another concept which maybe not everyone is familiar with but that will come up a lot in today's lecture is mutual information.
-The mutual information between two variables X and Y, which we write with a semicolon like this, because we could also have mutual information between groups of variables.
-So you can have mutual information between X together with Z and Y, in which case you would write I of X comma Z semicolon Y.
+The mutual information between two variables x and y, which we write with a semicolon like this, because we could also have mutual information between groups of variables.
+So you can have mutual information between x together with z and y, in which case you would write I of x comma z semicolon y.
 This is defined as the KL divergence, and remember KL divergence is a measure of how different two distributions are.
-It's defined as the KL divergence between the joint distribution over X and Y and the product of their marginals.
-So intuitively, if X and Y are independent of each other, then their joint will just be their product of marginals and the KL divergence will be zero.
-As X and Y depend on each other more and more, their joint distribution will be more and more different from their product of marginals.
+It's defined as the KL divergence between the joint distribution over x and y and the product of their marginals.
+So intuitively, if x and y are independent of each other, then their joint will just be their product of marginals and the KL divergence will be zero.
+As x and y depend on each other more and more, their joint distribution will be more and more different from their product of marginals.
 In which case you'll see the KL divergence go up.
-Now we can write the mutual information as the expected, you know, just using the definition of KL divergence, as the expected value under the joint distribution over X and Y of the log of the ratio of the joint and the product of marginals.
+Now we can write the mutual information as the expected, you know, just using the definition of KL divergence, as the expected value under the joint distribution over x and y of the log of the ratio of the joint and the product of marginals.
 Intuitively, you can think of it like this.
 If these green dots represent samples from our distribution, here looking at this picture, you notice that there is a clear trend.
-The Y values clearly depend on the X values.
-They're not fully determined by the X values, but there is definitely a trend in a relationship.
-Whereas here, the Y values seemingly don't depend on the X values.
+The y values clearly depend on the x values.
+They're not fully determined by the x values, but there is definitely a trend in a relationship.
+Whereas here, the y values seemingly don't depend on the x values.
 So in the top picture, you have high mutual information.
-Essentially, if I tell you X, you can do a decent job of guessing Y.
+Essentially, if I tell you x, you can do a decent job of guessing y.
 At the bottom, you have low mutual information.
-If I tell you X, you will not do any better at guessing Y than if I hadn't told you about it.
+If I tell you x, you will not do any better at guessing y than if I hadn't told you about it.
 Now one important thing about mutual information is that it can be also written as a difference of two entropies.
-So you can write the mutual information as the entropy of Y minus the entropy of Y given X.
+So you can write the mutual information as the entropy of y minus the entropy of y given x.
 And this just follows from a little bit of algebra.
 So you can basically start with the definition at the top, manipulate that equation a little bit, and you will end up with the equation at the bottom.
 But this way of writing mutual information also has a very appealing intuitive interpretation.
-You can think of mutual information as the reduction in the entropy of Y that you get from observing X.
-This is essentially like that.
-You can think of it as that information gain calculation that we saw in the previous lecture on Monday.
-So mutual information tells you how informative X is about Y, and because it's symmetric, it also tells you about how informative Y is about X.
+You can think of mutual information as the reduction in the entropy of y that you get from observing x.
+This is essentially like that information gain calculation that we saw in the previous lecture on Monday.
+So mutual information tells you how informative x is about y, and because it's symmetric, it also tells you about how informative y is about x.
+
+[p.09]
+
 All right, so let's tie this into RL a little bit.
 So the kind of information theoretic quantities that will be useful in our discussion today's lecture will be the following.
-I'll use π of s to denote the entropy of X.
-And I'll use π of s to denote the state marginal distribution of policy π.
+And I'll use π(s) to denote the state marginal distribution of policy π.
 In previous lectures, I also referred to this sometimes as p_θ(s).
 Same exact thing.
-When I write h of π of s, this refers to the state marginal entropy of the policy π.
+When I write H(π(s)), this refers to the state marginal entropy of the policy π.
 Now, this is kind of an interesting quantity because it quantifies the coverage that our policy gets.
-So if you have a very random policy that visits all possible states, you would expect that h of π of s would be large.
-So here's an example of how mutual information can crop up in reinforcement learning.
+So if you have a very random policy that visits all possible states, you would expect that H(π(s)) would be large.
+Here's an example of how mutual information can crop up in reinforcement learning.
 And I won't go into this in too much detail, but it's a fairly intuitive concept that's worth bringing up.
 So one very classic quantity that has been defined in reinforcement learning in terms of mutual information is something called empowerment.
-So a lot of this comes from work by Daniel Plany and colleagues.
+So a lot of this comes from work by Daniel Polani and colleagues.
 Empowerment is defined as the mutual information between the next state and the current action.
 There are a lot of variants of empowerment.
 It has also been defined as the mutual information between the next state and the current action, given the current state, as well as other variants.
 But let's think about the simple version.
 The mutual information between the next state and the current action.
 If we substituted in the entropy equations that we had on the previous slide, we know that we can also write this as the entropy of the next state minus the conditional entropy of the next state given the current action.
-So what does this mean?
 Why is this called empowerment?
 Take a moment to consider that.
 Empowerment in English refers to how much power you have, how capable you are of achieving your desired end goals.
@@ -105,7 +131,7 @@ So the way that we can think about this equation is, it's saying that you would 
 So that means that if you know which action you took, it's easy to predict which state you landed in.
 That means you have a lot of control authority about the environment.
 It means you have a lot of ability to deterministically influence which state you'll be in.
-On the other hand, if you don't, you want the state entropy to be large.
+On the other hand, if you don't know the action you want the state entropy to be large.
 So that means that you have a variety of actions available to you, and different actions will lead to very different states.
 And if you have both of these things, then what you should get is an agent that places themselves in a situation where they have many actions available to them that will all lead to very different states, but will do so in a reliable and controlled manner.
 So if you have a room, maybe you want to stand in the middle of that room, because from there you can access all the parts of the room deterministically.
@@ -114,8 +140,6 @@ If you just have the entropy over the next state, now that's not really providin
 Maybe it's out of your control.
 If you just have the negative entropy of the next state given the current action, that's not quantifying the notion that you want many options available to you.
 So there you might put yourself in a very deterministic situation.
-Maybe you're sitting at the bottom of a well.
-Maybe you're sitting at the bottom of a well.
 Maybe you're sitting at the bottom of a well.
 The next state is extremely predictable, whether you know the action or not, which means that the next state given the current action is also extremely predictable.
 So that would minimize the second term, but wouldn't maximize the first term.
