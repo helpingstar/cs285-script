@@ -256,7 +256,7 @@ It's still correct, it's just computationally and memory-expensive.
 So instead of actually storing entire histories, you could say, well, the observations O1 and O2 are fully summarized by the hidden state of the RNN H2.
 And the observations O1, O2, O3 are fully summarized by the RNN state H3.
 So what you could do is you could just reuse the RNN hidden state.
-Essentially, every time you load up a history, you don't load up an entire sequence, you load it up starting from some intermediate point, and then you actually store the RNN hidden state at that point.
+Essentially, every time you load up a history, you don't load up an entire sequence, you load it up^{*}ting from some intermediate point, and then you actually store the RNN hidden state at that point.
 And you can do this with RNNs and LSTMs.
 I won't go into great detail about this method.
 Its basic idea is to essentially use RNN states as though they were Markovian states of the system, which they are, except for a little caveat, which is that the RNN states change as the RNN itself is updated.

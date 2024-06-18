@@ -1,13 +1,19 @@
+[p.10]
+
 All right, so the first algorithm that I'm going to kind of dive more deeply into is going to tackle this question.
 How do we learn without a reward function by proposing and reaching goals?
 And as I mentioned in the beginning, this lecture was really intended more to discuss sort of cutting-edge research topics and maybe provide a slightly different perspective for thinking about exploration.
 So I won't actually discuss the algorithm in sort of enough detail to implement it, but hopefully enough detail for you to kind of understand the main ideas.
 But I will have references to papers at the bottom, and if you want to get all the details, then I would encourage you to read those papers.
-But, you know, think of this more as a way to get a perspective on how we can approach this unsupervised exploration problem mathematically, less as a specific tutorial about a particular method that you actually...
-should be using.
+But, you know, think of this more as a way to get a perspective on how we can approach this unsupervised exploration problem mathematically, less as a specific tutorial about a particular method that you actually should be using.
+
+[p.11]
+
 All right, so the example scenario, again, that we're dealing with is this setting where you have a robot, you put it in your kitchen, it's supposed to spend the day practicing various skills, and then in the evening when you come home, you're going to give it a task, and perhaps you will ask it to do the dishes and should somehow utilize the experience that it acquired to perform that task.
-Now, one fairly mundane thing that we have to figure out for this, before we can even...
-get started, is how we're going to actually propose, how we're actually going to command goals to the robot once the learning is finished.
+
+[p.12]
+
+Now, one fairly mundane thing that we have to figure out for this, before we can even get started, is how we're going to actually propose, how we're actually going to command goals to the robot once the learning is finished.
 So if you want sort of a real-world analogy, maybe you can think of it like this.
 Maybe you're going to show the agent an image of the situation that you would like it to reach.
 In RL parlance, this would amount to giving it the observation or the state that constitutes the goal for the task.
@@ -22,75 +28,80 @@ Just like we saw in the in the exploration lecture on Monday, we need some notio
 So there are many ways to deal with this problem, but the way that we'll deal with it for now is we'll say well, let's just train some kind of generative model.
 The particular generative model I'll use as a working example is something called a variational autoencoder, which we'll cover a few weeks from now.
 But there are many other choices and we'll just assume that this generative model has some latent variable representation of your image.
-So if your image is X, you can also think of it as a state S, then your latent variable model will construct some latent variable representation of that state, which I'm going to denote as Z.
-So Z would be sort of a compact vector that describes what's going on in the scene and we'll assume that that vector is at least somewhat well behaved, meaning that similar, functionally similar states will lie close together in that latent space.
+So if your image is x, you can also think of it as a state s, then your latent variable model will construct some latent variable representation of that state, which I'm going to denote as z.
+So z would be sort of a compact vector that describes what's going on in the scene and we'll assume that that vector is at least somewhat well behaved, meaning that similar, functionally similar states will lie close together in that latent space.
 But there are many ways to get this effect.
+
+[p.13]
+
 All right, and then of course the main thing that we're concerned with is we would like our agent to basically have this unsupervised training phase where before we even specify any goals that it should accomplish, it can sort of imagine its own goals, propose those goals to itself, attempt to reach them, and as a result acquire a goal-reaching policy without any manual supervision, without any reward supervision.
-So intuitively what it's going to be doing is it's going to be using this latent space to propose potential Z vectors that it could try to treat as a goal.
-So it's going to be trying to achieve its various goals, attempt to reach those goals, and as a result improve its policy.
+So intuitively what it's going to be doing is it's going to be using this latent space to propose potential z vectors that it could try to treat as a goals attempt to reach those goals, and as a result improve its policy.
+
+[p.14]
+
 Okay, so let's try to sketch out what such an algorithm might look like.
 We're going to have our variational autoencoder as our generative model.
-So that has a distribution X given Z, which is a distribution over images given latent codes.
-You can also think of it as S given Z.
-So I'm going to use X here, but S means the same thing.
-And then we have our latent variable distribution P .
-And when you train a variational autoencoder, as we'll learn a few weeks from now, you also need an inference network that maps back to Zs from states.
+So that has a distribution x given z, which is a distribution over images given latent codes.
+You can also think of it as s given z.
+So I'm going to use x here, but s means the same thing.
+And then we have our latent variable distribution (p|g).
+And when you train a variational autoencoder, as we'll learn a few weeks from now, you also need an inference network that maps back to 'z's from states.
 So if you have a generative model like this, one of the ways you could propose a goal is you could just sample it from the model.
-So you could sample your latent variable from the latent variable prior, so sample Zg from P , and then reconstruct the corresponding image by sampling Xg from p_θ Xg given Zg.
+So you could sample your latent variable from the latent variable prior, so sample z_g from p(z), and then reconstruct the corresponding image by sampling x_g from p_θ(x_g|z_g).
 So that'll give you an imagined image.
 And again, you don't have to do this with VAEs, any kind of generative model would work, something that can propose a goal.
 And then you could attempt to reach that goal using a policy.
-So your policy now would be a conditional policy, so it be a distribution over actions given the current image X and given the goal Xg.
+So your policy now would be a conditional policy, so it be a distribution over actions given the current image x and given the goal x_g.
 And when you attempt to reach the goal using this policy, the policy may or may not succeed.
-So let's say that it reaches some state and we'll call that state x-bar.
-Ideally we'd like x-bar to be equal to xg, but in general it might not be.
-In fact, xg might not even be a real image, it may be impossible to reach.
-So you'll get some other image x-bar.
+So let's say that it reaches some state and we'll call that state bar{x}.
+Ideally we'd like bar{x} to be equal to x_g, but in general it might not be.
+In fact, x_g might not even be a real image, it may be impossible to reach.
+So you'll get some other image bar{x}.
 And in the process of writing that policy, you'll of course collect data, which you can use to update your policy, maybe using something like a Q-learning algorithm, like what you're doing for homework three.
 And you can also use that data to update your generative model.
 So if in the course of attempting to reach that goal, you saw some other images that you hadn't seen before, incorporating that data to update your generative model might give you a better generative model that can propose more interesting goals.
 And then you can repeat this process.
-So this is a basic sketch of an algorithm that utilizes a goal proposal mechanism, an unsupervised goal proposal mechanism, and a goal proposal mechanism.
-condition policy and the interaction of these two things leads it to proposed goals and then attempt to reach them.
+So this is a basic sketch of an algorithm that utilizes a goal proposal mechanism, an unsupervised goal proposal mechanism, and a goal condition policy and the interaction of these two things leads it to proposed goals and then attempt to reach them.
+
+[p.15]
+
 Okay, but there's a little bit of a problem with this recipe because the generative model is being trained on the data that you've seen.
 So it's going to generate data that looks very much like the data that you've seen, which means that if your agent figures out how to do one very specific thing, maybe it figures out how to pick up a mug, now it has lots of data of picking up that mug, and when it generates additional images, additional goals, it'll generate lots more data of picking up that same mug and might not bother with other things.
 So this is where we can bring in some ideas related to what we covered in the lecture on Monday, some of these exploration ideas.
 Let's imagine that we have this 2D navigation scenario, so the little circles represent states that you visited.
-Intuitively, what you would like to do is you would like to take this data set and modify it.
-You would like to skew it some way to up-weight the rarely seen states, very much like the novelty seeking exploration that we discussed on Monday.
+Intuitively, what you would like to do is you would like to take this data set and modify it skew it some way to up-weight the rarely seen states, very much like the novelty seeking exploration that we discussed on Monday.
 And if you can do this, if you can up-weight the rarely seen states before fitting your generative model, then when you fit your generative model, it should assign higher probability to the tails of this distribution so that when you propose new goals, it'll sort of broaden it out and visit more states there on the fringes and hopefully expand its repertoire of states that it can reach.
 So this is the intuition behind what we want to make such an algorithm really work.
+
+[p.16]
+
 So how do we do this?
 Well, the idea is that we're going to modify step four.
 Instead of blindly using all the data we've collected to fit our generative model, we're going to actually weight that data.
 So that's basically what this step will be.
 So the standard way to fit our generative model is basically maximum likelihood estimation.
-Find the generative model, and then estimate the generative model.
-Find the generative model, and then estimate the generative model.
-Find the generative model, and then estimate the generative model.
-That maximizes the expected log probability of the states that you actually reached, which I'm denoting here with x-bar.
-Instead, you could imagine having a weighted maximum likelihood learning procedure where you train your generative model to assign high likelihood to the states that you've seen, x-bar, but weighted by some weighting function, w of x-bar.
+Find the generative model, that maximizes the expected log probability of the states that you actually reached, which I'm denoting here with bar{x}.
+Instead, you could imagine having a weighted maximum likelihood learning procedure where you train your generative model to assign high likelihood to the states that you've seen, bar{x}, but weighted by some weighting function, w(bar{x}).
 And intuitively, you would like that weighting function to up-weight those states or those images that have been seen rarely.
-So you can use the generative model to train your generative model to test new examples and vintage.
-Now, then, to get back to outside indicators, the averages in this model present the lesser serious in freezing weather, and the values in quiterahlooks.
-Anyway, after the over publishing, in fact, we can decide how t걸 s, o2 Chiefétal diagrams are going to show higher likelihood homholder index, 1, plus or menos 5, always low, m2's low, and only 100%.
-So for each of the data sets of the generative of theleigh population, we must estimate the total percentages determined at the coming number.
-And so that's the last example we have on a��uhs.
-Here's our test c, where this team demkeeped some state of clock, beispielsweise, assigns to that state x.
-So we'll set the weight to be p θ of x bar raised to some power α, where α is a negative number.
-So this will essentially be 1 over p θ of x bar to some positive power, or equivalently p θ of x bar to some negative power.
-And one of the things we can prove, I'm not going to go through the proof for this, but the proof is in these papers, it's possible to prove that if you use a negative exponent, then the entropy of p θ of x will increase, meaning that each time you go around this loop, you'll be proposing broader and broader goals.
+What do we have at our disposal that can tell us how rarely something has been seen.
+Well, we're using a generative model to propose these goals and a generative model should be able to give us a density score just like when we learned about counts and pseudo counts.
+So, what we can do is we can assign a weight based on the probability density that our current model p_θ assigns to that state x.
+So we'll set the weight to be p_θ(bar{x}) raised to some power α, where α is a negative number.
+So this will essentially be 1 over p_θ(bar{x}) to some positive power, or equivalently p_θ(bar{x}) to some negative power.
+And one of the things we can prove, I'm not going to go through the proof for this, but the proof is in these papers, it's possible to prove that if you use a negative exponent, then the entropy of p_θ(x) will increase, meaning that each time you go around this loop, you'll be proposing broader and broader goals.
 And if your entropy always increases, that means that you eventually converge to the maximum entropy distribution, which would be a uniform distribution over possible valid states.
 Now a uniform distribution over valid states is not the same as a uniform distribution over x.
 So x might represent an image, totally random images, just kind of static.
 Might not actually be valid states.
 So what you should be looking for is a uniform distribution over valid states, a uniform distribution over valid images.
 Okay, now looking at this equation, you know, one thing that might jump out at you is that this looks an awful lot like what we saw when we had pseudo counts and count-based exploration.
-So if you remember, in count-based exploration, our bonuses had this form like 1 over n of s, or a square root of 1 over n of s.
-In general, they were the form of an equation.
-So if we look at this equation, we have an equation form n raised to some negative power, negative 1 half if you have 1 over square root, or negative 1 if you have 1 over n.
+So if you remember, in count-based exploration, our bonuses had this form like 1/N(s), or a square root of 1/N(s).
+In general, they were the form of N(s) raised to some negative power, negative 1 half if you have 1 over square root, or negative 1 if you have 1 over n.
 So this looks an awful lot like that.
-By raising the p θ of x bar to some negative power, we're actually doing something that greatly resembles this count-based exploration, except instead of using it as a reward, we're using it to train our goal proposal mechanism to propose diverse goals.
+By raising the p_θ(bar{x}) to some negative power, we're actually doing something that greatly resembles this count-based exploration, except instead of using it as a reward, we're using it to train our goal proposal mechanism to propose diverse goals.
+
+[p.17]
+
 So the main change we're going to make is we're going to fit our generative model with this weighting scheme, where the weight is the previous density for that state raised to some negative exponent.
 Now one question we could ask is, well, what's the overall objective of this entire procedure?
 It seems like we laid out a recipe, but in machine learning, we like to think of algorithms as optimizing objectives.
@@ -100,18 +111,24 @@ That's good because we want good coverage.
 We want to cover many, many different goals.
 So the goals get higher entropy due to this skew fit procedure.
 What does the RL part do?
-Well, your policy, which you can also write as π of a given s comma g, so it's probability of action given current state and given goal.
-Your policy is trying to reach the goal g, which means that as the policy gets better, the final state, which I'll denote as s here, is going to get closer and closer to g.
-So that means that the probability of g given your final state becomes more and more deterministic.
+Well, your policy, which you can also write as π(a|S,G), so it's probability of action given current state and given goal.
+Your policy is trying to reach the goal G, which means that as the policy gets better, the final state, which I'll denote as S here, is going to get closer and closer to G.
+So that means that the probability of G given your final state becomes more and more deterministic.
 Essentially, if your policy is very good, you could pose this question.
-Given the final state s that the policy reached, what is the goal g that it was trying to reach?
+Given the final state S that the policy reached, what is the goal G that it was trying to reach?
 If the policy is very good, you could just say, well, the goal was probably the thing that it actually reached because it's a good policy, it's going to reach its goal.
-So that means that the better the policy is, the easier it is to predict g from s, which means that the entropy of p of g given s is lower.
-So that means that you're also minimizing the conditional entropy of g given s.
-And now when we look at this equation, something should jump out at us, that if we are maximizing h of g minus h of g given s, that means that we are maximizing the mutual information between s and g.
-And maximizing the mutual information between s and g leads to good exploration because we're maximizing the entropy over goals, so we have coverage of all possible goals, and effective goal reaching because we're minimizing the entropy of the goal given the state.
+So that means that the better the policy is, the easier it is to predict G from S, which means that the entropy of p(G|S) is lower.
+So that means that you're also minimizing the conditional entropy of (G|S).
+
+[p.18]
+
+And now when we look at this equation, something should jump out at us, that if we are maximizing H(p(G)) - H(p(G|S)), that means that we are maximizing the mutual information between S and G.
+And maximizing the mutual information between S and G leads to good exploration because we're maximizing the entropy over goals, so we have coverage of all possible goals, and effective goal reaching because we're minimizing the entropy of the goal given the state.
 So that's another way that this concept of mutual information leads to an elegant and very simple objective that quantifies exploration performance.
 Essentially, in this case, the mutual information between states and goals quantifies how effectively we can reach the most diverse possible set of goals.
+
+[p.19]
+
 All right, now for a quick robot video.
 This was an actual research paper that we did a few years back.
 And what we did with this kind of objective was we put the robot in front of a door.
