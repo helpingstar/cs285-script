@@ -32,7 +32,7 @@ So if you have some inputs x on the x-axis and some outputs y on the y-axis, you
 Now we've definitely seen models like this before.
 Take a moment to think back to when in this class we've seen conditional probabilistic models.
 So one example of this, of course, is policies.
-Policies are overlaying the setups around the particular distribution on those见 We'll probably go there somewhat later as we laughing at them, but, if you'll go ahead and try it out by yourself using a verb constitution сообщ sob of x there is no evidence and the query is x, in p(y) given x the evidence is x and the query is y.
+Policies are overlaying the setups around the particular distribution on those见 We'll probably go there somewhat later as we laughing at them, but, if you'll go ahead and try it out by yourself using a verb constitution сообщ sob of x there is no evidence and the query is x, in p(y|x) the evidence is x and the query is y.
 If you have a latent variable model that means that there are some other variables in the model that are neither the evidence nor the query and therefore need to get integrated out in order to evaluate the probability that you want.
 A very classic example of a latent variable model that people use to represent p(x) is a mixture model.
 So in this picture we have data that is organized to three very clear clusters.
@@ -68,7 +68,7 @@ belongs to itself.
 Once again, công� Lauta-umi is a division Utilize perform the n Zusammenalt The equation ⋅ .
 stands for this Зап educación.
 means and variances of the Gaussians, and it's also outputting the W's, the probabilities of each mixture element.
-So in fact, this model is given by a sum over z of p(y) given x comma z times p(z) given x.
+So in fact, this model is given by a sum over z of p(y|x) comma z times p(z) given x.
 So it's actually a little different than the equation I've written here.
 Here in the picture right there, the p(z) actually depends on x.
 So it's a design choice that we make.
@@ -88,7 +88,7 @@ P of x given z is also a simple distribution.
 The parameters of that simple distribution might be complicated, but the distribution is simple.
 For example, something that can be parametrized explicitly.
 This is a very important point to understand, especially what I mean by the word simple.
-Here, p(x) is not simple, because it is very hard to find a single parametrization, like a Gaussian distribution or a beta distribution, that perfectly captures p of x.
+Here, p(x) is not simple, because it is very hard to find a single parametrization, like a Gaussian distribution or a β distribution, that perfectly captures p(x).
 p(z) is simple, because a simple distribution like a Gaussian captures it perfectly.
 P of x given z is also simple, because you could represent it with a Gaussian distribution, although the parameters of that Gaussian distribution may be very complex.
 Now, of course, I'm using Gaussian distributions as an example here.
@@ -105,18 +105,18 @@ Multiply them and integrate out z.
 The same exact thing can happen in the conditional case.
 So in the example I had before, conditional latent variable models for multimodal policies, you could have a Gaussian mixture on the output, or more generally, you could have some latent variable, let's call it z, that serves as an additional input into the model.
 And you have some prior p(z).
-And you have your conditional p(y) given x comma z.
+And you have your conditional p(y|x) comma z.
 And the same exact logic as on the previous slide would apply.
 So p(z) would be simple.
 p of y given x comma z would be simple.
-But the result of integrating out z, meaning the resulting distribution p(y) given x, could be extremely complex.
+But the result of integrating out z, meaning the resulting distribution p(y|x), could be extremely complex.
 Another case where these kinds of things come up is model-based reinforcement learning.
 So you could have latent variable models in model-based reinforcement learning.
 We already saw an example of this when we talked about model-based RL with images.
 So we saw these examples of latent state models where you observe images O, and you want to learn a latent state x that depends on actions u.
 And here, we actually have a more complex latent space.
 So we have our observation distribution p of O given x, and our prior p(x) actually models the dynamics.
-It actually models p of x_{t+1} given x_t and p of x1.
+It actually models p(x)_{t+1} given x_t and p(x)1.
 So the prior on x is much more structured and more complex.
 The latent space for these models has structure.
 And we'll revisit this at the end of the lecture.

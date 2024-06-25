@@ -94,12 +94,12 @@ The advantage is not necessarily a function of the observation o_t
 So the advantage does not depend on s_t minus 1 but if you don't have the state then you might get in trouble.
 So that's why it's totally okay to use rt plus the next value minus the current value as your advantage estimator with some function approximator for v because when you're training a function approximator for v as a function of state you're basically leveraging the property that every time you see the state s you're going to expect to get the same value.
 So you're going to get the same value for the function of the observation o_t
-So that's why v hat only needs to be a function of the present state.
+So that's why ^{V} only needs to be a function of the present state.
 It doesn't need to take past states into account because of the Markov property.
 The Markov property tells us the value is only going to be a function of the current state not dependent on how you got to that state.
 But of course that's not true for observations.
-So you can't simply swap out the argument to v hat and replace s_t with o_t
-So it's not okay to train v hat of o_t because the value depends on might depend on past observations.
+So you can't simply swap out the argument to ^{V} and replace s_t with o_t
+So it's not okay to train ^{V} of o_t because the value depends on might depend on past observations.
 Because the current state might depend on past observations.
 So what this means is that if you're going to use policy gradients, if you use the regular Monte Carlo estimate, if you just simply plug in the sum of rewards, that is okay because that derivation did not actually use the Markov property.
 But if you try to put in a value function estimator that is no longer okay because that value function estimator for the advantage function is not a function of the observations, a function of the state and the state depends on past observations.

@@ -411,7 +411,7 @@ And so when we stick this intractable parametrization of our reward into this ju
 And that's DPO.
 So, you know, this loss function here is really just the reward model loss.
 It's just that since we have this identity that relates a policy to a reward function, we can just, turn this loss function on reward functions to a loss function on policies directly.
-Another way of thinking about this is instead of training a reward model and then training a policy to get high reward under that reward model, we are training a policy, π θ, which is the optimal policy for a reward function that satisfies the Bradley-Terry model for the preference data that we have.
+Another way of thinking about this is instead of training a reward model and then training a policy to get high reward under that reward model, we are training a policy, π_θ, which is the optimal policy for a reward function that satisfies the Bradley-Terry model for the preference data that we have.
 That's sort of the other direction to think about this.
 Okay.
 So that was a little bit overwhelming, but that's pretty much DPO.
@@ -447,7 +447,7 @@ This is bad.
 This is the SFT model.
 So this is not ever updated.
 PyREF is fixed here.
-The only thing we're ever changing here is π θ.
+The only thing we're ever changing here is π_θ.
 There's no previous batch thing like in PPO.
 You can drain that from your mind forever.
 We just have one policy that we're learning.
@@ -574,7 +574,7 @@ Okay.
 Yeah, I think this is maybe the more intuitive way to see what DPO actually does, honestly.
 And this is great.
 Archit, who's one of the authors of the paper originally did this analysis, which I think was really great and insightful.
-And yeah, so the beta pops out, which is just the strength of our KL constraint, which is essentially a learning rate.
+And yeah, so the β pops out, which is just the strength of our KL constraint, which is essentially a learning rate.
 Okay.
 So a quick experiment, and then we'll go on to an application.
 So what we're going to do is we want to look at how DPO and other methods trade off reward in KL.
@@ -654,16 +654,16 @@ It's just that you might end up with a reward function because your model sort o
 So it has some good inductive biases.
 It might end up you might end up with a smoother reward function that's easier to learn from than the sparse thing that always gives you one or zero.
 Okay.
-Okay, we're running low on time so I'm going to speed a little bit but but one thing that I think is worth looking at is how does changing that coefficient beta in our original loss or original objective.
-How does changing that coefficient beta in our original loss or original objective.
-How does changing that coefficient beta in our original loss or original objective.
+Okay, we're running low on time so I'm going to speed a little bit but but one thing that I think is worth looking at is how does changing that coefficient β in our original loss or original objective.
+How does changing that coefficient β in our original loss or original objective.
+How does changing that coefficient β in our original loss or original objective.
 How does this actually change the KL that we end up with.
 And unfortunately changes it very predictably.
-So this is like four or five different training runs and we're just plotting the log of beta with the log of the KL.
-And this is really worth mentioning because when we do PPO beta doesn't really fully define what KL we're going to end up with.
-So if you run PPO twice with the same beta you can get two policies with very different KL just because it's very noisy and a little bit unstable.
-And so, people use this like dynamic beta controller in practice where they actually get a lot of data.
-And so, people use this like dynamic beta controller in practice where they actually measure the policies KL during training and increase beta or decrease beta on the fly to try to get the KL in a particular area and that's, you know, just kind of annoying.
+So this is like four or five different training runs and we're just plotting the log of β with the log of the KL.
+And this is really worth mentioning because when we do PPO β doesn't really fully define what KL we're going to end up with.
+So if you run PPO twice with the same β you can get two policies with very different KL just because it's very noisy and a little bit unstable.
+And so, people use this like dynamic β controller in practice where they actually get a lot of data.
+And so, people use this like dynamic β controller in practice where they actually measure the policies KL during training and increase β or decrease β on the fly to try to get the KL in a particular area and that's, you know, just kind of annoying.
 You don't have to do that.
 Okay, one other thing, when does DPO fail.
 So let's let's look at this example so so say we have some input that's like some long Reddit post, we have like our chosen and rejected response which are both summaries their TL DRS.

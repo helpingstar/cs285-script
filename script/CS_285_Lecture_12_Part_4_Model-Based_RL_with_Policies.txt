@@ -59,7 +59,7 @@ So s_{future} is a random variable, and the distribution here is basically the p
 Now, as a little detail, the quantity in parentheses there doesn't actually sum to one.
 In order for it to sum to one, you have to multiply it out front by (1-γ).
 And if you want an intuition for what p(s_{future}) really represents, you can kind of think of it like this.
-Select a future time step at random from a geometric distribution with parameter gamma, and then evaluate p(s_{t'}=s|s_t) for the time step t' that you sampled.
+Select a future time step at random from a geometric distribution with parameter γ, and then evaluate p(s_{t'}=s|s_t) for the time step t' that you sampled.
 And that's a perfectly valid way to interpret the probability of s_{future}.
 So it's the probability that you will land somewhere in the future where what future means is this γ discounted distribution over time steps.
 Another way you could think about it, which is actually equivalent, is that at every time step, you have a probability of (1-γ) of terminating.

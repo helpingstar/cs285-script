@@ -60,7 +60,6 @@ So we're going to have our approximate posterior, q(θ|ϕ), which is approximate
 And then what we have to do is we have to actually train this approximate posterior, and we'll train it to optimize the variational lower bound, which is given by the KL divergence between q(θ|ϕ) and p(h|θ) ⋅ p(θ).
 So this is the usual variational lower bound.
 If you're not familiar with variational lower bounds, don't worry, we'll cover them in a lot more detail in a subsequent lecture.
-
 But the short version is that you train q(θ|ϕ) to be close to p(θ|h).
 And by Bayes' rule, that's actually the same as trying to make it close to p(h,θ), which factorizes as p(h|θ)⋅p(θ).
 So that's the objective for getting Q.

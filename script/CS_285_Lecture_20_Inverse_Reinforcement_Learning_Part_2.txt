@@ -43,10 +43,10 @@ And that means that we can write it by moving the sum outside of the expectation
 So the distribution under which we take the expected value is the probability of the action, given s_t, common optimality, times the probability of the state, given optimality.
 And on Monday we learn how to compute both of these quantities, because the first quantity is the policy, which we learned is the ratio of two backward moments, which we learned is the ratio of two backward moments, which we learned is the ratio of two backward moments, and the second term is the state marginal, which we learned on Monday can be obtained as the product of the forward and the backward messages.
 So that's where we've seen this before.
-So the first term is just equal to the ratio of beta STAT divided by beta s_t, and if you don't remember how to compute beta, please go back to the lecture on Monday and re-watch the first inference problem.
+So the first term is just equal to the ratio of β STAT divided by β s_t, and if you don't remember how to compute β, please go back to the lecture on Monday and re-watch the first inference problem.
 And the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the backward message over STAT.
 And again, if you don't remember how we derived this, go back to the lecture on Monday and watch the third inference problem.
-Now here the beta s_t in the denominator of the first expression cancels out with the beta s_t in the numerator of the second expression, and we just get the answer that this quantity is proportional to beta STAT times α s_t.
+Now here the β s_t in the denominator of the first expression cancels out with the β s_t in the numerator of the second expression, and we just get the answer that this quantity is proportional to β STAT times α s_t.
 And then you have to normalize it over states and actions, but not over trajectories, crucial.
 So this is a much more tractable thing to normalize if you have a relatively small state space.
 Okay, so now the way that we can estimate this second term is by first calculating this quantity that I'm going to call μ T, the state action marginal, and we calculate that by multiplying the backward messages by the forward messages, and normalizing overall states and actions.

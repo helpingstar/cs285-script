@@ -113,13 +113,13 @@ So the practical change is simply that we still have an encoder network, we stil
 Of course a very classical way to use this is for policy.
 So y might be the actions and x might be the observations.
 And now you can think of this as a policy, y given x, that additionally takes a noise sample as input.
-So making it p(y) given x comma z.
+So making it p(y|x) comma z.
 So now a quick pop quiz for everybody.
-This p(y) given x comma z, is that the encoder or is it the decoder?
+This p(y|x) comma z, is that the encoder or is it the decoder?
 Take a moment to think about this.
 So the answer of course is that it's the decoder, right?
 Because the decoder is the thing that takes in z and produces the variable.
-So the variable here that we're modeling is y, so p(y) given x comma z.
+So the variable here that we're modeling is y, so p(y|x) comma z.
 is the decoder.
 Basically everything is the same as before, except now we're generating y and both the encoder and decoder get x as input.
 The prior can optionally depend on x, but there's really no need to do this.
@@ -127,7 +127,7 @@ So the architecture now is you have your encoder with parameters ϕ, it takes in
 We still have the noise, we still add μ plus ϵ times σ to get our z, but now our decoder takes in both z and x as input and produces p θ of y given x comma z.
 And just like before, the whole thing is trained with the variational lower bound shown at the top of the slide.
 So even though the model is conditional, very little actually changed.
-And then at test time, we could simply sample z from the prior, and then decode it using p(y) given x comma z.
+And then at test time, we could simply sample z from the prior, and then decode it using p(y|x) comma z.
 These types of conditional variational autoencoders are most commonly used to represent multimodal policies.
 These multimodal policies could be used with reinforcement learning, although they're much more commonly used with imitation learning.
 Why is that?

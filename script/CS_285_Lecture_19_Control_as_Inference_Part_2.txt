@@ -13,7 +13,7 @@ So first we can take this equation for the backward message and we can insert th
 So the backward message is equal to the integral over all values of s_{t+1} of p of o, t through big T, comma s_{t+1} given s, d, a, t.
 And now what we'll do is we'll factorize this distribution using the CPF.
 And we'll use this to determine the order of the vectorization.
-So we'll do that by taking some of the TPFs that we have in our model and our goal on doing this factorization is to recover a recursive expression where we can represent beta t, s_t, a, t as some function of beta t plus 1 s plus 1.
+So we'll do that by taking some of the TPFs that we have in our model and our goal on doing this factorization is to recover a recursive expression where we can represent β t, s_t, a, t as some function of β t plus 1 s plus 1.
 So in order to factorize this expression the thing that we have to note is that future optimality variables, namely o, t plus 1 through capital T, are independent of every everything in the past when conditioned on sd plus one.
 And we can see this just from inspection of the graphical model.
 And that means that we can factorize this expression into three parts.
@@ -49,19 +49,19 @@ The action prior is just the probability of the action's a priori, before you kn
 All right, so now that we've gotten rid of the action prior and we've expressed everything in terms of probabilities, we can now calculate the probability of optimality and the probability of optimality.
 So if we look at the probability of optimality in terms of transitions, probabilities of optimality, and recursively in terms of future backward messages, we can write down a recursive algorithm for computing the backward messages.
 It's a for loop that starts at the end of the trajectory and steps backward until the beginning.
-And at every time step from the end until the beginning, we calculate the backward message at time step T, multiplied by the expected value over s , of a quantity that I'm going to call beta s .
+And at every time step from the end until the beginning, we calculate the backward message at time step T, multiplied by the expected value over s , of a quantity that I'm going to call β s .
 Beta of s is a state backward message.
 So that's this equation, basically.
 And the state backward message is just the expected value of the state action backward message in expectation over the actions, distributed according to the uniform action part.
 So that's just this thing.
 And if we alternate these two steps, then we can recursively calculate the backward message all the way from the end to the beginning.
-The very last backward message, beta capital T, is just the last reward, because the probability of O capital T given s capital T comma a capital T is actually a CPD that is already present in your model.
+The very last backward message, β capital T, is just the last reward, because the probability of O capital T given s capital T comma a capital T is actually a CPD that is already present in your model.
 All right.
 Now let's take a closer look at this backward pass.
 So here's the recursive algorithm that I derived on the previous slide.
 And we're going to make some definitions with some very suggestive names that will help us understand this algorithm.
-First, we're going to define vt of s_t as the logarithm of beta t s_t.
-And then we'll define qt of s_t a t as the logarithm of beta t s_t a t.
+First, we're going to define vt of s_t as the logarithm of β t s_t.
+And then we'll define qt of s_t a t as the logarithm of β t s_t a t.
 And now we can write these equations in log space.
 So if we write the equation for the state backward message in log space, then we get vt of s_t is equal to the logarithm of the integral of the exponentiated qt s_t a t.
 So that's kind of interesting.
@@ -98,11 +98,11 @@ But intuitively, the reason that this problem happens is because when we ask the
 We'll come back to this later and discuss the stochastic case in more detail on how to fix this problem.
 But for now, the thing I would note is that at least the deterministic case perfectly matches the classic notion of the stochastic case.
 So we can just use the same kind of value iteration we saw before, with the exception that we use a softmax instead of a hardmax.
-Alright, so just to summarize the backward pass, we have these backward messages beta t of s_t, a, t, which are equal to the probability of O little t through capital T given s_t, a, t.
+Alright, so just to summarize the backward pass, we have these backward messages β t of s_t, a, t, which are equal to the probability of O little t through capital T given s_t, a, t.
 That's the probability that we can be optimal at steps little t through capital T given that we take action a, t in state s_t.
 And we can calculate this via recursion by repeating these two steps, computing the state action backward message as the expected value of the next state message times p of O given s_t, a, t, and computing the state backward message as the expected value of the state action backward message under the action distribution, which is uniform.
-So the log of beta t is kind of a Q-function-like object.
-And we can make this more apparent by setting vt to be log of beta t, s_t, and Qt to be log of beta t, s_t, a, t.
+So the log of β t is kind of a Q-function-like object.
+And we can make this more apparent by setting vt to be log of β t, s_t, and Qt to be log of β t, s_t, a, t.
 Alright, let's discuss the action prior a little bit more, because I kind of brushed this under the rug a little bit, and this is something where I often get a lot of questions.
 So what if the action prior is not uniform?
 What if you believe the monkey is, maybe it's a lazy monkey, that even if it's not being optimal, it's more likely to take small actions than big actions?
@@ -217,7 +217,7 @@ And the way that we factorize the numerator is we're going to write it as p of o
 And the reason we can do that is because we know that o through capital T is conditionally independent of past o's given s_t.
 Now here, the first one, the first term in the numerator is just the state backward message of s_t.
 So we can write this expression as following.
-We can write it as being proportional, if we disregard the denominator, to beta t s_t of p of s_t o one through t minus one times p of o one through t minus one.
+We can write it as being proportional, if we disregard the denominator, to β t s_t of p of s_t o one through t minus one times p of o one through t minus one.
 The second term is just the forward message.
 And the last term doesn't depend on s_t.
 So if we're willing to accept it in an unknown normalizing constant, we can simply disregard that.

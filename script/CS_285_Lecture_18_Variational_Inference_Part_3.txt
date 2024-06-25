@@ -14,7 +14,7 @@ So in this case, we're still going to have a Gaussian posterior for every x.
 But instead of storing the mean invariant, we would have a neural network that takes in that data point and outputs μ of ϕ of x and σ of ϕ of x, the parameters of the Gaussian posterior for the data point x.
 All right, so that's the basic idea for amortized variational inference.
 You have two networks, the network that you're trying to learn, your generative model, p θ of x given z, and what we would call your inference network, Q subscript ϕ of z given x.
-So we know from our discussion before that you can formulate a lower bound on log p of x_i using really any Q, but this lower bound is tightest when this Q is close to the posterior.
+So we know from our discussion before that you can formulate a lower bound on log p(x)_i using really any Q, but this lower bound is tightest when this Q is close to the posterior.
 So now, just like before, we had QI of z.
 Now we have Q_ϕ of z given xi.
 And now our variational lower bound is a function of two distributions, p θ.

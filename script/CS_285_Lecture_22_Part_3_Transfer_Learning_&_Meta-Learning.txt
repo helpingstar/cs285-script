@@ -2,7 +2,7 @@ Alright, now let's talk about how we can take these meta-learning ideas and appl
 So the generic learning picture that we had before is that regular learning is when you take the argmin of some loss function on a training set and that corresponds to some kind of learning function flearn, which is typically something like gradient descent.
 Generic meta-learning can be viewed as minimizing a loss function on a test set where the parameters that go into the loss function are given by a learned function fθ applied to DTRAIN.
 So we can, by analogy, apply the same idea to reinforcement learning.
-We can say that regular reinforcement learning is when you maximize the expected reward under some policy, π θ, and that can be viewed as a learning function frl, but frl is not applied to a training set anymore.
+We can say that regular reinforcement learning is when you maximize the expected reward under some policy, π_θ, and that can be viewed as a learning function frl, but frl is not applied to a training set anymore.
 It's applied to an MDPM.
 So frl is a function of an MDP.
 Meta-reinforcement learning then can be viewed as maximizing the expected reward of a policy with some parameters ϕ i, where the parameters ϕ i are given by applying a learned function fθ to an MDPMI.
@@ -21,7 +21,7 @@ Or it might be something much simpler.
 Maybe it involves the half-cheetah robot from your homework running at different speeds forward and backward.
 And then mtest would be a new speed.
 Meta-learning and contextual policies are very closely related.
-So you could imagine that one way to view meta-learning is as the problem of training a policy, π θ, that is conditioned on all of your experience in the test MDP.
+So you could imagine that one way to view meta-learning is as the problem of training a policy, π_θ, that is conditioned on all of your experience in the test MDP.
 So essentially what fθ does is it takes the experience in the test MDP, or in the meta-training MDP, whatever MDP it's being run on, and summarizes it into some summary statistic that is then used to determine what your policy will do.
 And that's basically the same as having a policy that is conditioned on all the history that you've experienced in this MDP.
 So that's the first step.
@@ -30,8 +30,8 @@ And then the third step is to look at the test MDP.
 So the relationship between this and contextual policies is that this is basically just a contextual policy, except now the context is all of the experience in the MDP-MI.
 Okay, this is not maybe the most obvious idea, so it would be a good idea to sort of pause and think about this a little bit.
 So let me repeat.
-The procedure on the left, where the parameters for the new task, ϕ i, are obtained by running some learning procedure f θ on mi, is basically the same as deploying a policy that is conditioned on all of the experience in the test MDP.
-Because that's what f θ is really executed on.
+The procedure on the left, where the parameters for the new task, ϕ i, are obtained by running some learning procedure f_θ on mi, is basically the same as deploying a policy that is conditioned on all of the experience in the test MDP.
+Because that's what f_θ is really executed on.
 f θ is a function of an MDP, but it's really a function of the experience you gathered in that MDP.
 So as long as you can feed all that experience into your policy, then you're doing meta-learning.
 So that is to say that the context, which we call z1, is the same as the experience in the test MDP.
@@ -46,8 +46,8 @@ In meta-learning, it's inferred.
 Okay.
 So let's try to make this a little more concrete.
 Let's try to actually instantiate this idea.
-And instantiating this idea basically amounts to implementing f θ MI, implementing an encoder that will read in everything you've experienced in the MDP MI and inform your policy how to act.
-So what should f θ MI do?
+And instantiating this idea basically amounts to implementing f_θ MI, implementing an encoder that will read in everything you've experienced in the MDP MI and inform your policy how to act.
+So what should f_θ MI do?
 Well, of course, it needs to improve the policy with experience from MI.
 So it needs to read in that experience and help the policy do better.
 And it also needs to choose how to interact.

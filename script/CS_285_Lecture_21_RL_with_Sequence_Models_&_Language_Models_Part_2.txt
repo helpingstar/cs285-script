@@ -23,7 +23,7 @@ And there, you get a decoding, and at the end, the model outputs an end-of-seque
 So, that's basically a transformer.
 Now, for the purpose of this course, you don't really need to know anything about how the transformer works.
 So, you could simplify this diagram to essentially be some kind of box, which we call a transformer, that sequentially reads in tokens and predicts next tokens.
-So, at every time step, it's modeling the distribution p of x, t given x_1 through t minus 1.
+So, at every time step, it's modeling the distribution p(x), t given x_1 through t minus 1.
 And by repeatedly sampling from that distribution, you end up with a sentence-like, i like omdp solvers.
 Notice that this model is not Markovian.
 So, every token depends on all previous tokens.
@@ -84,7 +84,7 @@ Since it's not generating X1, X2, and X3, and X4, that's the prompt.
 It's only generating X5 and X6.
 So the probability of A given S is given by the probability of X5 given x_1 through 4 and the probability of X6 given x_1 through 5.
 And I've separated x_1 through 4 from X5 because X5 is really the previous time step of the action, whereas x_1 through 4 is the state.
-So π of A given S is essentially our policy π θ.
+So π of A given S is essentially our policy π_θ.
 Now, something to note here is that there are now two notions of time step, and this is actually super confusing.
 The time step X1, you know, 1, 2, 3, 4, 5, 6, those are the time steps for the language generation for the transformer.
 As far as the RL algorithm is concerned, there's only one time step.
@@ -108,7 +108,7 @@ Now we saw before that π was just a product, a product of the probability of al
 So when we take the gradient of the log of π, that's just the sum of the gradients of the log probabilities of all the completion tokens.
 Okay, so that's pretty straightforward because these are exactly the kinds of gradients that you compute when you do a backward pass from the cross-entropy loss.
 And of course, we can estimate this with samples.
-So if we use a standard reinforced estimator, then the samples need to come from π θ.
+So if we use a standard reinforced estimator, then the samples need to come from π_θ.
 So you would actually sample a completion from your language model.
 You would actually tell it what is the capital of France, ask it to generate a completion.
 It would generate Paris end of sequence.
@@ -225,7 +225,7 @@ That's also valid.
 So here's an overall method that we can use with this scheme.
 And this method was described in two papers, fine-tuning language models from human preferences and training language models to follow instructions with human feedback.
 These basically are the foundation of instructGPT, chatGPT, and so on.
-The overall method is to first run supervised training or typically fine-tuning to get your initial policy π θ.
+The overall method is to first run supervised training or typically fine-tuning to get your initial policy π_θ.
 And that's just supervised training of a language model.
 And then for each question in your data set, for each s, you would sample k possible answers, a, k, from your policy and construct a data set consisting of tuples with a prompt s, i, and k possible answers, a, i, 1 through a, i, k, for that prompt.
 Then you would get humans to label each of those points, each of those s, a, 1 through a, k tuples to indicate which answer they prefer.
@@ -235,7 +235,7 @@ And then you would update π_θ using RL with r, ψ as the reward.
 And then you would repeat this process some number of times.
 Now, typically when you do this, in step five, you would actually run many steps of policy optimization.
 So in step five, you wouldn't just optimize against that reward once with important sampling.
-You would actually generate samples from π θ, optimize, generate more samples, and repeat.
+You would actually generate samples from π_θ, optimize, generate more samples, and repeat.
 So there's actually two nested loops.
 And then you would run a policy optimization as well to generate multiple während simple mainionen Jamesouvert's приход.
 Then you would run CORBALLO together with a couple of continuous undergraduates in Reading, to mall the AND tracks the two haveического and spicy there.

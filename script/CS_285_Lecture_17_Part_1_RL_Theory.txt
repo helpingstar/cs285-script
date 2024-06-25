@@ -7,21 +7,21 @@ Well there are a lot of different questions, but here are a few common ones.
 If you have an algorithm, some kind of reinforcement learning algorithm, and it's provided with n samples, and it uses those n samples every one of k iterations, how good is the result from this algorithm?
 What does how good mean?
 Well let's say we're doing Q-learning.
-We might ask how much does the learned Q function, Q hat k after k iterations, differ from the true optimal Q function?
-Could we for example show that Q hat k differs from the optimal Q function Q star in some norm by at most ϵ?
+We might ask how much does the learned Q function, ^{Q} k after k iterations, differ from the true optimal Q function?
+Could we for example show that ^{Q} k differs from the optimal Q function Q star in some norm by at most ϵ?
 Now typically these algorithms have some kind of randomness in them, for example randomness in how we generate the samples.
 So we can't really guarantee that we'll always have a difference less than or equal to ϵ, so typically we would have a guarantee that it's less than or equal to ϵ with at least some probability 1 minus delta, where δ is a small number.
 So typically we would want to show that we have a randomness in the randomness of the samples, and we can show that this is true if we have at least some number of samples where the number of samples depends on some function of ϵ and delta.
 And typically we would want some well-behaved function, for example we might want n to increase logarithmically with delta.
 Another question we could ask, which is a slightly different question, is how does the policy induced by the Q function at the kth iteration differ from the optimal policy in terms of its Q value?
 So let me unpack the notation here.
-So Q is the true Q function, meaning the true expected total reward induced by the policy , where is the policy corresponding to Q hat k.
+So Q is the true Q function, meaning the true expected total reward induced by the policy , where is the policy corresponding to ^{Q} k.
 So asking what is the difference between Q and Q really amounts to asking how different is the expected reward of the policy iteration k.
 The question then is, how different is the expected reward of the policy iteration k?
 iteration k from the best expected reward you could get.
 So this is really a measure of regret.
-All right, so Q is not the same thing as Q hat k because you could, for example, have Q hat k erroneously overestimate the Q values.
-Q π k is the true Q value of the policy corresponding to Q hat k, which is typically the argmax policy.
+All right, so Q is not the same thing as ^{Q} k because you could, for example, have ^{Q} k erroneously overestimate the Q values.
+Q π k is the true Q value of the policy corresponding to ^{Q} k, which is typically the argmax policy.
 And there are other questions we could ask too.
 Another kind of question we could ask is, if I use a particular exploration algorithm, how high is my regret going to be?
 This is a little bit more elaborate, but typically, you know, we might want to show that, for example, some kind of exploration procedure gives you regret that is logarithmic in T.
@@ -40,7 +40,7 @@ So some examples.
 In exploration, you know, performance of RL methods is greatly complicated by exploration, because how well you learn, how many samples you need very strongly depends on how likely you are to find potentially sparse rewards.
 Since theoretical guarantees typically address worst case performance and worst case exploration is extremely hard, we typically don't want to couple analysis of exploration together with analysis of sample complexity that addresses things like approximation error sampling error.
 So we're going to do a couple of examples here.
-So in studying exploration, we want to show that some exploration method is good and typically good for exploration means that it is that will learn a good policy, a policy that deviates from the optimal policy by some ϵ in time that is polynomial, typically in the number of states, the number of actions, and in one over one minus gamma, which is the horizon.
+So in studying exploration, we want to show that some exploration method is good and typically good for exploration means that it is that will learn a good policy, a policy that deviates from the optimal policy by some ϵ in time that is polynomial, typically in the number of states, the number of actions, and in one over one minus γ, which is the horizon.
 But separately from studying exploration, we might also study learning.
 So if we somehow abstract away exploration, if we somehow pretend that exploration is, you know, works well, how many samples do we need to effectively learn a model or value function that results in good performance?
 And this is a slightly separate question.
@@ -358,7 +358,7 @@ They both have an i minus γ ^{p} π inverse in front of them, just like the sim
 One of the terms has a p hat, and the other one has a p.
 So when I group them together, I can basically, since they both have an i minus γ ^{p} π inverse in front of them, I get an i minus γ ^{p} π inverse.
 Then in parentheses I have i minus γ ^{p} π minus i minus γ p_π, and the whole thing is multiplied by q π.
-So the identities cancel out, and since that second one becomes a minus minus γ p_π, I can switch the order, and I get p_π minus ^{p} π, that is all multiplied by gamma, so I take the γ out front, and that leaves me with γ i minus γ ^{p} π inverse times p_π minus ^{p} π times q π.
+So the identities cancel out, and since that second one becomes a minus minus γ p_π, I can switch the order, and I get p_π minus ^{p} π, that is all multiplied by γ, so I take the γ out front, and that leaves me with γ i minus γ ^{p} π inverse times p_π minus ^{p} π times q π.
 Now remember that q π, that p_π, is just p times this matrix π, and it's the same matrix π for both p and p hat.
 So that gives me this equation.
 And v π is just capital π times q π.
@@ -369,7 +369,7 @@ It's not terribly insightful, but it gives us this useful lemma.
 Now here's another useful lemma.
 This one is going to be even simpler.
 Given p_π and any vector in r(s,a), we're going to have this relationship.
-If we apply i minus γ p_π inverse, meaning this, uh, uh, this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by one minus gamma, meaning that applying i minus γ p_π inverse to some vector will blow up the infinity norm of that vector by at most a factor of one over (1-γ).
+If we apply i minus γ p_π inverse, meaning this, uh, uh, this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by one minus γ, meaning that applying i minus γ p_π inverse to some vector will blow up the infinity norm of that vector by at most a factor of one over (1-γ).
 So intuitively, the Q function corresponding to a reward v is at most 1/(1-γ) times larger in terms of the infinity norm.
 By the way, we see a lot of these 1/(1-γ) terms lying around.
 Just to make it clear where these come from, usually when you have sums of discounted rewards, you're going to have sums that look like this.
@@ -412,14 +412,14 @@ So that's (1-γ) times the infinity norm of w.
 Now this is a bound, of course.
 It's not necessarily equal to that.
 It's just greater than or equal to that.
-So if you divide everything through by one minus gamma, then you get the infinity norm of v divided by (1-γ) is greater than or equal to the infinity norm of w.
+So if you divide everything through by one minus γ, then you get the infinity norm of v divided by (1-γ) is greater than or equal to the infinity norm of w.
 And remember, w is i minus γ p_π inverse times v.
 And that completes the proof.
 So now, putting these pieces together, we've got our two lemmas, i minus γ p_π inverse v in the infinity norm, is less than or equal to v in the infinity norm over (1-γ).
 And we've got the simulation lemma.
 So now what we'll do is we'll plug in p minus ^{p} v π from the simulation lemma into this second lemma in place of v.
 And that will tell us that the infinity norm of q π minus q hat π, that the infinity norm of the left-hand side of the simulation lemma, is of course equal to the infinity norm of the right-hand side, because if the left-hand side is equal to the right-hand side, then their infinity norms are equal.
-But then if we apply this top-left equation using p minus ^{p} v π as little v, then this is less than or equal to gamma, that comes from the fact that the whole thing is multiplied by gamma, over one minus gamma, that comes from the top-left equation, times p minus ^{p} times v π in the infinity norm.
+But then if we apply this top-left equation using p minus ^{p} v π as little v, then this is less than or equal to γ, that comes from the fact that the whole thing is multiplied by γ, over one minus γ, that comes from the top-left equation, times p minus ^{p} times v π in the infinity norm.
 So now we've related q π to q hat π, to the difference between p and p hat, but that difference is weighted by this v π thing.
 So what we can do is we can say, well, if you have some kind of matrix times a vector, their product is going to be less than or equal to the product of the largest entries.
 So you could say that this is less than or equal to γ over (1-γ) of the max over s a, so that that's taking a max over the, taking a max over the, the rows of the matrix of the one norm between the difference between the entries, times the largest possible entry in v π.
@@ -467,12 +467,12 @@ So it's not always quadratic.
 But it is for this naive scheme that we analyzed.
 Alright, so that hopefully gives you a flavor of how this analysis works.
 Now a few relatively simple implications of this analysis.
-We showed that Q π minus Q hat π is less than or equal to ϵ.
+We showed that Q π minus ^{Q} π is less than or equal to ϵ.
 And ϵ is given by this equation.
 What about the difference between Q star and Q pi?
-Well, the difference between Q π and Q hat star.
+Well, the difference between Q π and ^{Q} star.
 Now this is a little different, right?
-Because in Q π minus Q hat π, both Q functions are for the same policy, but evaluated using different models.
+Because in Q π minus ^{Q} π, both Q functions are for the same policy, but evaluated using different models.
 Now we're asking what is the difference between the optimal Q function under P, versus the optimal Q function under P hat.
 And those will correspond to different policies.
 So there's a really useful little identity that we're going to use.
@@ -482,28 +482,28 @@ Because if you're maximizing F and G separately, that difference is going to be 
 Now, the thing about optimal Q functions is that they are, of course, the supremum of Q π over all the policies.
 Right?
 So the optimal Q function is the Q function of the policy that has the largest Q values.
-So you can replace Q star with a supremum over π of Q π, and you can replace Q hat star with a supremum over π of Q hat π.
+So you can replace Q star with a supremum over π of Q π, and you can replace ^{Q} star with a supremum over π of ^{Q} π.
 And then we apply this convenient identity, and we see that this is less than or equal to the supremum over π of the difference of the Q functions.
-But we know from our main result that Q π minus Q hat π is less than or equal to ϵ for all policies π, which means that this whole thing is also less than or equal to ϵ.
+But we know from our main result that Q π minus ^{Q} π is less than or equal to ϵ for all policies π, which means that this whole thing is also less than or equal to ϵ.
 Okay, so that's pretty convenient.
 We just directly took our result, and we used it to relate the optimal Q functions.
 But this doesn't actually tell us what the performance of the policy that we find under ^{p} will be in the true MDP.
 So that's the other question.
-What is the difference between Q star and the true Q function corresponding to π hat star, corresponding to the policy that we get by doing the argmax action under Q hat star?
+What is the difference between Q star and the true Q function corresponding to π hat star, corresponding to the policy that we get by doing the argmax action under ^{Q} star?
 Here, the analysis is a little bit more involved.
-So what we're going to do is we're going to take this difference, and we're going to subtract and add Q hat π hat star.
+So what we're going to do is we're going to take this difference, and we're going to subtract and add ^{Q} π hat star.
 So we can always insert, you know, minus x plus x because that's equal to zero.
-So we're going to put in Q star minus Q hat π hat star.
-Plus Q hat π hat star minus Q π hat star.
+So we're going to put in Q star minus ^{Q} π hat star.
+Plus ^{Q} π hat star minus Q π hat star.
 And then we'll break these up using the triangle inequality.
-So this is less than or equal to Q star minus Q hat π hat star plus Q π hat star minus Q hat π hat star.
+So this is less than or equal to Q star minus ^{Q} π hat star plus Q π hat star minus ^{Q} π hat star.
 So the second term in this basically is the difference between the true Q function and the learned Q function for the same policy.
 So we know that that is bounded by the true Q function.
 So we know that that is bounded by ϵ.
-The first term, Q hat π hat star, is just Q hat star, right?
+The first term, ^{Q} π hat star, is just ^{Q} star, right?
 That is the Q function corresponding to the best policy under our learned model.
 And then in the second term, they're the same policy.
-So that means that we can use the top left result for the second term, and we can use the Q star minus Q hat star result for the first term.
+So that means that we can use the top left result for the second term, and we can use the Q star minus ^{Q} star result for the first term.
 And both of them are bounded by ϵ, so that means that the whole thing is bounded by 2 times ϵ.
 Okay?
 So that's a pretty straightforward way to complete these results.

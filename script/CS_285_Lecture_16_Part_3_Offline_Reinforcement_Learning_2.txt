@@ -73,7 +73,7 @@ Okay, this might seem a little cryptic, but this theorem has a few interesting i
 One implication is that the error is less than or equal to delta.
 So if we choose δ to be very small, then we will actually improve on this.
 Another implication is that the error is less than or equal to δ base.
-So a really cool realization is that if we substitute in π beta the behavior policy, and here we have Iceberg's equation, as well as some of the other models, great implementation of the 41st one, well we would expect that the error of the model under the states visited by the behavior policy will be very low, close to zero because those are the states that are actually used to train the model.
+So a really cool realization is that if we substitute in π_β the behavior policy, and here we have Iceberg's equation, as well as some of the other models, great implementation of the 41st one, well we would expect that the error of the model under the states visited by the behavior policy will be very low, close to zero because those are the states that are actually used to train the model.
 So if δ for that is very low.
 It's a close to zero.
 Then we would expect that this equation 12 would essentially guarantee that the learned the behavioral policy, or at least we don't do worse.
@@ -119,7 +119,7 @@ We'll train a model over entire trajectories.
 So this model will provide.
 This will provide us with probabilities of state action sequences.
 By just doing density estimation on the trajectories in the data set.
-And I'm going to use a subscript beta to denote that this distribution, of course, depends on the behavior policy.
+And I'm going to use a subscript β to denote that this distribution, of course, depends on the behavior policy.
 And intuitively, what we're going to do with this distribution is we're going to optimize for a plan for a sequence of actions.
 That has high probability under this distribution, which means that we will avoid actions that are very unlikely in the data, which will avoid actions that are very unlikely in the data.
 So we're going to do that.
@@ -177,10 +177,10 @@ There are some details to get this to actually work, but that's the principle.
 Now of course you could use any other planning method.
 You could use MCTS with this, you could use even differentiable things, although you would have to be careful to turn your those discretizations into continuous values.
 The important thing is that you need to make sure that you're maximizing reward and also taking the probabilities into account.
-So the beam search approach takes probabilities into account because when it samples those k tokens they're sampled from p beta.
+So the beam search approach takes probabilities into account because when it samples those k tokens they're sampled from p β.
 So they're sampled from a distribution of tokens that have a high probability under the data set and then you select the best one among those, and that's okay.
 So why does this work?
-Well generating high probability trajectories avoids out of distribution states and actions because you're actually using p beta both to select the states and the actions.
+Well generating high probability trajectories avoids out of distribution states and actions because you're actually using p β both to select the states and the actions.
 And using really big models works well for all three.
 So you can use a lot of offline RL because you can use lots of compute and capture complex behavior policies.
 So you can capture complex dynamics, you can also capture complex behavior policies.

@@ -199,8 +199,8 @@ Message passing being, of course, a particular instance of variable elimination.
 So there are two kinds of messages that we want to compute in a graph like this, very much like you would in HMM or common filtering.
 The first message is a backward message.
 The backward message tells you what is the probability of being optimal now until the end of the trajectory, given the state of action that you are in.
-And we'll call these backward messages beta.
-It turns out that using beta, you can actually recover the policy.
+And we'll call these backward messages β.
+It turns out that using β, you can actually recover the policy.
 So the policy is the probability of an action at time step t, given the state of time step t, and given the evidence that the entire trajectory from 1 to capital T is optimal.
 This is the stochastic optimal policy in this graphical model, and it turns out that if you can calculate backward messages, you can calculate the policy.
 A third operation that turns out to be very useful, especially when we deal with inverse reinforcement learning, is to compute what are called forward messages.

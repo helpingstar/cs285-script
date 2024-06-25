@@ -206,7 +206,7 @@ The belief state is huge, even for a simple POMDP with binary rewards.
 Remember, your belief state is not the vector of θs.
 It is actually a probability distribution over θs.
 So even in the simple binary reward bandit, the θs correspond to the probability of getting a reward of 1.
-The ^{p}(θ) now needs to be some parametric class, maybe a bunch of beta distributions.
+The ^{p}(θ) now needs to be some parametric class, maybe a bunch of β distributions.
 You could have covariances between the different θs.
 So it is potentially a really complex belief state.
 And the cool thing about bandits is that you can provably do very well with much simpler strategies than solving this full POMDP.
