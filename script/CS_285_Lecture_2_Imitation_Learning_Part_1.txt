@@ -110,8 +110,7 @@ The future might still be random.
 There might be stochasticity.
 But knowing the past doesn't help you resolve that randomness.
 Okay, so just to finish this discussion, now it's hopefully clear what the distinction between policies that operate on observations, π(a_t|o_t), and policies that operate on states, π(a_t|s_t) is.
-So some algorithms, especially some of the later reinforcement learning algorithms we'll describe, can only learn policies.
-That operate on states, meaning that they require the input into the policy to satisfy the Markov property, to fully encode the entire state of the system.
+So some algorithms, especially some of the later reinforcement learning algorithms we'll describe, can only learn policies that operate on states, meaning that they require the input into the policy to satisfy the Markov property, to fully encode the entire state of the system.
 Some algorithms will not require this.
 Some algorithms will be perfectly happy to operate on partial observations that are perhaps insufficient to infer the state.
 I'll try to make this distinction every time I present an algorithm.
@@ -174,7 +173,7 @@ This is called behavioral cloning.
 [p.06]
 
 Now, these kinds of methods have been around for a very, very long time.
-One of the first, what we would call large scale, larger scale learning based control methods was actually an imitation learning method called ALVINN, developed in 1989, which stands for autonomous land vehicle in a neural network.
+One of the first, what we would call large scale, larger scale learning based control methods was actually an imitation learning method called ALVINN, developed in 1989, which stands for Autonomous Land Vehicle In a Neural Network.
 And that was what we would today call a deep RL method for learning based control.
 It used data from human drivers to train a neural network with a whole heaping load of hidden units, five whole hidden units, to look at a 30 by 32 observation of a road and output commands to drive a vehicle.
 And it could drive on roads.

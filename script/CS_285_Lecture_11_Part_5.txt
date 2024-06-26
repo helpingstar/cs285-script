@@ -93,11 +93,11 @@ So now our objective is to maximize, with respect to ϕ, ψ, the sum over all of
 So the second term can be thought of as a kind of autoencoder.
 It just says that if you encode o_t, you should be able to reconstruct it back out again.
 And the first term, it enforces that the encoded states should obey the learned dynamics.
-Then you could optimize both ϕ and ψ jointly by back-propagating through this whole thing.
+Then you could optimize both ϕ and ψ jointly by backpropagating through this whole thing.
 If the dynamics is stochastic, then you want to use something called the reparameterization trick to make this possible to solve with gradient descent, which I'll cover next week.
 But you could also use deterministic dynamics in this case and have a fully deterministic state-space model of this sort.
-So the short version is write down this objective, and then optimize it with back-propagation and gradient descent.
-So everything is differentiable, and you could train everything with back-prop.
+So the short version is write down this objective, and then optimize it with backpropagation and gradient descent.
+So everything is differentiable, and you could train everything with backprop.
 All right.
 So take a minute to think about this formulation.
 Look over the slide and think about whether everything here makes sense to you.

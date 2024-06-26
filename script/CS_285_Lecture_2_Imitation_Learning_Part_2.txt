@@ -33,8 +33,8 @@ And it's pretty easy to construct counter examples where this will be very bad.
 [p.13]
 
 So before I construct that counter example, let me set things up a little bit more precisely, which will make the analysis more concise.
-So first we have to define what precisely we want?
-What determines whether our policy is good or bad?
+So first we have to define what precisely we want.
+What determines whether our policy is good or bad.
 So it's trained to maximize the likelihood of the training actions, but presumably that's not all we want.
 We want some other notion of goodness, like it has to actually drive the car well.
 So what makes a learned policy good or bad?
@@ -45,13 +45,13 @@ And one measure that we can use is we can define a cost.
 And the cost is a function of states and actions, and we'll say that the cost is zero if the action is the same as the human driver's action.
 So let's assume the human driver has a deterministic policy.
 It's not hard to extend this to stochastic policies, but it makes a lot of the notation very complex.
-So we'll just say that say that the human driver has a deterministic policy, π^{*}, the cost is zero if the action matches what they would have done, and it's 1 otherwise.
+So we'll just say that the human driver has a deterministic policy, π^{*}, the cost is zero if the action matches what they would have done, and it's 1 otherwise.
 And that's a very convenient cost to define, because you can basically say that whenever the policy that you learn makes a mistake, you pay a cost of 1.
 So the total cost is basically the number of mistakes you're going to make.
 Notice here that I started mixing up s and o.
 Don't worry about that.
 So all of the analysis here will be in terms of s.
-It's a little bit involved to extend this to to extend it to partially observed settings.
+It's a little bit involved to extend this to o, to extend it to partially observed settings.
 So this is one of those cases where the Markov property is very useful.
 It is possible to do.
 It'll just make everything more complicated to write.
@@ -156,9 +156,9 @@ But if p_{train} is not equal to p_θ then here's what happens.
 What we can do if we want to figure out the expected value of the cost is we can describe the distribution over states at time step T as a sum of two terms.
 And one of those terms is going to be easy to analyze and the other term will be really complicated and we'll just use a bound for that.
 So we can say that at time step T there's some probability that you didn't make any mistakes at all, meaning some probability that you stayed on the tightrope, that you did everything right.
-And if the probability of making a mistake at each step step is ϵ and you start off at an in-distribution state meaning you start off at a state sample from p_{train}, then the probability that you made no mistakes for T time steps is just (1 - ϵ)^t, little t.
+And if the probability of making a mistake at each step step is ϵ and you start off at an in-distribution state meaning you start off at a state sample from p_{train}, then the probability that you made no mistakes for t time steps is just (1 - ϵ)^t, little t.
 So we can say that p_θ(s_t) is equal to (1 - ϵ)^t ⋅ p_{train}(s_t) because that's the probability that you didn't make a mistake.
-And if you didn't make a mistake that you're still in the distribution p_{train} + (1 - (1 - ϵ)^t) times some other distribution.
+And if you didn't make a mistake that you're still in the distribution p_{train}, plus (1 - (1 - ϵ)^t) times some other distribution.
 So it's just saying that, there's some part of your distribution for all the possibilities where you didn't do anything wrong and then there's everything else.
 And the weight on the part where you did nothing wrong is (1 - ϵ)^t and the distribution there is p_{train}.
 Okay?
@@ -190,7 +190,7 @@ It gives us a slightly looser bound but it's a little easier to think about.
 So what we've shown now is that the total variation divergence between p_θ(s_t) and p_{train}(s_t) is bounded by 2ϵt and remember total variation divergence is just the sum over all of the 's's of the absolute value of the difference of their probabilities
 Okay, so now let's talk about the quantity that we actually care about.
 What kind of bound can we derive based on this for the sum over all of the time steps of the expected value of our cost.
-Well, to figure that out we'll substitute in the equation for an expected value so an expected value is just a sum over all the states of the probability of that state times its cost and what i'm going to do is i'm going to replace p_θ with p_θ minus p_{train} plus p_{train} so I can subtract p_{train}.
+Well, to figure that out we'll substitute in the equation for an expected value so an expected value is just a sum over all the states of the probability of that state times its cost and what i'm going to do is i'm going to replace p_θ with (p_θ - p_{train} + p_{train}) so I can subtract p_{train}.
 I can add p_{train} in both cases that's totally fine to do.
 And then I'll put an absolute value symbol around the (p_θ - p_{train}) part because if you have some quantity you take its absolute value you can only make it bigger because if it was positive it stays where it is and if it was negative it becomes a larger value.
 Okay?
@@ -204,7 +204,7 @@ And to account for the fact that in every state I have a different cost, I'll ju
 And that gives me a valid upper bound.
 Now, at this point, I'm going to use my bound for that total variation divergence for the difference between p_θ and p_{train}, and that's 2ϵt.
 And, of course, I know that my cost in p_{train}, my expected cost, is ϵ because that's my initial assumption.
-So the first term becomes, the first term sum over s_t of p_{train} times c is ϵ.
+So the first term becomes, the first term sum over p_{train}(s_t) ⋅ c_t(s_t) is ϵ.
 The second term is 2ϵt times c_{max}, and c_{max}, of course, is 1.
 So the largest cost I can get in any state is 1 because I can make at least one mistake in any state.
 So that's my bound.

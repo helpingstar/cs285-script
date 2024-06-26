@@ -187,8 +187,7 @@ So we have a few options.
 A very simple, but maybe less powerful option is to use a mixture of Gaussians.
 And I'll talk about how to set that up with neural nets.
 A more sophisticated one is to use latent variable models.
-And then something that has recently become very popular is to use diffusion models because diffusion models have gotten a lot more...
-effective and a lot easier to train in recent years.
+And then something that has recently become very popular is to use diffusion models because diffusion models have gotten a lot more effective and a lot easier to train in recent years.
 
 [p.32]
 
@@ -254,7 +253,7 @@ I could teach an entire class on diffusion models in principle, but for the purp
 Let's say that we have a particular training image.
 I'm going to denote the training image as x_0, and the subscript here doesn't denote time.
 It denotes corruptions of the image.
-So x_0 is the least corrupted, x_t is the most corrupted.
+So x_0 is the least corrupted, x_T is the most corrupted.
 So x_0 is the true image.
 In a diffusion model, you construct a fake training set where you add noise to the image, and then you train the model to remove that noise.
 So the image x_{i+1} is going to be the image x_i + noise.
@@ -335,7 +334,7 @@ So autoregressive discretization is actually a great way to get complex distribu
 All right.
 Next, let me talk about a few case studies of papers that use these kinds of formulations.
 The first case study I'll talk about is a paper from 2023 from Chi et al.
-that uses the fusion models to represent policies for robots.
+that uses Diffusion models to represent policies for robots.
 So it works more or less exactly as you would expect.
 There are two variants.
 There is a convnet-based variant and a transformer-based variant, and they differ just in how they read in the image.

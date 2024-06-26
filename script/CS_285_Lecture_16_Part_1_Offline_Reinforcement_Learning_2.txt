@@ -1,14 +1,18 @@
+[p.01]
+
 In today's lecture, we're going to continue our discussion of offline reinforcement learning, and we'll cover more modern offline RL algorithms based on value function estimation that take explicit steps to mitigate the ill effects of distributional shift.
+
+[p.02]
+
 So first, to briefly recap from Monday, on policy reinforcement learning algorithms are algorithms that interact with the world, collect a little bit of data, use that data to update the model, then discard that data and collect more data.
 Off-policy RL algorithms, which we learned about before, are essentially a buffered version of this, where all the data that is collected so far is stored in a replay buffer and is used for each update.
 So you might load all the transitions to augment the amount of data available for each update for something like a Q function, but you still iteratively collect additional data with the latest policy that you have.
-Offline reinforcement learning.
 Offline reinforcement learning dispenses with active data collection entirely.
 In offline reinforcement learning, we assume that we are given a data set, and that that data set was collected by some unknown behavior policy, which we denote with π_β.
 So the definitions are D is our data set, which we can think of as just an unordered set of state, action, next state, and reward tuples.
 In practice, those tuples are typically arranged into trajectories, but value-based methods of the sort that we will describe in today's lecture generally do not make use of this.
 So they just assume that you're given transitions.
-We will use a D with a superscript π_β to denote a state distribution, or D superscript π_θ for the current policy state distribution.
+We will use a d^{π_β} to denote a state distribution, or d^{π_θ} for the current policy state distribution.
 π_β represents the behavior policy, the policy that collected the data set.
 In general, we don't know what this is.
 We have our transition probabilities, our rewards, and the behavior policy.
@@ -18,40 +22,44 @@ It could be a hand-designed controller.
 It could be just assume that something like it exists, which is not really assuming anything at all.
 So if you see the simple π_β, basically in most of these algorithms, we'll either only use samples from π_β, or if we need access to the probabilities, we will fit some model tests to make those probabilities.
 Our objective, just like before, is to maximize expected reward.
-And as we learned on Monday, a major problem with using value-based methods, like Q-learning style methods, is the problem of distribution.
-And that's the problem with distributional shift.
+
+[p.03]
+
+And as we learned on Monday, a major problem with using value-based methods, like Q-learning style methods, is the problem of distributional shift.
 So for any kind of method that uses a Q function, whether it's actor-critic or Q-learning, the Q function needs to be fitted to its target values using the data.
 And when the data isn't changing, then the objective for fitting the Q functions is the Bellman error in expectation under the behavior policy.
 And this expectation is approximated by using the samples in D.
 What this means is that our Q function can be expected to provide accurate estimates in expectation under π_β.
-The problem is that when we perform Bellman backups, we use estimates of the expected value of the Q function under our latest policy, π nu.
-We would expect good accuracy if π nu is equal to π_β, but that's usually not the case, because the whole point is to get π nu to improve over π_β.
-So we experience distributional shift, which means that our estimates of the Q values under π nu will not be very accurate.
-The situation is further exacerbated by the fact that π nu is directly selected to maximize the expected value of the Q function, which means in a sense that π nu is strongly incentivized to find kind of adversarial actions that will fool the Q function into outputting erroneously large Q values.
-And that is in fact exactly what we see happening in practice, as shown in the plots in the lower right, where the actual reward of policies trained with off-limits, or offline RL using standard, in this case Q function, actor-critic methods, is very low, but the Q function estimates that the return will be extremely high.
-So the y-axis in the rightmost plot is a log scale where the red curve, which gets a reward of negative 250, has estimated Q values that are 10 to the seventh power.
+The problem is that when we perform Bellman backups, we use estimates of the expected value of the Q function under our latest policy, π_{new}.
+We would expect good accuracy if π_{new}=π_β, but that's usually not the case, because the whole point is to get π_{new} to improve over π_β.
+So we experience distributional shift, which means that our estimates of the Q values under π_{new} will not be very accurate.
+The situation is further exacerbated by the fact that π_{new} is directly selected to maximize the expected value of the Q function, which means in a sense that π_{new} is strongly incentivized to find kind of adversarial actions that will fool the Q function into outputting erroneously large Q values.
+And that is in fact exactly what we see happening in practice, as shown in the plots in the lower right, where the actual reward of policies trained with offline RL using standard, in this case Q function, actor-critic methods, is very low, but the Q function estimates that the return will be extremely high.
+So the y-axis in the rightmost plot is a log scale where the red curve, which gets a reward of negative 250, has estimated Q values that are 10^7 power.
 So what all this means is that if we want to develop practical deep offline RL algorithms, we need to somehow solve this distributional shift problem.
-And how do current and prior methods typically address this?
+
+[p.04]
+
+So, how do current and prior methods typically address this?
 Well, one very widely studied class of methods is what I'm going to refer to as policy constraint methods.
-These are methods that adopt some sort of actor-critic structure, and they're going to update their Q function with an expected value under π nu, but they will modify the policy update to not just maximize the Q values, but also impose some sort of constraint.
-For example, a constraint that the KL divergence between π and^{π_β} should be bounded by ϵ.
+These are methods that adopt some sort of actor-critic structure, and they're going to update their Q function with an expected value under π_{new}, but they will modify the policy update to not just maximize the Q values, but also impose some sort of constraint.
+For example, a constraint that the KL divergence between π and π_β should be bounded by ϵ.
 So in principle, this should solve distributional shift, right?
 Because if you choose ϵ to be small enough, then in principle, you should not get too many erroneous values.
 That's the idea, at least.
 I will sort of give away the punchline.
-I'll say right away that while policy constraint methods provide good tools for analysis and kind of a reasonable basis to start with, generally the best performance is the best performance and perhaps even the best performance for coding and performing current methods do something a little more sophisticated.
+I'll say right away that while policy constraint methods provide good tools for analysis and kind of a reasonable basis to start with, generally the best performing current methods do something a little more sophisticated.
 So, typically, just policy constraint methods implemented naively don't actually work all that well.
 But this is a very old idea.
-As far as I could tell, it doesn't have a single name, but it comes up in work by Emmanuel Totoro from the early 2000s, work by Bert Kapan.
+As far as I could tell, it doesn't have a single name, but it comes up in work by Emanuel Todorov from the early 2000s, work by Bert Kapan.
 Trust regions, covariant policy gradients, natural policy gradients, they all make use of some kind of constraint actor update idea.
-This idea has been used in a number of recent papers from Fox et al., Fujimoto, Jax, Kumar, and Wu, and many others.
+And also you this idea has been used in a number of recent papers from Fox et al., Fujimoto, Jaques, Kumar, and Wu, and many others.
 So it's a very well-studied idea that goes back many decades.
 But it has a number of issues if applied naively.
 One obvious issue is that we usually don't know what the behavior policy is.
 And that means that we have to be very careful when estimating the KL divergence term.
 So the data could have come from humans, it could have come from a hand-designed controller, it could have come from many past RL runs, so it could be a mixture policy, or even a combination of all of the above.
-In practice, what this means is that if we want to employ a policy constraint method of this sort, we need to either fit another model with behavioral cloning to estimate π_β, or we need to be very clever in how we implement the constraint, so that we can get away with only sampling.
-So we can get away with only sampling samples from π_β without having to have access to its probabilities.
+In practice, what this means is that if we want to employ a policy constraint method of this sort, we need to either fit another model with behavioral cloning to estimate π_β, or we need to be very clever in how we implement the constraint, so that we can get away with only samples from π_β without having to have access to its probabilities.
 And both of those are viable options, and I'll say right now that the latter actually tends to work a lot better than the former, but they can both be reasonable choices.
 There's a second issue which is actually a little bit more severe, which is that for many choices of this constraint, this approach can be both too pessimistic and not pessimistic enough.
 I'll describe this a little bit more later, but basically the reasoning here is the following.
@@ -59,7 +67,6 @@ Remember how when we talked about distributional shift, we asked, well, what if 
 Do we expect low error then?
 The answer is usually no, because if we're minimizing error in expectation, we can only expect it to be low in expectation.
 So in general, you could have two distributions that are very close together in terms of standard divergence metrics like KL divergence, and still have highly erroneous predictions for samples from your new policy.
-So you could have two distributions that are very close together in terms of standard divergence metrics like KL divergence, and still have highly erroneous predictions for samples from your new policy.
 More precisely, this imposes a kind of a constant trade-off between staying close enough to π_β to not experience too many errors, and deviating enough from π_β to improve the policy substantially.
 But then there's this other part about being too pessimistic.
 The issue is that at the same time, we'd like to intuitively find the best policy that is kind of inside the support of the data.
@@ -71,6 +78,9 @@ And that doesn't really make sense.
 Like, why should we make π more random just because π_β was more random?
 So while this framework seems very reasonable, it actually in practice doesn't lead to such great results for these reasons.
 But let's talk about it a little bit more.
+
+[p.05]
+
 So first, what kind of constraints can we use?
 There are a number of choices.
 The most straightforward choice implementation-wise is to use a KL divergence constraint, because this kind of constraint has a convenient functional form that makes it fairly easy to write it down, to differentiate it, and to optimize it.
@@ -83,14 +93,14 @@ You can imagine this in a single state.
 So for different actions, it has different probabilities.
 And you can see that it has fairly good coverage of these actions in the middle.
 And let's say that these orange dots represent samples in our data set.
-And the y-axis here, for example, for the orange dots corresponds to their Q value.
+And the y-axis here, for the orange dots corresponds to their Q value.
 So just from looking at these dots, you can see that that really tall dot, the second one from the left, that must correspond to a pretty good action.
 So if we're just seeing this, we probably want to take the action corresponding to that second dot from the left, because it's so much better than all the others.
 If we were to fit a Q function to this by minimizing the difference to the target values, we might get a curve that looks a little bit like this orange one.
 Now you'll notice that, in regions that have a low probability under π_β, here on the right, the Q function will attempt to extrapolate, and its extrapolated values are probably quite unreliable.
 So even though the largest values that it takes on are actually over there on the right, we probably don't want to trust those values because they are far out of distribution.
 And we might say that the values here in the middle are maybe more reliable.
-Although remember what I said before, that in general, you're not guaranteed to have low error, for indistribution actions, you're only guaranteed low error in expectation.
+Although remember what I said before, that in general, you're not guaranteed to have low error, even for indistribution actions, you're only guaranteed low error in expectation.
 But nonetheless, we might surmise that the values are more reliable here in the middle.
 If we train a new policy π, that maximizes the Q values and minimizes the divergence to π_β, we might get something like this green curve.
 Notice that the green curve doesn't concentrate entirely on the good action, because it is forced to stay somewhat close to π_β.
@@ -101,7 +111,7 @@ It does assign the highest probability to the best action, but it still assigns 
 Intuitively, what we want is something like this, this other curve, this darker green curve, which really only assigns high probability to the really good actions and falls off much more rapidly.
 But this better policy might violate our KL divergence constraint, because it reduces the variance too much.
 So this might be the best in-support policy, meaning the best policy that only assigns high probabilities to actions that had high probabilities that are π_β, but it might violate our KL divergence constraint.
-So based on this intuition, what we might choose to do instead, is to improve the probability of the actions that have high probabilities, and employ a support constraint.
+So based on this intuition, what we might choose to do instead, is to employ a support constraint.
 A support constraint basically means that you're only going to give actions non-trivial probability.
 There's a typo here, that first inequality should be greater than sign, so π(a|s) is greater than zero, only for actions where π_β has a probability that's greater than or equal to some threshold ϵ.
 And that's kind of a crude way to write a support constraint, and of course in reality, it's very difficult to enforce this exactly as written, but there are various approximations that we can employ.
@@ -116,27 +126,30 @@ If you want to learn more about the details, here are three papers that I might 
 The first one is a survey review paper, and the other two discuss various kinds of constraints.
 And I would encourage you to check out those papers if you want to learn a lot more about these.
 Most of our discussion today will focus on the simpler types of constraints.
+
+[p.06]
+
 Okay, how do we implement constraints?
 I'll talk about kind of a high level overview of methods that enforce constraints explicitly.
 Then I'll do a deep dive into methods that enforce constraints implicitly, which can be very effective and simple in practice.
 And then I'll talk about a few other approaches.
 But first let's talk about some explicit approaches.
-I will say right away these are generally not the methods that work well, but I'll try to be aware of how they work to better contextualize some of the other things I'll cover.
+I will say right away these are generally not the methods that work well, but it's good to be aware of how they work to better contextualize some of the other things I'll cover.
 So a very simple way to do this is to directly modify the actor objective.
 So in a conventional actor-critic algorithm with a Q function, our actor objective would basically be this.
 Maximize the expected value under the policy of the Q values where the states are sampled from the data set.
-Now let's write down the form of the KL divergence between π and^{π_β}.
+Now let's write down the form of the KL divergence between π and π_β.
 I know I said before the KL divergence is not a great choice, but it is simple, so it's much easier to discuss this first.
-The KL divergence between π and^{π_β} is just the expected value under π of log π minus log π_β, which we can also write as the negative of the expected value of log π_β minus the entropy of π.
+The KL divergence between π and π_β is just the expected value under π of log π - log π_β, which we can also write as the negative of the expected value of log π_β minus the entropy of π.
 Now notice that there is a close similarity between this equation and the actor objective I have written above, in that both of them are expected values under π, although the KL divergence also has this additional entropy term.
 So what I can do is I can incorporate the KL divergence into the actor objective.
 The log π_β term simply gets added to the Q values because it doesn't depend on π, and then I have this additional entropy term.
 Both of them are multiplied by a Lagrange multiplier λ.
-Remember that if we have a constrained optimization problem, you know, maximize f of x subject to c of x equals 0, we can write it as an unconstrained problem where the constraint is multiplied by a Lagrange multiplier So if we can find the value of this Lagrange multiplier, then solving this problem will actually enforce the constraint.
+Remember that if we have a constrained optimization problem, you know, maximize f(x) subject to c(x) = 0, we can write it as an unconstrained problem where the constraint is multiplied by a Lagrange multiplier.
+So if we can find the value of this Lagrange multiplier, then solving this problem will actually enforce the constraint.
 And in practice, we can either use the dual gradient descent approach that we covered before to find λ, or we can even treat λ as a hyperparameter and just tune the value of λ directly.
-So here λ is our Lagrange multiplier and h is the entropy, which is very easy to compute in closed form and differentiate for either Gaussian or categorical policies.
-So the entropy term is actually very easy to deal with.
-You literally just code up the formula for the entropy and then let your automatic differentiation software compute the gradients.
+So here λ is our Lagrange multiplier and H is the entropy, which is very easy to compute in closed form and differentiate for either Gaussian or categorical policies.
+So the entropy term is actually very easy to deal with you literally just code up the formula for the entropy and then let your automatic differentiation software compute the gradients.
 And then the log π_β term is simply added to the Q function.
 Now you do need to know what log π_β is, which means that in practice, if your data comes from some unknown policy, you would do something like behavioral cloning to fit π_β in order to allow you to estimate this.
 And that can be quite difficult actually.
@@ -152,37 +165,40 @@ So for more on this, check out this paper.
 But generally from my experience, both approaches don't really work all that well.
 And there are actually better ways to do this.
 So generally the best modern offline RL methods don't do either of these things.
-One approach that removes the need to explicitly estimate πβ is to use what are called implicit policy constraints.
+
+[p.07]
+
+One approach that removes the need to explicitly estimate π_β is to use what are called implicit policy constraints.
 So here's our constraint optimization again, and I'm going to use a KL divergence constraint for now to keep it simple.
 It turns out that if you write down the Lagrangian of this problem and actually solve for the closed-form solution for the optimal policy, you get this equation.
 It's straightforward to show by Lagrangian duality.
 I won't go through the derivation on this slide because I have a lot to cover in today's lecture.
 But you can check out a few prior papers that derive this.
 This is actually a very widely studied idea.
-There's work by Peters et al.
-called REPS, work by Rolick et al.
-called SciLearning, that all basically derive the same thing.
-Essentially what this equation is saying is that the optimal solution to this constrained optimization problem of πβ, is given by the behavior policy multiplied by the exponential of the advantage function, divided by a Lagrangian multiplier λ.
+There's work by Peters et al. called "REPS", work by Rawlik et al. called "psi-learning", that all basically derive the same thing.
+Essentially what this equation is saying is that the optimal solution to this constrained optimization problem above, is given by the behavior policy multiplied by the exponential of the advantage function, divided by a Lagrangian multiplier λ.
 Now, if we dissect a little bit what this means, it's actually, in my opinion, somewhat intuitive.
-If λ goes to 0, then that means that the advantage is multiplied by infinity, and the only thing that is proportional to the exponential of that, is a gradient.
-So, the action that is proportional to the exponential of λ is a 3D policy that assigns a probability of 1 to the action that maximizes the advantage of 0 to everything else.
-But for finite values of λ, essentially what this is doing is it's making suboptimal actions exponentially less likely, but also multiplying them by πβ.
-So any action that has a very low probability under πβ, even if it has a very high advantage, will end up with a very low probability.
+If λ goes to 0, then that means that the advantage is multiplied by infinity, and the only thing that is proportional to the exponential of that, is a greedy policy that assigns a probability of 1 to the action that maximizes the advantage of 0 to everything else.
+But for finite values of λ, essentially what this is doing is it's making suboptimal actions exponentially less likely, but also multiplying them by π_β.
+So any action that has a very low probability under π_β, even if it has a very high advantage, will end up with a very low probability.
 And then λ has to be chosen as a Lagrangian multiplier to satisfy that constraint.
-But as I mentioned before, this is a very simple equation, and it's treated directly as a hyperparameter of the algorithm, and just tuned based on the desired performance.
-Now, of course, directly creating the functional form of π^{*} here requires knowing πβ, so we haven't actually done anything to simplify our problem yet.
-But looking at this equation, one of the things we can recognize is that we can approximate π^{*} here by using samples from πβ.
-Because anytime that you want some quantity, you can apply the product of a distribution and some other stuff, well, expected values under the distribution actually give you basically exactly that.
+But as I mentioned before, λ can also be treated directly as a hyperparameter of the algorithm, and just tuned based on the desired performance.
+Now, of course, directly creating the functional form of π^{*} here requires knowing π_β, so we haven't actually done anything to simplify our problem yet.
+But looking at this equation, one of the things we can recognize is that we can approximate π^{*} here by using samples from π_β.
+Because anytime that you want some quantity which is given by the product of a distribution and some other stuff, well, expected values under the distribution actually give you basically exactly that.
 So you can approximate the solution via weighted max likelihood.
-So to train πν, what you can do is you can sample from πβ, so that gives you the πβ term, π^{*}, multiply that sample by a weight corresponding to all the other terms in the equation, put that weight on the sample, and then maximize the likelihood on that sample with that weight.
-So the loss function you're seeing here is basically the behavior cloning loss, that's why the log π shows up in there, except the samples are weighted by all the other terms in the equation above, which is 1 over z times the exponential of 1 over λ times the advantage.
+So to train π_{new}, what you can do is you can sample from π_β, so that gives you the π_β term, π^{*}, multiply that sample by a weight corresponding to all the other terms in the equation, put that weight on the sample, and then maximize the likelihood on that sample with that weight.
+So the loss function you're seeing here is basically the behavior cloning loss, that's why the log π shows up in there, except the samples are weighted by all the other terms in the equation above, which is 1/Z ⋅ exp(1/λ ⋅ A^{π_{old}}(s,a)).
 So in practice, what you would do is you would generate samples from the data set, so these are basically the data set you're given, use the critic to get the advantage, and that gives you a weight, and then you would put that weight on every sample from the data set, and then just do a weighted max likelihood, essentially weighted behavioral cloning, where the weights are given by the advantage function, and the advantage function comes from your critic.
 This has some interesting implications, because one of the things that this suggests is that a constrained critic, is a constrained actor update, really just corresponds to a kind of weighted behavior cloning, where the weights depend on how good the actions are.
 So what this algorithm is really doing is it's imitating the actions in your data set, but it's imitating the good actions more than the bad actions.
 And the math shows that that actually corresponds to solving this constrained actor objective.
+
+[p.08]
+
 So if you want to implement this in practice, you would create a critic loss, which is just the regular Q function critic that we had in the actor critic discussion, and you would have an actor loss, which is this weighted maximum likelihood, and then you would alternate between taking gradient steps on the critic loss, and taking gradient steps on the actor loss.
 So this essentially implements the constrained actor critic framework that I showed before, using this implicit constraint trick, meaning that it doesn't actually require you to know the functional form of π_β, it only requires you to have samples from it, which is what you have in your data set.
-So this algorithm, with Qt, the Q function estimation goes under the name of advantage-weighted actor critic, or AWAKE.
+So this algorithm, with a Q function estimation goes under the name of advantage-weighted actor critic, or AWAC.
 If you use Monte Carlo returns, which is also possible, you get an algorithm called advantage-weighted regression.
 And the citations, if you want to read more about this, are shown at the bottom of this slide.
 Now, the trouble with this kind of approach, well, let me rewind a little bit, the trouble with this kind of approach is that in order to estimate those advantage values, you do still need to query out-of-distribution actions, because there's no guarantee that at intermediate stages in training, your policy π_θ will perfectly respect the constraint.
@@ -191,19 +207,22 @@ Which means that you can still get out-of-distribution actions with this.
 So there's actually two places where you end up querying out-of-distribution actions.
 One is in the target value, where you're computing the expectation under π_θ.
 So as I said, at convergence, π_θ should obey the constraint, but it may not obey the constraint over the course of training.
-And also when you're estimating the advantage, that's again q minus the expected value of q under π_θ, so that also requires querying actions from π_θ into the Q function.
+And also when you're estimating the advantage, that's again Q minus the expected value of Q under π_θ, so that also requires querying actions from π_θ into the Q function.
 And both of those can have errors.
+
+[p.09]
+
 Can we actually avoid that?
 Can we somehow avoid all out-of-distribution action queries when computing the target values?
 Well, here's the target value computation.
-And let's say that this, the second term, that's v of s'.
+And let's say that this, the second term, that's V(s').
 Okay?
-So that's the value, ideally the value for π nu.
+So that's the value, ideally the value for π_{new}.
 But let's just say it's just another neural network.
 Well, we can train this neural network with some loss function.
-So we could take, for example, all the sampled state-action tuples in our data set and regress v of s i onto q of s i a i using some loss function, like for example a mean squared error loss.
-Now that won't really work, because when you do this, v of s i is going to match q of s i a i, but a i in the data set comes from π_β, not from π nu.
-So you're actually estimating the value of π_β, not of π nu.
+So we could take, for example, all the sampled state-action tuples in our data set and regress V(s_i) onto Q(s_i,a_i) using some loss function, like for example a mean squared error loss.
+Now that won't really work, because when you do this, V(s_i) is going to match Q(s_i,a_i), but a_i in the data set comes from π_β, not from π_{new}.
+So you're actually estimating the value of π_β, not of π_{new}.
 So this is not really going to work.
 It's going to give you the Q function of the behavior policy, not of your latest policy.
 Because the action comes from π_β.
@@ -211,7 +230,7 @@ But now here's a funny thought.
 If you consider all the trajectories that you have in the data set, and you look at one of the states along those trajectories, well, in that state, there's probably only one action that you ever saw.
 The state was probably only visited once, if you have a continuous value state or a very large state space.
 But there may be other states nearby that are similar where a different action was taken.
-So because of that, in reality, when you're regressing onto q of s i a i at a state s i, the target for this value function consists of a distribution.
+So because of that, in reality, when you're regressing onto Q(s_i,a_i) at a state s_i, the target for this value function consists of a distribution.
 It consists of a distribution over different values.
 Even in the case where you've only seen one action in a single state, you've probably seen other actions in other similar states.
 So insofar as your value function network generalizes, it really has a distribution of values.
@@ -225,36 +244,37 @@ So you can think of an upper quantile of this distribution as essentially the va
 So it's kind of like saying, in all the states that you visited that are similar to this state, what was the best value that you saw?
 So here's a question.
 If the mean squared error loss gives us the expected value under this distribution, is there some other loss that gives us something like an upper quantile?
-Basically, could we still use SIAI, but just change the form of the loss function and get something that looks more like this, the upper end of this histogram?
+Basically, could we still use (s_i,a_i), but just change the form of the loss function and get something that looks more like this, the upper end of this histogram?
 So we can use something called an expectile loss.
 The equation for an expectile loss might look a little bit messy, but there's actually pretty simple intuition.
 So a mean squared error loss looks like a parabola.
 It penalizes negative errors and positive errors equally, and it penalizes errors more as they get larger because it's a square.
-The expectile loss is a kind of tilted error loss, a tilted parabola, where negative weights, negative errors have a different coefficient than positive errors.
-So if we choose the value of τ here to multiply appropriately, then we can basically penalize negative errors much more than positive errors, which means that it's much better for V of S to be larger than QSIAI than it is for it to be smaller.
+The expectile loss is a kind of tilted parabola, where negative weights, negative errors have a different coefficient than positive errors.
+So if we choose the value of τ here to multiply appropriately, then we can basically penalize negative errors much more than positive errors, which means that it's much better for V(s) to be larger than Q(s_i,a_i) than it is for it to be smaller.
 If we choose a large value of τ like 0.9, for example, then we're penalizing small values of V a lot less than large values.
 And this gives us something on the upper end of this distribution.
 Now at this point you might be thinking, hang on, our problem all along was that our Q values were turning out to be much larger than they should be.
 And now we're going to penalize large values a lot less than small values, so isn't that going to exacerbate the problem?
-But it actually won't because remember here, we're only using the states and actions in the equation, we're only using the states and actions in the data set.
+But it actually won't because remember here, we're only using the states and actions in the data set.
 So we're never going to query Q with any action that was not in the data set, meaning we'll never query Q with any action that was not trained on.
 So that already eliminates the overestimation problem completely.
 In fact, we actually get underestimation because we're not using actions from our learned policy.
-So by tilting our loss to penalize positive errors a lot less, we actually recover something that is closer to the correct optimal.
-So I mean, let's say that we're doing X value function, let's say that X value function is an expectation value, so we're actually going to perform a function called Q function.
-Formally, it's actually possible to show that what this expectation value loss is doing is that it's training the value function to be the maximum of the Q function over all the actions that are within the support of the behavior policy.
+So by tilting our loss to penalize positive errors a lot less, we actually recover something that is closer to the correct optimal Q function.
+Formally, it's actually possible to show that what this expectile loss is doing is that it's training the value function to be the maximum of the Q function over all the actions that are within the support of the behavior policy.
 And the reason that it's doing this for support is that any action that is out of support won't appear in the training set and therefore won't participate in the loss.
-states similar to the state.
+So essentially we're regressing to the best action we've seen it at states similar to the state.
 But this is not just as simple as copying the best behavior in the data set, because we're doing this at every state separately.
 So we're really combining the best things in all the states together, which could result in a final policy that is much better than the very best trajectory that we saw in the data set.
 And this is true if you use the expectile loss with a large enough value of τ.
+
+[p.10]
+
 So this basic principle can be used to devise an algorithm called implicit Q-learning.
 This is a very new algorithm.
 It only came out a short time ago, but I wanted to tell you about it because it performs quite well.
 So the principle is that we're going to use this expectile loss.
 The theory behind it is that it sets the values to be the maximum over the actions for all in-support actions.
-And practically, this basically corresponds to doing the same thing over and over again.
-So we're doing Bellman backups with an implicit policy, which is the argmax policy, but only over those actions that are in-support.
+And practically, this basically corresponds to doing Bellman backups with an implicit policy, which is the argmax policy, but only over those actions that are in-support.
 So now we can actually do value function updates.
 We get Q functions that are going to be approximating these optimal in-support Q functions, but we never have to actually feed in an action into our Q function that it was not trained on, because both losses only ever use states and actions that are in the data set.
 I'll talk about how well this works later, but before that, I'm going to talk about an alternative design, and that's actually in the next part of the lecture.
@@ -267,4 +287,7 @@ Now, once you're done with this process, you do need to actually recover a polic
 Notice that in the Q and V updates, the policy doesn't actually participate explicitly at all.
 That's why we call this implicit.
 So once this is all done, this approach does require a separate step to actually extract the policy, and that separate step is typically done with something like the advantage-weighted method before.
-So for that, we would do something like the equation here, the LA loss at the top, but using the Q function trained with this implicit Q learning approach.
+
+[p.08]
+
+So for that step, we would do something like the equation here, the L_A loss at the top, but using the Q function trained with this implicit Q learning approach.

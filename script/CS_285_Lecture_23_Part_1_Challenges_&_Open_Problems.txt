@@ -117,7 +117,7 @@ But if the model simply becomes more accurate, it could be that the model might 
 So basically, not all errors in the model are made equal.
 And that should be pretty straightforward, right?
 If you're flying an airplane, having a slightly incorrect model about how the airplane flies when it's at 30,000 feet is clearly not as catastrophic as having an error in the model when the plane is landing, and every inch to the ground counts.
-So optimizing the policy with respect to the model is generally also non-trivial, due to this back-propagation-through-time issue.
+So optimizing the policy with respect to the model is generally also non-trivial, due to this backpropagation-through-time issue.
 So we end up using all sorts of other methods, including running those same model-free algorithms through the model, which of course incurs all the challenges associated with model-free RL.
 And there's this more subtle issue, which is that the policy can exploit the model.
 Essentially, even if the model is very good in most places, your policy might discover a way to take just that one action where the policy makes a mistake, that causes it to erroneously predict that something good will happen.

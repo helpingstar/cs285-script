@@ -85,9 +85,8 @@ Why do we even need the rest of the course?
 [p.57]
 
 Well, humans need to provide data for imitation learning, which is sometimes fine, but deep learning works best when the data is very plentiful.
-So asking humans to provide huge amounts of data.
-Can be a huge limitation.
-If the if the algorithm can collect data autonomously, then we can be in that regime where DeepNets really thrive and data is very plentiful without exorbitant amounts of human effort.
+So asking humans to provide huge amounts of data can be a huge limitation.
+If the algorithm can collect data autonomously, then we can be in that regime where DeepNets really thrive and data is very plentiful without exorbitant amounts of human effort.
 The other thing is that humans are not good at providing some kinds of actions.
 So humans might be pretty good at specifying whether you should go left or right on a hiking trail or controlling a quadcopter through a remote control.
 But they might not be so good at, for example, controlling the low level commands to quadcopter rotors to make it do some really complex aerobatic trick.

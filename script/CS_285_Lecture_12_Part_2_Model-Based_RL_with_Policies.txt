@@ -4,7 +4,7 @@ All right, let's talk about model-free reinforcement learning with a learned mod
 
 [p.11]
 
-Before we get into algorithms, let's make a little bit more precise some of the things that we discussed in the previous portion of the lecture on what these back-propagation gradients actually look like and why they might not be as good as using model-free methods.
+Before we get into algorithms, let's make a little bit more precise some of the things that we discussed in the previous portion of the lecture on what these backpropagation gradients actually look like and why they might not be as good as using model-free methods.
 So this is the familiar policy gradient expression that we had before.
 This is basically just directly taken from previous lectures.
 Now, we talked about the policy gradient as a model-free reinforcement learning algorithm, but you could just as well think of it as a gradient estimator that could be used to estimate the gradient of the reward with respect to the policy parameters.

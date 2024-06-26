@@ -67,5 +67,5 @@ Adaptive step size rules like ADAM can be okay-ish, but just regular SGD with mo
 We'll learn about policy gradient-specific learning rate adjustment methods later when we talk about things like natural gradient, but for now, using ADAM is a good starting point.
 And in general, just expect to have to do more hyperparameter tuning than you've usually had to do for supervised learning.
 So just to review, we talked about how the policy gradient is on policy, how we can derive an off-policy variant using importance sampling, which unfortunately has exponential scaling in the time horizon, but we can ignore the state portion, which gives us an approximation.
-We talked about how we can implement policy gradients with automatic differentiation, and the key to doing that is setting it up so that auto-diff back-propagates things for us properly by using the pseudo-loss.
+We talked about how we can implement policy gradients with automatic differentiation, and the key to doing that is setting it up so that auto-diff backpropagates things for us properly by using the pseudo-loss.
 And we talked about some practical considerations, batch size, learning rates, and optimizers.

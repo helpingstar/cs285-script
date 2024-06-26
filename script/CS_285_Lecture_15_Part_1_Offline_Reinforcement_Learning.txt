@@ -49,7 +49,7 @@ So the main topic for today's lecture will be to figure out how to devise offlin
 Basically, the difference between these and the other two is that in offline reinforcement learning, you don't actually get this active interaction.
 You just have a buffer.
 So you assume that somebody else collected that buffer for you by running some other policy, which we refer to as a behavior policy.
-It's called^{π_β}.
+It's called π_β.
 By the way, it's very important to distinguish the behavior policy from the expert policy that we had in imitation learning.
 So in offline reinforcement learning, we don't assume that π_β is any sort of expert.
 π_β could even be fully random.

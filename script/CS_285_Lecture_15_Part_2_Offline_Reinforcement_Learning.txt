@@ -24,13 +24,13 @@ We have our policy gradient, just like what we covered before, ∇log π times Q
 And the problem that you're all hopefully familiar with by this point is that estimating the policy gradient requires samples from π_θ.
 So if you only have samples from π_β, what you would do is importance sampling.
 And we learned all about importance sampling so far.
-We multiply our policy gradient by an importance weight, which is the ratio of the probabilities of a trajectory under π_θ and^{π_β}.
+We multiply our policy gradient by an importance weight, which is the ratio of the probabilities of a trajectory under π_θ and π_β.
 And as we saw before, when we write out those probabilities, all the terms that don't depend on the policy cancel out.
 
 [p.20]
 
 So this is just a recap of the policy gradient lecture.
-So the ratio of the trajectory probabilities under the two policies consists of a product of initial states, transitions, and policies, but because the initial states and transition probabilities are exactly the same for both π_θ and^{π_β}, it's only the ratio of the action probabilities that shows up.
+So the ratio of the trajectory probabilities under the two policies consists of a product of initial states, transitions, and policies, but because the initial states and transition probabilities are exactly the same for both π_θ and π_β, it's only the ratio of the action probabilities that shows up.
 And as we discussed before, this is a perfectly reasonable unbiased way to construct an estimator for the policy gradient using only samples from π_β, but it has a big problem because you are multiplying together these action probabilities and the number of probabilities that you're multiplying in general is O(T), which means that the weights are exponential in capital T, which means that the weights are likely to become degenerate as capital T becomes large.
 By degenerate I mean that one weight will become very big and all the other weights will become vanishingly small, which means effectively as T increases you're estimating your policy gradient using one fairly arbitrary sample.
 Mathematically what this means is that although the policy gradient with these importance weights is unbiased, meaning that if you were to generate many many different samples, or if you were to run the estimator many many times with independent samples, on average it would in fact give you the right answer, but the variance of the estimator is very large.

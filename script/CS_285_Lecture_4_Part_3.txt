@@ -1,4 +1,9 @@
+[p.22]
+
 All right, in the next portion of this lecture, I'm going to introduce the notion of value functions, which are a very useful mathematical object, both for designing reinforcement learning algorithms and for conceptually thinking about the reinforcement learning objective.
+
+[p.23]
+
 So, as I mentioned earlier, the reinforcement learning objective can be defined as an expectation.
 It's an expectation of a sum of rewards with respect to the trajectory distribution, or equivalently, a sum over time of the expected reward for every state action marginal.
 Now, one of the things we could do with this expectation is we can actually write it out recursively.
@@ -31,12 +36,15 @@ So, if you had access to Q(s_1,a_1) and you needed to select the policy π(a_1|s
 You could simply test every action and just assign 100% probability to the best one, one with the largest value for Q.
 So, this basic idea can be extended to a more general concept.
 So, this is the simple rule that I said, you know, a simple way to get π here is just assign a probability of 1 to the argmax.
+
+[p.24]
+
 So, the more general principle is what we're going to call the Q function.
 So, the Q function can be defined at other time steps, not just time step 1.
 And the definition is this.
 Q^π(s_t,a_t).
 And I say Q^π because it depends on π.
-Q^π(s_t,a_t) is equal to the sum over all time steps from T until the end, capital T, of the expected value of the reward at that future time step, conditioned on starting in (s_t,a_t).
+Q^π(s_t,a_t) is equal to the sum over all time steps from t until the end, capital T, of the expected value of the reward at that future time step, conditioned on starting in (s_t,a_t).
 So, what that means is basically if you start in (s_2,a_2) and then roll out your policy, for the rest of time will be the expected sum of rewards.
 A closely related quantity that we can also define is something called the value function.
 The value function is defined in much the same way, only it's conditioned on only a state, rather than a state and action.
@@ -49,6 +57,9 @@ You might want to flip back to the previous slide if something here is unclear.
 Take a moment to think about that.
 And if something about these definitions is unclear, please make sure to write a question in the comments.
 All right, let's continue.
+
+[p.25]
+
 So what are Q functions and value functions good for?
 Well, I provided some intuition for this a couple slides ago when I talked about how once you have a Q function for at least the first time step, you can recover a better policy for the first time step.
 So one idea is that if we have a policy π and we can figure out its full Q function, Q^π(s,a), then we can improve π.
@@ -68,6 +79,9 @@ You'll do better than average under your old policy.
 So one thing you could do is you could modify π(a|s) to increase the probability of actions whose value under the Q function is larger than the value at that state.
 And you can actually use this to get a gradient-based update rule on π.
 These ideas are very important in RL, and we'll revisit them again and again in the next few lectures when we talk about model-free reinforcement learning algorithms.
+
+[p.26]
+
 All right.
 So in the anatomy of the reinforcement learning algorithm, the green box is typically where you would use or where you would learn Q functions or value functions.
 So Q functions and value functions fundamentally are objects that evaluate how good your policy currently is.
