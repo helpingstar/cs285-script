@@ -1,23 +1,34 @@
+[p.08]
+
 Alright, now that we've covered the mathematical derivation for policy gradients, let's work a little bit on developing some intuition for what policy gradients are actually doing.
+
+[p.09]
+
 Alright, so these are the equations that we saw before.
-We've got the approximate expression for the derivative of J(θ), which is a sum over all of our samples of the sum of ∇log π's along that sample trajectory times the total reward of that trajectory.
-So what is this ∇log π thing actually?
+We've got the approximate expression for the derivative of J(θ), which is a sum over all of our samples of the sum of '∇log{π}'s along that sample trajectory times the total reward of that trajectory.
+So what is this ∇log{π} thing actually?
 Well, let's say that our policy for now is just a discrete.
 Let's say that it's just a mapping from images, maybe these are driving images, to a discrete action turn left or turn right.
-Then log π is simply the log probability that this policy assigns to one of those two actions.
-And ∇log π is the derivative of that log probability.
+Then log{π} is simply the log probability that this policy assigns to one of those two actions.
+And ∇log{π} is the derivative of that log probability.
 So a neural network will output those probabilities and you can take the logarithm of that probability.
 When you do maximum likelihood training supervised learning, you're typically maximizing log probabilities of observed labels.
+
+[p.10]
+
 So it's instructive, perhaps, to compare what policy gradients are doing to what maximum likelihood is doing.
 So in maximum likelihood, like in imitation learning, for instance, we would collect some data of humans selecting actions and then we would run supervised learning on that data and that would yield a policy π_θ(a_t|s_t).
 The maximum likelihood objective or the supervised learning objective is just maximization of the log probabilities assigned to the observed actions.
-So the gradient of that is given by the sum over all of your samples and all your time steps of ∇log π(a_{i,t}|s_{i,t}).
+So the gradient of that is given by the sum over all of your samples and all your time steps of ∇log{π(a_{i,t}|s_{i,t})}.
 Now of course when we're doing maximum likelihood, we assume that the actions in our data, a_{i,t}, are good actions to take.
 In policy gradient that is not necessarily true because we generated those actions by running our own previous policy, which might not have been very good.
 So the maximum likelihood gradient simply increases the log probabilities of all the actions, whereas the policy gradient might increase or decrease them depending on the value of their reward.
 So intuitively high reward trajectories get their log probabilities increased, low reward trajectories get their log probabilities decreased.
 So you can think of it as a kind of weighted version of the gradient for the maximum likelihood objective.
 In fact this interpretation will turn out to be very useful when it comes time to actually implement the policy gradient with modern automatic differentiation tools like PyTorch.
+
+[p.11]
+
 Now that was an example with discrete actions.
 What if we have continuous actions?
 What if for example we want to make this little humanoid robot run using policy gradients?
@@ -27,18 +38,24 @@ So the neural network outputs the mean and then you have some variance which cou
 In that case you can write the log probability by basically using the formula for the log probability under a multivariate normal distribution, which is simply the difference between the mean and the action under the covariance, the inverse covariance matrix.
 So this is one way of writing the log probability of a multivariate normal distribution.
 And you can then calculate the derivative of this thing with respect to the the mean and you just get this equation.
-So the derivative of your multivariate normal is just negative one half times the inverse covariance times (f(s_t) - a_t) times df/dθ.
-And in practice the way that you would calculate this quantity is you would compute negative one half σ inverse (f(s_t) - a_t) and then back propagate it through your network to get the derivative with respect to θ.
-All right so that maybe gives us some intuition for what these ∇log π terms are actually doing both in the discrete action and continuous action case.
+So the derivative of your multivariate normal is just -1/2 ⋅ the inverse covariance(∑^{-1}) ⋅ (f(s_t) - a_t) ⋅ df/dθ.
+And in practice the way that you would calculate this quantity is you would compute -1/2 ⋅ ∑^{-1} ⋅ (f(s_t) - a_t) and then back propagate it through your network to get the derivative with respect to θ.
+
+[p.12]
+
+All right so that maybe gives us some intuition for what these ∇log{π} terms are actually doing both in the discrete action and continuous action case.
 In both cases they correspond to a kind of weighted version of the maximum likelihood gradient, if it's helpful for you to think about it that way.
 And you can compute them by basically using the formula for the log probability of whatever distribution class you choose to use.
 Now what is the policy gradient actually doing intuitively?
-So I'll collect some of the terms and use slightly more concise notation to make this a little clearer so you can equivalently write it as ∇log π_θ(τ) r(τ) where this ∇log π_θ(τ) is just the sum over the individual ∇log π_θ.
+So I'll collect some of the terms and use slightly more concise notation to make this a little clearer so you can equivalently write it as ∇log{π_θ(τ)}⋅r(τ) where this ∇log{π_θ(τ)} is just the sum over the individual '∇log{π_θ}'s.
 The maximum likelihood gradient is given here so it's just the same thing only without the r term.
 So intuitively what that means is that if you roll out some trajectories and you compute their rewards and some of them have big positive rewards represented with green check marks and some of them have big negative rewards represented by the red x and some are kind of neutral like that middle one what you'd like to do is you'd like to take the log probabilities along the good trajectories and raise them and take the log probabilities along the bad trajectories and lower them.
 So the policy gradient makes the good stuff more likely, and makes the bad stuff less likely.
 So in a sense you can think of the policy gradient as a kind of formalization of trial and error learning.
-If reinforcement learning refers to learning about trial and error then policy gradient simply formalizes that notion as a gradient ascent algorithm.
+If reinforcement learning refers to learning by trial and error then policy gradient simply formalizes that notion as a gradient ascent algorithm.
+
+[p.13]
+
 Now what I would like to briefly mention next is a short aside regarding partial observability.
 So if we want to learn policies that are conditional observations rather than states, the main difference is that states satisfy the markov property whereas observation in general do not.
 As a reminder the markov property simply says that future states are conditionally independent of past states given present states.
@@ -46,9 +63,12 @@ States satisfy this whereas observations in general don't.
 Now interestingly enough when we derive the policy gradient at no point did we actually use the markov property which means that if you wanted to derive the policy gradient for a partially observed system, you could do so and you would get exactly the same equation.
 Now, for a partially observed system, the trajectory distribution now would be a distribution over states, actions, and observations, and you have to marginalize out the states.
 So the derivation for this is a little bit more involved, but you can do it at home.
-However, if you follow through that derivation, you will end up with exactly the same equation that we got before, only the s's will be replaced by o's.
+However, if you follow through that derivation, you will end up with exactly the same equation that we got before, only the 's's will be replaced by 'o's.
 What this means is that you can use policy gradients in partially observed MDPs without any modification.
 Just use them, and for this version of the policy gradient algorithm, it'll work just fine, insofar as regular policy gradients work.
+
+[p.14]
+
 Okay, now I mentioned before that maybe policy gradients, as I've described them so far, won't necessarily work very well.
 If you actually try to implement them.
 So what's wrong with a policy gradient?
@@ -56,18 +76,18 @@ Well, here's one problem that we could think about.
 Let's say that the horizontal axis here denotes the trajectory, and I know the trajectory in general is not one-dimensional, but let's pretend it is, and the vertical axis represents the reward.
 So here we have a reward, it's kind of this bell curve shape with a peak here, and let's say that we have three samples and the height of the bars here represents the reward of those samples.
 So the blue curve shows the probability under the policy, that's the bell curve, and the green bars show the rewards.
-So I apologize here, the Y-axis is actually a little bit overloaded, it's showing both rewards and probabilities, so the blue thing is a probability, is a probability, it's always positive.
+So I apologize here, the Y-axis is actually a little bit overloaded, it's showing both rewards and probabilities, so the blue thing is a probability, it's always positive.
 The green stuff is the reward, which may be positive or negative.
 Okay, so with these three samples, we could now imagine when we calculate the policy gradient, which way will the blue policy distribution move?
 Which way will the projection distribution move?
 So take a moment to think about this.
 Now, the policy gradient, you can think of it as basically a weighted maximum likelihood gradient.
-So we're going to take each of these three points, and we're going to calculate log π at each of these three points, and we'll multiply it by the value of the reward.
+So we're going to take each of these three points, and we're going to calculate log{π} at each of these three points, and we'll multiply it by the value of the reward.
 So the sample on the left has a very negative reward, so we will try to decrease the log probability there, and the two samples on the right have small but positive rewards, so we'll somewhat increase their probabilities.
-So that means that the policy distribution will slide to the right, and it will mainly try to just look at the positive and the negative, and then we'll try to just really avoid that big negative sample.
+So that means that the policy distribution will slide to the right, and it will mainly try to just really avoid that big negative sample.
 Now, we know that if we take the reward function in MDP, and we offset it by a constant, meaning that we add the same constant to the rewards everywhere, the resulting optimal policy doesn't change, right?
 This is for the same reason that if you have a maximization problem, let's say you're maximizing f(x), the maximum for f(x) is the same even if you add a constant.
-So the maximum for f(x) is the same as the maximum for f(x) plus 100, which is the same for f(x) plus 1000.
+So the maximum for f(x) is the same as the maximum for f(x)+100, which is the same for f(x)+1000.
 So let's add a constant to the rewards.
 So let's say that our rewards are now given by these bars.
 Now, the relative rewards are exactly the same, so the samples on the right are still better than the samples on the left, but now I've added a constant to them, so they're all positive.
@@ -90,6 +110,9 @@ And we'll cover some of those in today's lecture.
 So you can think of an even more pathological version of this issue.
 If some of the samples have a reward of zero, then their gradient basically doesn't matter at all.
 And in general, this issue doesn't go away completely as you increase the number of samples, but it ends up being greatly mitigated.
+
+[p.15]
+
 All right.
 So to review what we've covered so far, we talked about evaluating the RL objective with samples.
 We talked about evaluating a policy gradient where we have to use this log gradient trick to remove the terms that we don't know, namely the initial state probability and the transition probability.

@@ -14,7 +14,7 @@ So if you have an interest in reinforcement learning theory, in understanding ho
 
 All right, so let's just recap the policy gradient material that we had before.
 So initially, we covered the basic REINFORCE algorithm, where the procedure is that we sample some trajectories from our current policy, our current suboptimal policy.
-Then for every one of those trajectories and every time step along each of those trajectories, we calculate the reward to go and then multiply the ∇log π's by the reward to go to get an estimate of the gradient.
+Then for every one of those trajectories and every time step along each of those trajectories, we calculate the reward to go and then multiply the '∇log{π}'s by the reward to go to get an estimate of the gradient.
 And then we perform gradient ascent.
 And then we saw, for instance, in the Actor-Critic lecture that this reward to go could be computed in various ways, using the Monte Carlo estimator as shown here or with more sophisticated methods that involve actually learning value function estimators.
 So of course, like all of the algorithms that we cover, policy gradients follow the same basic recipe.

@@ -73,7 +73,7 @@ So we're much more affected by rewards that happen closer to us in time.
 This type of estimator is essentially the single sample version of what you would get if you were to use the value function with the discounted bootstrap.
 There is another way that we can introduce a discount into the Monte Carlo policy gradient, which seems like it's very similar but has a subtle and important difference.
 What if we take the original Monte Carlo policy gradient?
-Well, we can take the original Monte Carlo policy gradient that we had before we did that causality trick, where we just sum together the ∇log π's and then multiply them together with the sum of the rewards.
+Well, we can take the original Monte Carlo policy gradient that we had before we did that causality trick, where we just sum together the '∇log{π}'s and then multiply them together with the sum of the rewards.
 And then we're going to put a discount into that.
 We'll put a γ^(t-1) multiplier in front of the reward, so that the reward at the first time step is multiplied by 1, the reward at the second time step is multiplied by γ, the reward at the third time step is multiplied by γ squared and so on.
 Take a moment to think about how these two options compare.
@@ -87,7 +87,7 @@ And that's our approximate advantage.
 So option 1 and option 2 are not the same.
 In fact, option 1 matches the critic version with the exception that we have a single sample estimator.
 Option 2 does not.
-In fact, if we were to rewrite option 2 by using the causality trick where we distribute the rewards inside the sum over ∇log π's and then eliminate all of the rewards that happened before the current time step, we'll end up with this expression.
+In fact, if we were to rewrite option 2 by using the causality trick where we distribute the rewards inside the sum over '∇log{π}'s and then eliminate all of the rewards that happened before the current time step, we'll end up with this expression.
 We'll end up with ∇log π times step t times the sum from (t'=t) to capital T of γ^(t'-1).
 Whereas before, we had γ to the (t' - t).
 So what's going on here?

@@ -1,7 +1,7 @@
 In the next portion of today's lecture, we're going to talk about how we can extend policy gradients from the on-policy setting into the off-policy setting.
 So the first part I want to cover is why policy gradients are considered an on-policy algorithm.
 Policy gradients are the classical example of an on-policy algorithm because they require generating new samples each time you modify the policy.
-The reason this is an issue is if you look at the form of the policy gradients, it's an expected value under p_θ(τ) of ∇log p(τ) times r(τ), and it's really the fact that the expected value is taken under p_θ(τ) that's the problem.
+The reason this is an issue is if you look at the form of the policy gradients, it's an expected value under p_θ(τ) of ∇log{p(τ)} times r(τ), and it's really the fact that the expected value is taken under p_θ(τ) that's the problem.
 The way that we calculate this expectation in policy gradients is by sampling trajectories using the latest policy.
 But since the derivative evaluated at parameter vector θ requires samples sampled according to θ, we have to throw out our samples each time we change θ.
 Which means that policy gradient is an on-policy algorithm.
