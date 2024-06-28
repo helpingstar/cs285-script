@@ -95,7 +95,7 @@ Why do we have this difference?
 Well, one way that we can understand this difference is if we take the γ^(t-1) factor and distribute it out of the sum.
 So the last line I have here is exactly equal to the preceding line.
 I've just distributed out a γ^(t-1) factor.
-So now the reward to go calculation is exactly the same as option 1, but I have this additional multiplier of γ^(t-1) in front of ∇log π.
+So now the reward to go calculation is exactly the same as option 1, but I have this additional multiplier of γ^(t-1) in front of ∇log{π}.
 So what is that doing?
 Well, what that's doing is actually quite natural.
 It's saying that because you have this discount, not only do you care less about rewards further in the future, you also care less about decisions further in the future.

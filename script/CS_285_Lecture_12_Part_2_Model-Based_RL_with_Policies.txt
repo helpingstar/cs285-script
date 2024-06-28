@@ -17,7 +17,7 @@ And those samples come from the policy and from the transition probabilities, bu
 And in particular, we don't even know their derivatives.
 But there's nothing stopping you from using this gradient estimator with a learned model.
 So just the same way that you would sample from the real MDP before, now you could sample from the learned model.
-The alternative, the back propagation gradient, it's also sometimes called a pathwise gradient, can be written out like this.
+The alternative, the backpropagation gradient, it's also sometimes called a pathwise gradient, can be written out like this.
 Now this might seem like a very daunting mathematical expression, but all I did here was I just applied the chain rule of calculus to compute the derivatives with respect to the policy parameters for those computation graphs that I showed in the previous section.
 So there's an outer sum over all time steps and every time step there's the derivative of the action at that time step with respect to the policy parameters times the derivative of the next state with respect to the action.
 And then that expression in parentheses is just the derivative of the reward for all future states with respect to the next state.
@@ -41,11 +41,11 @@ If you want to learn more about the numerical stability issues specifically in r
 [p.12]
 
 Now from this we could write down you know what again I might call them I might make up a name for the name I'm going to make up is model-based RL version 2.5.
-Model-based RL version 2.5 is going to be very similar to 2.0 except instead of using back propagation it's going to use the policy gradient.
+Model-based RL version 2.5 is going to be very similar to 2.0 except instead of using backpropagation it's going to use the policy gradient.
 So step 1 run some policy to collect the data set, step 2 learn a dynamics model, step 3 use that dynamics model to sample a whole lot of trajectories with your current policy, step 4 use those trajectories to improve the policy by a policy gradient and you can of course use all the actor critic tricks all that stuff here and then repeat step 3 a few more times.
 So you can take many policy gradient steps, resampling trajectories each time but not generating any more real data nor retraining your model.
 And once you've improved your policy enough that you're happy with it then you would run your policy to collect more data, append those to your data set and use that larger data set to now train a better model.
-So this algorithm would get rid of the issue with back propagation that we discussed before but it still has some problems.
+So this algorithm would get rid of the issue with backpropagation that we discussed before but it still has some problems.
 And in the end, this is not actually the model-based RL method that most people would want to use.
 So what might be the problem with this procedure?
 Take a moment to think about this and again you could pause the video and ponder this on your own time and when you're ready to continue, then continue and I will tell you what's wrong with this.

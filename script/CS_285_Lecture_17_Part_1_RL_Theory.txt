@@ -489,18 +489,18 @@ Okay, so that's pretty convenient.
 We just directly took our result, and we used it to relate the optimal Q functions.
 But this doesn't actually tell us what the performance of the policy that we find under ^{p} will be in the true MDP.
 So that's the other question.
-What is the difference between Q star and the true Q function corresponding to π hat star, corresponding to the policy that we get by doing the argmax action under ^{Q} star?
+What is the difference between Q star and the true Q function corresponding to ^{π} star, corresponding to the policy that we get by doing the argmax action under ^{Q} star?
 Here, the analysis is a little bit more involved.
-So what we're going to do is we're going to take this difference, and we're going to subtract and add ^{Q} π hat star.
+So what we're going to do is we're going to take this difference, and we're going to subtract and add ^{Q} ^{π} star.
 So we can always insert, you know, minus x plus x because that's equal to zero.
-So we're going to put in Q star minus ^{Q} π hat star.
-Plus ^{Q} π hat star minus Q π hat star.
+So we're going to put in Q star minus ^{Q} ^{π} star.
+Plus ^{Q} ^{π} star minus Q ^{π} star.
 And then we'll break these up using the triangle inequality.
-So this is less than or equal to Q star minus ^{Q} π hat star plus Q π hat star minus ^{Q} π hat star.
+So this is less than or equal to Q star minus ^{Q} ^{π} star plus Q ^{π} star minus ^{Q} ^{π} star.
 So the second term in this basically is the difference between the true Q function and the learned Q function for the same policy.
 So we know that that is bounded by the true Q function.
 So we know that that is bounded by ϵ.
-The first term, ^{Q} π hat star, is just ^{Q} star, right?
+The first term, ^{Q} ^{π} star, is just ^{Q} star, right?
 That is the Q function corresponding to the best policy under our learned model.
 And then in the second term, they're the same policy.
 So that means that we can use the top left result for the second term, and we can use the Q star minus ^{Q} star result for the first term.

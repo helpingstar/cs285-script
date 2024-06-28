@@ -124,7 +124,7 @@ So how do we use this in an actual model-based RL algorithm?
 Well, it's actually fairly straightforward you can just substitute this directly into the model-based RL version 1.5 algorithm that I discussed before.
 You can run your base policy π_0 to collect the data set of transitions.
 Now, these transitions consist of observation, action, and next observation tuples.
-Then you train your dynamics, reward model, observation model, and encoder together with back propagation.
+Then you train your dynamics, reward model, observation model, and encoder together with backpropagation.
 Plan through the model to choose actions that maximize the reward.
 Execute the first planned action.
 And observe the next resulting observation o' append that transition to D and re-plan and that's your inner MPC loop.

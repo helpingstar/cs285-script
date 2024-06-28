@@ -69,7 +69,7 @@ And I'll often say in this lecture just p(τ).
 Usually when I say p(τ), I just mean p_θ(τ).
 Okay, so now so far this doesn't actually give us a practical way to evaulate the policy gradient because ∇_θ p_θ(τ) requires differentiating through the unknown initial state distribution and the unknown transition probabilities.
 But there's a very useful identity that will allow us to rewrite this equation in a way that we can evaluate using only samples, much like how we evaluated the objective value.
-So the convenient identity that we will use, and this is basically the only piece of mathematical cleverness in this whole derivation, is that if we have an equation like this, if we have p(τ)⋅∇log p(τ), we can write it as p(τ) ⋅ ∇p(τ)/p(τ).
+So the convenient identity that we will use, and this is basically the only piece of mathematical cleverness in this whole derivation, is that if we have an equation like this, if we have p(τ)⋅∇log{p(τ)}, we can write it as p(τ) ⋅ ∇p(τ)/p(τ).
 This follows directly from simply the equation for the derivative of a logarithm.
 So if you open a calculus textbook and look up the derivative for, you know, d/dx of log x, you'll find that it's basically equal to, ∇x/x, right?
 So that means that ∇log{p} is ∇p/p.

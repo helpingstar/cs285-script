@@ -31,7 +31,7 @@ So this entropy regularizer that we're adding to the policy objective can be ver
 It turns out to be also very closely related to Q-learning algorithms, and this is discussed in a few previous works, which I will reference at the end of the last part of this lecture.
 Okay, let's talk a little bit about how policy gradients relate to Q-learning in this inference framework.
 So if we write out the objective, that here there's the objective again, and I called it j of θ, just like in the policy gradient lecture.
-The entropy is just the expected value under π of negative log π.
+The entropy is just the expected value under π of negative log{π}.
 So this is an equivalent way of writing this.
 When we take the gradient of this expression, we can write that gradient as the sum of two terms.
 The first one is the regularization, the regular policy gradient that treats r minus log π as a reward, and the second term has the gradient going through the log π term in the objective.

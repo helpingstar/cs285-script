@@ -1,44 +1,40 @@
+[p.16]
+
 The last group of offline RL algorithms that I'm going to discuss today are model-based offline RL methods.
 So far all of the offline RL methods we talked about are model-free, but actually model-based methods are a pretty nice fit for offline RL because you can take all of your data, you can train a model on that data as long as you want to get a really good model, and then use that model to obtain a good policy or even just plan with that model directly.
+
+[p.17]
+
 So how does model-based RL work?
 Well we already know this, we train a model using our data, we would use that model either to get a policy or just to plan directly, and ordinarily we would then collect more data, right?
 But if we don't collect more data then we have a little bit of a problem.
 It's a similar kind of problem as the one that we had with a Q function.
 So just like with the Q function, the model essentially is at is trying to answer what-if questions.
 What if we were to go back to one of those states in our data set and take different actions, what kind of states would we end up in and what would happen then?
-So if you remember back in our discussion of model-based RL, we talked about Dynastyle methods.
-Dynastyle methods are ones that use the states and actions collected in the real world as starting points for short model-based rollouts.
-And the first two model-based offline RL methods we'll discuss are the Dynastyle and the Dynastyle.
-And the first two are the Dynastyle and the Dynastyle.
-And the first two are the Dynastyle and the Dynastyle.
-And the first two are the Dynastyle.
-And the first two are the Dynastyle and the Dynastyle.
-And the first two are the Dynastyle.
-And the first two are basically Dynastyle methods adapted to the offline setting.
+So if you remember back in our discussion of model-based RL, we talked about Dyna-style methods.
+Dyna-style methods are ones that use the states and actions collected in the real world as starting points for short model-based rollouts.
+And the first two model-based offline RL methods we'll discuss are basically Dyna-style methods adapted to the offline setting.
 So what goes wrong in the offline setting when we don't collect any more data?
 Well, analogously to how for the Q function we could discover these adversarial actions that cause the Q function to erroneously overestimate, for a model-based method the policy could learn to take actions that trick the model into going into states with very high reward because those states are out of distribution.
-So we still have the out-of-distribution actions problem, and now we're going to have to do something else.
-And that's what we're going to do.
-And now we also have an out-of-distribution states problem for the model because the policy can take some crazy action, fool the model into going into an out-of-distribution state, and from that out-of-distribution state the model would then go to an even more crazy state.
+So we still have the out-of-distribution actions problem, and now we also have an out-of-distribution states problem for the model, because the policy can take some crazy action, fool the model into going into an out-of-distribution state, and from that out-of-distribution state the model would then go to an even more crazy state.
 And the policy can learn to exploit this to trick the model into going into states with a high reward, even though that would probably not actually happen in reality.
-So intuitively, in order to repair this problem, what we need to do is somehow modify these model-based methods so that if the policy starts tricking the model, we can trick the model into going into states with a high reward.
-So if we trick the model into going into crazy states, it gets some kind of penalty, and the policy is then incentivized to change its behavior to come back to regions that are closer to the data.
+So intuitively, in order to repair this problem, what we need to do is somehow modify these model-based methods so that if the policy starts tricking the model into going into crazy states, it gets some kind of penalty, and the policy is then incentivized to change its behavior to come back to regions that are closer to the data.
+
+[p.18]
+
 So first I'll discuss methods that essentially modify the reward function to impose a little penalty.
 And the particular method I'll cover is called MOPO, model-based offline policy optimization.
-There's two methods that are very similar conceptually, MOPO and MORAL.
+There's two methods that are very similar conceptually, MOPO and MOReL.
 I'll talk about the MOPO version, but they're pretty similar, and I would encourage you to actually check out both papers if you're interested in this topic in more detail.
 They have slightly different analysis and slightly different forms for the penalty.
 But the basic idea in both cases is to essentially punish the policy for exploiting the model.
-So the way that we've punished the policy is by actually changing the reward function.
-So the way that we've punished the policy is by actually changing the reward function.
 So the way that we've punished the policy is by actually changing the reward function in some way, or in general changing the model-based MDP.
-So one way that we can change it is to have the reward function assign a little penalty, which I'm denoting here with the letter U, for going into states where the model might be incorrect.
-So U is essentially an uncertainty penalty, and all we're going to do is we're going to add this uncertainty penalty and then use any existing model-based RL algorithm.
+So one way that we can change it is to have the reward function assign a little penalty, which I'm denoting here with the letter u, for going into states where the model might be incorrect.
+So u is essentially an uncertainty penalty, and all we're going to do is we're going to add this uncertainty penalty and then use any existing model-based RL algorithm.
 I'll explain the particular choice of uncertainty penalty that we can use in a second, but first I want to describe kind of the intuition behind what this is going to do.
 So if your policy ends up choosing some action that fools the model into going into a state with a higher reward but that transition is erroneous, then we want the uncertainty penalty to be large in those situations.
 So the uncertainty penalty basically has to quantify how wrong the model is.
-If the model goes into an erroneously wrong situation, the model will be mistaken for the model right there.
-So the value of the model is a particular choice of the uncertainty penalty that we can use in a second, erroneously good-looking state, then the model must have done something wrong, and if we have a good uncertainty penalty, it should be able to catch that.
+If the model goes into an erroneously good-looking state, then the model must have done something wrong, and if we have a good uncertainty penalty, it should be able to catch that.
 So essentially, the uncertainty penalty is supposed to punish the policy enough that exploiting is not worth it.
 And that's why we have to choose the multiplier λ carefully, but if we choose it carefully so that the penalty always costs the policy more than it gains by cheating, then the policy will change its behavior and avoid those crazy out-of-distribution states.
 Technically, the condition on u that we need to satisfy is that u should be at least as large as the error in the model measured according to some kind of divergence.
@@ -48,46 +44,44 @@ So one common way to do this is to train an ensemble of models and measure the d
 But in general, getting good error metrics, getting good estimates of u that are actually greater than or equal to the true model error is an open problem.
 So there isn't a great way to do it that is guaranteed to work every time.
 But ensemble disagreement is one common choice.
-Let's talk a little bit about the model-based RL lecture.
-So the model-based RL lecture is a model-based RL lecture.
-So let's talk a little bit about the theory behind this.
+
+[p.19]
+
+Let's talk a little bit about the theory behind this.
 So let's say that we can find a way to estimate u that does, in fact, provide an error metric that is always at least as large as the true error in the model.
 Here's an interesting result that we can show.
 So there are two assumptions here.
 The first assumption basically is that our value function is expressive enough that we can represent the value accurately.
 So if we're using large neural nets, we can more or less assume that this is true.
-The second assumption is that we can show that the value is at least as large as the true error of the model as measured by some divergence metric like total variation divergence.
-A to m here is the true return of the policy that was trained under the model, the model represented by m.
-Epsilon u is the true return of the policy that was trained under the model, the model represented by m.
-Epsilon u is the expected value under the model of this error metric of u.
-So what the above equation is showing is that if we train a policy π hat using our model, then the true reward of that policy will be at least as large as the best possible policy.
-So we can find the best possible policy, but optimize against a different objective against the reward minus the error.
+The second assumption is that assumption on u and this is a very strong assumption it says that the model error the true model error is bounded above by u meaning that u is at least as large as the true error of the model as measured by some divergence metric like total variation divergence.
+η_M here is the true return of the policy that was trained under the model, the model represented by M.
+ϵ_u is the expected value under the model of this error metric of u.
+So what the above equation is showing is that if we train a policy ^{π} using our model, then the true reward of that policy will be at least as large as the best policy we can find minus its expected error.
+So, we can find the best possible policy, but optimize against a different objective against the reward minus the error.
 And we can guarantee that our learned policy will be at least as good as that.
-Another way to interpret this is to introduce this symbol π delta, and π δ is the best policy that exists according to the true return, not the model, but according to the true return.
-So π δ is the best policy under the true return for which the expected value of the error, the expected value of u, is bounded by delta.
-So it's basically the best policy that doesn't visit states where the model might be incorrect, where that latter phrase is quantified as the average error.
-So we can see that the best policy under the model is less than or equal to delta.
-What this equation 12 is saying is that the model that we learn, so the policy that we learn under our model, will be at least as good in terms of its true return as the best policy whose average error is bounded by δ minus an error term that depends on delta.
+Another way to interpret this is to introduce this symbol π^δ, and π^δ is the best policy that exists according to the true return, not the model, but according to the true return.
+So π^δ is the best policy under the true return for which the expected value of the error, the expected value of u, is bounded by δ.
+So it's basically the best policy that doesn't visit states where the model might be incorrect, where that latter phrase is quantified as the average error of the model is less than or equal to δ.
+What this equation 12 is saying is that the model that we learn, so the policy that we learn under our model, will be at least as good in terms of its true return as the best policy whose average error is bounded by δ minus an error term that depends on δ.
 So if we choose δ to be very small, then we will actually improve on this.
 Okay, this might seem a little cryptic, but this theorem has a few interesting implications.
-One implication is that the error is less than or equal to delta.
-So if we choose δ to be very small, then we will actually improve on this.
-Another implication is that the error is less than or equal to δ base.
-So a really cool realization is that if we substitute in π_β the behavior policy, and here we have Iceberg's equation, as well as some of the other models, great implementation of the 41st one, well we would expect that the error of the model under the states visited by the behavior policy will be very low, close to zero because those are the states that are actually used to train the model.
+One implication is if we substitute in π_β the behavior policy.
+Well, we would expect that the error of the model under the states visited by the behavior policy will be very low, close to zero because those are the states that are actually used to train the model.
 So if δ for that is very low.
 It's a close to zero.
-Then we would expect that this equation 12 would essentially guarantee that the learned the behavioral policy, or at least we don't do worse.
+Then we would expect that this equation 12 would essentially guarantee that the learned policy, is at least as good as the behavior policy which means that we very likely improve over the behavior policy or at least we don't do worse.
 The other thing that this can quantify is the optimality gap.
 So if we plug in the optimal policy π^{*}, then the policy that we learn is at least as good as π^{*} minus a penalty for how wrong the model is on the states that π^{*} visits.
 So if the model is very accurate for the states and actions visited by the optimal policy, then this would guarantee that we will recover something close to the optimal policy.
 So these are interesting results to show.
 Essentially, these results tell us that this method will improve the behavior policy, and it can get something close to the optimal policy if your model is accurate for the states and actions visited by the optimal policy.
 Now, whether the model is accurate in that case or not really depends on the data that you have.
-So this is a little bit of analysis, and hopefully that kind of gives you a taste for the types of results that, in general, we can try to show.
-So the first thing we're going to do is we're going to look at the model based on the state action tuples.
-So the basic idea behind combo is that we can minimize the values of state action tuples for offline RL methods.
-There's a kind of a more evolved version of this idea where we can actually apply a CQL-like principle to model-based offline RL, and that's a newer algorithm called combo.
-So the basic idea behind combo is just like CQL minimizes Q values of policy actions, we can minimize Q values of model state action tuples.
+So this is a little bit of analysis, and hopefully that kind of gives you a taste for the types of results that, in general, we can try to show for offline RL methods.
+
+[p.20]
+
+There's a kind of a more evolved version of this idea where we can actually apply a CQL-like principle to model-based offline RL, and that's a newer algorithm called COMBO.
+So the basic idea behind COMBO is just like CQL minimizes Q values of policy actions, we can minimize Q values of model state action tuples.
 So here's our dyna picture again, and we're going to have a loss function for our critic that looks very similar to the CQL loss from before, where we're minimizing Bellman error.
 But now we're going to be using data from the model to do this.
 So it's a dyna-style method.
@@ -102,39 +96,30 @@ We're just.
 Imposing this additional regularizer on the Q function that says Q function, try to make the model based states and actions look worse.
 And if you can't make them look worse than the data, that means that they're indistinguishable from the data, which means that the model is actually being correct.
 The model is not producing states and actions that look unrealistic.
-And this actually ends up working a little bit better than Mopo and Moro.
+And this actually ends up working a little bit better than MOPO and MOReL.
 Now, both of the algorithms I described so far are dyna-style algorithms.
-We can actually do offline RL in a non-trivial way.
-But we can't do it in a non-trivial way.
-We can't do it in a non-trivial way.
-We can't do it in a non-trivial way.
-We can't do it in a non-trivial way.
+We can actually do offline RL in a non-dyna-style way.
 We can do offline RL where we actually don't learn a policy at all and we just try to plan under the model.
 But we still need some mechanism to compensate for out-of-distribution actions.
+
+[p.21]
+
 So there are a few ways to do it.
 One recent paper that I want to tell you about is something called the trajectory transformer.
 So the basic idea here is that we would train a joint state action model.
 So we're not just going to train a model that predicts future states, conditional current states and actions.
 We'll train a model over entire trajectories.
-So this model will provide.
-This will provide us with probabilities of state action sequences.
+So this model will provide us with probabilities of state action sequences.
 By just doing density estimation on the trajectories in the data set.
 And I'm going to use a subscript β to denote that this distribution, of course, depends on the behavior policy.
 And intuitively, what we're going to do with this distribution is we're going to optimize for a plan for a sequence of actions.
-That has high probability under this distribution, which means that we will avoid actions that are very unlikely in the data, which will avoid actions that are very unlikely in the data.
-So we're going to do that.
-So we're going to do that.
-So we're going to do that.
-So we're going to do that.
-So we're going to do that.
+That has high probability under this distribution, which means that we will avoid actions that are very unlikely in the data, which will avoid out-of-distribution actions.
 And then the other thing we can do is once we're doing offline model based RL, we can use a very big and expressive model such as a transformer.
 That design decision is largely orthogonal to the first point.
 So you could do the number one with any model class.
 But if you're doing offline RL, it's actually very convenient to use a very large, very expressive model class because you don't have to do active data collection.
 You don't have to update your model between trials, which means that it's OK for the model to be really big and computationally expensive.
-So you want basically the number one.
-So you want basically the number one.
-And then you're going to have to use the most powerful density estimation model you can get your hands on.
+So you want basically the most powerful density estimation model you can get your hands on.
 And these days, if you want a really powerful sequence density estimation model, a transformer is a good choice.
 Although the same thing could be done with other kinds of density estimators.
 So I have a reference at the bottom here to a paper that actually describes an approach of this sort.
@@ -152,7 +137,6 @@ And from that it predicts the first dimension of the action of the first time st
 Based on that it predicts the second dimension, and so on, and so on, and so on, until you get to the last dimension of the first action.
 And then you predict the first dimension of the state of the second time step.
 And so on until we get to the very end of the trajecton, until you get to the last dimension of the last action.
-action.
 Now I drew this model here as an autoregressive sequence model which you could do with something like an LSTM but you can also do this with a transformer.
 You need a causal mask for the transformer so this would be something that we do in something like a GPT style model.
 If you're not too familiar with transformers don't worry about this too much.
@@ -161,26 +145,21 @@ Now one nice thing about this is because you're modeling state and action probab
 So this problem of accumulating errors is a big problem if you're selecting new actions, different from those seen in the data set.
 But if you're restricting yourself to actions similar to those seen in the data set, then you can make very accurate predictions very far into the future.
 So this animation is actually showing the trajectory transformer making predictions for the humanoid hundreds of steps into the future.
-So this is not a simulation this is actually just a potential approach to a user with a problem that we can work on.
-prediction from the model.
+So this is not a simulation this is actually just a prediction from the model.
 And then you can use this model to do planning.
 Now you can use many of the same techniques for planning as what we discussed in the model-based control lecture a few weeks ago, but it's important to take the action probabilities into account because you don't want the plan to produce actions that have a low probability under the data.
 One approach to this would be to use beam search which already works quite well with these sequence models, but instead of using beam search to maximize probability use beam search to maximize the reward.
-So given the current subsequence, so let's say you've decoded up to time step three, select the next token from the model by just sampling it from the probability distribution, sample many tokens, let's say you sample k tokens, and then you store the top k with the highest cumulative reward.
+So given the current subsequence, so let's say you've decoded up to time step three, select the next token from the model by just sampling it from the probability distribution, sample many tokens, let's say you sample K tokens, and then you store the top K with the highest cumulative reward.
 So that's basically beam search.
-So you have k prefixes for each one you sample k tokens, sort them, and take the top one.
-So that's basically beam search.
-So you have k prefixes for each one you sample k tokens, sort them, and take the top one.
-k and top here means top in terms of total reward and you do this one time step at a time.
+So you have K prefixes for each one you sample K tokens, sort them, and take the top K and top here means top in terms of total reward and you do this one time step at a time.
 That's the basic high level idea.
 There are some details to get this to actually work, but that's the principle.
 Now of course you could use any other planning method.
 You could use MCTS with this, you could use even differentiable things, although you would have to be careful to turn your those discretizations into continuous values.
 The important thing is that you need to make sure that you're maximizing reward and also taking the probabilities into account.
-So the beam search approach takes probabilities into account because when it samples those k tokens they're sampled from p β.
+So the beam search approach takes probabilities into account because when it samples those K tokens they're sampled from p_β.
 So they're sampled from a distribution of tokens that have a high probability under the data set and then you select the best one among those, and that's okay.
 So why does this work?
-Well generating high probability trajectories avoids out of distribution states and actions because you're actually using p β both to select the states and the actions.
-And using really big models works well for all three.
-So you can use a lot of offline RL because you can use lots of compute and capture complex behavior policies.
+Well generating high probability trajectories avoids out of distribution states and actions because you're actually using p_β both to select the states and the actions.
+And using really big models works well for offline RL because you can use lots of compute and capture complex behavior policies.
 So you can capture complex dynamics, you can also capture complex behavior policies.

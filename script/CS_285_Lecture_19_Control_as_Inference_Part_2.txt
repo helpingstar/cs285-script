@@ -108,7 +108,7 @@ So what if the action prior is not uniform?
 What if you believe the monkey is, maybe it's a lazy monkey, that even if it's not being optimal, it's more likely to take small actions than big actions?
 Well, if the action prior is not uniform, then our expression for v of s_t becomes a little bit more complex.
 Instead of being the log integral of the exponential to Q, now it's the log integral of the exponential to Q plus the log probability of the action given the state, where our Q is defined like this.
-So if we redefine Q to be a different quantity Q tilde, which is given by r plus log p, of a, t given s_t, plus the log expectation of the next value, then we get this expression that the corresponding value function is just the log of the integral of the exponentiated Q tilde.
+So if we redefine Q to be a different quantity Q tilde, which is given by r plus log{p}, of a, t given s_t, plus the log expectation of the next value, then we get this expression that the corresponding value function is just the log of the integral of the exponentiated Q tilde.
 So this makes it apparent that if we simply add log p of a, t given s_t to the reward, and then do everything the same way we did before, as though the action prior was uniform, we'll recover exactly the right answer as we would have if we had properly accounted for a non-uniform action prior.
 And this is basically why we don't worry about the action prior, because we can always construct a different reward function that accounts for the action prior, and then treat it from there on out as though it was uniform.
 So that's why we basically don't worry about that term.
