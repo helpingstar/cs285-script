@@ -1,4 +1,9 @@
+[p.11]
+
 All right, now that we've talked about policy evaluation and how value functions can be incorporated into the policy gradient, let's put these pieces together and construct an Actor-Critic reinforcement learning algorithm.
+
+[p.12]
+
 So a basic batch Actor-Critic algorithm can look something like this.
 This is kind of based on the REINFORCE procedure before, but with some additional steps added.
 So step one, just like before, is going to be to generate samples by running rollouts through our policy.
@@ -8,14 +13,17 @@ Step two is to fit our approximate value function to those sampled rewards.
 And that's what's going to replace the green box.
 So instead of just naively summing up all the rewards, we're now going to fit a neural network as we discussed in the previous section.
 Step three, for every state action tuple that we sampled, evaluate the approximate advantage as the reward plus the approximate value of the next state minus the value of the current state.
-Step four, use these advantage values to construct a policy gradient estimator by taking ∇log π at every time step and multiplying it by the approximate advantage.
+Step four, use these advantage values to construct a policy gradient estimator by taking ∇log{π} at every time step and multiplying it by the approximate advantage.
 And then step five, like before, is to take a gradient ascent step.
-So the part that we talked about when we discussed policy evaluation is mostly the step two how do we could actually fit the value function.
+So the part that we talked about when we discussed policy evaluation is mostly the step two how do we actually fit the value function.
 And we talked about how we can make a number of different choices.
 We could fit it to single sample Monte Carlo estimates, meaning that we actually sum up the rewards that we got along that trajectory.
 And that gives us our target values.
 We also talked about how we could use bootstrap estimates, where we use the actual observed reward plus the estimated value at the next state by using our previous value function estimator.
 And these give us a few different options how to fit the critic.
+
+[p.13]
+
 Now, at this point, I want to make a little aside to discuss what happens when we fit value functions with this bootstrap rule in infinite horizon settings.
 So the trouble that we might get into is if the episode length is infinite, then each time we apply this bootstrap rule, our value function will increase.
 So if we have, for example, an episodic task that ends at a fixed time.
@@ -35,7 +43,7 @@ You might be quite pleased about that.
 If I tell you that I'll give you 100,000 next year, you'll probably still be somewhat pleased, but less so.
 If I tell you that I'll give you 100,000 in a million years, you probably won't take me very seriously.
 Why?
-Well, because it matters a lot less to you what will happen in one year and significantly less what will happen in a million years simply because there's so much uncertainty about what will happen to everybody, including you, in that amount of time that those delayed rewards just don't have any value.
+Well, because it matters a lot less to you what will happen in one year and significantly less what will happen in a million years simply because there's so much uncertainty about what will happen to everybody, including you, in that amount of time that those delayed rewards just don't have much value.
 Another way of thinking about it is that you'd prefer a reward sooner rather than later for a very basic biological reason, which is that someday you're going to die and you'd like to receive the reward before you die.
 And if I tell you you'll get the reward in a million years, then it's very unlikely that you'll get the reward before you die.
 That might sound kind of grim, but we can use this cute metaphor to actually construct a solution to this infinite reward problem.
@@ -58,24 +66,26 @@ And that's where we get this γ factor.
 So the probability of entering the death state is (1-γ), which means that the modified dynamics now are just γ times the original probabilities.
 And that (1-γ) remaining slice accounts for entering the death state.
 So mechanically, the modification that we have with the discount factors just multiply our values by γ for every time step that we back them up.
-And what that does is it makes us prefer rewards that happen sooner rather than later.
-And mathematically, one way that we can interpret this is that we're actually modifying our MDP to introduce the probability of death with probability of 1 - γ.
+What that does is it makes us prefer rewards that happen sooner rather than later.
+And mathematically, one way that we can interpret this is that we're actually modifying our MDP to introduce the probability of death with probability of (1-γ).
+
+[p.14]
+
 All right.
 Let's dig into discount factors a little bit more.
 First, could we introduce discount factors into regular Monte Carlo policy gradients?
 Well, the answer is we most definitely can.
 So for example, there's one option for how to do this is we can just take that single sample reward-to-go calculation and we can put γ into it.
-So the equation I have here is exactly the reward-to-go calculation I had before, except that now I've added this γ raised to the power (t' - t) in front of my reward.
+So the equation I have here is exactly the reward-to-go calculation I had before, except that now I've added this γ^{t'-t} in front of my reward.
 So that means that the first reward, the one that happens at time step t, has a multiplier of 1.
-The next one at t plus 1 gets a multiplier of γ.
-The next one at t plus 2 gets a multiplier of γ squared and so on.
+The next one at (t+1) gets a multiplier of γ.
+The next one at (t+2) gets a multiplier of γ^2 and so on.
 So we're much more affected by rewards that happen closer to us in time.
 This type of estimator is essentially the single sample version of what you would get if you were to use the value function with the discounted bootstrap.
 There is another way that we can introduce a discount into the Monte Carlo policy gradient, which seems like it's very similar but has a subtle and important difference.
-What if we take the original Monte Carlo policy gradient?
-Well, we can take the original Monte Carlo policy gradient that we had before we did that causality trick, where we just sum together the '∇log{π}'s and then multiply them together with the sum of the rewards.
+What if we take the original Monte Carlo policy gradient that we had before we did that causality trick, where we just sum together the '∇log{π}'s and then multiply them together with the sum of the rewards.
 And then we're going to put a discount into that.
-We'll put a γ^(t-1) multiplier in front of the reward, so that the reward at the first time step is multiplied by 1, the reward at the second time step is multiplied by γ, the reward at the third time step is multiplied by γ squared and so on.
+We'll put a γ^{t-1} multiplier in front of the reward, so that the reward at the first time step is multiplied by 1, the reward at the second time step is multiplied by γ, the reward at the third time step is multiplied by γ^2 and so on.
 Take a moment to think about how these two options compare.
 Consider if these two options are actually identical mathematically or not.
 So if we were to apply the causality trick to option 2, meaning that we remove all of the rewards from the past, will we end up with option 1 or not?
@@ -88,28 +98,31 @@ So option 1 and option 2 are not the same.
 In fact, option 1 matches the critic version with the exception that we have a single sample estimator.
 Option 2 does not.
 In fact, if we were to rewrite option 2 by using the causality trick where we distribute the rewards inside the sum over '∇log{π}'s and then eliminate all of the rewards that happened before the current time step, we'll end up with this expression.
-We'll end up with ∇log π times step t times the sum from (t'=t) to capital T of γ^(t'-1).
-Whereas before, we had γ to the (t' - t).
+We'll end up with ∇log{π} times step t times the sum from (t'=t) to capital T of γ^{t'-1}.
+Whereas before, we had γ^{t'-t}.
 So what's going on here?
 Why do we have this difference?
-Well, one way that we can understand this difference is if we take the γ^(t-1) factor and distribute it out of the sum.
+Well, one way that we can understand this difference is if we take the γ^{t-1} factor and distribute it out of the sum.
 So the last line I have here is exactly equal to the preceding line.
-I've just distributed out a γ^(t-1) factor.
-So now the reward to go calculation is exactly the same as option 1, but I have this additional multiplier of γ^(t-1) in front of ∇log{π}.
+I've just distributed out a γ^{t-1} factor.
+So now the reward to go calculation is exactly the same as option 1, but I have this additional multiplier of γ^{t-1} in front of ∇log{π}.
 So what is that doing?
 Well, what that's doing is actually quite natural.
 It's saying that because you have this discount, not only do you care less about rewards further in the future, you also care less about decisions further in the future.
 So if you're starting at time step 1, rewards in the future matter less, but also your decisions matter less because your decisions further in the future will only influence future rewards.
-So as a result, you actually discount your gradient at every time step by γ^(t-1).
+So as a result, you actually discount your gradient at every time step by γ^{t-1}.
 Essentially, it means that making the right decision at the first time step is more important than making the right decision at the second time step because the second time step will not influence the first time step's reward.
-And that's what that γ^(t-1) factor out front represents.
+And that's what that γ^{t-1} factor out front represents.
 This is in fact the right thing to do if you truly want to solve a discounted problem.
 If you are really in a setting where you have a discounted factor, and that discount factor represents your preference for near-term rewards or equivalently the probability of entering the death state, then in fact your policy gradient should discount future gradients.
 Because in a truly discounted setting, making the right decision now is more important than making the right decision later.
 Coming back to my analogy about the $100, if I tell you that I will give you $100 if you pass my math exam, and I tell you the same thing that I can give you exam in today, or I can give you the exam next year, or I can give you the exam in a million years, well chances are if you know that I'm going to give you the exam in a million years, you're probably not going to study for it.
 So your policy gradient for that math exam will have a very small multiplier because you'd rather deal with things that will give you rewards much nearer to the present.
-So it makes sense to have this γ^(t-1) term out front if we're really solving a discounted problem.
+So it makes sense to have this γ^{t-1} term out front if we're really solving a discounted problem.
 But in reality, this is often not quite what we want.
+
+[p.15]
+
 So saying that later time steps matter less might not actually give us the solution that we're after.
 So this is the death version.
 Later steps don't matter if you're dead.
@@ -126,18 +139,20 @@ So option 1, in some ways, is closer to what we want.
 Maybe what we really want is more like average reward.
 So we want to put a 1 over capital T and remove the discount altogether.
 Average reward is computationally and algorithmically very, very difficult to use.
-So we would use discount in practice because it's so mathematically convenient, but omit the γ^(t-1) multiplier that shows up in option 2 because we really do want a policy that does the right thing at every time step, not just in the early time steps.
+So we would use discount in practice because it's so mathematically convenient, but omit the γ^{t-1} multiplier that shows up in option 2 because we really do want a policy that does the right thing at every time step, not just in the early time steps.
 Another way to think about the role that the discount factor plays that provides an alternative perspective to this death state, you can read about this in this paper by Philip Thomas called "Bias and Natural Actor-Critic Algorithms", is that the discount factor serves to reduce the variance of your policy gradient.
 So if you have infinitely large rewards, you also have infinitely large variances, right?
 Because infinitely large values have infinite variances.
 By ensuring that your reward sums are finite by putting a discount in front of them, you're also reducing variance at the cost of introducing bias by not accounting for all those rewards in the future.
+
+[p.16]
+
 All right.
 So what happens when we introduce the discount into our Actor-Critic algorithm?
 Well, the only thing that changes is step 3.
 So in step 3, you can see that we've added a γ in front of V^π_ϕ(s').
 Everything else stays exactly the same.
 One of the things we can do with Actor-Critic algorithms once we take them into the infinite horizon setting is we can actually derive a fully online Actor-Critic method.
-So we can actually derive a fully online Actor-Critic method.
 So, so far when we talked about policy gradients, we always used policy gradients in a kind of episodic batch mode setting where we collect a batch of trajectories.
 Each trajectory runs all the way to the end.
 And then we use that batch to evaluate our gradient and update our policy.
@@ -149,13 +164,13 @@ And at this point I'm not putting t subscripts on anything because this can go o
 Step two, we update our value function by using the reward plus the value of the next state as our target.
 Because we're using a bootstrapped update, we don't actually need to know what state we'll get at the following time step or the one after that or the one after that.
 We just need the one next time step s'.
-So we don't need s double prime, s triple prime, etc.
+So we don't need s'', s''', etc.
 because we're using the bootstrap.
 So that's enough for us to update our value function.
 Step three, we evaluate the advantage as the reward plus the value function of the next state minus the value function of the current state.
 Again, this only uses things that we already know.
 It uses (s,a,s',r) and our learned value function.
-And then using this, we can construct an estimate for the policy gradient by simply taking the ∇log π for this action that we just took multiplied by the advantage that we just calculated.
+And then using this, we can construct an estimate for the policy gradient by simply taking the ∇log{π} for this action that we just took multiplied by the advantage that we just calculated.
 And then we can update the policy parameters with policy gradient.
 And then we repeat this process.
 And we do this every single time step.
@@ -163,5 +178,8 @@ Now there are a few problems with this recipe when we try to do Deep RL.
 And maybe each of you could take a moment to think about what might go wrong with this algorithm if we implement it in practice.
 This is kind of the textbook online Actor-Critic algorithm.
 But for Deep RL, it's a bit problematic.
+
+[p.17]
+
 All right.
 Let's continue this in the next section.
