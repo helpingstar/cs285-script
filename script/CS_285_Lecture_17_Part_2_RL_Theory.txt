@@ -38,7 +38,7 @@ So if you've seen a given S a five times and you average together the target val
 Okay.
 Now I'm saying all of this, but this is just kind of justification for this idealized model.
 So from here on out, we're just going to deal with r hats and p hats.
-So all that explanation was just to justify why viewing approximate fit of q iteration as doing this t hat backup is reasonable.
+So all that explanation was just to justify why viewing approximate fit of Q iteration as doing this t hat backup is reasonable.
 It's reasonable because if you were to just average together the target values for that state action tuple over all the samples that contain that state action tuple, this is exactly what you would get.
 Okay.
 Now at this point, what we're actually going to see in our analysis is that the fact that r hat and ^{p} are not exactly the same as r and p is going to induce some error.
@@ -47,10 +47,10 @@ If we had an infinite number of samples, then r hat would be equal to r and ^{p}
 But for a finite number of samples, we incur sampling error.
 But that's not the only source of error.
 This minimization will also be inexact.
-So we won't actually be able to get q hat k plus one to perfectly match t hat q hat k because it's fit of q iteration and there's some kind of function approximation or some kind of, you know, inexact learning going on.
+So we won't actually be able to get q hat k plus one to perfectly match t hat q hat k because it's fit of Q iteration and there's some kind of function approximation or some kind of, you know, inexact learning going on.
 So we need some model for this error.
 And an important thing here is which norm we're going to use.
-So we saw before in our discussion of, fit of q iteration back in the beginning of the course, that if we do this with squared error, the problem is that we can't even prove convergence of the algorithm.
+So we saw before in our discussion of, fit of Q iteration back in the beginning of the course, that if we do this with squared error, the problem is that we can't even prove convergence of the algorithm.
 Now, that's a significant problem.
 But even though we can't prove convergence of the real algorithm, maybe we can assume some kind of idealized algorithm and at least study how error in this idealized algorithm depends on the problem parameters.
 So we need to idealize this a little bit.
@@ -61,7 +61,7 @@ So we'll assume that every iteration, we compute this approximate Bellman backup
 And I'll come back to this later.
 So this is, this assumption is kind of made out of convenience because it's difficult to do this with the L2 norm.
 Okay, so which Questions are we gonna want to study?
-Well, one question is, as the number of θ q iteration iterations approaches infinity, what is q hat k actually approach?
+Well, one question is, as the number of θ Q iteration iterations approaches infinity, what is q hat k actually approach?
 In particular?
 How much does q hat k differ from q star?
 asymptotically as we take infinitely many approximate fitter Q iteration, iterations?
@@ -113,7 +113,7 @@ So we're going to do that.
 So we're going to do that.
 So we're going to do that.
 So we're going to do that.
-So we had an exact fit, if we had an exact tabular q iteration method, then q hat k plus 1 would be exactly equal to t q hat k.
+So we had an exact fit, if we had an exact tabular Q iteration method, then q hat k plus 1 would be exactly equal to t q hat k.
 And now we're going to assume that it's not exact, that it incurs some error, and that that error is bounded in the infinity norm.
 Now this is a strong assumption.
 In reality, if you're doing supervised learning, your error is not bounded in the infinity norm.

@@ -1,37 +1,43 @@
-Welcome to lecture 17 of CS 285.
+[p.01]
+
+Welcome to lecture 17 of CS285.
 Today we're going to have a brief discussion of reinforcement learning theory.
 And you know, this is the only theory lecture in this course, so I won't go into a great deal of depth.
 My goal is to mainly just give you a sense for the kinds of theoretical analysis that we can do in reinforcement learning algorithms, and the kinds of conclusions that we might draw from this sort of analysis.
+
+[p.02]
+
 So what questions do we usually ask when we're doing reinforcement learning theory?
 Well there are a lot of different questions, but here are a few common ones.
-If you have an algorithm, some kind of reinforcement learning algorithm, and it's provided with n samples, and it uses those n samples every one of k iterations, how good is the result from this algorithm?
+If you have an algorithm, some kind of reinforcement learning algorithm, and it's provided with N samples, and it uses those N samples every one of k iterations, how good is the result from this algorithm?
 What does how good mean?
 Well let's say we're doing Q-learning.
-We might ask how much does the learned Q function, ^{Q} k after k iterations, differ from the true optimal Q function?
-Could we for example show that ^{Q} k differs from the optimal Q function Q star in some norm by at most ϵ?
+We might ask how much does the learned Q function, ^{Q}_k after k iterations, differ from the true optimal Q function?
+Could we for example show that ^{Q}_k differs from the optimal Q function Q^{*} in some norm by at most ϵ?
 Now typically these algorithms have some kind of randomness in them, for example randomness in how we generate the samples.
-So we can't really guarantee that we'll always have a difference less than or equal to ϵ, so typically we would have a guarantee that it's less than or equal to ϵ with at least some probability 1 minus delta, where δ is a small number.
-So typically we would want to show that we have a randomness in the randomness of the samples, and we can show that this is true if we have at least some number of samples where the number of samples depends on some function of ϵ and delta.
-And typically we would want some well-behaved function, for example we might want n to increase logarithmically with delta.
+So we can't really guarantee that we'll always have a difference less than or equal to ϵ, so typically we would have a guarantee that it's less than or equal to ϵ with at least some probability {1-δ}, where δ is a small number.
+So typically we would want to show that this is true if we have at least some number of samples where the number of samples depends on some function of ϵ and δ.
+And typically we would want some well-behaved function, for example we might want N to increase logarithmically with δ.
 Another question we could ask, which is a slightly different question, is how does the policy induced by the Q function at the kth iteration differ from the optimal policy in terms of its Q value?
 So let me unpack the notation here.
-So Q is the true Q function, meaning the true expected total reward induced by the policy , where is the policy corresponding to ^{Q} k.
-So asking what is the difference between Q and Q really amounts to asking how different is the expected reward of the policy iteration k.
-The question then is, how different is the expected reward of the policy iteration k?
-iteration k from the best expected reward you could get.
+So Q^{π_k} is the true Q function, meaning the true expected total reward induced by the policy π_k, where π_k is the policy corresponding to ^{Q}_k.
+So asking what is the difference between Q^{π_k} and Q^{*} really amounts to asking how different is the expected reward of the policy iteration k from the best expected reward you could get.
 So this is really a measure of regret.
-All right, so Q is not the same thing as ^{Q} k because you could, for example, have ^{Q} k erroneously overestimate the Q values.
-Q π k is the true Q value of the policy corresponding to ^{Q} k, which is typically the argmax policy.
+All right, so Q^{π_k} is not the same thing as ^{Q}_k because you could, for example, have ^{Q}_k erroneously overestimate the Q values.
+Q^{π_k} is the true Q value of the policy corresponding to ^{Q}_k, which is typically the argmax policy.
 And there are other questions we could ask too.
 Another kind of question we could ask is, if I use a particular exploration algorithm, how high is my regret going to be?
 This is a little bit more elaborate, but typically, you know, we might want to show that, for example, some kind of exploration procedure gives you regret that is logarithmic in T.
-So what I have here is actually the bound, the full version of the bound for an upper confidence bound exploration.
-And you can see that it has a linear term multiplied by delta, but δ is a very small number.
+So what I have here is actually the bound, the full version of the bound for an upper confidence bound exploration method.
+And you can see that it has a linear term multiplied by δ, but δ is a very small number.
 And then most of the bad stuff comes from this first term, which goes as the log of T.
 But there are, of course, many other questions we could ask.
 So these are just a few examples.
 We'll mostly focus on sample complexity type questions today, so these first few.
 But keep in mind that there are other questions.
+
+[p.03]
+
 Now, when we're doing reinforcement learning analysis, we do typically need to make fairly strong assumptions.
 So analyzing full deep RL methods in the most general setting is generally not possible.
 So effect of our analysis is very hard without strong assumptions.
@@ -39,15 +45,14 @@ And the trick is to make assumptions that admit interesting conclusions without 
 So some examples.
 In exploration, you know, performance of RL methods is greatly complicated by exploration, because how well you learn, how many samples you need very strongly depends on how likely you are to find potentially sparse rewards.
 Since theoretical guarantees typically address worst case performance and worst case exploration is extremely hard, we typically don't want to couple analysis of exploration together with analysis of sample complexity that addresses things like approximation error sampling error.
-So we're going to do a couple of examples here.
-So in studying exploration, we want to show that some exploration method is good and typically good for exploration means that it is that will learn a good policy, a policy that deviates from the optimal policy by some ϵ in time that is polynomial, typically in the number of states, the number of actions, and in one over one minus γ, which is the horizon.
+So in studying exploration, we want to show that some exploration method is good and typically good for exploration means that it is that will learn a good policy, a policy that deviates from the optimal policy by some ϵ in time that is polynomial, typically in the number of states, the number of actions, and in 1/(1-γ), which is the horizon.
 But separately from studying exploration, we might also study learning.
 So if we somehow abstract away exploration, if we somehow pretend that exploration is, you know, works well, how many samples do we need to effectively learn a model or value function that results in good performance?
 And this is a slightly separate question.
 So it might actually behoove us to separate exploration from learning, because if we always analyze exploration and learning together, oftentimes the difficulty will be dominated by exploration.
 But worst case exploration is extremely pessimistic.
 You know, typical exploration is not nearly as bad as the worst case.
-If, for example, you have a well-shared model, the most important thing is to have a well-shared model.
+If, for example, you have a well-shaped reward.
 So in many cases, we might want to abstract away explorations and basically get rid of it so that we can study the sample complexity of learning.
 One way we could do that, for example, is with the generative model assumption.
 So this assumption just says you don't actually have to explore.
@@ -58,11 +63,14 @@ But making this kind of assumption could be very convenient.
 Because it allows us to study how difficult learning is, essentially, if we assume that exploration is easy.
 Right.
 So one way to do this is to basically say we're going to have oracle exploration for every state action tuple.
-We're going to sample PS prime given s,a n times.
+We're going to sample P(s'|s,a) N times.
 So we'll just literally just like uniform carpet bomb the whole MDP.
 And then let's end at that point.
 The problem is still not solved.
 We still need to study the effect of sampling error.
+
+[p.04]
+
 OK.
 So we've got some questions.
 We've got some assumptions.
@@ -77,11 +85,10 @@ Is it easier to solve a problem with a large state space or a small one?
 Should we take more iterations or fewer iterations?
 If we want half the error, do we need two times the number of samples or do we need four times the number of samples or something else?
 These are all somewhat qualitative questions at some level.
-And usually we use precise theory to get imprecise qualitative conclusions about how various factors influence the performance of our algorithms under strong assumptions.
+And usually we use precise theory to get imprecise qualitative conclusions about how various factors influence the performance of RL algorithms under strong assumptions.
 And then we try to make the assumptions reasonable enough that these conclusions are likely to apply to real problems, but they're not guaranteed to apply to real problems.
 So it's very important to understand this.
 I think there's a kind of a tendency sometimes for people to say, well, my theoretical result proves that my algorithm will work every time.
-Or I have a provable algorithm.
 Or I have a provably good RL method.
 That's nonsense.
 We never have a provably good RL method and anybody who tells you so is not being forthright.
@@ -90,7 +97,6 @@ So don't take someone seriously if they say their RL algorithm has provable guar
 It never does.
 The assumptions are always unrealistic.
 And theory is at best a rough guide.
-And theory is at best a rough guide.
 To what might happen.
 This is not unique to machine learning.
 Of course the same is true in other areas.
@@ -98,7 +104,7 @@ For example, in physics, you could have some theory that describes the efficienc
 Now, no current physical theory will allow you to analyze the actual fuel efficiency of the gasoline engine in a modern car.
 It's just too complicated.
 What it will tell you is some guidance about the limitations and the potentials of idealized versions of that system.
-what we do in reinforcement learning theory.
+And that's exactly what we do in reinforcement learning theory.
 We provide qualitative guidance about the limitations and potentials of idealized versions of the algorithms that we actually use.
 And what we look at when we come up with a theoretical result is not a guarantee that the method will perfectly have a particular sample complexity.
 What we look at is how does this behavior change as we change different problem parameters.
@@ -107,224 +113,214 @@ Do we need more iterations or fewer iterations as we increase the discount facto
 And these kinds of qualitative questions, they're actually very important.
 They can guide our choice of parameters and algorithm design decisions and we can get some qualitative guidance on those things by doing theoretical analysis.
 So having understood all that, let's actually get into the meat of some of the analysis that we can do.
-So we'll start with some basic sample complexity analysis and a lot of what I'll present in this lecture follows the RL theory textbook by Alec Agrawal and others linked at the bottom of the slide, as well as some lecture slides that were made by Avril Kumar last year.
-So we'll start with the oracle exploration assumption, meaning that for every state action tuple we can sample the next state s' n times.
+
+[p.05]
+
+So we'll start with some basic sample complexity analysis and a lot of what I'll present in this lecture follows the RL theory textbook by Alekh Agarwal and others linked at the bottom of the slide, as well as some lecture slides that were made by Aviral Kumar last year.
+So we'll start with the oracle exploration assumption, meaning that for every state action tuple we can sample the next state s' N times.
 And the algorithm that we'll start with is a very basic kind of model-based algorithm.
 Now I use the term model-based rather loosely, this is actually a pretty idealized algorithm.
-So what we're going to do is we're going to estimate the transition probabilities ^{p} s' given S a simply by counting the number of times that we transition into s' from S a.
+So what we're going to do is we're going to estimate the transition probabilities ^{P}(s'|s,a) simply by counting the number of times that we transition into s' from s,a.
 A very simple tabular estimation strategy.
 So there's no function approximation here, there's no neural net, we're just doing tabular estimation, we're literally counting, how many times we land in a particular state s'.
 This, of course, only makes sense if the states are discrete and the actions are discrete, and we can build a table with all these numbers.
 And then what we're going to do is we'll first focus just on policy evaluation.
-So given some fixed policy π, let's just use p-hat to estimate the Q function q-hat π.
-So this idealized algorithm takes some policy, and then it uses this p-hat to exactly estimate q-hat π.
-Now q-hat π is not the exact Q function, but it is the exact Q function under p-hat, because p-hat fully determines an MDP, and then it will do something like q-value iteration to estimate q-hat π.
-So step two is exact, but using an inexact model p-hat.
-This is a very simple algorithm, and our goal is basically going to be to understand the error.
-So we're going to use an error that is induced by the fact that p-hat is not perfect.
+So given some fixed policy π, let's just use ^{P} to estimate the Q function ^{Q}^π.
+So this idealized algorithm takes some policy, and then it uses this ^{P} to exactly estimate ^{Q}^π.
+Now ^{Q}^π is not the exact Q function, but it is the exact Q function under ^{P}, because ^{P} fully determines an MDP, and then it will do something like Q-value iteration to estimate ^{Q}^π.
+So step two is exact, but using an inexact model ^{P}.
+This is a very simple algorithm, and our goal is basically going to be to understand the error that is induced by the fact that ^{P} is not perfect.
 Now to kind of take stock of what we're doing here, this is, of course, a rather simplistic RL method.
 This is not how we would usually do RL.
-And the main purpose of this analysis is really to understand how sampling error in estimating p-hat propagates into Q functions.
-So for a little bit of context with this, in supervised learning theory, there's...
-There are a lot of tools that we can use to answer questions like, if I'm trying to estimate a quantity like p-hat, and I have some number of samples, how accurate is my estimate going to be?
-And by introducing step two, what we're really trying to do is we're trying to take these standard supervised learning results, and we're trying to pass them through the RL machinery to say, well, how do bounds on sampling error from supervised learning translate into bounds on sampling error for Q functions when that Q function is the result of some kind of error?
-So we're going to use a lot of tools that we can use to answer questions like, so we're going to use a lot of tools that we can use to answer questions like, not just anything in a simple p-hat, but any type of error.
+And the main purpose of this analysis is really to understand how sampling error in estimating ^{P} propagates into Q functions.
+So for a little bit of context with this, in supervised learning theory, there are a lot of tools that we can use to answer questions like, if I'm trying to estimate a quantity like ^{P}, and I have some number of samples, how accurate is my estimate going to be?
+And by introducing step two, what we're really trying to do is we're trying to take these standard supervised learning results, and we're trying to pass them through the RL machinery to say, well, how do bounds on sampling error from supervised learning translate into bounds on sampling error for Q functions when that Q function is the result of some kind of bellman backup.
 So that's really going to be the flavor of the analysis that I'll present.
-So the questions that we'll ask, how close is q-hat π to q π, meaning that we're going to estimate the Q values of our policy π, how close is it to the true Q values of that policy?
-So ideally what we want to show is that over all states and actions, if we take the infinity norm of the difference between q π and q π hat, that infinity norm should be bounded by ϵ.
-So that's the thing.
-So that's the thing.
-That's the thing.
-That's the thing.
-That's the thing.
-That's the thing.
-That's the thing.
-with some probability 1 minus delta.
-And if the number of samples is larger than some function of ϵ and delta, where hopefully it's a nice function, a well-behaved function that is not exponential or something crazy like that.
+So the questions that we'll ask, how close is ^{Q}^π to Q^π, meaning that we're going to estimate the Q values of our policy π, how close is it to the true Q values of that policy?
+So ideally what we want to show is that over all states and actions, if we take the infinity norm of the difference between Q^π and ^{Q}^π, that infinity norm should be bounded by ϵ with some probability {1-δ}.
+And if the number of samples is larger than some function of ϵ and δ, where hopefully it's a nice function, a well-behaved function that is not exponential or something crazy like that.
 The infinity norm is just the max.
 So if you see me write an infinity norm, what it really means is just the difference between the two things in the argument for the worst-case state action tuple.
 And it's good to use the infinity norm because it gives us a bound on worst-case performance.
 Now we could ask another question.
-How close is q hat star if we learn it using p hat?
-So if we don't just evaluate some policy that's given to us, but if we instead try to actually run q-value iteration, like actually find the optimal Q function under p hat, how close is q hat?
-How close is it going to be to the true optimal Q function?
-So what's the difference between q star and q hat star?
+How close is ^{Q}^{*} if we learn it using ^{P}?
+So if we don't just evaluate some policy that's given to us, but if we instead try to actually run Q-value iteration, like actually find the optimal Q function under ^{P}, how close is it going to be to the true optimal Q function?
+So what's the difference between Q^{*} and ^{Q}^{*}?
 And ideally we'd like to see that that's bounded by some ϵ.
-So q hat star is the optimal Q function we learn under our learned model, which is basically what happens if we do RL with this method.
+So ^{Q}^{*} is the optimal Q function we learn under our learned model, which is basically what happens if we do RL with this method.
 And as I mentioned before, we could also ask, how good is the resulting policy, which is not the same.
-So if we take the policy π hat, which corresponds to q hat star, and we take the true Q function of π hat, how different is that from q star, meaning how suboptimal is the policy we get by running q-value iteration under p hat?
-And that last question is really the one that quantifies the performance of RL, because that's really telling us how much worse is the policy we get under the model ^{p} than the best policy we could have gotten anywhere.
+So if we take the policy ^{π}, which corresponds to ^{Q}^{*}, and we take the true Q function of ^{π}, how different is that from Q^{*}, meaning how suboptimal is the policy we get by running Q-value iteration under ^{P}?
+And that last question is really the one that quantifies the performance of RL, because that's really telling us how much worse is the policy we get under the model ^{P} than the best policy we could have gotten anywhere.
 Now it turns out that actually the first question, the policy evaluation question, gives us a tool that is very good for answering the other two questions.
-So we'll mostly focus on the first question, how close is q hat π to q π for a given policy π, and then we'll see how to utilize that as a tool to answer the other two questions.
+So we'll mostly focus on the first question, how close is ^{Q}^π to Q^π for a given policy π, and then we'll see how to utilize that as a tool to answer the other two questions.
 Okay.
+
+[p.06]
+
 So before I get into this, let's introduce some standard tools in supervised learning theory.
 So all of this analysis has to do with how the number of samples affects the error in estimating some quantity.
-In supervised learning, we have an equality of two values, and we have two inequalities that allow us to bound the error for estimating some quantity using some number of samples, and these are referred to as concentration inequalities, because they quantify how quickly our estimate of some random variable concentrates around the true expected value of that variable.
+In supervised learning, we have inequalities that allow us to bound the error for estimating some quantity using some number of samples, and these are referred to as concentration inequalities, because they quantify how quickly our estimate of some random variable concentrates around the true expected value of that variable.
 So whenever we need to answer questions about how close a learned function is to the true function in terms of the number of samples, we use concentration inequalities.
 One of the most basic concentration inequalities, and typically the first one that you would learn about if you take a machine learning theory class, is Hoeffding's inequality.
 So the full statement of Hoeffding's inequality is given here, but it's a little bit opaque, but it has a very simple interpretation.
 So let me describe the full statement, and then I'll provide a little bit of intuition for what it's really saying.
-So suppose that x1, x2, through xn are a sequence of independent, identically distributed random variables with mean μ.
-So what does that mean?
+So suppose that X_1, X_2, ..., X_n are a sequence of independent, identically distributed random variables with mean μ.
+What are X_1 through X_n.
 Well, these are your samples.
 So you have some true distribution, and that true distribution has a mean μ.
 We don't really know anything else about that distribution, we'll just say it has a mean μ.
 And you take some samples from that distribution.
-Let x bar n be the sample-wise average.
-So x bar n is the sum over all the xi's divided by n.
+Let bar{X}_n be the sample-wise average.
+So bar{X}_n is the sum over all the 'X_i's divided by n.
 So it's the average value.
 Now this is your estimate of the average, right?
 The true average may not match this.
-If you only generated like 2x, you would have 2 samples averaging them together.
+If you only generated like 2 samples averaging them together.
 It doesn't give you their true average.
 You might incur some error because you have too few samples.
 So what Hoeffding's inequality does is it quantifies how much error you would get as a function of n.
-So suppose that each of these samples is in the range from b- to b+.
-Alright, so this is just saying that whatever their mean and whatever their distribution is, they can never be less than b-, and they can never be less than b-.
-So you can't get a solution that's larger than b+.
+So suppose that each of these samples is in the range from b_{-} to b_{+}.
+Alright, so this is just saying that whatever their mean and whatever their distribution is, they can never be less than b_{-}, and they can never be larger than b+.
 Then we have the following two results.
-Your sample-based estimate of the average, x bar n, is greater than or equal to the true average plus ϵ with probability that is at most e to the negative 2 n ϵ squared divided by b plus minus b minus squared.
-So what this means is that the probability that your sample-based estimate of the mean differs from the true mean in the positive direction by ϵ is no greater than e to the negative 2 n ϵ squared over b plus plus b minus squared.
+Your sample-based estimate of the average, bar{X}_n, is greater than or equal to the true average plus ϵ with probability that is at most e^{{-2nϵ^2}/(b_{+}-b_{-})^2}.
+So what this means is that the probability that your sample-based estimate of the mean differs from the true mean in the positive direction by ϵ is no greater than e^{{-2nϵ^2}/(b_{+}+b_{-})^2}.
 This is actually very good.
 This means that your probability of making a mistake larger than ϵ decreases exponentially in the number of samples.
 And similarly, you have a bound on the other side.
-The probability of your estimate being less than μ minus ϵ is also less than or equal to ϵ to the negative 2 n ϵ squared divided by b plus plus b minus squared.
-So this describes how quickly your estimate x bar n concentrates around the true mean μ because as ϵ goes to zero, then your estimate approaches μ, and here we see the probability that your estimate will deviate from μ by more than ϵ.
+The probability of your estimate being less than {μ-ϵ} is also less than or equal to e^{{-2nϵ^2}/(b_{+}+b_{-})^2}.
+So this describes how quickly your estimate bar{X}_n concentrates around the true mean μ because as ϵ goes to zero, then your estimate approaches μ, and here we see the probability that your estimate will deviate from μ by more than ϵ.
 Now this has a few implications.
 So if we estimate μ with n samples, the probability that we're off by more than ϵ is at most the thing on the right-hand side of this inequality.
-And we can equivalently reinterpret it to say that if you want this probability to be delta, so if you want the probability to be off by more than ϵ to be at most delta, meaning that you are an error less than ϵ with probability at least 1 minus delta, then you can simply solve for delta.
-So you can say I want δ to be less than or equal to 2 times e to the negative 2 n ϵ squared over b plus plus b minus squared.
+And we can equivalently reinterpret it to say that if you want this probability to be δ, so if you want the probability to be off by more than ϵ to be at most δ, meaning that you are an error less than ϵ with probability at least {1-δ}, then you can simply solve for δ.
+So you can say I want δ ≤ 2e^{{-2nϵ^2}/(b_{+}+b_{-})^2}.
 The reason the 2 is there is because you can be off either in the positive direction or in the negative direction.
-And then you can just solve for delta.
+And then you can just solve for δ.
 So you can take the log of both sides, and then you can do a little bit of algebra, rearrange these things.
 So here in the first step what I did is I divided both sides by 2 and took the log.
-Then in the next step what I did is I divided both sides by 2 and took the log.
-So I divided both sides by b plus minus b minus squared over 2 n and negated both sides.
+Then in the next step what I did is I divided both sides by (b_{+}-b_{-})^2/{2n} and negated both sides.
 So that changes the less than or equal to into greater than or equal to.
-And then you take the square root and you see that you need b plus minus b minus over square root of 2 n times the square root of log 2 over δ to be greater than or equal to ϵ.
-So if you want some error ϵ with probability delta, or you want the error to be less than ϵ with probability 1 minus delta, then the number of samples you need scales as the square root of n.
-Or you can also write down a function for n in terms of ϵ and delta, same thing.
+And then you take the square root and you see that you need {b_{+}-b_{-}}/sqrt{2n}⋅sqrt{log{2/δ}} ≥ ϵ.
+So if you want some error ϵ with probability δ, or you want the error to be less than ϵ with probability {1-δ}, then the number of samples you need scales as the sqrt{n}.
+Or you can also write down a function for n in terms of ϵ and δ, same thing.
 Just do a bunch of algebraic manipulation to get n on one side.
-And you can see that if you have this number of samples, then you will have error at most ϵ with probability no larger than delta.
-So one of the conclusions that you can get from this is that error scales with 1 over square root of n.
+And you can see that if you have this number of samples, then you will have error at most ϵ with probability no larger than δ.
+So one of the conclusions that you can get from this is that error scales with 1/sqrt{n}.
 That's pretty convenient.
 So hopefully this gives you some idea of how these concentration inequalities work.
 You write down some equation for the probability that you'll be off by ϵ.
 And then you can manipulate that equation to solve for the probability δ or to solve for the number of samples.
-Now, in a lot of the analysis that we do in reinforcement learning, we're concerned with the fact that we're concerned with estimating probabilities of categorical variables.
-So p of (s'|s,a) is a distribution over a categorical variable, not a real valued variable.
+
+[p.07]
+
+Now, in a lot of the analysis that we do in reinforcement learning, we're concerned with estimating probabilities of categorical variables.
+So P(s'|s,a) is a distribution over a categorical variable, not a real valued variable.
 So Hoeffding's inequality applies to estimating the mean of a continuous valued random variable.
-But here, if we're estimating p hat, we're actually concerned with our accuracy in estimating the probability distribution over a categorical variable, in this case s'.
+But here, if we're estimating ^{P}, we're actually concerned with our accuracy in estimating the probability distribution over a categorical variable, in this case s'.
 So a similar kind of concentration inequality can be derived for that.
-Let's say that z is some kind of discrete random variable that takes values in 1 through d.
+Let's say that z is some kind of discrete random variable that takes values in {1, ..., d}.
 So d is the cardinality of z.
 d is the number of possible values.
 And they're distributed according to q.
 So q is a vector of probabilities that are all greater than 0 and sums to 1.
 And there are d values in q.
-So if you write it as a vector where the jth entry is the probability that z takes on its jth value, and you assume that you have n i hat, and that the empirical estimate is given by basically counting the number of times you get each value, so exactly the way that we're estimating ^{p} up above, then you have a concentration inequality that looks kind of similar to Hoeffding's inequality, but for estimating the probabilities of these random variables.
+So if you write it as a vector where the jth entry is the probability that z takes on its jth value, and you assume that you have N iid samples, and that the empirical estimate is given by basically counting the number of times you get each value, so exactly the way that we're estimating ^{P} up above, then you have a concentration inequality that looks kind of similar to Hoeffding's inequality, but for estimating the probabilities of these random variables.
 So it's really the second one that we care about.
 So the first one is a probability that your error in the 2-norm is going to be bounded.
 The second one has to do with the error in the 1-norm.
 And the error in the 1-norm, that's total variation divergence.
 That's the one we're going to be using.
-So if you look at the last line of this theorem, the probability that your estimate of the probabilities that q hat minus the true probabilities, q, in the 1-norm, which is total variation divergence, the probability that their total variation divergence is greater than or equal to the square root of d times 1 over root n plus ϵ is less than or equal to e to the negative n times ϵ squared.
+So if you look at the last line of this theorem, the probability that your estimate of the probabilities that ^{q} minus the true probabilities, q, in the 1-norm, which is total variation divergence, the probability that their total variation divergence is greater than or equal to sqrt{d}⋅(1/{sqrt{N}+ϵ}) is less than or equal to e^{-Ne^2}.
 And notice the similarity to Hoeffding's inequality.
 So in Hoeffding's inequality, we also had the probability to be bounded by e to the negative 2n times ϵ squared with some other coefficients.
-So here we have a negative n ϵ squared.
+So here we have a {-Nϵ^2}.
 It's just that the constants are different.
 And the thing that we are greater than or equal to is not ϵ.
-It's now this root d 1 over root n plus ϵ thing.
+It's now this sqrt{d}⋅(1/{sqrt{N}+ϵ}) thing.
 But we can do all the same stuff.
-We can take this quantity and we can solve it for delta, for example.
-And we know that δ is less than or equal to e to the negative n ϵ squared.
+We can take this quantity and we can solve it for δ, for example.
+And we know that δ ≤ e^{-Nϵ^2}
 We can solve it for ϵ.
-And we get ϵ is less than or equal to 1 over root n times the square root of log 1 over delta.
-And we can solve it for n.
-And we get that n is less than or equal to 1 over ϵ squared log 1 over delta.
+And we get ϵ ≤ 1/{sqrt{n}}⋅sqrt{log{1/δ}}.
+And we can solve it for N.
+And we get that N ≤ 1/ϵ^2⋅log{1/δ}.
 So all the same stuff.
 We can describe what the error will be as a function of the number of samples or how many samples we need as a function of the error and the probability.
-So if we just make a substitution, substitute the symbols for p hat, the cardinality of s' is S, capital S.
+So if we just make a substitution, substitute the symbols for ^{P}, the cardinality of s' is S, capital S.
 Well, the cardinality of capital S.
 That's the number of states.
-So if we just plug this directly into this inequality, we know that if we use n samples for every state action tuple, then the total number of states is less than or equal to the square root of the number of states times 1 over the square root of n plus ϵ with probability 1 minus delta.
-Now, this is in the case where we have n samples for each S .
-So the total number of samples that we would be using to estimate this model is n times the number of states times the number of actions.
-So we can say that we have n samples for every S .
-And that's what we do.
-We just multiply the number of states times the number of actions.
+So if we just plug this directly into this inequality, we know that if we use N samples for every state action tuple, then the total variation divergence the one norm between ^{P}(s'|s,a) and the true P(s'|s,a) is less than or equal to the sqrt{|S|}⋅(1/sqrt{n}+ϵ) with probability {1-δ}.
+Now, this is in the case where we have N samples for each s,a.
+So the total number of samples that we would be using to estimate this model is N times the number of states times the number of actions.
 So just important to keep in mind some of the constants here.
-And if I do a little bit of symbolic manipulation on this, just basically distribute the square root of S into the parentheses, I get this.
-And roughly, I can say that this is bounded by some constant times the square root of the number of states times log 1 over δ divided by n.
-So it actually is 1 plus 1 over delta.
-So that's the number of states.
-And then I can write the square root of log 1 over delta.
-But as long as we don't care about the constants, as long as you don't care about delta, we can write it as some C.
+And if I do a little bit of symbolic manipulation on this, just basically distribute sqrt{S} into the parentheses, I get this.
+And roughly, I can say that this is bounded by some constant times the square root of the number of states times log{1/δ} divided by N.
+So it actually is 1 plus the square root of log{1/δ}.
+But as long as we don't care about the constants, as long as you don't care about δ, we can write it as some C.
 And that'll make it a little bit convenient.
 So then we have fewer terms flying around.
+
+[p.08]
+
 OK.
-So now that we've got our concentration inequalities out of the way and we can understand how accurate our learned model is going to be as a function of the number of samples, let's relate the error in ^{p} to the error in q hat π.
+So now that we've got our concentration inequalities out of the way and we can understand how accurate our learned model is going to be as a function of the number of samples, let's relate the error in ^{P} to the error in ^{Q}^π.
 And this is where we actually get into the RL-centric part of the analysis.
 So so far, all of our discussion dealt with just general machine learning theory.
 Now we're going to get into the parts that are really specific to reinforcement learning.
-So let's try to relate the model p to q π.
+So let's try to relate the model P to Q^π.
 For now, we won't worry about approximations or anything.
-I just want to write down some equations that relate p to q π for a fixed π.
+I just want to write down some equations that relate P to Q^π for a fixed π.
 And we saw this actually before when we talked about offline RL, but I'll just repeat it here for convenience.
-So we've got a fixed π.
 So this is the Bellman equation.
-So q π at some state, an action S A, is equal to the reward R S A plus γ times the expected value over s', distributed according to p(s'|s,a), of v π s'.
-And v π s', of course, is the expected value of q π s' A prime under π.
+So Q^π at some state and action s,a, is equal to the reward r(s,a) plus γ times the expected value over s', distributed according to p(s'|s,a), of V^π(s').
+And V^π(s'), of course, is the expected value of Q^π(s',a') under π.
 And we can expand out the expectation, just write it as a sum.
-Writing it as a sum will make it easier to turn this into a linear algorithm, an algebra equation that we can then manipulate symbolically.
-So if we write this in vector notation, if we say that q is a vector with S A entries, R is a vector with S A entries, and p is a matrix, we can write q π is equal to R plus γ p v π.
-So if we have, let's say, two states and two actions, q π is a big vector with S A entries.
+Writing it as a sum will make it easier to turn this into a linear lgebra equation that we can then manipulate symbolically.
+So if we write this in vector notation, if we say that Q is a vector with {S,A} entries, R is a vector with {S,A} entries, and P is a matrix, we can write Q^π = r + γPV^π.
+So if we have, let's say, two states and two actions, Q^π is a big vector with {S,A} entries.
 So it has two times two, four entries if you have two states and two actions.
 R is also a big vector.
 So it has four entries, two by two.
-And it doesn't actually matter how you arrange these entries, so you could imagine that it's like s_1 A1, s_1 A2, s_2 A1, s_2 A2, or you could imagine that it's the other way around.
+And it doesn't actually matter how you arrange these entries, so you could imagine that it's like {s_1,a_1}, {s_1,a_2}, {s_2,a_1}, {s_2,a_2}, or you could imagine that it's the other way around.
 It doesn't really matter.
-It's just something that is of length S A.
-p is a matrix that describes how a state action tuple transitions into a state.
-So p has S A rows, so for the stuff on the right-hand side of the conditioning bar, and it has S columns.
+It's just something that is of length {S,A}.
+P is a matrix that describes how a state action tuple transitions into a state.
+So P has {S,A} rows, so for the stuff on the right-hand side of the conditioning bar, and it has S columns.
 Because it gives you the probability of each state given some state and action.
 So the number of columns is the number of states, the number of rows is the number of possible state action tuples.
-And v is a vector with the number of entries equal to the number of states.
+And V is a vector with the number of entries equal to the number of states.
 And you can see that all the dimensionalities line up.
-So you can multiply p by v π, and that gives you a vector with S A entries, and then you can add that to R, and that'll be the same dimensionality as q π.
-We can also write v as some matrix capital π times q π.
-Remember that v is an expected value with respect to the actions of the Q function.
-So π here is a matrix that now has S different rows and S A columns, and every entry is the probability of some action in some state.
-So that means that q π is equal to R plus γ times some matrix p_π times q π, where p_π is just what you get by multiplying capital P by capital π.
+So you can multiply P by V^π, and that gives you a vector with {S,A} entries, and then you can add that to R, and that'll be the same dimensionality as Q^π.
+We can also write V as some matrix capital Π times Q^π.
+Remember that V is an expected value with respect to the actions of the Q function.
+So Π here is a matrix that now has S different rows and {S,A} columns, and every entry is the probability of some action in some state.
+So that means that Q^π = r + γ⋅P^π⋅Q^π, where P^π is just what you get by multiplying capital P by capital Π.
 All right.
-So now with that out of the way, we have a nice little summary.
-We have q π is equal to R plus γ p_π q π.
-So p_π is just some kind of a matrix.
-And what we can do is we can take this γ p_π q π and throw it on the left-hand side of the equality.
-So we can say that q π minus γ p_π q π is equal to R.
-And now we can see that you have all the terms involving q π collected on the left-hand side.
-So you can...
-distribute out the matrix multiplying them, and you get i minus γ p_π times q π is equal to R.
-It turns out, although it is not trivial to prove this, that i minus γ p_π is actually always going to be invertible.
-So you can write q π as being equal to i minus γ p_π inverse times R.
-And now we've related p to q π.
-So we can write q π as a function of p.
-And...
-well, specifically as a function of p_π.
-It's a nonlinear function, but...
-we have this relationship, and then we can use it to describe how errors in p will affect errors in q.
+So now with that out of the way, we have a Q^π = r + γ⋅P^π⋅Q^π.
+So P^π is just some kind of a matrix.
+And what we can do is we can take this γ⋅P^π⋅Q^π and throw it on the left-hand side of the equality.
+So we can say that Q^π - γ⋅P^π⋅Q^π = r.
+And now we can see that you have all the terms involving Q^π collected on the left-hand side.
+So you can distribute out the matrix multiplying them, and you get (I - γ⋅P^π)⋅Q^π = r.
+It turns out, although it is not trivial to prove this, that {I - γ⋅P^π} is actually always going to be invertible.
+So you can write Q^π = (I - γ⋅P^π)^{-1}⋅r.
+And now we've related P to Q^π.
+So we can write Q^π as a function of P.
+And, specifically as a function of P^π.
+It's a nonlinear function, but we have this relationship, and then we can use it to describe how errors in P will affect errors in Q.
+
+[p.09]
+
 Okay?
 Now, this is true for any dynamics.
-So just like we can write q π is equal to i minus γ p_π inverse R, we can also write q hat π is equal to i minus γ ^{p} π inverse times R.
-Because remember, q hat π was obtained just by solving the learned MDP determined by p hat.
-So now we're going to introduce a little lemma that we're going to use to understand the relationship between errors in ^{p} and errors in q hat.
+So just like we can write Q^π = (I-γ⋅P^π)^{-1}⋅r, we can also write ^{Q}^π = (I-γ^{P}^π)^{-1}⋅r.
+Because remember, ^{Q}^π was obtained just by solving the learned MDP determined by ^{P}.
+So now we're going to introduce a little lemma that we're going to use to understand the relationship between errors in ^{P} and errors in ^{Q}.
 We'll actually introduce two lemmas, and then we'll put them together and get our conclusion.
 So the first lemma is what's called the simulation lemma.
-The simulation lemma describes how a Q function in the true MDP, q π, differs from the Q function in the learned MDP, q hat π.
-Okay.
+The simulation lemma describes how a Q function in the true MDP, Q^π, differs from the Q function in the learned MDP, ^{Q}^π.
 This is the statement of the simulation lemma.
 It might be a little opaque, but I'll unpack this shortly.
-So the simulation lemma says that q π minus q hat π is equal to γ times i minus γ ^{p} π inverse times p minus ^{p} times v π.
+So the simulation lemma says that Q^π-^{Q}^π = γ⋅(I-γ^{P}^π)^{-1}⋅(P-^{P})⋅V^π.
 So this part is the difference in probabilities.
 This is basically the difference between the true model and the learned model.
 This is the true value.
@@ -332,122 +328,125 @@ So you can think of these as differences in probabilities weighted by their valu
 The value kind of, roughly speaking, constitutes their relative importance.
 And this is this evaluation operator.
 This is the thing that takes reward functions to Q functions.
-So roughly speaking, what we're doing is we're taking our true value function, we're converting it into a kind of a pseudo reward by passing it through the difference of the dynamics, and then we are basically running q iteration on the pseudo reward.
+So roughly speaking, what we're doing is we're taking our true value function, we're converting it into a kind of a pseudo reward by passing it through the difference of the dynamics, and then we are basically running Q iteration on the pseudo reward.
 Okay.
 Slightly opaque result, but it will be pretty useful later.
 So first I'll prove the simulation lemma, and that will give you kind of a taste for some of the tools we use in these algebraic manipulations.
-Then I'll prove one more lemma, and I'll put them together to actually quantify the error in q hat π.
+Then I'll prove one more lemma, and I'll put them together to actually quantify the error in ^{Q}^π.
 So the way we do this is actually fairly mechanical.
-We have q π minus q hat π, and we're going to replace q hat π with the equation up above.
+We have Q^π-^{Q}^π, and we're going to replace ^{Q}^π with the equation up above.
 Why?
-Well, notice how the right-hand side of this equation in the simulation lemma doesn't contain q hat π.
-It contains v π.
-So we're going to get v π out of q π, of course.
-And it also contains p hat.
-So we need to somehow get ^{p} in there.
-So what we're going to do is we're going to take q hat π, and we'll replace it by this equation, i minus γ ^{p} π inverse r, because that contains p hat, and it lets us get rid of q hat π.
-And for q π, what we're going to do is we're going to stick in a ^{p} in there too, because remember, we need to get a ^{p} in front of everything.
-So we'll just stick in i minus γ ^{p} π inverse times i minus γ ^{p} π, because that's a matrix inverse times itself, which is identity, so we can always put that in.
+Well, notice how the right-hand side of this equation in the simulation lemma doesn't contain ^{Q}^π.
+It contains V^π.
+So we're going to get V^π out of Q^π, of course.
+And it also contains ^{P}.
+So we need to somehow get ^{P} in there.
+So what we're going to do is we're going to take ^{Q}^π, and we'll replace it by this equation, (I-γ^{P}^π)^{-1}⋅r, because that contains ^{P}, and it lets us get rid of ^{Q}^π.
+And for Q^π, what we're going to do is we're going to stick in a ^{P} in there too, because remember, we need to get a ^{P} in front of everything.
+So we'll just stick in (I-γ^{P}^π)^{-1}⋅(I-γ^{P}^π), because that's a matrix inverse times itself, which is identity, so we can always put that in.
 Okay, so now we're getting somewhere.
-We have an i minus γ ^{p} π inverse in front of both terms, and we have a q π in there, so hopefully that'll go somewhere.
-So now what I'm going to do is I'm going to take that r at the end, and I'll replace the r with i minus γ p_π times q π, right?
-Because q π is equal to i minus γ p_π inverse r, so I can multiply both sides by i minus γ p_π, and that'll turn that r into an i minus γ p_π q π.
+We have an (I-γ^{P}^π)^{-1} in front of both terms, and we have a Q^π in there, so hopefully that'll go somewhere.
+So now what I'm going to do is I'm going to take that r at the end, and I'll replace the r with (I - γ⋅P^π)⋅Q^π, right?
+Because Q^π = (I - γ⋅P^π)^{-1}⋅r, so I can multiply both sides by {I - γ⋅P^π}, and that'll turn that r into an (I - γ⋅P^π)⋅Q^π.
 So now I'm really getting somewhere.
 I've got two terms.
-They both have an i minus γ ^{p} π inverse in front of them, just like the simulation lemma.
-One of the terms has a p hat, and the other one has a p.
-So when I group them together, I can basically, since they both have an i minus γ ^{p} π inverse in front of them, I get an i minus γ ^{p} π inverse.
-Then in parentheses I have i minus γ ^{p} π minus i minus γ p_π, and the whole thing is multiplied by q π.
-So the identities cancel out, and since that second one becomes a minus minus γ p_π, I can switch the order, and I get p_π minus ^{p} π, that is all multiplied by γ, so I take the γ out front, and that leaves me with γ i minus γ ^{p} π inverse times p_π minus ^{p} π times q π.
-Now remember that q π, that p_π, is just p times this matrix π, and it's the same matrix π for both p and p hat.
+They both have an (I-γ^{P}^π)^{-1} in front of them, just like the simulation lemma.
+One of the terms has a ^{P}, and the other one has a P.
+So when I group them together, I can basically, since they both have an (I-γ^{P}^π)^{-1} in front of them, I get an (I-γ^{P}^π)^{-1}.
+Then in parentheses I have (I-γ^{P}^π) - (I - γ⋅P^π), and the whole thing is multiplied by Q^π.
+So the identities cancel out, and since that second one becomes a minus minus γP^π, I can switch the order, and I get (P^π - ^{P}^π), that is all multiplied by γ, so I take the γ out front, and that leaves me with γ(I-γ^{P}^π)^{-1}⋅(P^π - ^{P}^π)⋅Q^π.
+Now remember that Q^π, that P^π, is just P times this matrix Π, and it's the same matrix Π for both P and ^{P}.
 So that gives me this equation.
-And v π is just capital π times q π.
-So I can take the capital π out, replace that with v π, and then I finish proving the lemma.
+And V^π is just capital Π times Q^π.
+So I can take the capital Π out, replace that with V^π, and then I finish proving the lemma.
 Okay.
 So that's kind of the nature of the algebraic manipulation.
 It's not terribly insightful, but it gives us this useful lemma.
+
+[p.10]
+
 Now here's another useful lemma.
 This one is going to be even simpler.
-Given p_π and any vector in r(s,a), we're going to have this relationship.
-If we apply i minus γ p_π inverse, meaning this, uh, uh, this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by one minus γ, meaning that applying i minus γ p_π inverse to some vector will blow up the infinity norm of that vector by at most a factor of one over (1-γ).
+Given P^π and any vector in R^{|S||A|}, we're going to have this relationship.
+If we apply (I - γ⋅P^π)^{-1}, meaning this is the evaluation operator, to the vector v, the infinity norm of that is less than or equal to the infinity norm of v divided by (1-γ), meaning that applying (I - γ⋅P^π)^{-1} to some vector will blow up the infinity norm of that vector by at most a factor of 1/(1-γ).
 So intuitively, the Q function corresponding to a reward v is at most 1/(1-γ) times larger in terms of the infinity norm.
-By the way, we see a lot of these 1/(1-γ) terms lying around.
+By the way, we see a lot of these 1/(1-γ) terms flying around.
 Just to make it clear where these come from, usually when you have sums of discounted rewards, you're going to have sums that look like this.
-You're going to have a sum from t equals zero to infinity of γ to the t times some number c.
+You're going to have a sum from t=0 to ∞ of γ^t times some number c.
 I mean, usually the c will depend on t, but typically it'll be bounded by some quantity, like it'll be bounded by the largest reward.
-So you'll often end up with bounds that have terms that look like a sum over from t equals zero to infinity of γ to the t times c.
-And that's c times a geometric series, and that's equal to c over (1-γ).
-So when you have a geometric series like that, it ends up equaling one over (1-γ).
+So you'll often end up with bounds that have terms that look like a sum over from t=0 to ∞ of γ^t⋅c.
+And that's c times a geometric series, and that's equal to c/(1-γ).
+So when you have a geometric series like that, it ends up equaling 1/(1-γ).
 That's just kind of a standard math result.
 And that's where all these 1/(1-γ) terms come from.
 One way to interpret it is that this is a kind of horizon term.
-So if we had a finite horizon problem and γ was one, then the multiplier in front of c would just be the value of the horizon.
+So if we had a finite horizon problem and γ was 1, then the multiplier in front of c would just be the value of the horizon.
 So usually we think of 1/(1-γ) as kind of the effect of horizon of an infinite horizon problem.
 How far out you go before you basically stop seeing the effect of those rewards.
 So that's why we end up with a lot of 1/(1-γ) terms flying around.
 And whenever you see a 1/(1-γ) term, think horizon.
 Okay, so let's go through the proof of this lemma.
-We're going to use w as shorthand for i minus γ p_π inverse v, just so that our equations are short.
-And...
-That means that the infinity norm of v is going to be equal to the infinity norm of i minus γ p_π inverse times w.
+We're going to use w as shorthand for (I - γ⋅P^π)^{-1}⋅v, just so that our equations are short.
+And, that means that the infinity norm of v is going to be equal to the infinity norm of (I - γ⋅P^π)^{-1}⋅w.
 Sorry, there's a little typo here.
-That should actually be i minus γ p_π times w without the inverse.
+That should actually be (I - γ⋅P^π)⋅w without the inverse.
 So this inverse here.
 This is a little mistake.
-So this is greater than or equal to, by the triangle inequality, the infinity norm of i times w minus γ times the infinity norm of p_π times w.
+So this is greater than or equal to, by the triangle inequality, the infinity norm of I times w minus γ times the infinity norm of P^π⋅w.
 That's just from the triangle inequality.
 So whenever you have the norm of the difference of two vectors that is greater than or equal to the difference of the norms of the two vectors.
-And...
-And...
-Now...
-What we can do is we can take that second term, p_π times w, and we actually know that the infinity norm of p_π times w is greater...
-Is going to be less than or equal to the infinity norm of w.
+And now what we can do is we can take that second term, P^π⋅w, and we actually know that the infinity norm of P^π⋅w is going to be less than or equal to the infinity norm of w.
 Why?
-Well, because...
-p_π is a stochastic matrix.
+Well, because P^π is a stochastic matrix.
 So when you take a linear combination of some vector with weights that are greater than or equal to zero and some to less than or equal to one, then you can't increase the length of that vector.
-So that's why you can take out the p_π term there.
+So that's why you can take out the P^π term there.
 So now you have the infinity norm of w minus γ times the infinity norm of w.
 So that's (1-γ) times the infinity norm of w.
 Now this is a bound, of course.
 It's not necessarily equal to that.
 It's just greater than or equal to that.
-So if you divide everything through by one minus γ, then you get the infinity norm of v divided by (1-γ) is greater than or equal to the infinity norm of w.
-And remember, w is i minus γ p_π inverse times v.
+So if you divide everything through by (1-γ), then you get the infinity norm of v divided by (1-γ) is greater than or equal to the infinity norm of w.
+And remember, w is (I - γ⋅P^π)^{-1}⋅v.
 And that completes the proof.
-So now, putting these pieces together, we've got our two lemmas, i minus γ p_π inverse v in the infinity norm, is less than or equal to v in the infinity norm over (1-γ).
+
+[p.11]
+
+So now, putting these pieces together, we've got our two lemmas, (I - γ⋅P^π)^{-1}⋅v in the infinity norm, is less than or equal to V in the infinity norm over (1-γ).
 And we've got the simulation lemma.
-So now what we'll do is we'll plug in p minus ^{p} v π from the simulation lemma into this second lemma in place of v.
-And that will tell us that the infinity norm of q π minus q hat π, that the infinity norm of the left-hand side of the simulation lemma, is of course equal to the infinity norm of the right-hand side, because if the left-hand side is equal to the right-hand side, then their infinity norms are equal.
-But then if we apply this top-left equation using p minus ^{p} v π as little v, then this is less than or equal to γ, that comes from the fact that the whole thing is multiplied by γ, over one minus γ, that comes from the top-left equation, times p minus ^{p} times v π in the infinity norm.
-So now we've related q π to q hat π, to the difference between p and p hat, but that difference is weighted by this v π thing.
+So now what we'll do is we'll plug in (P-^{P})⋅V^π from the simulation lemma into this second lemma in place of v.
+And that will tell us that the infinity norm of Q^π-^{Q}^π, that the infinity norm of the left-hand side of the simulation lemma, is of course equal to the infinity norm of the right-hand side, because if the left-hand side is equal to the right-hand side, then their infinity norms are equal.
+But then if we apply this top-left equation using (P-^{P})⋅V^π as little v, then this is less than or equal to γ, that comes from the fact that the whole thing is multiplied by γ, over (1-γ), that comes from the top-left equation, times (P-^{P}) times V^π in the infinity norm.
+So now we've related Q^π to ^{Q}^π, to the difference between P and ^{P}, but that difference is weighted by this V^π thing.
 So what we can do is we can say, well, if you have some kind of matrix times a vector, their product is going to be less than or equal to the product of the largest entries.
-So you could say that this is less than or equal to γ over (1-γ) of the max over s a, so that that's taking a max over the, taking a max over the, the rows of the matrix of the one norm between the difference between the entries, times the largest possible entry in v π.
+So you could say that this is less than or equal to γ/(1-γ) of the max over {s,a}, so that that's taking a max over the rows of the matrix of the one norm between the difference between the entries, times the largest possible entry in V^π.
 This is a fairly crude bound, right?
 This is going to be pretty loose, but it is a bound.
 And now we've turned this into a form that uses quantities that we can actually get from our concentration inequalities from before.
-So if you remember, our concentration inequality was basically analyzing the mass of the matrix, the mass of the matrix, and then analyzing the max over s a of the one norm, the total variation divergence between p and p hat.
-Can we bound v π, the infinity norm of v pi?
-Well, basically yes, because v π is the sum over rewards.
-And if you have a sum from t equals zero to infinity of γ to the t times some reward r t, well, let's just replace all the rewards with the largest possible reward.
-Let's call it r max.
-And then we can use the same geometric series formula, and get a bound of 1/(1-γ) times r max.
-So values are always bounded by 1/(1-γ) times r max.
-And we'll assume that r max is a one.
+So if you remember, our concentration inequality was basically analyzing the max over {s,a} of the one norm, the total variation divergence between P and ^{P}.
+Can we bound V^π, the infinity norm of V^π?
+Well, basically yes, because V^π is the sum over rewards.
+And if you have a sum from t=0 to ∞ of γ^t⋅r_t, well, let's just replace all the rewards with the largest possible reward.
+Let's call it R_{max}.
+And then we can use the same geometric series formula, and get a bound of 1/(1-γ)⋅R_{max}.
+So values are always bounded by 1/(1-γ)⋅R_{max}.
+And we'll assume that R_{max} is a one.
 It's actually fairly standard in this kind of analysis.
 Just assume that your rewards are between zero and one.
 The reason that we do that is because, well, rewards are invariant to additive and multiplicative factors.
 So you can assume some range on your reward, pretty much without loss of generalization, as long as your rewards are always finite.
-So that allows us to get rid of this v π infinity term.
-And then we're left with this equation, that q π minus q hat π is less than or equal to γ over (1-γ) squared times the total variation divergence on p maximized over S a.
+So that allows us to get rid of this V^π infinity term.
+And then we're left with this equation, that Q^π-^{Q}^π is less than or equal to γ/(1-γ)^2 times the total variation divergence on P maximized over {s,a}.
 So now we can use that concentration equality from before, which allows us to relate the total variation divergence.
 The constant is actually going to be different.
-It's going to be c two instead of just c.
+It's going to be c_2 instead of just c.
 The reason the constant changes is because, we're taking a max over all the states in action, so that requires us to apply a union bound.
-Remember that these are all things that are happening with probability one minus delta.
-So if you have S a different events, each with probability one minus delta, then if you want to bound the max, you need to use the union bound.
+Remember that these are all things that are happening with probability {1-δ}.
+So if you have {s,a} different events, each with probability {1-δ}, then if you want to bound the max, you need to use the union bound.
 But that doesn't actually change any of the values we care about.
 It mostly just changes the constants.
+
+[p.12]
+
 So this is the final result that we're left with.
 And now remember what I said at the very beginning.
 The purpose of doing all this analysis is, not to prove that anything will work super well, but it's to understand how error will be affected by various parameters of the problem.
@@ -455,7 +454,7 @@ So we can see that some parts of the analysis are quite appealing.
 For example, more samples leads to lower error.
 And in particular, the values concentrate at a rate of one over square root of n, which is actually the same as in supervised learning.
 So the effect of samples is the same.
-But what is interesting is that the error grows quadratically, in one over (1-γ).
+But what is interesting is that the error grows quadratically, in 1/(1-γ).
 So the γ term in the numerator we don't really care about, because that's going to be close to one, but the denominator we care about a great deal.
 And the important thing about this bound, is that the denominator is squared.
 So you can think of it as error growing quadratically in the horizon.
@@ -465,46 +464,45 @@ And in fact it accumulates it quadratically.
 Now there are some algorithms and some fitting strategies for which the error is not quadratic.
 So it's not always quadratic.
 But it is for this naive scheme that we analyzed.
+
+[p.13]
+
 Alright, so that hopefully gives you a flavor of how this analysis works.
 Now a few relatively simple implications of this analysis.
-We showed that Q π minus ^{Q} π is less than or equal to ϵ.
+We showed that Q^π-^{Q}^π is less than or equal to ϵ.
 And ϵ is given by this equation.
-What about the difference between Q star and Q pi?
-Well, the difference between Q π and ^{Q} star.
+What about the difference between Q^{*} and ^{Q}^{*}.
 Now this is a little different, right?
-Because in Q π minus ^{Q} π, both Q functions are for the same policy, but evaluated using different models.
-Now we're asking what is the difference between the optimal Q function under P, versus the optimal Q function under P hat.
+Because in Q^π-^{Q}^π, both Q functions are for the same policy, but evaluated using different models.
+Now we're asking what is the difference between the optimal Q function under P, versus the optimal Q function under ^{P}.
 And those will correspond to different policies.
 So there's a really useful little identity that we're going to use.
-If you'd have two functions, F and G, and you want to take the absolute value, which is the kind of norm, of the difference between their supremums, between the largest values they take on, that's going to be less than or equal to the supremum of the difference.
+If you'd have two functions, f and g, and you want to take the absolute value, or in general any kind of norm, of the difference between their supremums, between the largest values they take on, that's going to be less than or equal to the supremum of the difference.
 Kind of makes sense, right?
-Because if you're maximizing F and G separately, that difference is going to be only smaller than if you're just directly maximizing their difference.
-Now, the thing about optimal Q functions is that they are, of course, the supremum of Q π over all the policies.
+Because if you're maximizing f and g separately, that difference is going to be only smaller than if you're just directly maximizing their difference.
+Now, the thing about optimal Q functions is that they are, of course, the supremum of Q^π over all the policies.
 Right?
-So the optimal Q function is the Q function of the policy that has the largest Q values.
-So you can replace Q star with a supremum over π of Q π, and you can replace ^{Q} star with a supremum over π of ^{Q} π.
+That's what an optimal Q function is the Q function of the policy that has the largest Q values.
+So you can replace Q^{*} with a supremum over π of Q^π, and you can replace ^{Q}^{*} with a supremum over π of ^{Q}^π.
 And then we apply this convenient identity, and we see that this is less than or equal to the supremum over π of the difference of the Q functions.
-But we know from our main result that Q π minus ^{Q} π is less than or equal to ϵ for all policies π, which means that this whole thing is also less than or equal to ϵ.
+But we know from our main result that Q^π-^{Q}^π is less than or equal to ϵ for all policies π, which means that this whole thing is also less than or equal to ϵ.
 Okay, so that's pretty convenient.
 We just directly took our result, and we used it to relate the optimal Q functions.
-But this doesn't actually tell us what the performance of the policy that we find under ^{p} will be in the true MDP.
+But this doesn't actually tell us what the performance of the policy that we find under ^{P} will be in the true MDP.
 So that's the other question.
-What is the difference between Q star and the true Q function corresponding to ^{π} star, corresponding to the policy that we get by doing the argmax action under ^{Q} star?
+What is the difference between Q^{*} and the true Q function corresponding to ^{π}^{*}, corresponding to the policy that we get by doing the argmax action under ^{Q}^{*}?
 Here, the analysis is a little bit more involved.
-So what we're going to do is we're going to take this difference, and we're going to subtract and add ^{Q} ^{π} star.
-So we can always insert, you know, minus x plus x because that's equal to zero.
-So we're going to put in Q star minus ^{Q} ^{π} star.
-Plus ^{Q} ^{π} star minus Q ^{π} star.
+So what we're going to do is we're going to take this difference, and we're going to subtract and add ^{Q}^{^{π}^{*}}.
+So we can always insert, you know, -x + x because that's equal to zero.
+So we're going to put in Q^{*} - ^{Q}^{^{π}^{*}} + ^{Q}^{^{π}^{*}} - Q^{^{π}^{*}}.
 And then we'll break these up using the triangle inequality.
-So this is less than or equal to Q star minus ^{Q} ^{π} star plus Q ^{π} star minus ^{Q} ^{π} star.
+So this is less than or equal to {Q^{*} - ^{Q}^{^{π}^{*}}} + {Q^{^{π}^{*}} - ^{Q}^{^{π}^{*}}}.
 So the second term in this basically is the difference between the true Q function and the learned Q function for the same policy.
-So we know that that is bounded by the true Q function.
 So we know that that is bounded by ϵ.
-The first term, ^{Q} ^{π} star, is just ^{Q} star, right?
+The first term, ^{Q}^{^{π}^{*}}, is just ^{Q}^{*}, right?
 That is the Q function corresponding to the best policy under our learned model.
 And then in the second term, they're the same policy.
-So that means that we can use the top left result for the second term, and we can use the Q star minus ^{Q} star result for the first term.
-And both of them are bounded by ϵ, so that means that the whole thing is bounded by 2 times ϵ.
+So that means that we can use the top left result for the second term, and we can use the Q^{*}-^{Q}^{*} result for the first term.
+And both of them are bounded by ϵ, so that means that the whole thing is bounded by 2ϵ.
 Okay?
 So that's a pretty straightforward way to complete these results.
-Thank you.
