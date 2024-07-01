@@ -1,11 +1,16 @@
+[p.01]
+
 All right, welcome to lecture 7 of CS285.
 Today, we're going to talk about value function methods.
+
+[p.02]
+
 So, we first saw algorithms that use value functions when we discussed Actor-Critic algorithms.
 And just to recap, the basic batch mode Actor-Critic algorithm that we discussed extends the policy gradient algorithm to introduce a value function.
 So, in the Actor-Critic algorithm that we covered in the last lecture, we would generate some samples from our current policy by running that policy on the robot.
 We would fit a value function to those samples, which is a neural network in the previous lecture that mapped states to scalar-valued values.
 Then we would use that value function to estimate the advantage for each state action tuple, s_i, a_i, that we sampled.
-And we generated these advantage estimates by taking the current reward plus the next value minus the current value.
+And we generated these advantage estimates by taking the {current reward} + {the next value} - {the current value}.
 And we could also optionally insert a discount factor in front of the next value.
 So, that's line 3.
 And then we would use these estimated advantages to estimate a policy gradient on line 4 using the same policy gradient formula that we learned about in the preceding lecture.
@@ -14,6 +19,9 @@ So, in this scheme, it again follows the usual recipe for a reinforcement learni
 So, the orange box, consists of gerating samples.
 The green box, consists of fitting our value function.
 And the blue box, consists of taking a gradient descent step on the policy parameters.
+
+[p.03]
+
 So, can we maybe omit the policy gradient entirely?
 What if we just learn a value function and then try to use that value function to figure out how to act?
 The intuition for why this should be possible is that the value function tells us which states are better than which other states.
@@ -23,7 +31,6 @@ A^π(s_t,a_t) is our advantage.
 That's the difference between our Q value and our value.
 And intuitively the advantage says how much better is a_t than the average action according to the policy π, where π is the policy for which we calculated this advantage.
 So then argmax with respect to a_t of A^π(s_t,a_t) is the best action that we could take from s_t if we follow π thereafter.
-[2:39]
 Which means that the argmax with respect to a_t of the advantage is going to be at least as good as an action that we would have sampled from our current policy.
 We know it's at least as good because it's actually the best.
 So if it's the best action from s_t if we then follow π thereafter, then it's at least as good as whatever action π would have chosen.
@@ -37,20 +44,26 @@ The policy is represented implicitly as this argmax, so the only thing that we n
 And then we will of course re-estimate the advantage function for π' and then construct a new policy that's the argmax with respect to that.
 So each time we create this implicit π', we know that that is at least as good as π and in most cases better.
 So we still have an algorithm with the usual three boxes, where in the orange box are generated samples, in the green box we're going to fit some kind of value function, either Q^π or V^π, which we will use to estimate the advantage, and in the blue box, instead of taking a gradient ascent step on an explicit policy, we will construct this implicit policy as the argmax.
-[5:00]
+So there's no actual learning that happens in the blue box anymore it's just setting the policy to be this argmax policy.
+
+[p.04]
+
 So this is the high-level idea behind what is called policy iteration.
-So in policy iteration, step one is to evaluate the advantage of your current policy π, and then step two is to construct a new policy that's going to be this π', where π' takes an action with probability one if it is the argmax of the advantage.
+So in policy iteration, step 1 is to evaluate the advantage of your current policy π, and then step 2 is to construct a new policy that's going to be this π', where π' takes an action with probability 1 if it is the argmax of the advantage.
 And then we alternate these two steps.
-It's called policy iteration because we iterate between evaluating the policy in step one and updating policy in step two.
-So step two is pretty straightforward, if we especially have a discrete action space, computing an argmax is something that is not hard to do by simply checking the advantage value of every possible action.
+It's called policy iteration because we iterate between evaluating the policy in step 1 and updating policy in step 2.
+So step 2 is pretty straightforward, if we especially have a discrete action space, computing an argmax is something that is not hard to do by simply checking the advantage value of every possible action.
 If you have continuous valued actions, things get a little more complex, and we'll cover that case in the subsequent lecture.
 But for now, let's say that we have discrete actions.
-The big puzzle is really how to do step one.
+The big puzzle is really how to do step 1.
 How do you evaluate the advantage A^π for a particular state action tuple for a given previous policy π, which will also be an implicit policy, but we don't care so much about that right now.
-So like before, we can express the advantage A^π(s,a) as the r(s,a) + γ E[V^π(s')] - V^π(s).
+So like before, we can express the advantage A^π(s,a) as the r(s,a) + γ⋅E[V^π(s')] - V^π(s).
 So let's try to evaluate V^π(s).
+
+[p.05]
+
 One way to evaluate V^π(s) in order to then estimate these advantages for policy iteration is to use dynamic programming.
-So for now, let's assume that we have a p(s'|s,a).
+So for now, let's assume that we know p(s'|s,a).
 Let's assume that we know the transition probabilities, and furthermore, let's assume that both s and a are small and discrete.
 So this is kind of the known dynamic setting.
 This is not the setting we usually operate in, in model-free RL, but we'll assume that that's our setting for now, just so that we can derive the simple dynamic programming algorithm and then turn it into a model-free algorithm later.
@@ -63,7 +76,7 @@ So in this kind of small state space, you can actually store the full value func
 You can actually construct a table with 16 numbers and just write down the V^π for every one of those 16 numbers.
 You don't need a neural network for that.
 So here's a potential table of 16 numbers.
-And your transition probabilities T are represented by a 16 by 16 by 4 tensor.
+And your transition probabilities T are represented by a {16 × 16 × 4} tensor.
 So when we say we're doing tabular reinforcement learning or tabular dynamic programming, what we're really referring to is a setting kind of like this.
 And now we can write down the bootstrapped update for the value function that we saw in lecture 6 in terms of these explicit known probabilities.
 So if we want to update V^π(s), we can set it to be the expected value with respect to the actions a sampled from a policy π of the r(s,a) plus γ times the expected value over s' sampled from p(s'|s,a) of V^π(s').
@@ -77,16 +90,18 @@ Now this also means that our policy will be deterministic.
 So expected values with respect to this π will be pretty easy to compute.
 So we can simplify our bootstrap update by removing the expectation with respect to π and just directly plugging in the only action that has non-zero probability.
 So then we get the simplified backup where V^{π}(s) is set to r(s,π(s)) plus γ times the expectation under p(s'|s,π(s)) of V^π(s').
+
+[p.06]
+
 Okay, so now we can plug this procedure into our policy iteration algorithm.
 So as a reminder our policy iteration algorithm.
-Step one is evaluate our advantage, which we can obtain from the value function.
-So it's really...
-step one is evaluate the value function.
-And then step two, set your new policy to be this π' policy obtained via the argmax.
+step 1 is evaluate our advantage, which we can obtain from the value function.
+So it's really step 1 is evaluate the value function.
+And then step 2, set your new policy to be this π' policy obtained via the argmax.
 And then repeat.
 So this is exactly the policy iteration algorithm we had before.
 And the thing that we're going to learn now is the value function, which for now will represent, in this tabular form as a table of 16 numbers if you have 16 states.
-So policy evaluation is what goes into step one.
+So policy evaluation is what goes into step 1.
 And the way that we can do policy evaluation is by repeatedly applying this recursion, by repeatedly setting the value for every state, for every entry in our table, to be the reward at that state plus the expected value of the value at the next state.
 And we just repeat this multiple times.
 You can prove that repeating this recursion eventually converges to a fixed point, and this fixed point is the true value function V^π.
@@ -94,16 +109,18 @@ For those of you that are a bit more mathematically inclined, I will also point 
 And the system of linear equations, can then be solved with any linear equation solver.
 So something that you could do as a homework assignment to understand this a little bit better is to actually write down the system of linear equations and work out its solution.
 It's fairly straightforward to do, but it's a good exercise to make sure that you really understand dynamic programming and policy evaluation.
-[12:01]
 Okay, so we have our tabular MDP, 16 states, 4 actions per state.
 We can store the full value function in a table.
 We can compute the value function using policy evaluation by repeatedly using this recursion.
 And we perform this in the inner loop of our policy iteration procedure, which simply alternates between policy evaluation and updating the policy to be this argmax policy, where the advantage is obtained from the value function that we found in step 1.
+
+[p.07]
+
 Now there is an even simpler dynamic programming process that you can design that kind of short circuits this policy iteration procedure.
 So to see this, here are the following steps that we need.
 So first notice that we're taking the argmax of the advantage function when you compute the policy.
-And the advantage is the reward plus the expected next value minus the current value.
-Now, if you remove the minus V^π(s), you just get the Q function.
+And the advantage is {the reward} + {the expected next value} - {the current value}.
+Now, if you remove the -V^π(s), you just get the Q function.
 Since you're taking the argmax with respect to a, any term that doesn't depend on a actually doesn't influence the argmax.
 So the argmax of the advantage is actually equal to the argmax of the Q function.
 So we can equivalently write the new policy as the argmax of Q, which is a little simpler because we removed one of the terms.
@@ -116,16 +133,16 @@ So the argmax gives us the policy, but the max actually gives us the new value o
 So what we can do is we can short circuit this.
 We can actually skip the step where we recover the indices and just directly take the values.
 So we can skip the policy and compute the values directly.
-And this gives us a new algorithm, which is called value iteration, where in step one we set the Q values, basically the entries in this s by a table, to be the reward plus the expected value of the value function of the next time step.
-And then in step two we set the value function to be the max over a in this Q function table.
+And this gives us a new algorithm, which is called value iteration, where in step 1 we set the Q values, basically the entries in this s by a table, to be the reward plus the expected value of the value function of the next time step.
+And then in step 2 we set the value function to be the max over a in this Q function table.
 So we basically take each row in the Q function table and pick the entry with the largest number in it and store that as the value for that state.
 So here explicit policy computation is skipped.
-We don't have our action to present the policy explicitly, but you can think of it as showing up implicitly in step two, because setting the value to be the max over the actions in the Q value table is analogous to taking the argmax and then plugging the index of the argmax into the table to recover the value.
+We don't have our action to present the policy explicitly, but you can think of it as showing up implicitly in step 2, because setting the value to be the max over the actions in the Q value table is analogous to taking the argmax and then plugging the index of the argmax into the table to recover the value.
 But since taking the argmax and then plugging into the table is the same as just taking the max, we can basically short circuit that step and get this procedure.
-So step one, construct your Q value table by setting it to be the reward plus the expected value of the next time step.
-Step two, set the value to be the max.
+So step 1, construct your Q value table by setting it to be the reward plus the expected value of the next time step.
+step 2, set the value to be the max.
 So this yield, slightly modified and simpler procedure, where in the green box you construct your table of Q values and the blue box you construct the value function by taking the max.
-Now this procedure can be simplified even further if you actually take step two and plug it into step one.
-So you notice that V(s) only shows up in one place, which is inside that expectation step one.
+Now this procedure can be simplified even further if you actually take step 2 and plug it into step 1.
+So you notice that V(s) only shows up in one place, which is inside that expectation step 1.
 So if you simply replace that with a max over a of Q(s,a), you don't even need to represent the value function.
 You only need to represent the Q function.
