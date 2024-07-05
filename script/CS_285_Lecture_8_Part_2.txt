@@ -1,27 +1,38 @@
+[p.08]
+
 Okay, so at this point we've almost developed a practical deep Q learning algorithm that we could actually use, but there's another component that we need to discuss to really get a stable and reliable procedure.
+
+[p.09]
+
 So there is another problem that we haven't tackled yet.
 So so far we dealt with the problem of our samples being correlated by introducing a replay buffer where we store all of the data that we've collected so far, and each time we have to take a step on the parameters of our Q function, we actually take that step using a batch of transitions that are sampled IID from our buffer.
 But we still have this other problem to contend with, which is that Q learning is not gradient descent, and in particular the problem that Q learning has is that it has a moving target.
 So you could think of it as squared error regression, except that the regression target itself changes all the time, and it changes out from under us, which makes it very hard for the learning process to ever converge.
 So we'll deal with the correlation by using a replay buffer, but this part is still a problem.
+
+[p.10]
+
 So what does Q learning really have to do with regression?
 In the full fitted Q iteration algorithm that I described before, step 3.
 Step 3 performs what looks a lot like supervised learning, essentially regression onto target values y_i.
 And in fact, in general, step 3 in the full fitted Q iteration algorithm will converge if you run it to convergence, but then your targets will change out from under you, so maybe you don't want them to converge.
-Essentially, trading to convergence on the wrong targets isn't necessarily a good thing to do.
+Essentially, training to convergence on the wrong targets isn't necessarily a good thing to do.
 Which is why in practice, we often use a much smaller number of gradient steps, as few as one gradient step.
 And then we have this moving target problem, where every gradient step our targets change, and our gradient is not accounting for the change in the targets.
 So intuitively, what we would like to resolve this issue is something that's a little bit in between, where we could have some of the stability of the full fitted Q iteration algorithm, where in step 3 we train to convergence, but at the same time, don't actually train to convergence.
+
+[p.11]
+
 So here's how we can do Q learning with a replay buffer and a target network.
 And this is going to look like a kind of mix between the online Q learning algorithm and the full-batch fitted Q learning algorithm.
 So we're going to collect our data set using some policy, and we add that policy to our buffer.
 This is now step 2.
 Step 1 will be revealed later.
-We're going to then, in an inner loop, sample a batch, s_i, a_i, s'_i, ri, from this buffer.
+We're going to then, in an inner loop, sample a batch, (s_i, a_i, s'_i, r_i), from this buffer.
 And then we will make an update on the parameters of our Q function.
 This update looks a lot like the update from before with replay buffers, but I've made one very small change, where now the parameters in the max are different parameter vectors.
 So it used to be that I would take the max over a' of Q_ϕ, and now it's Q_{ϕ'}, where ϕ' is some other parameter vector.
-And then, of course, after I make a K of these back and forth updates, which could be just K equals 1, I'd go out and collect more data.
+And then, of course, after I make a K of these back and forth updates, which could be just K=1, I'd go out and collect more data.
 And then I have a big outer loop where, after N steps of data collection, I'm going to actually update ϕ' and set it to be ϕ.
 So this looks a lot like the fitted Q iteration procedure I had before, because essentially I'm making multiple updates with the same target values.
 Because if ϕ' stays the same, then the entire target value stays the same.
@@ -31,11 +42,14 @@ And the reason for doing this is because in practice, you often want to collect 
 So some sensible back of the envelope choices, K could be between one and four.
 So we might take between one and four steps between each time when we collect more data, but N might be around 10,000.
 So we might take as many as 10,000 steps before we change our target values, and that's to make sure that we're not trying to hit a moving target, because it's very hard to hit a moving target with supervised regression.
-So initially, we initialize both ϕ and ϕ' to be essentially a random initialization, and then after the first n steps, which could be 10,000, we're going to update ϕ' to set it to be equal to ϕ.
+So initially, we initialize both ϕ and ϕ' to be essentially a random initialization, and then after the first N steps, which could be 10,000, we're going to update ϕ' to set it to be equal to ϕ.
 But then ϕ' will remain static for the next 10,000 steps.
 And that means that step four starts looking a lot more like supervised regression, and for that reason, step four is easier to do, it's much more stable, and you're much more likely to get an algorithm that learns a meaningful Q function.
 So your targets don't change in the inner loop.
 And that means that essentially step two, three, and four looks a lot like supervised regression, with the only real difference being that you might collect more data, and that data could be collected using your latest, for instance, ϵ-greedy policy.
+
+[p.12]
+
 So based on this general recipe, one of the things we can derive is the kind of classic deep Q learning algorithm, which is sometimes called DQN.
 Don't be too confused by the name, DQN is essentially just Q learning with deep neural networks, which is a special case of this kind of general recipe that I outlined.
 So this particular special case looks like this.
@@ -54,12 +68,15 @@ And then you repeat this process.
 Now something to note is that this procedure is basically a special case of the more general procedure at the top of this slide.
 Take a moment to think about this.
 Take a moment to think about what particular settings of the parameters of the algorithm at the top would yield the classic deep Q learning algorithm at the bottom.
-So you would basically get this algorithm if you choose K equals 1.
-That's essentially the only the only thing you have to do and if you choose K equals 1 then you will recover exactly the procedure at the bottom.
+So you would basically get this algorithm if you choose K=1.
+That's essentially the only the only thing you have to do and if you choose K=1 then you will recover exactly the procedure at the bottom.
 Take a moment to think about this.
 It's not entirely obvious because the numbering of the steps has been rearranged a little bit but they are basically the same map.
 Okay and it's a good idea to have a pretty thorough understanding of this procedure because all of you will actually be implementing it for homework 3.
-So if you use K equals 1 then you get exactly the procedure at the top.
+So if you use K=1 then you get exactly the procedure at the top.
+
+[p.13]
+
 Now there are some other ways to handle target networks that have been used in the literature and that could be worth experimenting with.
 There's something a little strange about this way of updating target networks.
 And here's some intuition to illustrate some of the strangeness.
@@ -76,15 +93,15 @@ And the fourth step, I get them from the first step.
 And then if the fourth step is where I update ϕ' to be equal to ϕ, so basically if my N is equal to four, in practice N would be much larger, but let's say it's equal to four.
 Then at the fifth step, I get my ϕ' from the preceding step.
 So it seems like in different steps, the target values are lagged by very different amounts.
-If you're at the step right after n, if you're at the n plus one step, your target network is only one step old.
-And if you're right before a flip, then it's n minus one steps old.
+If you're at the step right after n, if you're at the {n+1} step, your target network is only one step old.
+And if you're right before a flip, then it's {n-1} steps old.
 So it seems like at different points in time, your target values look more like a moving target than others.
 If you're right after that point where you set ϕ' to ϕ, if you're right after of these flips, then your target really looks like a moving target.
 And if it's been a long time, then it really doesn't look like a moving target.
 So this feels a little off.
 It's not actually that big of a problem, but if it feels a little bit off, then one common choice that you could do is you could use a different kind of update, which is kind of similar to polyac averaging.
 So those of you that are familiar with convex optimization might recognize this as essentially a variant of polyac averaging.
-So a popular alternative is to set ϕ' at every single step to be τϕ' + (1 - τ)ϕ.
+So a popular alternative is to set ϕ' at every single step to be τϕ' + (1-τ)ϕ.
 So you can think of this as ϕ' is gradually interpolating between its old value and the new value defined by ϕ.
 And you would choose τ to be a pretty big number.
 So for instance, you might choose it to be 0.999.

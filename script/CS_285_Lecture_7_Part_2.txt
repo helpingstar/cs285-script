@@ -1,9 +1,14 @@
+[p.08]
+
 All right, so far we talked about how we can learn value functions represented in a tabular form.
 So there's no neural net, no Deep-RL, no function approximation, just a small discrete state space where we can enumerate the value in every possible state.
 Now let's talk about how we can introduce neural networks and function approximation.
+
+[p.09]
+
 So first, how do we represent V(s)?
-Well, so far we're talking about how we can represent it as a big table with one entry for each discrete state.
-So in state 0, you say V(s) is 0.2, in state s equals 1, it's 0.3, and so on.
+Well, so far we talked about how we can represent it as a big table with one entry for each discrete state.
+So in state 0, you say V(s) is 0.2, in state s=1, it's 0.3, and so on.
 Why is this not enough?
 Well, take a moment to think about this.
 Why might we not want to represent the value function as a table?
@@ -36,6 +41,9 @@ For every action we valued its reward plus γ times the expected value of the va
 Do the max over that.
 That gives us our target value.
 And then in step two, regress onto those target values.
+
+[p.10]
+
 All right.
 So this is a reasonable algorithm that we could use.
 But it still requires us to know the transition dynamics.
@@ -65,6 +73,9 @@ So, this second recurrence that I've written here doesn't require knowing the tr
 So if we do this for step one in policy iteration, we would no longer require knowing the transition probabilities.
 And this is very important.
 This is the basis of most value-based model-free RL algorithms.
+
+[p.11]
+
 All right.
 Now, we seemingly took a step back because before we derived policy iteration and then we simplified it to get value iteration.
 And the way that we got value iteration is by using this max trick.
@@ -77,7 +88,7 @@ So can we essentially do something like value iteration, but without knowing the
 So what we did before is we took policy iteration, which alternates between evaluating the value function in step two and setting the policy to be the greedy policy in step, sorry, evaluating the value function in step one and setting the policy to be the greedy policy in step two.
 And we transformed to this other algorithm where step one constructs target values by taking a max over the Q values.
 And step two fits a new value function to those target values.
-So here we just compute the values directly.
+So here we compute forgot the policy, we just compute the values directly.
 So can we do this with Q values also but still retain this benefit of not needing to know the transitions.
 So the way that we construct a fitted Q iteration algorithm is very much analogous to fitted value iteration.
 We construct our target value y_i as the reward of a sampled state action tuple (s_i, a_i) plus γ times the expected value of the value function at state s'.
@@ -105,6 +116,9 @@ Unfortunately, it turns out that this procedure does not have any convergence gu
 So if you do this with a neural net, it may not converge to the true solution, and we'll discuss this a lot more later in the lecture.
 If you use a tabular representation, it is actually guaranteed to converge.
 But for a neural network, it's in general not guaranteed to converge.
+
+[p.12]
+
 All right.
 So just to put the pieces together, here's the full fitted Q iteration algorithm.
 And for each step of the algorithm, there are some free parameters that I'm going to mention.
@@ -134,6 +148,9 @@ And the number of times you alternate step 2 and step 3 we're going to refer to 
 And then once you've taken those K iterations maybe you could take your latest policy, modify it with some exploration rules, which I'll discuss shortly, and use it to collect some more data.
 So this is the general design of fitted Q iteration.
 Many different algorithms can actually be interpreted as variants of fitted Q iteration, including algorithms like Q-learning, which I will cover shortly.
+
+[p.13]
+
 Alright, so to review this portion of the lecture, we discussed value-based methods.
 Value-based methods do not learn a policy explicitly, they just learn a value function or a Q function represented as a table or a neural network.
 If we have a value function, we can recover a policy by using the argmax policy.

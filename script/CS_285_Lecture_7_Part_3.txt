@@ -1,5 +1,10 @@
+[p.14]
+
 All right.
 In the next portion of today's lecture, we're going to discuss how this generic form of Fitted Q iteration that we covered can be instantiated as different kinds of practical deep reinforcement learning algorithms.
+
+[p.15]
+
 So first, let's talk a little bit more about what it means for Fitted Q iteration to be an off-policy algorithm.
 So just to remind everybody, off-policy means that you do not need samples from the latest policy in order to keep running your RL algorithm.
 Typically, what that means is that you can take many gradient steps on the same set of samples or reuse samples from previous iterations.
@@ -22,28 +27,34 @@ So given a state and an action, the transition is actually independent of π.
 Right?
 If s_i and a_i are fixed, no matter how much we change π, s'_i is not going to change, because π only influences a_i, and here a_i is fixed.
 So one way that you can think of Fitted Q iteration kind of structurally is that you have this big bucket of different transitions, and what you'll do is you'll back up the values along each of those transitions, and each of those backups will improve your Q value.
-But you don't actually really care so much about which specific transitions they are, so long as they kind of cover the space of all possible transitions qutie well.
+But you don't actually really care so much about which specific transitions they are, so long as they kind of cover the space of all possible transitions quiet well.
 So you can imagine that you have this data set of transitions, and you're just plugging away on this data set, running Fitted Q iteration, improving your Q function each time you go around the loop.
+
+[p.16]
+
 Now, what exactly is it that Fitted Q iteration is optimizing?
 Well, this step, the step where you take the max, improves your policy.
 Right?
 So in the tabular case, this would literally be your policy improvement.
 And your step 3 is minimizing the error of fit.
-So if you had a tabular update, you would just directly write those y_i into your table, but since you have a neural network, you have to actually perform some optimization to minimize an error against those y_i, and you might not drive the error perfectly to 0.
+So if you had a tabular update, you would just directly write those y_i into your table, but since you have a neural network, you have to actually perform some optimization to minimize an error against those 'y_i's, and you might not drive the error perfectly to 0.
 So you could think of Fitted Q iteration as optimizing an error, the error being the Bellman error, the difference between Q_ϕ(s,a), and those target values y, and that is kind of the closest to an actual optimization objective.
 But of course, that error itself doesn't really reflect the goodness of your policy.
 It's just the accuracy with which you're able to copy your target values.
-If the error is 0, then you know that Q_ϕ(s,a) is equal to r(s,a) plus γ max a' Q_ϕ(s',a').
+If the error is 0, then you know that Q_ϕ(s,a) = r(s,a) + γ⋅max_{a'} Q_ϕ(s',a').
 And this is an optimal Q function, corresponding to the optimal policy π', where the policy is recovered by the argmax rule.
 So this you can show maximizes reward.
 But if the error is not 0, then you can't really say much about the performance of this policy.
 So what we know about Fitted Q iteration is, in the tabular case, your error will be 0, which means that you'll recover Q^{*}.
 If your error is not 0, then most guarantees are lost when we leave the tabular case.
+
+[p.17]
+
 All right.
 Now let's discuss a few special cases of Fitted Q iteration, which correspond to very popular algorithms in the literature.
 So, so far, the generic form of Fitted Q learning that we talked about has these three steps.
-Collect the data set, evaluate your target values, train your neural network parameters to fit those target values, and then alternate these two steps k times.
-And then after k times, go out and collect more data.
+Collect the data set, evaluate your target values, train your neural network parameters to fit those target values, and then alternate these two steps K times.
+And then after K times, go out and collect more data.
 You can instantiate a special case of this algorithm with particular choices for those hyperparameters, which actually corresponds to an online algorithm.
 So in the online algorithm, in step one, you take exactly one action, a_i, and observe one transition, (s_i, a_i, s'_i, r_i).
 Then in step two, you compute one target value for that transition that you just took.
@@ -55,6 +66,9 @@ And the error in those parentheses, that (Q(s_i, a_i) - y_i), is sometimes refer
 So, this is the basic online Q learning algorithm also sometimes called Watkins Q learning.
 This is kind of the classic Q learning algorithm that we learn about in textbooks.
 And it isn't a on-policy algorithm so you do not have to take the action a_i using your latest greedy policy.
+
+[p.18]
+
 So what policy should you use?
 So your final policy will be the greedy policy.
 If Q-learning converges and has error zero, then we know that the greedy policy is the optimal policy.
@@ -71,7 +85,7 @@ And there are a number of choices that we make in practice to facilitate this.
 So one common choice is called ϵ-greedy.
 This is one of the simplest exploration rules that we can use with discrete actions and that's something that you will all implement in homework 3.
 ϵ-greedy simply says that with probability 1 - ϵ, you will take the greedy action and then with probability ϵ, you will take one of other actions uniformly at random.
-So the probability of every action is (1 - ϵ) of this the argmax and then ϵ divided by the nubmer of actions minus one otherwise.
+So the probability of every action is (1 - ϵ) of this the argmax and then ϵ divided by the nubmer of actions(|A|) minus one otherwise.
 This is called ϵ-greedy.
 Why might this be a good idea?
 Well, if we choose ϵ to be some small number, it means that most of the time we take the action that we think is best.
@@ -85,12 +99,15 @@ And a particularly popular positive transformation is exponentiation.
 So if you take actions in proportion to the exponential of your Q values, what will happen is that the best actions will be the most frequent.
 Actions that are almost as good as the best action will also be taken quite frequently, because they'll have similarly high probabilities.
 But if some action has an extremely low Q value, then it will almost never be taken.
-In some cases, this kind of exploration rule can be preferred over ϵ greedy, because with ϵ greedy, the action that happens to be the max gets much higher probability, and if there are two actions that are about equally good, the second best one has a much lower probability.
+In some cases, this kind of exploration rule can be preferred over ϵ-greedy, because with ϵ-greedy, the action that happens to be the max gets much higher probability, and if there are two actions that are about equally good, the second best one has a much lower probability.
 Whereas with this exponentiation rule, if you really have two equally good actions, you'll take them about an equal number of times.
 The second reason it might be better is if you have a really bad action, and you've already learned that it's just a really bad action, you probably don't want to waste your time exploring it.
-Whereas ϵ greedy won't make use of that.
+Whereas ϵ-greedy won't make use of that.
 So this is sometimes also called the Boltzmann exploration rule, also the softmax exploration rule.
 We'll discuss more sophisticated ways to do exploration in much more detail in another lecture in the second half of the course, but these simple rules are hopefully going to be enough to implement basic versions of Q iteration and Q learning algorithms.
+
+[p.19]
+
 All right, so to review what we've covered so far, we've discussed value-based methods, which don't learn a policy explicitly, but just learn a value function or Q function.
 We've discussed how if you have a value function, you can recover a policy by using the argmax, and how we can devise this fitted Q iteration method, which does not require knowing the transition dynamics, so it's a true model-free method.
 And we can instantiate it in various ways, as a batch mode off-policy method, or an online Q learning method, depending on the choice of those hyperparameters, the number of steps we take to gather data, the number of gradient updates, and so on.
