@@ -1,10 +1,15 @@
+[p.14]
+
 Okay, in the next section, I want to briefly discuss kind of another view that we can take of these Q-learning algorithms that maybe provides a little bit more of a unified perspective, because we covered lots of different variants.
 We covered fitted Q iteration, online Q-learning, deep Q-learning with replay buffers.
 We can unify all of these in one kind of conceptual framework, and I just want to highlight this in the next portion.
 And many of you might probably already suspect what that more general framework is, but let's just make it really explicit.
+
+[p.15]
+
 So here is the general Q-learning with replay buffers and target networks that I discussed before.
-So here we have this outer-outer loop where we save the target network parameters, ϕ' goes to ϕ.
-And we could use this polyak averaging trick or just a standard flip every n steps.
+So here we have this outer-outer loop where we save the target network parameters, ϕ' ← ϕ.
+And we could use this polyak averaging trick or just a standard flip every N steps.
 In step two, we collect some number of data points using some policy and add it to the buffer.
 In step three, we sample a batch.
 In step four, we take a gradient step.
@@ -18,7 +23,10 @@ But they're really kind of the same thing.
 And if you view them as having the same basic processes running in parallel at different rates, then all of these methods can be unified into one kind of parallel framework.
 So in the fitted Q iteration algorithm, the inner-inner loop is just SGD.
 The DQN method we had before is a special case.
-Where N equals 1 and K equals 1.
+Where N=1 and K=1.
+
+[p.16]
+
 But all of them are really just special cases of this more general view.
 So we have our data set of transitions, our replay buffer.
 This is the basic object at the center of all of this.
@@ -62,6 +70,9 @@ And in fact, you could actually implement this as a parallel architecture.
 You could actually have these as separate processes in different threads.
 Or you can implement it as a serial sequential process, but this mental model that there are really three different things that can all happen at different rates is still useful for thinking about it.
 So even though it seems like there are many different Q-learning algorithms, essentially they all just involve different decisions for the rates at which we run process one, process two, and process three.
+
+[p.17]
+
 So online Q-learning, the basic, basic Watkins online Q-learning that we had in the previous lecture, is a special case where you evict immediately, meaning the size of your buffer is one.
 It's a ring buffer of size one.
 And then process one, process two, and process three all run at the same speed, and they all take one step sequentially.

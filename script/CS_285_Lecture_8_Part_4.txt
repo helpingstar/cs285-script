@@ -1,4 +1,9 @@
+[p.18]
+
 In the next section of today's lecture, I'm going to discuss some practical considerations that we need to take into account when actually implementing Q-learning algorithms, and then some improvements that can make them work a bit better.
+
+[p.19]
+
 So one question that we can start with, are our Q values actually accurate?
 We can think of Q values as this kind of abstract object that we use inside reinforcement learning to help us improve our policy and get that argmax.
 But a Q function is also a prediction.
@@ -8,8 +13,7 @@ Do they match up with the reality?
 Do they match up with what you actually get when you run the policy?
 So if we look at the kind of a basic learning curve, where the x-axis is the number of iterations of Q learning that we've taken, and the y-axis is the average reward per episode, and we look at it on a bunch of, let's say, Atari games, we'll see that for all of these Atari games, our average reward per episode is going up, so things are getting better.
 If we look at the average Q values that are being predicted, and that's the two plots on the right, we'll see that the Q function is predicting larger and larger Q values as training progresses.
-And then in the next section, we're going to look at the Q function.
-So this intuitively makes sense.
+And that intuitively makes sense.
 As training progresses, our policy gets better, it's getting higher rewards, so our Q function should also predict that it's getting higher Q values.
 So as predicted, Q increases, and so does the return.
 We can also look at whether the actual Q values or value function values occur in places that essentially anticipate future rewards.
@@ -49,13 +53,16 @@ So now the Q value for moving up is very large, the Q value for moving down or s
 And of course in step 4, once you've actually returned the ball, again it's saying that the values for different actions don't really matter.
 So again, this basically agrees with our intuition.
 In terms of their relative values, the Q values make sense with respect to actions, and they make sense with respect to states.
+
+[p.20]
+
 But there's a little bit of a problem.
 While the relative Q values of different states and actions seem to make sense on a successful training run, their actual absolute values will in practice actually not be very predictive of real values.
 And you can verify this yourself in homework 3 when you implement Q learning.
 You can measure the numerical value of the Q value that you're getting, and then measure the actual return that you get, and compare those two numbers, you'll find they don't agree very well.
 There are a few details that you have to get right.
 One thing that you have to get right is that you have to make sure that when you calculate the true value, you use a discounted estimator.
-So you calculate the true value by taking the trajectories that you actually executed, and taking the reward times step 1, plus γ times the reward at 2, plus γ squared times the reward at 3, etc., etc., etc., and then compare that to the Q value at step 1.
+So you calculate the true value by taking the trajectories that you actually executed, and taking the reward times step 1, plus γ times the reward at 2, plus γ^2 times the reward at 3, etc., etc., etc., and then compare that to the Q value at step 1.
 Because the Q value at step 1 is trying to predict the expected sum of discounted rewards.
 So if you compare that to the discounted sum of rewards that you actually got, if your Q value is a good predictor, you should see that those are similar.
 And what you'll actually see is that they're not very similar.
@@ -73,6 +80,9 @@ This is not a fluke.
 It's not just that the Q function is wrong and it can be above or below the true reward, it's actually systematically larger.
 And this is a very consistent pattern, and if you try this in homework 3, you'll also see this pattern.
 So why is that?
+
+[p.21]
+
 This problem is sometimes referred to as overestimation in Q-learning.
 And it has actually a fairly straightforward and intuitive reason.
 Let's look at how we're computing our target values.
@@ -82,9 +92,9 @@ So here's how we can think about why a max could cause overestimation.
 Let's forget about Q values for a minute, and let's just imagine that you have two random variables, X_1 and X_2.
 You could think that maybe X_1 and X_2 are normally distributed random variables.
 So maybe they have some true value plus some norms.
-You can prove that the expected value of the max of X_1 and X_2 is always greater than or equal to the max of the expected value of X_1 and the expected value of X_2.
+You can prove that E[max(X_1,X_2)] ≥ max(E[X_1],E[X_2]).
 The intuition for why this is true is that when you take the max of X_1 and X_2, you're essentially picking the value that has the larger noise.
-And even though the noise for X_1 and X_2 might be 0-mean, maybe they're both univariate Gaussians, the max of two 0-mean noises is not in general 0-mean.
+And even though the noise for X_1 and X_2 might be 0-mean, maybe they're both univariate gaussians, the max of two 0-mean noises is not in general 0-mean.
 So you can imagine that one noise is positive or negative with 50%, the other is positive or negative with 50%.
 But when you take the max of the two, if either of them is positive, you'll get a positive answer.
 So, of course, the probability that one of the two noises is positive is going to be pretty high.
@@ -100,18 +110,21 @@ So imagine that your Q_{ϕ'} for different actions represents the true Q-value o
 So it might be up and down.
 And those errors are not biased, so those errors are just as likely to be positive as negative.
 But when you take the max in the target value, then you're actually selecting the positive errors.
-And for the same reason that the expected value of the max of X_1 and X_2 is greater than or equal to the max of their expected values, the max over the actions will systematically select the errors in the positive direction, which means that it will systematically overestimate the true Q-values, even if your Q-function initially does not systematically have errors that are positive or negative.
+And for the same reason that E[max(X_1,X_2)] ≥ max(E[X_1],E[X_2]), the max over the actions will systematically select the errors in the positive direction, which means that it will systematically overestimate the true Q-values, even if your Q-function initially does not systematically have errors that are positive or negative.
 So for this reason, the max over a' of Q_{ϕ'}(s',a') systematically overestimates the next value.
 It basically preferentially selects errors in the positive direction.
 So how can we fix this?
 Well, one way that we can think about fixing this is to note, if we think back to the fitted Q-iteration, the way that we got this max was by basically modifying the policy iteration procedure.
 So we had our greedy policy, which is the argmax over a', and then we then send that argmax back into our Q-function to get its value.
-So this is just another way of saying that the max over a' of Q_{ϕ'} is just Q_{ϕ'} evaluated at the argmax.
+So this is just another way of saying that the max_{a'}{Q_{ϕ'}} is just Q_{ϕ'} evaluated at the argmax.
 And this is actually the observation that we're going to use to try to mitigate this problem.
 See, the trouble is that we select our action according to Q_{ϕ'}.
 So if Q_{ϕ'} erroneously thinks that some action is a little bit better because of some noise, then that's the action we'll select, and then the value that we'll use for our target value is the value for that same action, which has that same noise.
 But if we can somehow de-correlate the noise in the action selection mechanism from the noise in the value evaluation mechanism, then maybe this problem can go away.
 So the problem is that the value also comes from the same Q_{ϕ'}, which has the same noise as the rule that we used to select our action.
+
+[p.22]
+
 Alright, so one way to mitigate this problem is to use something called double-Q learning.
 If the function that gives us the value is de-correlated from the function that selects the action, then in principle this problem should go away.
 So the idea is to just not use the same network to choose the action as the network that we use to evaluate the value.
@@ -120,9 +133,12 @@ One network, which we're going to call ϕ_A, and another network, which we're go
 And ϕ_A uses the values from ϕ_B to evaluate the target values, but selects the action according to ϕ_A.
 So if you assume that ϕ_B and ϕ_A are de-correlated, then the action that ϕ_A selects for the argmax will be corrupted by some noise, but that noise will be different from the noise that ϕ_B has, which means that when ϕ_B evaluates that action, if the action was selected because it had a positive noise, then ϕ_B will actually give it a lower value.
 So the system will be kind of self-correcting.
-And then analogously ϕ_B is updated by using ϕ_A as its target network, and then ϕ_B as the action selection rule.
+And then analogously ϕ_B is updated by using ϕ_A as its target network, but using ϕ_B as the action selection rule.
 So this is the essence of double-Q learning, and its purpose is to de-correlate the way that you select the action from the way that you evaluate the value of that action.
 So if the two Q networks are noisy in different ways, then in principle the problem should go away.
+
+[p.23]
+
 Now in practice, the way that we can implement double-Q learning is without actually adding another Q function, but actually using the two Q functions we already have.
 So we already have a ϕ and a ϕ', and they are different networks, so we'll just use those in place of ϕ_A and ϕ_B.
 So in standard Q learning, if we write it out in this argmax way, which is exactly equivalent, our target value is Q_{ϕ'}, evaluated at the argmax from Q_{ϕ'}.
@@ -138,6 +154,9 @@ So this solution is far from perfect.
 It doesn't totally de-correlate ϕ' and ϕ.
 But in practice, it actually tends to work pretty well, and it actually mitigates a large fraction of the problems with overestimation.
 But of course not all of them.
+
+[p.24]
+
 Alright.
 There's another trick that I should mention that we can use to improve Q-learning algorithms, and it's similar to something that we saw in the Actor-Critic lecture.
 And that's the use of multi-step returns.
@@ -159,12 +178,15 @@ Take a moment to imagine what this multi-step target would look like.
 If you have a piece of paper in front of you, consider writing it down, and then you can check what you wrote down against what I'm going to tell you on the next slide.
 Sorry, it's actually on this slide.
 So the way that you can construct a multi-step target is basically exactly analogous to what we saw in the Actor-Critic lecture.
-So the way that you can construct your multi-step target is by not just using one reward, but making a little sum from (t'=t) to (t+N-1), and for each of those, you take r_{j,t'} multiplied by γ^{t-t'}.
-And you can verify that if N equals one, then you recover exactly the standard rule that we had for Q learning.
-But for N larger than one, you sum together multiple reward values, and then you use your target network for the t+N step multiplied by γ^N.
+So the way that you can construct your multi-step target is by not just using one reward, but making a little sum from {t'=t} to {t+N-1}, and for each of those, you take r_{j,t'} multiplied by γ^{t-t'}.
+And you can verify that if N=1, then you recover exactly the standard rule that we had for Q learning.
+But for N>1, you sum together multiple reward values, and then you use your target network for the t+N step multiplied by γ^N.
 So this is sometimes called an n-step return estimator, because instead of summing the reward for one step, you sum it for n steps.
 So this is the n-step return estimator.
 And just like with Actor-Critic, the trade-off of the n-step return estimator is that it gives you a higher variance because of that single sample estimate for r, but lower bias because even if your Q function is incorrect, now it's being multiplied by γ^{N}, and for larger values of N, γ^{N} might be a very small number.
+
+[p.25]
+
 Okay.
 So let's talk about Q learning with these n-step returns.
 It's less biased because the target, because the Q values are multiplied by a small number, and it's typically faster early on because when the target values are bad, those sums of rewards really give you a lot of useful learning signal.
@@ -172,10 +194,10 @@ Unfortunately, once you use n-step returns, this is actually only a correct esti
 So the reason for this is that if you have a sample collected with a different policy, then that second step, t+1, might actually be different for your new policy, right?
 Because if on the second step you take a different action, that won't match what you're getting from your n-step return.
 So n-step returns technically are not correct with off-policy data anymore.
-With off-policy data, technically you're only allowed to use N equals 1.
-With N equals 1, everything is pretty straightforward because you're not actually assuming anywhere that your transition came from your policy.
+With off-policy data, technically you're only allowed to use N=1.
+With N=1, everything is pretty straightforward because you're not actually assuming anywhere that your transition came from your policy.
 Your Q function is conditioned on action, so that'll be valid for any policy, and your second time step, where this would matter, in the second time step you actually take the max with respect to action, you don't use the action that was actually sampled.
-So for N equals 1, it's valid to do off-policy, but for n greater than 1, it's no longer valid.
+So for N=1, it's valid to do off-policy, but for N>1, it's no longer valid.
 Basically, your new policy might never have landed in the state s_{j,T+N}.
 So why?
 Because you actually end up using the action from the sample for those intermediate steps, which is not the action that your new policy would have taken.
@@ -184,7 +206,7 @@ As a hint, to make the n-step version off-policy, you can't learn a Q function a
 And if you think a little bit about how you could do this, that might shed some light on kind of giving you a better intuitive understanding for how it is that Q-learning can be off-policy.
 So as a homework exercise after the lecture, maybe take a moment to think about how to make n-step returns off-policy, and what kind of object you would need to learn to make that possible.
 So the estimate that we get from regular n-step returns is an estimate of Q^π for π, but for that you need transitions from π for all the intermediate steps.
-And this is not an issue when N equals 1.
+And this is not an issue when N=1.
 So how can we fix it?
 Well, we can ignore the problem, which often works very well.
 The other thing we can do is we can dynamically cut the trace.
@@ -194,6 +216,6 @@ And that will also remove the bias.
 So this works well when data is mostly on-policy, and the action space is pretty small.
 Another thing we can do is importance sampling.
 So we can construct a stochastic policy and importance weight these n-step return estimators.
-I won't talk about this in detail, but if you want to learn more about this, check out this paper called Safe and Efficient Off-Policy Reinforcement Learning by Munos et al.
+I won't talk about this in detail, but if you want to learn more about this, check out this paper called "Safe and Efficient Off-Policy Reinforcement Learning" by Munos et al.
 And then there's this mystery solution that I haven't told you about where you don't do any of this stuff, but you condition the Q function on some other additional information that allows you to make it off-policy.
 And that's a solution that you can think about in your own time after the lecture.
