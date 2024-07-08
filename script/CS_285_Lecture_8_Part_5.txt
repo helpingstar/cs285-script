@@ -1,6 +1,11 @@
+[p.26]
+
 So, so far, when we've talked about Q-learning algorithms, we mainly focused on algorithms with discrete action spaces.
 It is actually possible, but somewhat more complicated, to extend Q-learning procedures to the case when we have continuous actions.
 And that's what I'm going to discuss in the next section of this lecture.
+
+[p.27]
+
 So, let's talk about Q-learning with continuous actions.
 What's the problem with continuous actions?
 Well, the problem is that when you select your actions, you need to perform this argmax.
@@ -12,15 +17,18 @@ So, this is, the target value max is particularly problematic because that happe
 So, you really want this to be very fast and very efficient.
 So, how can we perform this max when we have continuous actions?
 Well, we basically have three choices.
-Option one is to use a continuous optimization procedure, like, for instance, gradient descent.
+Option 1 is to use a continuous optimization procedure, like, for instance, gradient descent.
 Now, gradient descent by itself can be pretty slow because it has, you know, it requires multiple steps, gradient calculations, and it happens in the inner loop of an outer loop learning procedure.
 So, there are better choices that we could use.
 And our action space is typically low-dimensional.
 So, in some sense, it presents a slightly easier optimization problem than the kind of problems we typically take on with SGD.
 So, it turns out that for evaluating the max with optimization, a particularly good choice is to use a derivative-free stochastic optimization procedure.
 So, let's talk about that a little bit.
+
+[p.28]
+
 A very simple solution is to simply approximate the max over a continuous action as the max over a discrete set of actions that are sampled randomly.
-So, for instance, you could sample a set of n actions, maybe uniformly at random from the set of valid actions, and then take the Q value with the largest of those actions.
+So, for instance, you could sample a set of N actions, maybe uniformly at random from the set of valid actions, and then take the Q value with the largest of those actions.
 Now, that's not going to give you an exact max.
 It'll give you a very approximate max.
 But if your action space is pretty low-dimensional, and you can bombard it with enough samples, this max might actually be pretty good.
@@ -40,7 +48,10 @@ CMA-ES, you can kind of think of it as a much fancier version of CEM.
 So it's substantially less simple, but structurally very similar.
 And these kinds of methods work okay for up to about 40-dimensional action spaces.
 So if you use one of these solutions, you simply plug this in place of your argmax to find the best action, and the rest of your Q-learning procedure stays basically the same.
-Another option that you could use option two is to use a function class that is inherently easy to optimize, so arbitrary neural networks are not easy to optimize with respect to one of their inputs but other functiona classes have closed form solutions for their optima.
+
+[p.29]
+
+Another option that you could use option 2 is to use a function class that is inherently easy to optimize, so arbitrary neural networks are not easy to optimize with respect to one of their inputs but other functiona classes have closed form solutions for their optima.
 One example of such a function class is the quadratic function, so you could, for example, express your Q function as a function that is quadratic in the action.
 And the optimum for quadratic has a closed-form solution.
 So one of the ways you could do this, this is something called the NAF architecture, proposed in this paper by Shishian Gu in 2016, is to have a neural network that outputs three quantities.
@@ -57,9 +68,12 @@ So now we've just made this maximization operation very easy at the cost of redu
 Because if the true Q function is not quadratic in the action, then of course the problem we have is that we can't represent it exactly.
 So there's no change to the algorithm.
 It's just as efficient as Q learning, but it loses some representational power.
+
+[p.30]
+
 All right.
 The last option I'm going to discuss is to perform Q learning with continuous actions by learning an approximate maximizer.
-This is going to be a little bit similar to option one, only instead of running the optimization separately for every single argmax that we have to take, we'll actually train a second neural network to perform the maximization.
+This is going to be a little bit similar to option 1, only instead of running the optimization separately for every single argmax that we have to take, we'll actually train a second neural network to perform the maximization.
 So the particular algorithm that I'll describe is most closely related to DDPG by Lillicrap et al. and ICLR 2016.
 But DDPG itself is almost identical to another algorithm called NFQCA, which was proposed much earlier.
 So you could equivalently think of this as basically NFQCA.
@@ -74,10 +88,13 @@ So you basically push gradients through your Q function and maximize.
 And you can use the chain rule to evaluate this derivative.
 So dQ_ϕ/dθ is just da/dθ, which is the derivative of μ_θ, times dQ_ϕ/dA.
 So you can obtain this derivative by backpropagating through the Q function and into the μ, and then into the μ parameters.
-So now our targets are going to be given by as y_j = r_j + γ times Q_{ϕ'}, evaluated at s'_j, μ_θ(s'_j), which is really an approximation for the argmax, as long as μ_θ is a good estimate of the argmax.
+So now our targets are going to be given by as y_j = r_j + γ⋅Q_{ϕ'}(s'_j, μ_θ(s'_j)), which is really an approximation for the argmax, as long as μ_θ is a good estimate of the argmax.
+
+[p.31]
+
 So here is what that algorithm will look like.
-Step 1, take some action a_i, observe the corresponding transition s_i, a_i, s'_i, r_i, and add it to your buffer, just like in Q-learning.
-Step 2, sample a mini-batch s_j, a_j, s'_j, r_j from your buffer, uniformly at random.
+Step 1, take some action a_i, observe the corresponding transition (s_i, a_i, s'_i, r_i), and add it to your buffer, just like in Q-learning.
+Step 2, sample a mini-batch {s_j, a_j, s'_j, r_j} from your buffer, uniformly at random.
 Step 3, compute your target value.
 And now instead of using the argmax, you're going to use μ_θ.
 And in fact, you're going to use μ_{θ'}.
