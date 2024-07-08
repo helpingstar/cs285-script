@@ -51,7 +51,7 @@ So if you use one of these solutions, you simply plug this in place of your argm
 
 [p.29]
 
-Another option that you could use option 2 is to use a function class that is inherently easy to optimize, so arbitrary neural networks are not easy to optimize with respect to one of their inputs but other functiona classes have closed form solutions for their optima.
+Another option that you could use option 2 is to use a function class that is inherently easy to optimize, so arbitrary neural networks are not easy to optimize with respect to one of their inputs but other function classes have closed form solutions for their optima.
 One example of such a function class is the quadratic function, so you could, for example, express your Q function as a function that is quadratic in the action.
 And the optimum for quadratic has a closed-form solution.
 So one of the ways you could do this, this is something called the NAF architecture, proposed in this paper by Shishian Gu in 2016, is to have a neural network that outputs three quantities.
