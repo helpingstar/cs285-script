@@ -85,9 +85,9 @@ And it's a policy that is conditioned on the state and z.
 And it's a policy that is conditioned on the state and z.
 And it trains an inference network that predicts z based on a history of states, actions, and rewards.
 The whole thing is trained with variational inference, very similar to the kind of variational inference that we talked about before.
-So basically, we maximize the expected value of the reward in expectation under the trajectory distribution and the distribution of z's inferred by the encoder.
+So basically, we maximize the expected value of the reward in expectation under the trajectory distribution and the distribution of 'z's inferred by the encoder.
 And we, of course, minimize the KL divergence between Q of z and the prior.
-So that just encourages the z's to contain minimal information, just like in a variational autoencoder.
+So that just encourages the 'z's to contain minimal information, just like in a variational autoencoder.
 And the goal is to really maximize the post-update reward, meaning the reward after you've inferred the z.
 This is the same as standard meta-reinforcement learning, while at the same time staying close to the prior.
 So it's conceptually actually very similar to RNN-based meta-RL, in that you read in a history, you predict some kind of statistic, you give that statistic to your policy, and you maximize the reward.

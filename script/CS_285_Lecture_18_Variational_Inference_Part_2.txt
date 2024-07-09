@@ -2,9 +2,9 @@ Alright, so now let's get into the main technical part of today's lecture, which
 So this framework is basically concerned with this question, how do we calculate p(z) given x i?
 But in the process of deriving this, we'll also see why the expected log likelihood is actually a reasonable objective.
 So let's think about making some crude approximation.
-So p(z) given x i is in general a pretty complex distribution, right, because a single point x might come from many different places in the space of z's.
+So p(z|x_i) is in general a pretty complex distribution, right, because a single point x might come from many different places in the space of 'z's.
 But let's make a really simplistic approximation.
-Let's say that we're going to approximate p(z) given x i with some distribution q i of z, which is a Gaussian, or in general some very simple tractable parametrized distribution class.
+Let's say that we're going to approximate p(z|x_i) with some distribution q i of z, which is a Gaussian, or in general some very simple tractable parametrized distribution class.
 And notice that I'm calling it q subscript i of z.
 So it's a distribution over z, and it is a distribution that's going to be specific to this point x i.
 All right, so instead of having this complicated thing, we're going to try to approximate it with just a single peak.
@@ -12,14 +12,14 @@ And I chose this picture intentionally just to make it clear that this approxima
 It turns out that if you approximate the distribution class, you're going to get a very simple distribution class.
 So if you approximate the distribution class, you're going to get a very simple distribution class.
 So this is a distribution that's going to give a very simple distribution class.
-And if you approximate p(z) given x i with any q i z, you can actually construct a lower bound on the log probability of x i.
+And if you approximate p(z|x_i) with any q i z, you can actually construct a lower bound on the log probability of x i.
 And this is going to be a very powerful idea, because if you can construct a lower bound on the log probability of x i, then maximizing that bound will push up on the log probability of x i.
 Now in general, maximizing lower bounds does not increase the quantity you care about, but if the bound is sufficiently tight, you will be able to apply the distribution class to a greater probability of x i.
 tight than it does.
 And we'll see later that under some conditions, the bound is in fact tight.
 But for now, let's just not worry about tightness.
 Let's just see how we can get a bound by using Q I of Z.
-So we can write out the log probability of X I as the log of the integral over all values of Z of p(x) I given Z times p(z).
+So we can write out the log probability of x_i as the log of the integral over all values of Z of p(x) I given Z times p(z).
 And the usual trick, if you want to bring in some quantity that is not currently in the equation, is to multiply by that quantity divided by itself.
 So Q I Z over Q I Z is equal to one.
 So we can multiply that in whenever we want.
@@ -29,7 +29,7 @@ So we basically take the numerator in that ratio.
 That becomes, that turns into an expectation.
 And then everything else is left behind.
 So we have log of the integral over all values of p(x) I.
-So we can write that quantity as an expected value under Q I of Z of P X I given Z times p(z) divided by Q I of Z.
+So we can write that quantity as an expected value under Q I of Z of P x_i given Z times p(z) divided by Q I of Z.
 All right.
 So, so far, we haven't made any approximation.
 These are just, this is just a little bit of algebraic manipulation.

@@ -44,13 +44,13 @@ And the observation y is a transition.
 It's a tuple (s_t, a_t, s_{t+1}).
 And the question we're going to ask is, well, which action should we be taking to get the most informative transitions, the transitions that are the most informative about θ?
 So then the KL divergence that we want is the following.
-We want to maximize the KL divergence between p θ, given our history, given all the data we've seen so far, and the new transition against p θ given only our history.
+We want to maximize the KL divergence between p_θ, given our history, given all the data we've seen so far, and the new transition against p_θ given only our history.
 So h here denotes basically our replay buffer without this new transition added to it.
 And θ denotes the model parameters.
 So we want the model parameters after observing a new transition to be very different from the model parameters from only observing the history without that new transition.
 So the intuition is that a transition is more informative if it causes a belief over θ to change.
 Now the problem with this, of course, is that estimating a parameter posterior, as we've discussed multiple times now, is in general intractable.
-So if θ represents the parameters of some neural net, then we can't in general get a true posterior p θ, but we can get approximations to it.
+So if θ represents the parameters of some neural net, then we can't in general get a true posterior p_θ, but we can get approximations to it.
 So the idea will be to use variational inference to estimate some approximate posterior that we're going to call q of θ, given some variational parameters ϕ, which we're going to try to use to closely approximate p(θ|h).
 And then given a new transition, we'll update the variational parameters ϕ to get new variational parameters ϕ', and then we'll compare these two distributions.
 

@@ -24,7 +24,7 @@ What it really is, is an approach to generative modeling.
 It's an approach to learn a neural network that captures a particular given data distribution, such as the distribution of realistic faces, or realistic zebras.
 For those of you that are not familiar with generative adversarial networks, they consist of two neural networks.
 A generator network, which takes in a random sample, random noise Z, and turns it into some sample X, which ideally should correspond to samples that resemble the data distribution.
-So if you train this system on faces, the sample X's should look like realistic faces.
+So if you train this system on faces, the sample 'x's should look like realistic faces.
 The data consists of samples from the true unknown distribution p^{*} of X.
 And the discriminator, there's a second network called the discriminator, which is a binary classifier that tries to assign the label true to all of the samples from the data, to all the samples from p^{*}, and the label false to all the samples from the generator P θ.
 So here d ψ of X is the binary classifier that represents the discriminator.

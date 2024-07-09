@@ -54,7 +54,7 @@ So this δ x and δ u represents x - ^{x} and u - ^{u}.
 So these are deviations, these are differences from ^{x} and ^{u}.
 And now we're back in the linear quadratic regime, which means that we can simply plug in this thing into the regular LQR algorithm and solve for the optimal δ x and δ u.
 So δ x and δ u are the deviation from ^{x} and ^{u}.
-You can use LQR to solve for the optimal δ x and δ u and then add them to the old ^{x}s and ^{u}s to find new x's and u's.
+You can use LQR to solve for the optimal δ x and δ u and then add them to the old ^{x}s and ^{u}s to find new 'x's and u's.
 
 [p.38]
 
@@ -67,7 +67,7 @@ And then we're going to run the forward pass, but for the forward pass, we're ac
 So we're not going to actually use the linearized dynamics to get x_{t+1}, we're going to use the original nonlinear dynamics.
 And the reason that we do this is because we want to get the x_{t+1} that will actually result from taking that actual u_t, not just an approximation to that.
 So we'll do the forward pass with linear dynamics and u given by capital K times δ x plus lowercase k plus ^{u}, which we just get from substituting in the δ x and δ u equations.
-And then we will update ^{x} and ^{u} by simply setting them to be the x's and u's that we got from our forward pass.
+And then we will update ^{x} and ^{u} by simply setting them to be the 'x's and u's that we got from our forward pass.
 And then repeat this process.
 So essentially the backward pass computes a controller expressed in terms of δ x and δ u that will give you better costs than we had so far.
 The forward pass checks how good that controller actually is and checks which states you'll get from running it and then updates ^{x} and ^{u} to be those new states and actions.

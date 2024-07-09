@@ -9,7 +9,7 @@ So far the methods we've discussed don't actually use derivatives of the dynamic
 And as a bit of notation I mentioned before that in reinforcement learning and dynamic programming we like to use s_t and a_t to denote the state of action, and we like to use r for rewards.
 In optimal control it's much more common to use x_t and u_t for the state and action, and to use costs instead of rewards.
 Since this part of the lecture deals with trajectory optimization and optimal control methods that are most commonly studied in the optimal control community I like to use xs and us.
-Uh, just so that you know the notation is more similar to what you might find in a textbook don't be confused by this and uh it's probably a good mental exercise  to try to mentally substitute s's for x's and a's for u's and think about what these methods would look like if we're maximizing rewards instead of minimizing costs.
+Uh, just so that you know the notation is more similar to what you might find in a textbook don't be confused by this and uh it's probably a good mental exercise  to try to mentally substitute s's for 'x's and a's for u's and think about what these methods would look like if we're maximizing rewards instead of minimizing costs.
 But the basic principles are exactly the same is just the difference of a sign and some letters.
 Okay, so to think about how we can use derivatives for planning let's go back to our original constrained optimization problem.
 So back when we defined the model-based planning problem, we said, well, we want to minimize your cost or maximize your reward with respect to a sequence of actions.
@@ -198,7 +198,7 @@ And once we know x_2, then we can calculate u_2 as capital K_2 times x_2 plus lo
 So once we know, once we get to the beginning, then we can perform a forward recursion where for every time step from t=1 to capital T, we can compute u_2 as K_t x_t plus little k_t, and we can calculate x_{t+1} by using our dynamics.
 And then repeat this process.
 So, you can think of it as kind of unzipping everything, going backwards, expressing it in terms of x_t, and then zipping it back up going forward, plugging in those x_t as you compute them.
-And then we'll get you numerical values for a sequence of x's and u's that describes the optimal trajectory in this linear quadratic system.
+And then we'll get you numerical values for a sequence of 'x's and u's that describes the optimal trajectory in this linear quadratic system.
 
 [p.32]
 
