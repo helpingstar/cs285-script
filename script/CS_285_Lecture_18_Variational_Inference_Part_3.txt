@@ -2,23 +2,23 @@ All right.
 Now let's talk about how amortized variational inference can allow us to basically learn this Q of Z given X and thereby make variational inference an applicable tool, even in settings where the data set size is extremely large.
 So to recap what we had before, our variational inference procedure for training the model parameters θ basically looks something like this.
 For every image x_i or data point x_i in our data set, or more generally for every mini-batch, you would estimate the gradient with respect to θ of your variational lower bound Li, P, Q.
-And the way you would do this is by sampling a Z from the approximate posterior QI of Z, then estimating the gradient, which would simply be the gradient with respect to θ of log p_θ of x_i given Z, which is the single sample estimator using the one sample that you just got from QI.
+And the way you would do this is by sampling a Z from the approximate posterior q_i(z), then estimating the gradient, which would simply be the gradient with respect to θ of log p_θ of x_i given Z, which is the single sample estimator using the one sample that you just got from q_i.
 of the expectation.
-Then you take a gradient step using this estimated gradient ∇ θ Li, and then you update QI to maximize the bound Li and thereby tighten it.
+Then you take a gradient step using this estimated gradient ∇_θ Li, and then you update q_i to maximize the bound Li and thereby tighten it.
 And the issue, of course, is with how you maximize the bound.
-So what we saw in the previous part of the lecture is that if you represent QI as a separate Gaussian distribution for every data point xi, then you could simply calculate the derivative.
+So what we saw in the previous part of the lecture is that if you represent q_i as a separate Gaussian distribution for every data point xi, then you could simply calculate the derivative.
 So you would have a gradient of Li with respect to θ, but the total number of parameters now increases with n.
-So the idea in amortized variational inference will be to essentially amortize the cost of inferring this approximate posterior QI of Z over all the data points by using a single model that will give us the posterior for any x.
+So the idea in amortized variational inference will be to essentially amortize the cost of inferring this approximate posterior q_i(z) over all the data points by using a single model that will give us the posterior for any x.
 And that single model could be a neural network model.
 So in this case, we're still going to have a Gaussian posterior for every x.
 But instead of storing the mean invariant, we would have a neural network that takes in that data point and outputs μ of ϕ of x and σ of ϕ of x, the parameters of the Gaussian posterior for the data point x.
 All right, so that's the basic idea for amortized variational inference.
 You have two networks, the network that you're trying to learn, your generative model, p_θ(x) given z, and what we would call your inference network, Q subscript ϕ of z given x.
 So we know from our discussion before that you can formulate a lower bound on log p(x)_i using really any Q, but this lower bound is tightest when this Q is close to the posterior.
-So now, just like before, we had QI of z.
+So now, just like before, we had q_i(z).
 Now we have Q_ϕ of z given xi.
 And now our variational lower bound is a function of two distributions, p θ.
-So we have QI of x_i given z and Q_ϕ of z given xi.
+So we have q_i of x_i given z and Q_ϕ of z given xi.
 So our training procedure, which is just a modification of the one from the previous slide, will look like this.
 First, calculate the gradient of the variational lower bound with respect to θ.
 And that's going to work basically the same way as before.
@@ -48,7 +48,7 @@ It's a very standard equation.
 So that one is actually pretty easy to do.
 You just write down the equation in terms of μ and σ, and you can take its derivative.
 It's really the first term that's problematic.
-So we can suggestively rewrite that term by calling it J of ϕ, which is equal to the expected value with respect to Z distributed according to Q_ϕ of Z given XI of some quantity that I'm going to call R that is a function of XI and Z.
+So we can suggestively rewrite that term by calling it J of ϕ, which is equal to the expected value with respect to Z distributed according to Q_ϕ of Z given x_i of some quantity that I'm going to call R that is a function of x_i and Z.
 And the important thing is that R just doesn't depend on ϕ.
 So how do we calculate the derivative of this with respect to phi?
 Well, we can just use policy gradient.
@@ -118,9 +118,9 @@ So this is actually a very simple way to calculate derivatives.
 The only unusual thing is that you have to sample these ϵs.
 Otherwise it looks like just any other neural network.
 Here's another way you can look at it.
-You can take your original variational lower bound, the expected value with respect to z of log p_θ x_i given z plus log p(z) plus the entropy of q.
+You can take your original variational lower bound, the expected value with respect to z of log p_θ x_i given z plus log{p(z)} plus the entropy of q.
 Write it out as three terms.
-So there's an expectation under z of the decoder, p_θ x_i given z, plus an expectation under z of the prior, log p(z) plus the entropy.
+So there's an expectation under z of the decoder, p_θ x_i given z, plus an expectation under z of the prior, log{p(z)} plus the entropy.
 The second term is essentially the equation for the KL divergence between q ϕ of z given x and p(z).
 Because KL divergence has an entropy term and an expected value term.
 And if our prior p(z) is also Gaussian, the KL divergence between two Gaussian distributions has a convenient analytic form.

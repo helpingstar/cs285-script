@@ -82,10 +82,10 @@ So the data collection policy in your learning algorithm.
 So the data collection policy in your data set.
 RFXAI is your instantaneous reward value.
 So this is the reward value in your data set for this particular transition.
-And XI plus one is the next observation or the next state, which was obtained when you executed this action at that particular state in XI.
+And x_i plus one is the next observation or the next state, which was obtained when you executed this action at that particular state in x_i.
 So this is just a transition that exists in typical replay buffers and off policy Q learning style algorithms.
 So we have access to a data set that is organized in the form of these transition tools.
-And XI, AI, R, and XI plus one.
+And x_i, AI, R, and x_i plus one.
 Okay.
 So back to scaling up.
 So to start motivating why or, you know, what is even the thing to do in scaling, like, should I just throw more data in a bigger model and the method would work?
