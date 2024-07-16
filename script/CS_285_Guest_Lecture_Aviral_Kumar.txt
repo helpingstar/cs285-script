@@ -190,11 +190,11 @@ So the first term of this RL regularizer is actually the same.
 It's a term that tries to penalize the norms of the features that you're saying.
 So that's a good term in some ways, because you're trying to learn low norm features.
 You're not trying to overfit in weird ways to your data.
-But this second term now, it's a term that actually, if you look at it a bit more carefully, it looks like a dot product between ϕ θ at xi, which is your state at the current step, and ϕ θ at x_i plus 1, which is your state at the next step.
+But this second term now, it's a term that actually, if you look at it a bit more carefully, it looks like a dot product between ϕ θ at x_i, which is your state at the current step, and ϕ θ at x_i plus 1, which is your state at the next step.
 So it's something that kind of combines together features that are given state action x comma a with x prime, or the next state, x_i plus 1 in this case.
 And if you think about it, while the derivative is not here, if you think about it, this is precisely why this is precisely something that you would get from a target value like thing, because the target value has x_i plus 1 under your two function, whereas the q θ xa up there in the objective is graded on your current state and current ϕ.
 So that's sort of the intuition for why this term comes from.
-But now, if you look at what this term does, it is actually a term that looks like a dot product between two vectors, dot product between ϕ θ of x_i ai and ϕ θ of xi.
+But now, if you look at what this term does, it is actually a term that looks like a dot product between two vectors, dot product between ϕ θ of x_i ai and ϕ θ of x_i.
 So you have the other two vectors, which are the two functions of the term, the first and the second.
 And the second is a dot product.
 And at the end of the dot product, you have a negative sign in front of this.

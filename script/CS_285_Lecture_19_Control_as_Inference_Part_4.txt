@@ -1,7 +1,7 @@
 Alright, let's discuss a few reinforcement learning algorithms based on the ideas that I presented in the previous section, as well as some maybe more direct approaches.
 So first, we could imagine doing Q-learning with soft optimality.
 Standard Q-learning uses this update.
-So you set your new ϕ vector to be the old one plus some learning rate times ∇ ϕ Q times the Bellman error, r plus next v minus Q.
+So you set your new ϕ vector to be the old one plus some learning rate times ∇_ϕ Q times the Bellman error, r plus next v minus Q.
 Where your target value is just the max over the Q values of the next time step.
 You can implement a soft Q-learning procedure in exactly the same way.
 In fact, the Q function update is identical.
