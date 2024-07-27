@@ -1,4 +1,9 @@
+[p.01]
+
 All right, today we're going to talk about RL with sequence models.
+
+[p.02]
+
 Let's start with a discussion of what happens when we go beyond regular MDPs.
 So in the beginning of the course we saw that beyond fully observed MDPs we can start thinking about partially observed MDPs where we only get limited observations of the environment, and that's going to get us started thinking about sequence models in RL.
 So the trouble with observations is that unlike the Markovian states that we've been using in, for example, most of our value-based or model-based algorithms, the observations don't obey the Markov property, which means that simply from observing the current observation you don't necessarily have enough information to infer the full state of the environment, which means that previous observations can actually give you more information.

@@ -1,65 +1,82 @@
+[p.12]
+
 Alright, so learning the reward function in the graphical model corresponds to learning the optimality variable.
-So now p , it'll still be equal to the exponential of the reward, but now it's r , it's a reward parameterized by parameter psi.
+
+[p.13]
+
+So now p(O_t|s_t,a_t), it'll still be equal to the exponential of the reward, but now it's r_ψ, it's a reward parameterized by parameter ψ.
 And our goal is to find the reward parameters.
-So for clarity, I'll write it as p , ψ to emphasize that this CPD depends on our parameter psi.
-The probability of a trajectory given optimality and ψ is, like before, proportional to the probability of the trajectory times the exponential of the sum of rewards.
+So for clarity, I'll write it as p(O_t|s_t,a_t,ψ) to emphasize that this CPD depends on our parameter ψ.
+The probability of a trajectory given optimality and ψ is, like before, proportional to {the probability of the trajectory} times {the exponential of the sum of rewards}.
 And in the inverse RL setting, we are given samples from this unknown optimal policy.
 And the way that we're going to learn the reward is by maximum likelihood learning.
 We're going to basically choose the parameter ψ that'll maximize the log probability of the trajectories that we observed.
 So this is very much like maximum likelihood in any other machine learning setting.
-Now when we're doing this, it turns out that we can actually ignore the p term because it's independent of psi.
+Now when we're doing this, it turns out that we can actually ignore the p(τ) term because it's independent of ψ.
 So the main challenge in performing this maximum likelihood optimization is really the exponential reward component.
 So, So if we plug in this expression for the log probability of the trajectory, we get the following very intuitive expression.
-We want to maximize with respect to ψ the average over all of our trajectories of the reward of that trajectory, meaning the sum of rewards along τ i, minus the log normalizer.
+We want to maximize with respect to ψ the average over all of our trajectories of the reward of that trajectory, meaning the sum of rewards along τ_i, minus the log normalizer.
 Now, if you just ignore the log normalizer, this seems at once both intuitive and kind of silly.
 This is just saying, find the reward that makes the trajectories have a higher reward.
 But the problem is that if you just assign huge rewards to everything, then some other trajectories that were not taken, and have a very low probability of the expert policy, might get an even higher reward.
 And that's what the log normalizer takes care of.
-The log z term, the normalizing constant, says you can't just assign higher reward to anything.
+The log{Z} term, the normalizing constant, says you can't just assign higher reward to anything.
 You need to assign rewards that make the trajectories that you saw look more likely than other trajectories that you did not see.
 And it's actually this log normalizer that makes inverse reinforcement learning difficult.
+
+[p.14]
+
 Alright, so let's talk about the log normalizer, or the partition function.
-That's what z is sometimes referred to as the partition function.
-z is equal to the integral over all possible trajectories of p of τ times the exponential of r ψ of τ.
-Now, of course, immediately we could say, well, let's just plug in this equation for z, take its gradient, and optimize.
+That's what Z is sometimes referred to as the partition function.
+Z is equal to the integral over all possible trajectories of p(τ)⋅exp(r_ψ(τ)).
+Now, of course, immediately we could say, well, let's just plug in this equation for Z, take its gradient, and optimize.
 Very reasonable thing to do, but of course integrating over all possible trajectories is in general going to be intractable.
-So if you plug in the equation for z, and then take the derivative with respect to ψ, you get this expression.
-You get 1 over n times the sum over all of your samples of the gradient of the reward of the trajectory τ i minus 1 over z, that just comes from the derivative of a logarithm, times the integral of p of τ times the exponential of the reward, times ∇ r.
-But something pretty neat that you might note about this is that the second term can actually be viewed as an expected value under the distribution over trajectories induced by your current psi.
+So if you plug in the equation for Z, and then take the derivative with respect to ψ, you get this expression.
+You get 1/N times {the sum over all of your samples of the gradient of the reward of the trajectory τ_i} minus 1/Z, that just comes from the derivative of a logarithm, times the integral of p(τ) times {the exponential of the reward}, times ∇r.
+But something pretty neat that you might note about this is that the second term can actually be viewed as an expected value under the distribution over trajectories induced by your current ψ.
 Right?
-Because this expression, 1 over z times p of τ times exponential of r ψ of τ, is exactly p of τ given optimality and psi.
-So you can equivalently write the gradient as the expected value, under the optimal policy π^{*} of ∇ r, minus the expected value under p τ given your current ψ of ∇ r.
-The first term is approximated with samples, and that turns into a sum of ∇ r's on the τ i's divided by n, and the second term turns into that integral.
+Because this expression, 1/Z times p(τ) times exponential of r_ψ(τ), is exactly p(τ|O_{1:T},ψ).
+So you can equivalently write the gradient as the expected value, under the optimal policy π^{*} of ∇r, minus the expected value under p τ given your current ψ of ∇r.
+The first term is approximated with samples, and that turns into a sum of '∇r's on the 'τ_i's divided by n, and the second term turns into that integral.
 So that's a very appealing interpretation.
-Your gradient is just the difference between the expected value of the gradient under the expert's point, and the expected value of the gradient under your current reward.
-Note that p of τ given o1 through t comma ψ is simply the distribution over trajectories that are softly optimal with respect to r psi.
+Your gradient is just the difference between the expected value of the gradient under the expert's policy minus the expected value of the gradient under your current reward.
+Note that p(τ|O_{1:T},ψ) is simply the distribution over trajectories that are softly optimal with respect to r_ψ.
 So this might immediately suggest an appealing algorithmic approach.
-Take your current reward r ψ, find the soft optimal policy by running inference in the graphical model that we saw on Monday, sample trajectories from that policy, and then, perform this kind of contrastive operation where we increase the reward for the trajectories that we saw from the expert, and decrease the reward for trajectories that we sampled for our current reward.
+Take your current reward r_ψ, find the soft optimal policy by running inference in the graphical model that we saw on Monday, sample trajectories from that policy, and then, perform this kind of contrastive operation where we increase the reward for the trajectories that we saw from the expert, and decrease the reward for trajectories that we sampled for our current reward.
 So we estimate the first term with samples from the expert, and the second term comes from the soft optimal policy under the current reward.
 And we can compute the soft optimal policy using the algorithms that we learned about in Monday's lecture.
-But let's actually work through how we can estimate this expectation, because I think this will give us a little bit of clarity on maximantia of the IRL methods.
+
+[p.15]
+
+But let's actually work through how we can estimate this expectation, because I think this will give us a little bit of clarity on maximum entropy of the IRL methods.
 So if we take this second term, let me just make it a little more explicit, that it's really the gradient with respect to ψ of the sum of rewards for all time steps along that trajectory.
-And that means that we can write it by moving the sum outside of the expectation by linearity of expectation, and write it as the sum from t=1 to capital T, of the expected value under the STAT marginal, given optimality, of the gradient of the reward at STAT.
-So the distribution under which we take the expected value is the probability of the action, given s_t, common optimality, times the probability of the state, given optimality.
-And on Monday we learn how to compute both of these quantities, because the first quantity is the policy, which we learned is the ratio of two backward moments, which we learned is the ratio of two backward moments, which we learned is the ratio of two backward moments, and the second term is the state marginal, which we learned on Monday can be obtained as the product of the forward and the backward messages.
+And that means that we can write it by moving the sum outside of the expectation by linearity of expectation, and write it as the sum from t=1 to capital T, of the expected value under the (s_t,a_t) marginal, given optimality, of the gradient of the reward at (s_t,a_t).
+So the distribution under which we take the expected value is the {probability of the action, given s_t, comma optimality}, times {the probability of the state, given optimality}.
+And on Monday we learn how to compute both of these quantities, because the first quantity is the policy, which we learned is the ratio of two backward messages, and the second term is the state marginal, which we learned on Monday can be obtained as the product of the forward and the backward messages.
 So that's where we've seen this before.
-So the first term is just equal to the ratio of β STAT divided by β s_t, and if you don't remember how to compute β, please go back to the lecture on Monday and re-watch the first inference problem.
-And the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the second term is proportional to the forward message over STAT, and the backward message over STAT.
+So the first term is just equal to the ratio of β(s_t,a_t)/β(s_t), and if you don't remember how to compute β, please go back to the lecture on Monday and re-watch the first inference problem.
+And the second term is proportional to the forward message over s_t, and the backward message over s_t.
 And again, if you don't remember how we derived this, go back to the lecture on Monday and watch the third inference problem.
-Now here the β s_t in the denominator of the first expression cancels out with the β s_t in the numerator of the second expression, and we just get the answer that this quantity is proportional to β STAT times α s_t.
+Now here the β(s_t) in the denominator of the first expression cancels out with the β(s_t) in the numerator of the second expression, and we just get the answer that this quantity is proportional to β(s_t,a_t) times α(s_t).
 And then you have to normalize it over states and actions, but not over trajectories, crucial.
 So this is a much more tractable thing to normalize if you have a relatively small state space.
-Okay, so now the way that we can estimate this second term is by first calculating this quantity that I'm going to call μ T, the state action marginal, and we calculate that by multiplying the backward messages by the forward messages, and normalizing overall states and actions.
-And then we can express this expectation as just the<|vi|> a sum in discrete spaces or an integral in continuous spaces of μ sdA t times the gradient of r sdA t, which we can also write as an inner product between a vector of probabilities μ and a vector of derivatives for the reward at every state-action tuple.
+
+[p.16]
+
+Okay, so now the way that we can estimate this second term is by first calculating this quantity that I'm going to call μ_t, the state action marginal, and we calculate that by multiplying the backward messages by the forward messages, and normalizing overall states and actions.
+And then we can express this expectation as just a sum in discrete spaces or an integral in continuous spaces of μ(s_t,a_t) times the gradient of r(s_t,a_t), which we can also write as an inner product between a vector of probabilities μ and a vector of derivatives for the reward at every state-action tuple.
 Okay, so that's a pretty elegant expression for this gradient.
 It does require us to actually be able to compute μ, which means that we need a small and countable state space.
 Typically a discrete state space would be best.
 And of course we need to actually be able to calculate those forward and backward messages, which requires knowing the transition probabilities.
 So this wouldn't work for unknown dynamics, and it wouldn't work for a large or continuous state-action spaces, but for small and discrete spaces this is quite feasible.
-So this leads us to the classic maximum entropy inverse RL algorithm as proposed by Brian Ziebart in his 2008 paper.
+
+[p.17]
+
+So this leads us to the classic "Maximum entropy inverse RL" algorithm as proposed by Brian Ziebart in his 2008 paper.
 Given your current vector ψ, compute your backward messages as described in the previous lecture, and compute your forward messages as described in the previous lecture.
 Then compute your μ by multiplying these messages and renormalizing.
-And then evaluate the gradient of the likelihood of the trajectories as the difference between the average over all the trajectories of ∇ ψ r ψ minus the inner product between μ and ∇ r.
+And then evaluate the gradient of the likelihood of the trajectories as the difference between the average over all the trajectories of ∇_ψ r_ψ minus the inner product between μ and ∇r.
 And then simply take a gradient ascent step on ψ since you've just calculated the gradient of the likelihood.
 And then repeat this process until convergence.
 So this is basically an algorithm for computing the gradient of the likelihood of the demonstrated trajectories, and at convergence this will yield the reward parameters that maximize the likelihood of those trajectories and therefore produce the reward that best explains the potentially suboptimal behavior of the expert.
@@ -72,21 +89,19 @@ If you saw the expert doing very random things, it might mean that they don't ca
 It might mean that all those outcomes are about equally good to the expert.
 But if you saw the expert repeatedly doing something very specific, you might say, well, that thing really matters to the expert and therefore it has a much larger reward.
 Why do we call this the maximum entropy algorithm?
-Well, in the case where the reward is linear in the parameter vector side, we can actually show that this algorithm also optimizes a constraint optimization problem where we maximize the entropy of the learned policy subject to the constraint that it matches the feature expectations of the expert.
+Well, in the case where the reward is linear in the parameter vector ψ, we can actually show that this algorithm also optimizes a constraint optimization problem where we maximize the entropy of the learned policy subject to the constraint that it matches the feature expectations of the expert.
 So there's actually a deep connection between this algorithm and the feature matching methods that we saw before, and the way that they disambiguate the ambiguity in feature matching is by saying that you should match the features, but besides that you should be as random as possible.
 And that's the principle of maximum entropy.
 It says that you should not make any inference other than the ones that are supported by the data.
-It's a kind of statistical formalization of Occam's Eraser.
+It's a kind of statistical formalization of Occam's razor.
 And that's perhaps part of the explanation for why this method for inverse RL works so well, because it avoids making undue assumptions.
 It avoids making inferences about the expert's behavior that are not supported by your data, and the principle of maximum entropy is what allows you to do that.
-So this maximum entropy inverse RL algorithm has been used quite effectively in the case of the method of inverse RL.
-And it's a kind of statistical formalization of Occam's Eraser.
-And it's a kind of statistical formalization of Occam's Eraser.
-It's a kind of statistical formalization of Occam's Eraser.
-It's a kind of statistical formalization of Occam's Eraser.
-And this algorithm can assist you in a number of smaller discrete settings.
-So for instance, Brian Zbart's original paper on this topic showed that you could use this algorithm to infer navigational routes in a map.
-For instance, you could collect data from taxi drivers in Pittsburgh, infer their reward function, whether they prefer driving on city streets or highways, and then get a route planning software to navigate the way a taxi driver will.
+So this maximum entropy inverse RL algorithm has been used quite effectively in a number of smaller discrete settings.
+
+[p.18]
+
+So for instance, Brian Ziebart's original paper on this topic showed that you could use this algorithm to infer navigational routes in a map.
+For instance, you could collect data from taxi drivers in Pittsburgh, infer their reward function, whether they prefer driving on city streets or highways, and then get a route planning software to navigate the way a taxi driver would.
 And the methods generally worked decently well.
 However, this approach is still restricted to settings where we have relatively small and discrete state spaces.
 In the next portion of the lecture, we'll discuss how to extend this to settings where the state space might be very large or continuous.

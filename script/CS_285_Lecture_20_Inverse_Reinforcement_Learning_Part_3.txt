@@ -1,49 +1,63 @@
+[p.19]
+
 All right, in the next portion of the lecture, we're going to talk about how we can perform approximate inverse reinforcement learning in high-dimensional or continuous spaces.
+
+[p.20]
+
 So what's missing from the methods that we've discussed so far?
 Well, so far, maximum entropy inverse RL requires a number of things that are difficult to obtain in large realistic problem settings.
 It requires solving for the soft optimal policy in the inner loop in order to compute those backward and forward messages.
 It requires enumerating all state action tuples in order to normalize the visitation frequency and compute the gradient, and to apply this in practical problem settings willing to handle the fact that we might have large and continuous state and action spaces, which make both these things difficult.
-States might be obtained only by a sampling, which makes enumerating all state action tuples impossible, and we might have unknown dynamics, which makes the naive approaches for calculating the backward and forward messages difficult.
-So the next anti-RL algorithm, as I discussed so far, is not entirely practical to apply in realistic settings, and we'll need to come up with tractable approximations in order to handle the kind of high-dimensional and continuous problems that we often encounter in deep reinforcement learning.
+States might be obtained only by a sampling, which makes enumerating all state action tuples impossible, and we might have unknown dynamics, which makes the naive approaches for calculating the backward and forward messages in feasible.
+So the MaxEnt IRL algorithm, as I discussed so far, is not entirely practical to apply in realistic settings, and we'll need to come up with tractable approximations in order to handle the kind of high-dimensional and continuous problems that we often encounter in deep reinforcement learning.
+
+[p.21]
+
 All right, so what can we do in order to make it possible to carry out inverse reinforcement learning with unknown dynamics and large state or action spaces?
 Well, first we'll assume that we don't know the dynamics, but that we can sample, like in standard model-free reinforcement learning.
-Recall that the gradient of the likelihood is the difference of two expected values, the expected value of the gradient reward for trajectories sampled from the expert minus the expected value of the gradient of the reward for trajectories sampled from the optimal policy for your current reward function.
-You can estimate the first and second values of the likelihood for the expected value of the reward for the first term easily by using the trajectory sample from the expert.
+Recall that the gradient of the likelihood is the difference of two expected values, the expected value of the gradient reward for trajectories sampled from the optimal policy for your current reward function.
+You can estimate the first term easily by using the trajectory sample from the expert.
 So the biggest challenge is really the second term, which requires the soft optimal policy under the current reward.
-So one idea that we could explore is, let's try to learn the soft optimal policy, P of A-T given S-T comma O-1 through T comma Psi, using any max-send-RL algorithm, basically any of the algorithms from Monday's lecture, like soft Q-learning or entropy-regularized policy gradient, so basically anything that maximizes this objective, and then run that policy to sample trajectories Tau j.
-And then we would take the trajectories Tau i from the expert, and we would use those to estimate the first expected value, and then we would use trajectories Tau j from this max-send-optimal policy to estimate the second term.
-Now this would actually be a viable way to to perform approximate MaxSend IRL.
-However, it would require running MaxSend RL, the corresponding forward problem, to convergence for every gradient step on the reward function.
+So one idea that we could explore is, let's try to learn the soft optimal policy, p(a_t|s_t,O_{1:T},ψ), using any max-ent RL algorithm, basically any of the algorithms from Monday's lecture, like soft Q-learning or entropy-regularized policy gradient, so basically anything that maximizes this objective, and then run that policy to sample trajectories τ_j.
+And then we would take the trajectories τ_i from the expert, and we would use those to estimate the first expected value, and then we would use trajectories τ_j from this max-ent-optimal policy to estimate the second term.
+Now this would actually be a viable way to perform approximate max-ent IRL.
+However, it would require running max-ent RL, the corresponding forward problem, to convergence for every gradient step on the reward function.
 And that actually is pretty difficult.
 So the first sum is over the expert samples, the second sum is over policy samples.
+
+[p.22]
+
 So this is the intractable procedure.
-Learn the policy using any MaxSend RL algorithm and then run the policy to sample the trajectories.
+Learn the policy using any max-ent RL algorithm and then run the policy to sample the trajectories.
 What if we instead have some kind of lazy policy optimization procedure?
-What if instead of optimizing the MaxSend optimal policy to convergence every time we take a gradient step, what if we only optimize it a little bit each time we take a gradient step?
-So instead of learning PAT given STO1 through T, ψ, we just improve starting from the policy we had from the previous psi.
+What if instead of optimizing the max-ent optimal policy to convergence every time we take a gradient step, what if we only optimize it a little bit each time we take a gradient step?
+So instead of learning p(a_t|s_t,O_{1:T},ψ), we just improve starting from the policy we had from the previous ψ.
 And maybe we improve it a little bit.
 Maybe we improve it even for just a single gradient step.
 The problem now is that our estimator is biased.
 We have the wrong distribution.
 So one solution we could have is we could use an importance sampling correction.
 We could basically say, well, we wanted the optimal policy, but we got some suboptimal policy.
-Basically, we didn't train PAT given STO1 through T to convergence, but perhaps we can importance weight those samples to make them look like they were samples from the optimal policy.
-So instead of the equation that we have at the top of this slide, we're going to introduce some importance weight, wj, for the second term, where we'll weight each of the samples by wj and then normalize by the sum over wjs so that the weights sum up to 1.
+Basically, we didn't train p(a_t|s_t,O_{1:T}) to convergence, but perhaps we can importance weight those samples to make them look like they were samples from the optimal policy.
+So instead of the equation that we have at the top of this slide, we're going to introduce some importance weight, w_j, for the second term, where we'll weight each of the samples by w_j and then normalize by the sum over 'w_j's so that the weights sum up to 1.
 And if we do this, we can correct for the bias due to not having fully optimized our policy.
-Okay.
-Thanks for your attention.
-I'll see you next time.
-Bye.
-Bye.
-Bye.
-Bye.
-Bye.
-it turns out that the importance weights actually have a very appealing form, because we know that the optimal normalization constant, the probabilities of the structures from the optimal policy, are given by p of τ times the exponential of the reward, and we know the reward, well, not the true reward, but the reward for our current ψ, so we can actually calculate these importance weights, provided that we have access to the policy that we just optimized to calculate the denominator, and we usually do.
+And it turns out that the importance weights actually have a very appealing form, because we know that the optimal normalization constant, the probabilities of the structures from the optimal policy, are given by p(τ) times {the exponential of the reward}, and we know the reward, well, not the true reward, but the reward for our current ψ, so we can actually calculate these importance weights, provided that we have access to the policy that we just optimized to calculate the denominator, and we usually do.
+
+[p.23]
+
 So the importance weights, we can write them out like this.
 This is very similar to what we had before in the lecture on importance weighted policy gradients.
 So we have the initial state terms, the dynamics terms, and at the top we have the additional reward terms, at the bottom we have the additional policy terms.
-So the unknown terms all cancel out, and we're just left with a ratio of the exponential of the total reward of that trajectory under your current reward function, divided by the product, and then we have the So that's quite appealing.
-We can take the policy π, and we can calculate the importance weights, and we can take gradient steps on ψ, even with an incompletely optimized policy, but the more we optimize the policy, the better our importance weights get.
+So the unknown terms all cancel out, and we're just left with a ratio of the exponential of the total reward of that trajectory under your current reward function, divided by the product of the probabilities of all the actions.
+And since you just learned the policy π you would typically know its probability in continuous space it might be something like a gaussian probability.
+So you could calculate these importance weights.
+Now crucially each policy update with respect to r_ψ brings us closer and closer to the target distribution.
+So we would expect that the more we optimize the policy the closer these importance weights will go to one.
+So that's quite appealing.
+We can take gradient steps on ψ, even with an incompletely optimized policy, but the more we optimize the policy, the better our importance weights get.
+
+[p.24]
+
 So this idea is the basis of the guided cost learning algorithm by Finn et al., which was the first deep inverse RL algorithm that could scale to high-dimensional state and action spaces, and the design of this algorithm was the following.
 You have your initial guess of the policy π, which might be just random, and you have some human demonstrations.
 Then you would sample from your current policy to generate the policy samples, and then you would use those policy samples and the human demonstrations to update the reward using essentially your samples and the demos.
@@ -51,6 +65,6 @@ And then the updated reward would be used to update the policy.
 So at the end this would produce a reward function, and a policy actually, and if the policy was optimized to convergence, the policy would actually be a good policy, for that reward function, and the reward function would hopefully be a good explanation of expert behavior.
 The reward function update would be based on that important sample expression I showed on the previous slide, and the policy update would just be based on the maximum entropy learning framework.
 So this is the expression for the reward gradient, and the policy gradient would just be the regular policy gradient with that additional entropy term.
-And then the rewards are just given by the ratio of the exponential and reward function, and the rewards divided by the action probabilities.
+And then the rewards are just given by the ratio of the exponential of rewards divided by the action probabilities.
 So in the original paper what Chelsea Finn did is she actually collected demonstrations with a real robot showing how to pour into a cup, and then the learned policy would have to find the cup using vision, and then pour into that cup regardless of where it was located.
 So it actually figure out the intent of the task which was to perform the pouring.

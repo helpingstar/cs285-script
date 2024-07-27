@@ -1,26 +1,33 @@
+[p.01]
+
 All right, welcome to lecture 20 of CS285.
 Today we're going to talk about inverse reinforcement learning.
+
+[p.02]
+
 So far, every time that we've had to take on a reinforcement learning problem, we also always assumed that a reward function was provided for us.
 And typically, if you were to use these reinforcement learning algorithms, you would program a reward function by hand, manually.
 What if instead you have a task where the reward function is difficult to specify manually, but you have access to data of humans or in general some kind of expert performing that task successfully?
 Could you back out their reward function from observing their behavior and then re-optimize that reward function with reinforcement learning algorithms?
-What we're going to learn about today is how we can apply this approximate model of optimality to the task that we're going to be working on.
-So let's get started.
-So the goal for today will be to understand the inverse reinforcement learning problem definition, understand how probabilistic models of behavior can be used to derive inverse reinforcement learning algorithms, and understand a few practical inverse reinforcement learning methods that we can actually use in hard learning.
-All right, let's look at some of the problems that we encounter in deep reinforcement learning.
-This will be very interesting.
+What we're going to learn about today is how we can apply this approximate model of optimality formalized as an inference problem from last time to learn a reward function rather than just directly learning a policy from a known reward.
+And this is called the inverse reinforcement learning problem.
+So the goals for today will be to understand the inverse reinforcement learning problem definition, understand how probabilistic models of behavior can be used to derive inverse reinforcement learning algorithms, and understand a few practical inverse reinforcement learning methods that we can actually use in high dimensional problems of the sort that we encounter in deep reinforcement learning.
+
+[p.03]
+
 All right, so one of the things that I mentioned in the previous lecture is that optimal control and reinforcement learning could serve as a model of human behavior.
 And there's actually a very long history, going back over 100 years of scientists trying to study human motion, human decision-making, and human behavior through the lens of optimal decision-making and rationality.
 In fact, one of the definitions of rational behavior is that rational behavior can be framed as maximizing a well-defined utility function.
 It turns out that any rational decision-making strategy, for instance, one where if you prefer A over B and you prefer B over C, then you prefer A over C, any strategy that is rational in this sense can be explained with a well-defined set of scalar-valued utilities, whereas an irrational strategy, such as, for instance, if you prefer apples over bananas and you prefer bananas over oranges, but then you prefer oranges over apples, that is irrational and then, in fact, cannot be explained with a well-defined set of scalar-valued utilities.
-So if we want to explain human motion, human decision-making, and so on through the lens of optimality, what we could do is we could write down the equations that describe optimality.
-Optimal decision-making, either in the deterministic case, as we learned about in the optimal control lecture, or in the stochastic case.
-And then we could ask, assuming that the human is solving this optimization problem, what can we plug in in place of R so that the solution to this optimization problem matches the behavior the human actually exhibited?
+So if we want to explain human motion, human decision-making, and so on through the lens of optimality, what we could do is we could write down the equations that describe optimal decision-making, either in the deterministic case, as we learned about in the optimal control lecture, or in the stochastic case.
+And then we could ask, assuming that the human is solving this optimization problem, what can we plug in in place of r so that the solution to this optimization problem matches the behavior the human actually exhibited?
 And, in fact, studies in neuroscience, motor control, psychology, and so on have applied this basic model.
-And although, as we discussed last week, we have a lot of information on the optimization of human motion, we have a lot of information on the optimization of human behavior, and the optimization of human behavior and the optimization of human behavior, and the optimization of human behavior, and the optimization of human behavior.
-But, as we learned last week, the classic model of optimality is sometimes a poor fit for human decision-making because humans are often not deterministic and not perfectly optimal.
+And although, as we discussed last week, the classic model of optimality is sometimes a poor fit for human decision-making because humans are often not deterministic and not perfectly optimal.
 A soft model of optimality can explain human behavior quite well in many cases.
 And, in fact, the notion that optimality is a good framework for thinking about human decision-making and human motor control has been extremely influential in studies of human behavior and neuroscience.
+
+[p.04]
+
 All right.
 That's maybe the kind of more intellectual motivation, but we could also ask a practical question.
 Why should we worry about learning reward functions?
@@ -28,8 +35,7 @@ Well, one perspective we can take on it is the imitation learning perspective.
 So a standard way to go about imitation learning problems, as we discussed in the beginning of the course, would be to demonstrate a behavior that you want to a robot or to whatever your agent is, your autonomous car, your e-commerce agent, whatever it is, and have it simply imitate that behavior through behavioral cloning.
 However, when humans imitate other humans, we don't actually do it this way.
 If you imagine teaching a robot through imitation learning, you would maybe actually teleoperate the robot and move its arms through the motions that you want it to perform.
-But when you think of a person imitating somebody, it's not like you need someone to hold you in motion.
-You can move your body in exactly the way that is needed for you to accomplish the task.
+But when you think of a person imitating somebody, it's not like you need someone to like hold you and move your body in exactly the way that is needed for you to accomplish the task.
 No, that's not what you do.
 You watch somebody and you figure out what is it that they're trying to do, and then you attempt to emulate not their direct motions, but rather their intentions.
 So standard imitation learning deals with copying the actions performed by the expert without reasoning about the purpose of those actions, without reasoning about their outcomes.
@@ -45,6 +51,9 @@ Well, you would infer the intentions of the experimenter here, and you would not
 You would instead perform the action that leads to the desired outcome.
 The outcome that you inferred is the outcome that they are going for.
 So, can we figure out how to enable reinforcement learning agents to do things like this?
+
+[p.05]
+
 There is another perspective we can take to think about why inverse reinforcement learning is important, and that is the more reinforcement learning-centric perspective.
 In many of the reinforcement learning tasks that we want to tackle, such as the games that you guys had to work with for homework 3, the objective is fairly natural.
 So, if you want to play a game as well as possible, it makes sense that your reward function would be the score in the game.
@@ -56,8 +65,11 @@ Now, this autonomous car has to balance a number of different competing factors.
 It has to reach the destination, go at a particular speed, it needs to not violate the laws of traffic, it needs to not annoy other drivers, and all these different factors have to be balanced against each other to drive appropriately, safely, and in a way that is comfortable to the passengers.
 And writing down a single equation that describes that might be very hard, but asking a professional driver to demonstrate it is comparatively much, much easier.
 So, it's very appealing to think about learning reward functions in these kinds of scenarios.
-Okay, so, inverse reinforcement learning refers to the problem of inferring a reward function from demonstration.
-So, for instance, in this driving scenario, where you have a professional driver demonstrate a good driving policy, and then you want to figure out what's a good reward function to extract from this to give to your reinforcement learning agent.
+
+[p.06]
+
+Okay, so, inverse reinforcement learning refers to the problem of inferring a reward function from demonstrations.
+Such as, for instance, in this driving scenario, where you have a professional driver demonstrate a good driving policy, and then you want to figure out what's a good reward function to extract from this to give to your reinforcement learning agent.
 Now, by itself, inverse reinforcement learning, as I've stated it, is unfortunately a very underspecified problem.
 And the reason for this is that for any given pattern of behavior, there are actually infinitely many different reward functions that explain that behavior.
 This is perhaps most obvious if I give you an example.
@@ -81,11 +93,13 @@ But there's another explanation.
 What if they get a big reward for reaching this square?
 If you only observe a trajectory consisting of four steps, both of these rewards explain the expert's behavior equally well.
 What if instead they have this reward function?
-A big reward for anything in the lower half, and a big penalty for anything in the lower half.
-And a reward for crossing those darker squares.
+A big reward for anything in the lower half, and a big penalty for crossing those darker squares.
 That would also explain their behavior.
 Indeed, their behavior could even be explained by the general reward function that just says you have a reward of negative infinity for taking any action other than the ones in the demonstration.
 So, there are, in general, infinitely many rewards for which the observed behavior would be optimal in the traditional sense.
+
+[p.07]
+
 Okay, so before we talk about how to clear up this ambiguity, let's define the inverse reinforcement learning problem more formally.
 To define inverse reinforcement learning more formally, we can do it like this.
 And I'm going to, on the left side of the slide, I'm going to present the formalism for regular forward reinforcement learning.
@@ -97,18 +111,20 @@ Sometimes we have to infer them from experience.
 In forward reinforcement learning, we are given a reward function.
 And our goal is to learn π^{*}, the optimal policy for that reward function.
 In inverse reinforcement learning, we are given trajectories τ sampled by running the optimal policy.
-We don't necessarily know what the optimal policy is, but we do assume that our sampling is correct.
-And we know that the sample trajectories came from that policy, or some approximation thereof.
-And our goal is to learn the reward function r ψ that π^{*} optimized to produce those taus, where ψ is a parameter vector that parameterizes the reward.
+We don't necessarily know what the optimal policy is, but we do assume that our sample trajectories came from that policy, or some approximation thereof.
+And our goal is to learn the reward function r_ψ that π^{*} optimized to produce those 'τ's, where ψ is a parameter vector that parameterizes the reward.
 Now, there are many different choices we could make for the reward parameterization.
 In the kind of more classical inverse reinforcement learning literature, a very common choice is to use a linear reward function.
 A reward function that is a weighted combination of features.
-You can also write it as an inner product, ψ transpose times bold f, where bold f is a vector of features.
+You can equivalently write it as an inner product, ψ^T {bold f}, where {bold f} is a vector of features.
 You could intuitively think of these features as a bunch of things that the agent wants or does not want.
 And then what you're trying to determine is precisely how much do they want or not want each of those things.
 Now, these days in the world of deep reinforcement learning, we might also want to deal with neural network reward functions.
 Reward functions that map states and actions via a deep neural network, a nonlinear function, to a scalar valued reward, and that are parameterized by some parameter vector ψ, which denotes the parameters of that neural network.
 And then once we've recovered the reward function in inverse reinforcement learning, typically what we would want to do is use that reward function to learn the corresponding optimal policy, π^{*}.
+
+[p.08]
+
 All right.
 So, first, before I talk about the main topic of today's lecture, which is going to be inverse reinforcement learning algorithms based on the probabilistic model that we saw in the previous lecture, I want to provide a little bit of kind of historical background to discuss some ways that people have thought about solving the inverse reinforcement learning problem, prior to kind of the modern age of deep learning.
 So, many of the previous algorithms for inverse reinforcement learning were focused around something called feature matching.
@@ -118,9 +134,9 @@ However, I will first describe the feature matching algorithms just to provide s
 So, classically, when people started thinking about the inverse reinforcement learning problem, they approached it like this.
 They said, well, let's say that we have some features and we're going to learn a linear reward function in those features.
 If the features f are important, what if the way that we disambiguate the inverse reinforcement learning problem is by saying, let's learn a reward function for which the optimal policy has the same expected values for those features.
-So, the features f are important, so the features are functions of states and actions.
-And you could say, let's let π r ψ be the optimal policy for our learned reward r psi.
-And then we're going to select ψ, such that the expected value under π r ψ of our feature vector is equal to its expected value under π^{*}.
+So, the features f are functions of states and actions.
+And you could say, let's let π^{r_ψ} be the optimal policy for our learned reward r_ψ.
+And then we're going to select ψ, such that the expected value under π^{r_ψ} of our feature vector is equal to its expected value under π^{*}.
 Now, that's very reasonable.
 That's just saying that, well, if you saw that the, let's say, the optimal driver driving the car rarely experienced a crash, rarely ran red lights, and frequently overtook on the left rather than the right, then matching the expected values of those features will probably give you somewhat similar behavior if you were given the right features.
 Now, unfortunately, this formulation is still ambiguous.
@@ -132,7 +148,7 @@ All of those different reward functions result in the same exact policy, which m
 So, one way that people thought about disambiguating this further is by using a maximum margin principle.
 So, the maximum margin principle for inverse RL is very similar to the maximum margin principle for support vector machines.
 And it states that you should choose ψ so as to maximize the margin between the observed policy π^{*} and all other policies.
-So, if the reward is ψ transpose f, then the expected reward is ψ transpose times the expected value of f, and you would like to get the expected value of f, you would want to pick ψ, so that ψ transpose times the expected value of f, meaning the expected reward under π^{*}, is greater than or equal to the expected reward under any other policy plus the largest possible margin.
+So, if the reward is ψ^T⋅f, then the expected reward is ψ^T times {the expected value of f}, and you would like to pick ψ, so that ψ^T times {the expected value of f}, meaning the expected reward under π^{*}, is greater than or equal to the expected reward under any other policy plus the largest possible margin.
 And you would choose the margin and the ψ so as to maximize this.
 So, this is basically saying, find me a weight vector ψ so that the expert's policy is better than all other policies by the largest possible margin.
 Now, this is a little bit of a heuristic, because this doesn't necessarily mean that you will recover the expert's weight vector, the expert's true reward function, but it's a reasonable heuristic.
@@ -143,6 +159,9 @@ In fact, there are likely other policies that are almost identical.
 So, just maximizing the margin against all other policies is maybe not such a good idea by itself, and perhaps you want to weight this by some similarity between π^{*} and π.
 Maybe what you want is to maximize the margin more against policies that are more distinct from the expert, whereas the margin against other policies that are very similar to the expert could be pretty small.
 Now, fortunately, this is again very similar to the kind of problems that we encounter in support vector machines, and much of the literature on this feature-matching IRL actually borrowed techniques from support vector machines to solve this problem.
+
+[p.09]
+
 So, for those of you that are familiar with SVMs, you'll probably recognize this.
 If you're not familiar with SVMs, don't worry about it too much.
 You don't really need to know this, but it's a good kind of side note for you to be aware of the literature.
@@ -150,10 +169,9 @@ So, the SVM trick basically takes a maximum margin problem like this, which is g
 It's a little subtle why you can do this.
 It requires a little bit of Lagrangian duality, but you can take me at my word that these two problems are equivalent.
 And then it turns out that if you want to incorporate the similarity between policies into the second problem, all you do is you replace that 1 by some measure of divergence between policies.
-So that means that if you have another policy, π, that is identical to π^{*}, then it's okay for the left-hand side and right-hand side to be equal, because d will be 0.
+So that means that if you have another policy, π, that is identical to π^{*}, then it's okay for the left-hand side and right-hand side to be equal, because D will be 0.
 But as the policies become more and more different, then you want to increase the margin to those policies.
-So, that's the first part.
-So, one good choice for d could be the difference in their feature expectations.
+So, one good choice for D could be the difference in their feature expectations.
 Another good choice could be their expected KL divergence.
 Now, there are still a few issues with this formulation.
 It does lead to some practical inverse reinforcement learning algorithms that we could actually implement and try to use.
@@ -165,7 +183,7 @@ You want to find the reward function for which the expert's behavior is very cle
 But this doesn't say why you want to do that.
 Presumably, the reason you'd want to do that is because you're making some assumption about the expert.
 Maybe one assumption that you're implicitly making is that the expert intentionally demonstrated the things that make it easy to figure out their reward.
-But the notion is that the notion of maximizing the margin is a heuristic response to that.
+But the notion of maximizing the margin is a heuristic response to that.
 And the assumption about the expert's behavior is not actually made explicit here.
 The other problem is that this formulation doesn't really give us a clear model of expert sub-optimality.
 It doesn't explain why the expert might sometimes do things that are not actually optimal.
@@ -175,12 +193,17 @@ It's not really a clear model of the expert's behavior.
 It's just heuristically modifying the problem to make it possible to accommodate sub-optimal experts.
 And lastly, this results in kind of a messy constrained optimization problem, which is not a big deal if you have linearly parameterized reward functions, but it does become a really big problem for deep learning if you want to have reward functions represented by neural networks.
 However, if you want to learn more about these kinds of methods, there are a few readings I might suggest.
-You can check out, for example, a classic paper by Bielanin called Apprenticeship Learning by Inverse Reinforcement Learning, as well as a paper by Ratliff et al.
-called Maximum Margin Planning, which are very representative of this class of feature matching and margin maximizing inverse RL methods.
+You can check out, for example, a classic paper by Abbeel & Ng called "Apprenticeship Learning via Inverse Reinforcement Learning", as well as a paper by Ratliff et al. called "Maximum Margin Planning", which are very representative of this class of feature matching and margin maximizing inverse RL methods.
+
+[p.10]
+
 However, the main topic for today's discussion will actually build on probabilistic models of expert behavior.
 So, from the previous lecture, we saw that we could actually model sub-optimal behavior as inference in a particular graphical model that had states, actions, and these additional optimality variables.
-So the probability distributions in this model are the initial state distribution P , the transition probabilities P , and the optimal distribution P , which we chose to be equal to the exponential of the reward.
+So the probability distributions in this model are the initial state distribution p(s_1), the transition probabilities p(s_{t+1}|s_t,a_t), and the optimality probabilities, which we chose to be equal to the exponential of the reward.
 Now, before we were concerned with the problem, what is the probability of a trajectory, given that the expert was acting optimally?
+
+[p.11]
+
 But, in this...
 So this is what we saw before.
 We said that, well, if you don't assume optimality, then, you know, any physically consistent trajectory is equally likely, but if you make an assumption of optimal behavior, then you could say, what's the probability of a trajectory, given that the expert was optimal?

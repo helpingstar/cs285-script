@@ -29,7 +29,7 @@ that makes it more likely that you played the lottery.
 That doesn't mean that playing the lottery is a good idea.
 So fundamentally, the tension here is that the inference question we're asking is not quite the question to which we really want the answer.
 What we want to know is what would you have done if you were trying to be optimal, not what do I think you did given that you got a million bucks.
-And the issue that this really stems from is that the posterior probability of s_{t+1} given STAT and O1 through capital T is not the same as its prior probability.
+And the issue that this really stems from is that the posterior probability of s_{t+1} given (s_t,a_t) and O1 through capital T is not the same as its prior probability.
 So when we perform this inference process, we're actually altering the dynamics to agree with our evidence.
 Again, the intuition here follows very nicely from the lottery example.
 If you know that you got a million bucks, and you bought the lottery ticket, there's a higher probability that you won the lottery.

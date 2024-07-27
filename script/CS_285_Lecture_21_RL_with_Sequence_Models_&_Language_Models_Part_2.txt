@@ -211,7 +211,7 @@ But if the rewards are about equal, then they're about equally likely to be pref
 And the reason for the exponential transformation mathematically is very similar to what we saw in the Max and IRL lectures.
 I won't go into the math about that, but that's basically the intuition.
 So now the way that we can actually train this is we just maximize the likelihood of the preferences expressed by the human on these S a_1 A2 tuples, but where the predictor for that preference is parametrized by our ψ using this ratio at the bottom of the slide.
-And then we just take the logarithm of that and maximize the likelihood with respect to psi.
+And then we just take the logarithm of that and maximize the likelihood with respect to ψ.
 And that's a well-defined supervised learning problem.
 So that's a way that we can get numerical rewards out of pairwise preference.
 And you can, by the way, extend this pretty easily to cases where the preference is expressed over more than two items.
@@ -230,7 +230,7 @@ And that's just supervised training of a language model.
 And then for each question in your data set, for each s, you would sample k possible answers, a, k, from your policy and construct a data set consisting of tuples with a prompt s, i, and k possible answers, a, i, 1 through a, i, k, for that prompt.
 Then you would get humans to label each of those points, each of those s, a, 1 through a, k tuples to indicate which answer they prefer.
 And then you would use this to get a data set consisting of tuples with a prompt s, i, and k possible answers.
-And then you would use that labeled data set to train r, psi.
+And then you would use that labeled data set to train r, ψ.
 And then you would update π_θ using RL with r, ψ as the reward.
 And then you would repeat this process some number of times.
 Now, typically when you do this, in step five, you would actually run many steps of policy optimization.
