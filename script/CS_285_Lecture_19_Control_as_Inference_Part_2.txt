@@ -17,7 +17,7 @@ So we'll do that by taking some of the TPFs that we have in our model and our go
 So in order to factorize this expression the thing that we have to note is that future optimality variables, namely o, t plus 1 through capital T, are independent of every everything in the past when conditioned on sd plus one.
 And we can see this just from inspection of the graphical model.
 And that means that we can factorize this expression into three parts.
-The first part is the probability of all of the optimality variables from t plus one until the end, given sd plus one.
+The first part is the probability of all of the optimality variables from t+1 until the end, given sd plus one.
 And we know that we don't have to condition this on s_t and at, because given s_{t+1}, all of the future optimality variables are independent of s_t and at.
 Then we have the probability of s_{t+1}, given s_t at.
 That's just the transition probability that we already know.
@@ -28,8 +28,8 @@ We know this thing, that's our transition probability.
 Although when we're doing RL, we might want to, compute backward messages without functional knowledge of this probability.
 For now, we'll assume that we know it.
 And that just leaves this remaining term.
-So the probability of optimality from t plus one to capital T given s_{t+1}, can itself be written as the probability of optimality from t plus one to capital T, given s_{t+1} and at plus one, times the probability of at plus one, given s_{t+1}.
-Now this part, is simply the backward message of time step t plus one.
+So the probability of optimality from t+1 to capital T given s_{t+1}, can itself be written as the probability of optimality from t+1 to capital T, given s_{t+1} and at plus one, times the probability of at plus one, given s_{t+1}.
+Now this part, is simply the backward message of time step t+1.
 So we've already gotten a little bit better.
 We've figured out something that's mostly a recursive expression, except it has this kind of weird term that we haven't defined yet.
 What's the probability of an action given a state?
@@ -170,15 +170,15 @@ So lastly, let's talk about forward messages.
 So the forward message is the probability of the state given optimality from one through t minus one.
 The way that we're going to calculate forward messages will be similar to how we calculated backward messages.
 We'll put in the previous time step variables, integrate them out, and recover a recursive procedure.
-So the two variables that I'm going to put in are s_t minus one and at minus one.
-So I get p of s_t, s_t minus one, at minus one, given o one through t minus one.
+So the two variables that I'm going to put in are s_{t-1} and at minus one.
+So I get p of s_t, s_{t-1}, at minus one, given o one through t minus one.
 Again, I'm going to factorize this expression into terms that I can figure out.
-So I'm going to factorize it into s_t given s_t minus one, comma at minus one, comma o one through t minus one.
+So I'm going to factorize it into s_t given s_{t-1}, comma at minus one, comma o one through t minus one.
 So that's just the first term.
-Then the third term, p of at minus one, given s_t minus one, comma o one through t minus one.
-And then the third term, p of s_t minus one, given o one through t minus one.
+Then the third term, p of at minus one, given s_{t-1}, comma o one through t minus one.
+And then the third term, p of s_{t-1}, given o one through t minus one.
 So everything is conditioned o one through t minus one, and the rest is all chain rule.
-Now the first thing to note is the probability of s_t given s_t minus one, at minus one doesn't depend on o one through t minus one.
+Now the first thing to note is the probability of s_t given s_{t-1}, at minus one doesn't depend on o one through t minus one.
 That's just our transition probability.
 We already know that quantity.
 So this thing can be deleted.
@@ -192,15 +192,15 @@ And I'm going to apply Bayes' rule in a slightly funny way.
 So for the first expression, I'll do Bayes' rule to flip o t minus one and a t minus one.
 So I'll throw o t minus one on the left side and a t minus one on the right side.
 So that's the first fraction.
-When I do that, I get p of o t minus one given s_t minus one, a t minus one.
+When I do that, I get p of o t minus one given s_{t-1}, a t minus one.
 I know what that is.
 That's just exponential reward.
-Then I get a t minus one given s_t minus one.
+Then I get a t minus one given s_{t-1}.
 That's my action prior.
-And then I get my denominator, o t minus one given s_t minus one.
-When I apply Bayes' rule to the second quantity, p of s_t minus one given o one through t minus one, what I'm going to do is I'm actually going to flip just the o t minus one part and flip that on the left side of the conditioning bar, put s_t minus one on the right side, but then I'll keep o one through t minus two on the right side of the conditioning bar.
-And when I do that, then I get p of o t minus one given s_t minus one, p of s_t minus one given o one through t minus two, and then a denominator which is p of o t minus one given o one through t minus two.
-So the reason I'm doing this trick is because now the denominator of the first fraction cancels with the o t minus one given s_t minus one part.
+And then I get my denominator, o t minus one given s_{t-1}.
+When I apply Bayes' rule to the second quantity, p of s_{t-1} given o one through t minus one, what I'm going to do is I'm actually going to flip just the o t minus one part and flip that on the left side of the conditioning bar, put s_{t-1} on the right side, but then I'll keep o one through t minus two on the right side of the conditioning bar.
+And when I do that, then I get p of o t minus one given s_{t-1}, p of s_{t-1} given o one through t minus two, and then a denominator which is p of o t minus one given o one through t minus two.
+So the reason I'm doing this trick is because now the denominator of the first fraction cancels with the o t minus one given s_{t-1} part.
 So I can't just put the o t minus one term in the numerator of the second fraction.
 The action prior also goes away because that's a constant.
 This term in the numerator is just the backward message of the previous time step.

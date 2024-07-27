@@ -1,6 +1,11 @@
+[p.01]
+
 All right, welcome to Lecture 19 of CS285.
 In today's lecture, we're going to talk about how we can reframe the control problem as an inference problem.
 And we'll actually see some of the ideas from the variational inference lectures last week come up in today's lecture as ways to actually solve reinforcement learning problems once they've been reframed as inference problems.
+
+[p.02]
+
 So in today's lecture, we're going to discuss the following questions.
 Does reinforcement learning and optimal control provide a reasonable model of human behavior?
 Is there perhaps a better explanation than the conventional notion of optimality that we've seen so far?
@@ -8,33 +13,25 @@ And can we derive optimal control, reinforcement learning, and planning as proba
 And if so, in what model are we doing that inference?
 And how does this change our reinforcement learning algorithms?
 Do we actually derive better algorithms based on this foundation?
-And then in the next lecture, we're going to talk about how we can actually derive optimal control and planning as probabilistic inference.
-And in the next lecture, we'll see how these ideas are actually crucial for inverse reinforcement learning methods, which attempt to recover reward functions from observing near-optimal human behavior.
+And then in the next lecture, we'll see how these ideas are actually crucial for inverse reinforcement learning methods, which attempt to recover reward functions from observing near-optimal human behavior.
 So the goals for today's lecture will be to understand the connection between inference and control, understand how specific RL algorithms can be instantiated in this framework, and understand why this might actually be a good idea.
+
+[p.03]
+
 So let's start with the discussion of how we might model human behavior, right?
-We know that, you know, there's a lot of things that we can do to model human behavior.
-And, you know, humans sometimes do goal-directed things.
+We know that, you know, humans sometimes do goal-directed things.
 And we can argue over how rational humans are, but I think it's reasonable to say that, you know, some portion of what humans do is goal-directed and intentional.
 And, you know, people have studied this going back, you know, over 100 years, studying how notions of optimality can best represent human behavior, ranging from the lowest level primitive behavior, like how we walk and how we navigate to places and how we reach for locations, all the way to higher level concepts like how do we plan a route to navigate a city.
 And it's fairly reasonable to think that if humans are being rational, intelligent beings, then we should perform our tasks from the lowest level motor control to the highest level cognitive skills in ways that reflect some notion of optimality, that there is some utility function with respect to which we are near-optimal.
-Indeed, we can do that.
-We can do that.
-One of the ways to define rationality is by saying that a rational decision-maker is one whose behavior can be expressed with well-defined utilities.
+Indeed, one of the ways to define rationality is by saying that a rational decision-maker is one whose behavior can be expressed with well-defined utilities.
 So we could say, well, we have this nice framework to think about optimal decision-making that we learned about when we discussed reinforcement learning and optimal control.
 Can we use this framework to try to understand human behavior?
-One of the things we could do, for instance, is we could say, well, we could say, well, we can do this.
-We can do this.
-We can do this.
-Well, let's assume that a person or an animal is behaving in a way that is optimal, that they're a rational decision-maker.
+One of the things we could do, for instance, is we could say, well, let's assume that a person or an animal is behaving in a way that is optimal, that they're a rational decision-maker.
 Can we figure out with respect to which reward function are they optimal?
 That's actually what we're going to discuss for Wednesday's lecture on inverse reinforcement learning.
 So we could do this in the deterministic setting.
 You could do it in the stochastic setting.
 So before, we talked about settings where you know the reward function.
-We talked about the reward function.
-We talked about the reward function.
-We talked about the reward function.
-We talked about the reward function.
 You'd like to recover a policy.
 Now, we might think that we're observing a person.
 We're observing their policy.
@@ -45,19 +42,17 @@ This is, of course, very intuitive.
 If you know what somebody wants, then you can much more effectively predict what they will do.
 All right.
 So imagine yourself in the role of a scientist, and you'd like to think about how optimal control and reinforcement learning explain behavior, let's say, with animals.
+
+[P.04]
+
 So you're going to get a monkey.
-And you're going to get this monkey to perform some tasks.
-And you're going to get this monkey to perform some tasks.
-And you're going to get this monkey to perform some tasks.
-And you're going to get this monkey to perform some tasks.
 And you're going to get this monkey to perform some tasks.
 And you want to understand its objective function.
 So one of the ways you might do this is you might pick a task where the objective function is known.
 Maybe the monkey has to move a lever so that a particular dot on the screen matches with another dot.
 And then the monkey gets a reward if it does that right.
 Now you might say, well, I know the reward function.
-So if optimal behavior is a good explanation of animal behavior, then I would expect the monkey to be able to do that.
-But the monkey has to behave similarly to an optimal controller or a reinforcement learning algorithm.
+So if optimal behavior is a good explanation of animal behavior, then I would expect the monkey to behave similarly to an optimal controller or a reinforcement learning algorithm.
 So let's say the monkey has to move from this orange circle to this red cross.
 And the optimal trajectory is this one.
 And the researcher runs the experiment and finds that the monkey is a pretty good monkey.
@@ -72,12 +67,9 @@ Like maybe a really smart person would be more accurate, but the monkey is just 
 Or is there something else going on?
 Well, it turns out that, unsurprisingly, monkeys and humans are usually not perfectly optimal.
 We usually make mistakes.
-But crucially, those mistakes are not optimal.
-So what's going on?
-We've started training the hungry feature.
-They have complex rules.
-And yes, they learn better but they can't give good answers right away.
-of understanding that something matters less and therefore can be done less perfectly.
+But crucially, those mistakes are, you know, with more practice tend to occur in ways that matter less for the success of the task.
+So intuitively the reason the monkey might take an indirect route to the goal is that it's feeling kind of lazy it's not really paying attention but also it knows that the particular manner in which it reaches the goal doesn't matter all that much.
+So this is something that current reinforcement learning algorithms that we've discussed don't really account for they don't have a notion of being lazy and they don't have a notion of understanding that something matters less and therefore can be done less perfectly.
 So some mistakes matter more than others and it turns out that taking this into account appropriately is critical for developing models that explain intelligent behavior in humans and animals and also turns out to be a tool that will allow us to build better reinforcement learning algorithms and later on to build inverse reinforcement learning algorithms.
 Natural behavior in humans and animals is, you know, up to a first-order approximation, stochastic, meaning that faced with the same situation twice, the monkey won't do exactly the same thing.
 Now again, we might argue as to whether it's truly random or whether it's simply affected by a plethora of other external and internal factors that are not accounted for in the experiment, like for instance maybe the monkey is hungry, maybe its finger itches, maybe it's just a little more tired, maybe it's just a little more tired, maybe it's just a little more tired, maybe it's just a little more tired, maybe it got distracted and accidentally swerved the joystick a little to the left, but we could up to first-order approximation think of these effects as being random.

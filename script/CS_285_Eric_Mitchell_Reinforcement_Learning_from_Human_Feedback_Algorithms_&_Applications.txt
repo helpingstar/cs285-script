@@ -405,7 +405,7 @@ Okay.
 So high reward stuff, right, is stuff where your policy assigns higher probability than the SFT model.
 Lower reward stuff is stuff where your model assigns lower probability.
 Now if we stick this parametrization of the reward, so again, this is basically just a specific choice of how to parametrize the reward function.
-The Zs cancel, right?
+The 'z's cancel, right?
 Because we're assuming we have the same prompt for both the chosen and the rejected example.
 And so when we stick this intractable parametrization of our reward into this just normal Bradley-Terry loss that we use to learn our reward functions, we actually get out this totally tractable objective that we can use to directly train our policy.
 And that's DPO.
