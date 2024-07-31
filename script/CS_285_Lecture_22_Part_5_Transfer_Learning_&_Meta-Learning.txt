@@ -23,7 +23,7 @@ And now you have a modified partially observed MDP, m tilde, with a modified sta
 So, knowing the state means knowing s and knowing z.
 But of course, you don't observe z.
 What you observe is just s, as well as the reward in general.
-So, the key idea is that solving this PumDP m tilde is equivalent to meta-learning.
+So, the key idea is that solving this POMDP m tilde is equivalent to meta-learning.
 Because if you can get a very high reward in this partially observed Markov decision process, where the state is observed but the task isn't, then you will be able to solve a new task just from the observations of the state and the reward in general.
 By the way, the reason that I...
 omit that I kind of gloss over the fact that the reward is observed is because you can always concatenate the reward to the state.
@@ -117,7 +117,7 @@ The meta-training here is done with a very similar method to the self-dactor cri
 And the only difference is that every time you make an update, you have to also update the encoder, which you do by loading some transitions from the buffer, as well as their histories.
 And those histories are used to train the encoder.
 So in that sense, it is actually very similar to the RNN-based meta-learning.
-Okay, if you want to learn more about this, here are a few papers that you could check out that take some version of this PUMDP view on the meta-learning problem.
+Okay, if you want to learn more about this, here are a few papers that you could check out that take some version of this POMDP view on the meta-learning problem.
 And they would go into this in more detail if you want to get the technical specifics.
 But one of the things I want to end on is to discuss how the three perspectives of meta-RL that we talked about all kind of fit together.
 So in all of the meta-RL methods we talked about, they can be represented as some kind of F θ that takes in an MDP-MI.
@@ -135,7 +135,7 @@ RNNs can also be challenging to optimize in practice, although more recent seque
 The gradient-based approach has good extrapolation in the sense that you can just keep running it, keep running more gradient steps at test time, and eventually you'll get better.
 And it's conceptually elegant, but it can be complicated and can require many meta-training samples.
 It's also very difficult to extend these methods from policy gradients to things like actor-critic methods, because as we talked about before, temporal difference learning is not really gradient descent, so it's very hard to apply gradient-based meta-learning to.
-The inference approach is simple, and provides for effective exploration via posterior sampling, and has an elegant reduction to solving a special kind of PUMDP, but like the RNN approach, it can be vulnerable to meta-overfitting.
+The inference approach is simple, and provides for effective exploration via posterior sampling, and has an elegant reduction to solving a special kind of POMDP, but like the RNN approach, it can be vulnerable to meta-overfitting.
 And it can be a bit challenging to optimize in practice.
 But let's talk about how these things are actually similar to each other.
 The inference procedure is really just like the RNN procedure, but with stochastic variables.

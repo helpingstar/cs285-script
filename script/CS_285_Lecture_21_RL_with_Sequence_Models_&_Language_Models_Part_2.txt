@@ -1,48 +1,51 @@
+[p.15]
+
 All right, so in the previous section, we talked about how we can use sequence models to help handle RL with partial observability.
 In the next section, we're going to go the other way, and we're going to discuss how RL can help us train better sequence models, specifically for modeling language.
 And in the third portion of the lecture, we'll actually put these together, and we'll have both partial observability and language models.
+
+[p.16]
+
 Okay, so what are language models, and why should we care about them?
 Well, a language model at its basic level is a model that predicts next tokens.
 You can roughly think of tokens as words, although in reality they're not words, they're more like combinations of characters.
 It's actually a little complex as to what a token is, but roughly speaking, it's some granular representation of natural language.
-Typically, we use transformers for language models, and the way this works is we take our sequence of words, and we take our sequence of tokens, x_0, x1, x2, x3.
+Typically, we use transformers for language models, and the way this works is we take our sequence of tokens, x_0, x_1, x_2, x_3.
 At every position, we have a little encoder that encodes discrete tokens into a continuous space, along with an encoding of their place in the sequence.
 Basically, their place in the sequence is an integer, 0, 1, 2, 3, 4.
-And those are encoded into a continuous representation, which is then passed to what is called a masked self-attention layer, which is essentially a transformer that can produce a representation at each position, conditional representation.
-So, it's a representation of previous time steps, that's what the masking refers to.
+And those are encoded into a continuous representation, which is then passed to what is called a masked self-attention layer, which is essentially a transformer that can produce a representation at each position, conditional representation of previous time steps, that's what the masking refers to.
 Those are then transformed with some per-position nonlinear transformations, and this self-attention block is repeated some number of times.
 And that's essentially what a transformer is.
 And then at the end, at every position, we read out a distribution over the token to predict, which is basically just a softmax.
 And then we predict the next token.
-So, at the first time step, we read in x_0 and p0, and then we make a prediction about x1.
-And if we're decoding, then, for example, we would start off with some token like the word i.
-We decode some word like like.
+So, at the first time step, we read in x_0 and p_0, and then we make a prediction about x_1.
+And if we're decoding, then, for example, we would start off with some token like the word "I".
+We decode some word like "like".
 That word is then used as the conditioning information for the second time step.
-You make a prediction about the next one, i like omdp solvers.
+You make a prediction about the next one, "I like POMDP solvers".
 And there, you get a decoding, and at the end, the model outputs an end-of-sequence token to indicate that it's done generating this particular generation.
-So, that's basically a transformer.
+So, that's basically a transformer language model.
 Now, for the purpose of this course, you don't really need to know anything about how the transformer works.
 So, you could simplify this diagram to essentially be some kind of box, which we call a transformer, that sequentially reads in tokens and predicts next tokens.
-So, at every time step, it's modeling the distribution p(x), t given x_1 through t minus 1.
-And by repeatedly sampling from that distribution, you end up with a sentence-like, i like omdp solvers.
+So, at every time step, it's modeling the distribution p(x_t|x_1, ..., x_{t-1}).
+And by repeatedly sampling from that distribution, you end up with a sentence-like, "I like POMDP solvers".
 Notice that this model is not Markovian.
 So, every token depends on all previous tokens.
-Of course, the widely known chart GPT system, BARD, CLAWD, all these things are examples of language models.
+Of course, the widely known ChatGPT system, BARD, Claude, all these things are examples of language models.
 And deep down inside, what all these systems are doing is generating language token by token, where you specify the tokens for the prompt, and then it generates the tokens for the response.
 Now, language models are typically trained with supervised learning, in the sense that you give them lots and lots of English text, or text in other languages, and then you have them use all of that data to predict the next token, given all the previous tokens.
-We can also train them with our own, if what we want is not to match the distribution in the data, that is, we don't just want them to output the same kind of text that we saw in the training data, but rather we want them to maximize some reward function.
-And that can be extremely desirable in many situations.
-In many settings.
+We can also train them with RL, if what we want is not to match the distribution in the data, that is, we don't just want them to output the same kind of text that we saw in the training data, but rather we want them to maximize some reward function.
+And that can be extremely desirable in many settings.
 Why?
 Well, for example, you could use RL to get language models to satisfy human preferences, to produce the kind of text that people like to see.
 You can also use RL to get language models to learn how to use tools, to learn how to call into databases or calculators.
 You can also use it to train language models that are better at holding dialogues with humans, and achieve dialogue goals.
 And we'll actually discuss all of these.
-And these are all different than simply matching.
+And these are all different than simply matching the training data.
 These are all things that require RL rather than just supervised learning.
 Okay.
 But in order to be able to apply RL to language models, we do have to answer some questions.
-What is the MDP or PUMDP that corresponds to the language generation task?
+What is the MDP or POMDP that corresponds to the language generation task?
 An MDP is determined by states, actions, rewards, and transition probabilities.
 And we have to choose what these things are for our language generation task.
 Now, there are some...
@@ -57,36 +60,38 @@ In previous lectures, we saw some of them are good for off policy, some are good
 So we have to make some choices.
 So let's talk about some of those choices.
 And we'll start with RL training of language models for what are sometimes referred to as single-step problems, which is the most widely used application of RL for language models.
-That's how ChantGPT, for example, is trained.
+That's how ChatGPT, for example, is trained.
 And then in the next section, we'll talk about multi-step problems.
+
+[p.17]
+
 All right.
 So here's a basic formulation.
 We have some prompt.
-Maybe the prompt is, like, what is the capital of France?
+Maybe the prompt is, like, "what is the capital of France?"
 And the transformer makes predictions.
 Now, it's not actually predicting the tokens of the prompt, but that is still part of its training data.
 What it is predicting is the completion.
-So it's going to predict, like, maybe the word Paris.
+So it's going to predict, like, maybe the word "Paris".
 And during generation, that gets fed in as the input of the next time step.
-And then it predicts the end of sequence.
+And then it predicts the <end of sequence>.
 So in most applications, the language model is going to complete a sentence rather than generate something from scratch.
 And the prefix that is provided, that's the prompt.
 And then the completion is the desired output.
 Okay.
 So we're going to say that maybe a basic formulation is that the completion is our action.
-So A is represented by the two tokens Paris and end of sequence.
+So a is represented by the two tokens "Paris" and <end of sequence>.
 And in general, this could be a variable number of tokens.
-And the prompt or prefix or context is the state S.
-So our language model is representing P of A given S.
-Now, the way it's representing it is by a product of probabilities.
-It's at every time step.
-Since it's not generating X1, X2, and X3, and X4, that's the prompt.
-It's only generating X5 and X6.
-So the probability of A given S is given by the probability of X5 given x_1 through 4 and the probability of X6 given x_1 through 5.
-And I've separated x_1 through 4 from X5 because X5 is really the previous time step of the action, whereas x_1 through 4 is the state.
-So π of A given S is essentially our policy π_θ.
+And the prompt or prefix or context is the state s.
+So our language model is representing p(a|s).
+Now, the way it's representing it is by a product of probabilities at every time step.
+Since it's not generating x_1, x_2, and x_3, and x_4, that's the prompt.
+It's only generating x_5 and x_6.
+So the p(a|s) is given by p(x_5|x_{1:4}) and p(x_6|x_{1:5}).
+And I've separated x_{1:4} from x_5 because x_5 is really the previous time step of the action, whereas x_{1:4} is the state.
+So π(a|s) is essentially our policy π_θ.
 Now, something to note here is that there are now two notions of time step, and this is actually super confusing.
-The time step X1, you know, 1, 2, 3, 4, 5, 6, those are the time steps for the language generation for the transformer.
+The time step x_1, you know, 1, 2, 3, 4, 5, 6, those are the time steps for the language generation for the transformer.
 As far as the RL algorithm is concerned, there's only one time step.
 You observe one state and you create one action.
 So this is confusing because now in regular RL, time step always meant the same thing.
@@ -98,25 +103,28 @@ It is a one step MDP.
 As far as language generation is concerned, there are many time steps.
 Okay, so now we've defined time steps, we've defined actions, we've defined states, and we've defined our policy.
 Our policy probability is represented by a product of the probabilities of the language time steps for all of the completion steps.
-Now we can define our objective, which is to maximize the expected reward, and we can define our objective, which is to maximize the expected reward, and we can define our objective, which is to maximize the expected reward, just like in regular RL.
+Now we can define our objective, which is to maximize the expected reward under the policy, just like in regular RL.
 And this makes it a basic one step RL problem that is a bandit.
+
+[p.18]
+
 Okay, so let's start with using the simplest RL algorithms, which is policy gradient.
 So this is our objective.
 We're going to take its gradient, and we'll use exactly the formulas from the policy gradient lecture.
-So we know that the gradient of the expected reward is the expectation of ∇log π times R.
-Now we saw before that π was just a product, a product of the probability of all the tokens in the completion.
-So when we take the gradient of the log of π, that's just the sum of the gradients of the log probabilities of all the completion tokens.
+So we know that the gradient of the expected reward is the expectation of ∇log{π}⋅r.
+Now we saw before that π was just a product of the probability of all the tokens in the completion.
+So when we take the gradient of the log{π}, that's just the sum of the gradients of the log probabilities of all the completion tokens.
 Okay, so that's pretty straightforward because these are exactly the kinds of gradients that you compute when you do a backward pass from the cross-entropy loss.
 And of course, we can estimate this with samples.
-So if we use a standard reinforced estimator, then the samples need to come from π_θ.
+So if we use a standard REINFORCE estimator, then the samples need to come from π_θ.
 So you would actually sample a completion from your language model.
-You would actually tell it what is the capital of France, ask it to generate a completion.
-It would generate Paris end of sequence.
+You would actually tell it "what is the capital of France?", ask it to generate a completion.
+It would generate "Paris" <end of sequence>.
 And then you would evaluate the reward of that sample and use that as part of your gradient estimator.
 You can also use an importance sample estimator, where you might generate completions from some other policy, and then use an importance weight to get a gradient for your current policy.
-And the samples can come from some other policy, π bar.
-Pi bar could, for example, be a supervised training model.
-The first estimator is a reinforced style estimator.
+And the samples can come from some other policy, bar{π}.
+bar{π} could, for example, be a supervised training model.
+The first estimator is a REINFORCE-style estimator.
 The second one is an importance weighted estimator, such as PPO.
 The second class is a lot more popular for language models.
 You can take a moment to think about why that is.
@@ -125,40 +133,48 @@ And it would be very desirable not to have to generate a sample every single tim
 Especially because evaluating the rewards of those samples can be expensive.
 And we'll talk about that in a second.
 So in reality, it's often much preferred to generate samples from your language model, evaluate the rewards of those samples, and then take many gradient steps using importance sampled estimators, and then repeat.
-So a particular algorithm, let's take this important sample estimator, let's call it GradHAT as a shorthand.
-And notice that it's a function of θ, π bar, and a set of samples, Ai.
+
+[p.18]
+
+So a particular algorithm, let's take this important sample estimator, let's call it ^{∇} as a shorthand.
+And notice that it's a function of θ, bar{π}, and a set of samples, a_i.
 The way that you could do this is you could sample a batch of completions for a particular state.
 In reality, you would have many states, but I've written this after just a single state.
 You would sample a batch of completions.
 You would evaluate the rewards for each of them.
-Then you would set π bar to be your previous policy, the one that generated those samples.
-And then you would have an inner loop, a mini batch, and then on that mini batch you would take a gradient step using RadHat, and then you would repeat this k times.
+Then you would set bar{π} to be your previous policy, the one that generated those samples.
+And then you would have an inner loop where you would sample a mini batch, and then on that mini batch, you would take a gradient step using ^{∇}, and then you would repeat this K times.
 So your batch might be, let's say, a thousand completions, and then your mini batch might be 64.
 And then you would take some number of gradient steps, and then every once in a while you'd go back out and generate more samples from your model, set that to apply bar, and repeat.
 So this is very much the classic important sample policy gradient, or PPO style loop, and this is a very popular way to train language models with RL.
 But one big question with this loop is the reward.
 So notice that every time we generate a batch of completions from a language model policy, we have to evaluate the reward of each of those completions.
 Where do we get that?
-Because typically if we were to train on, let's say, question answering questions like what is the capital of France, we might have a ground truth data set of answers.
+Because typically if we were to train on, let's say, question answering questions like "what is the capital of France?", we might have a ground truth data set of answers.
 But here the policy might generate answers that are not in that data set.
+
+[p.20]
+
 So we need it to have a reward function, and that reward function needs to be able to score any possible completion for a given question.
-So very often when we do this, we want to represent R itself as a neural network.
-Because we don't just have to figure out that Paris is the right answer and get a reward, let's say, plus one.
-We also have to figure out what happens when the language model says, oh, it's a city called Paris.
+So very often when we do this, we want to represent r itself as a neural network.
+Because we don't just have to figure out that "Paris" is the right answer and should get a reward, let's say, +1.0.
+We also have to figure out what happens when the language model says, oh, it's "A city called Paris".
 Well, that's a pretty good answer, like it's correct.
 It's maybe not as concise, so maybe we give it a slightly lower reward.
-But we don't have to give it a reward.
 Maybe we say that, oh, that's a 0.9, not a 1.0.
-It might also say, I don't know.
-That might not actually be incorrect, like maybe it really doesn't know, but that's a worse answer, so maybe we give it a negative 0.1 or something.
-And then if it says London, well, that's just bad.
-That should be a minus one.
+It might also say, "I dunno...".
+That might not actually be incorrect, like maybe it really doesn't know, but that's a worse answer, so maybe we give it a -0.1 or something.
+And then if it says "London", well, that's just bad.
+That should be a -1.0.
 But it's a language model, so it can really say anything.
-It might also say, like, oh, why are you asking such a stupid question?
-So that maybe is extremely undesirable, and we give that like a minus 10 to get the network to behave itself.
+It might also say, like, oh, "Why are you asking such a stupid question?"
+So that maybe is extremely undesirable, and we give that like a minus -10.0 to get the network to behave itself.
 So your reward model doesn't just need to know what the right answer is.
-It needs to also be able to understand assign rewards to answers that are only a little bit off or answers that are extremely different, kind of out of scope of the question.
+It needs to also be able to understand how to assign rewards to answers that are only a little bit off or answers that are extremely different, kind of out of scope of the question.
 So this is a very kind of open vocabulary kind of problem, so you need actually a very powerful reward model.
+
+[p.21]
+
 So what could we do?
 Well, we could take all these potential answers.
 We might sample them from some language model.
@@ -166,51 +182,49 @@ Maybe we have a supervised training language model to get started.
 We sample some answers, and we give them to humans, and we get humans to generate these numbers.
 So maybe humans look at these answers.
 They assign numbers to all of them.
-That creates a data set consisting of sentences, like what is the capital of France, Paris?
-What is the capital of France, stupid question?
+That creates a dataset consisting of sentences, like "what is the capital of France?", "Paris".
+"what is the capital of France?", "stupid question",
 Where the label is the number.
 And then we take supervised learning, and we train a model that basically looks at the sentence and then outputs this number.
-And that could be a way to train a reward model, R-Sci.
-I'm going to use a subscript Sci now to denote the parameters of this reward model.
+And that could be a way to train a reward model, r_ψ.
+I'm going to use a subscript ψ now to denote the parameters of this reward model.
 But then, of course, the problem is how do people know these numbers?
-How can people actually assign the number?
-So maybe it's a negative 10 to why is this such a stupid question?
+How can people actually assign the number -10.0 to why is this such a stupid question?
 Maybe some people could do this.
 Maybe you can actually, in some settings, have a task where there are clear units of correctness.
 Maybe perhaps it's a teaching application, and the reward is how correctly the student answered the test.
 Or maybe it's some salesman application, where the reward is how much revenue should you make.
 So in those cases, maybe the rewards are very quantitative, and people can actually label that.
-But in cases where it's very subjective, like, you know, I'm going to use this number, I'm going to use this number.
-And then I'm going to say, what is the number?
-And people will say, well, I'm going to say, well, this number is not correct.
-And then I'm going to say, well, I'm going to say, well, this number is not correct.
-And then I'm going to say, well, this number is not correct.
-So in those cases, maybe it's hard for humans to assign clear numerical values to these things.
+But in cases where it's very subjective, like, saying that "Why such a stupid question??" be a -10.0 or "is London" should be -1.0.
+In those cases, maybe it's hard for humans to assign clear numerical values to these things.
+
+[p.22]
+
 What might be easier for humans is to compare two answers.
-So if you tell a person, the question was, what is the capital of France?
+So if you tell a person, the question was, "what is the capital of France?"
 And you have A and B.
-A is Paris.
-B is why is it such a stupid question?
-It's pretty easy for a person to say, oh, I prefer A.
+A is "Paris".
+B is "Why is it such a stupid question?"
+It's pretty easy for a person to say, "oh, I prefer A".
 So a preference might be, in some cases, easier to express, especially when the utility is very subjective.
 So here's a thought.
 Can we use these kinds of preferences to design reward functions?
 Now, reward functions have to assign a number to a particular answer.
 Preferences are a function of two answers.
-So given S, A1, and A2, how likely is a person to prefer a_1 over A2?
+So given (s,a_1,a_2), how likely is a person to prefer a_1 over a_2?
 That is a well-defined probability.
-So if the state is, what is the capital of France?
-The actions are Paris and why is it such a stupid question?
-The preference A is the labor.
-We could simply model the probability that a_1 is preferred over A2, and we can learn that.
-But since what we want in the end is a reward function, what we can do is not actually train a neural network that predicts whether a_1 is preferred over A2, but we can describe this probability as a function of reward.
+So if the state is, "What is the capital of France?"
+The actions are "Paris" and "why is it such a stupid question?"
+The preference A is the label.
+We could simply model the probability that a_1 is preferred over a_2, and we can learn that.
+But since what we want in the end is a reward function, what we can do is not actually train a neural network that predicts whether a_1 is preferred over a_2, but we can describe this probability as a function of reward.
 And there's a choice that we have to make here.
-So one very popular choice that is actually derived from the same mathematical foundations as maximum entropy inverse RL that we discussed in the IRL lecture is to model the probability that a_1 is preferred over A2 as the exponential of the reward of a_1 divided by the exponential of the reward of a_1 plus the reward of A2.
-So roughly speaking, this means that the probability that a_1 is preferred over A2 is proportional to the exponential of its reward, which means that if one reward is clearly better than the other, then that one will definitely be preferred.
+So one very popular choice that is actually derived from the same mathematical foundations as maximum entropy inverse RL that we discussed in the IRL lecture is to model the probability that a_1 is preferred over a_2 as {the exponential of the reward of a_1} divided by {the exponential of the reward of a_1} plus {the reward of a_2}.
+So roughly speaking, this means that the probability that a_1 is preferred over a_2 is proportional to the exponential of its reward, which means that if one reward is clearly better than the other, then that one will definitely be preferred.
 But if the rewards are about equal, then they're about equally likely to be preferred.
-And the reason for the exponential transformation mathematically is very similar to what we saw in the Max and IRL lectures.
+And the reason for the exponential transformation mathematically is very similar to what we saw in the Max-Ent IRL lectures.
 I won't go into the math about that, but that's basically the intuition.
-So now the way that we can actually train this is we just maximize the likelihood of the preferences expressed by the human on these S a_1 A2 tuples, but where the predictor for that preference is parametrized by our ψ using this ratio at the bottom of the slide.
+So now the way that we can actually train this is we just maximize the likelihood of the preferences expressed by the human on these (s,a_1,a_2) tuples, but where the predictor for that preference is parametrized by our ψ using this ratio at the bottom of the slide.
 And then we just take the logarithm of that and maximize the likelihood with respect to ψ.
 And that's a well-defined supervised learning problem.
 So that's a way that we can get numerical rewards out of pairwise preference.
@@ -219,40 +233,45 @@ So you can show the person four completions and get them to say which one they p
 In that case, you'll have four values in the sum in the denominator.
 You could also take four-way comparisons and turn them into all possible pairwise comparisons.
 And that's also another way that you could express this.
-So you could say, well, if you show someone A1, A2, A3, A4, and they prefer A1, then you say a_1 is better than A2, a_1 is better than A3, a_1 is better than A4.
+So you could say, well, if you show someone a_1, a_2, a_3, a_4, and they prefer a_1, then you say a_1 is better than a_2, a_1 is better than a_3, a_1 is better than a_4.
 So you can turn that into three pairwise comparisons.
 That's also valid.
+
+[p.23]
+
 So here's an overall method that we can use with this scheme.
-And this method was described in two papers, fine-tuning language models from human preferences and training language models to follow instructions with human feedback.
-These basically are the foundation of instructGPT, chatGPT, and so on.
+And this method was described in two papers, "Fine-Tuning Language Models from Human Preferences" and "Training language models to follow instructions with human feedback".
+These basically are the foundation of instructGPT, ChatGPT, and so on.
 The overall method is to first run supervised training or typically fine-tuning to get your initial policy π_θ.
 And that's just supervised training of a language model.
-And then for each question in your data set, for each s, you would sample k possible answers, a, k, from your policy and construct a data set consisting of tuples with a prompt s, i, and k possible answers, a, i, 1 through a, i, k, for that prompt.
-Then you would get humans to label each of those points, each of those s, a, 1 through a, k tuples to indicate which answer they prefer.
-And then you would use this to get a data set consisting of tuples with a prompt s, i, and k possible answers.
-And then you would use that labeled data set to train r, ψ.
-And then you would update π_θ using RL with r, ψ as the reward.
+And then for each question in your data set, for each s, you would sample K possible answers, a_k, from your policy and construct a data set consisting of tuples with a prompt s_i, and K possible answers, a_{i,1} through a_{i,K}, for that prompt.
+Then you would get humans to label each of those points, each of those {s, a_1, ..., a_k} tuples to indicate which answer they prefer.
+And then you would use that labeled data set to train r_ψ.
+And then you would update π_θ using RL with r_ψ as the reward.
 And then you would repeat this process some number of times.
-Now, typically when you do this, in step five, you would actually run many steps of policy optimization.
-So in step five, you wouldn't just optimize against that reward once with important sampling.
+Now, typically when you do this, in step 5, you would actually run many steps of policy optimization.
+So in step 5, you wouldn't just optimize against that reward once with important sampling.
 You would actually generate samples from π_θ, optimize, generate more samples, and repeat.
-So there's actually two nested loops.
-And then you would run a policy optimization as well to generate multiple während simple mainionen Jamesouvert's приход.
-Then you would run CORBALLO together with a couple of continuous undergraduates in Reading, to mall the AND tracks the two haveического and spicy there.
-Take the two quieter Set 2, P3 and P4 plotted points, and you would simply take a Kotatsu for five internités.
-And then use saying R that the 40 state of the source parameters is n, and s, a, N or p equals, top, little with k uzar, some group four, et cetera, by int wet and struct t, L B over e, to trade, and make x.
-All right, then again, if you look at the x-axis, it's a piece of a behavior.
-Thank you for listening.
-And I see all kind of ki plus five here.
-So that's almost all estiver of the list that would need extra consideration.
-labellers, it might take days or even weeks to get responses out.
+So there's actually two nested loops here.
+There's the outer loop where you're generating more samples and asking humans to express preferences, then there is another loop where you're actually running this policy gradient and inside that there's another loop where you're running important sampled updates for multiple steps.
+So that's the overall method.
+
+[p.24]
+
+Now there are some challenges that we have to take care of, first, human preferences are very expensive because that actually involves like sending a bunch of data out to human labellers, it might take days or even weeks to get responses out.
 Of course, if you have a really nice crowdsourcing system, perhaps you'll actually get answers back within hours, but it's still way slower than taking gradient steps on a GPU.
 So you want to minimize how often you send things out for human labelling.
 So in practice, most preference data typically actually comes from the initial supervised train model.
+
+[p.23]
+
 So even though I wrote this as though it were a loop where you repeatedly query more preferences, in reality, the first time you go to step two, you label lots of preferences.
 And then on subsequent tries, you have significantly less.
 In fact, if you want the poor man's version of this, you might actually not even have that outer loop.
 You might just do steps one, two, three, four, five, once.
+
+[p.24]
+
 So human preferences are expensive.
 You also want to take many iterations of RL, including generating new samples from the policy, per each iteration of preference gathering.
 And that actually makes this very much like a model-based RL method.
@@ -263,15 +282,21 @@ So what's the problem with that?
 Why should we be worried?
 Well, the problem, of course, is what we saw before in the model-based RL discussion.
 The problem is distributional shift.
-And that's a problem that we see in RL per language models that is sometimes referred to as over-optimization, which basically means that you exploit the reward model after a while, and while the policy initially gets better, later on it gets worse.
+And in RL for language models that is sometimes referred to as over-optimization, which basically means that you exploit the reward model after a while, and while the policy initially gets better, later on it gets worse.
 The other problem is that the reward model needs to be very good.
-So over-optimization is often tackled with a simple modification, where we simply add a penalty to our expected reward objective that penalizes the policy π_θ from deviating from the original structure, so that we begin toto downstairs our veering commander model by saying if I give this signal, the interesante equation can hundred times more than that, because we leave a square meaning if I trade this region, I can askew it there.
-So in theiform region, this core building, so at the top is the value of thezcz and there's the total value of large transformer that is itself pre-trained to be a language model and then fine-tuned to output the reward because the reward model needs to be very good.
+So over-optimization is often tackled with a simple modification, where we simply add a penalty to our expected reward objective that penalizes the policy π_θ from deviating from the original supervised policy.
+And this KL divergence can conveniently be written by just adding log probabilities from the original supervised train model to the reward and then subtracting the log probabilities of the current model which is just just an entropy term.
+So this just changes the reward function you take your reward model and then you add the log probabilities of your original supervised train model and subtract the log probabilities of your current model.
+And β is just a coefficient.
+And typically when you do this, you would use a very large reward model typically a large transformer that is itself pre-trained to be a language model and then fine-tuned to output the reward because the reward model needs to be very good.
 It needs to be powerful enough that it can resist all that optimization exploitation pressure from reinforcement learning.
+
+[p.25]
+
 Okay, so to recap an overview, we can train language models with policy gradients.
 We typically use importance sampling estimators.
-It's a banded problem for now, although we will make it multi-step in the next section.
-We can use a reward model which can be trained from human data and typically we'd actually train it with preferences rather than utility labels using this equation as the probability that the user prefers a_1 over A2.
+It's a bandit problem for now, although we will make it multi-step in the next section.
+We can use a reward model which can be trained from human data and typically we'd actually train it with preferences rather than utility labels using this equation as the probability that the user prefers a_1 over a_2.
 And this can be more convenient than direct supervision of reward values.
 Now all this technically ends up being a model-based RL algorithm because we train the reward as essentially a model and then we optimize for many RL steps against that model.
 It could potentially be an offline model-based RL algorithm if we actually don't get additional samples from our policy and send them out for more labeling.
