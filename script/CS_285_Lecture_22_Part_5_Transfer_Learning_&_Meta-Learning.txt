@@ -1,97 +1,76 @@
+[p.46]
+
 Okay, the last discussion of meta-reinforcement learning will be about how meta-RL can actually be framed as a partially observed MDP.
 And some of you might have already guessed this from my discussion about how you can do meta-learning simply by conditioning the policy on a history, but this actually illustrates some interesting connections that will give us a better way to unify the different meta-RL methods that we've talked about.
+
+[p.47]
+
 So, a partially observed MDP, just to remind everybody, is an MDP that has observations and observation probabilities in addition to states and actions.
 So it has an observation space and an emission probability, which is the probability of observing a particular observation given a state.
 And this is the graphical model for a partially observed MDP from before.
-In a partially observed MDP, the policy has to act on observations, which typically requires either explicit observation or observation.
-So, let's say that we have a policy, π_θ a given s comma z, where z is some variable that encapsulates the information that the policy needs to solve the current task.
+In a partially observed MDP, the policy has to act on observations, which typically requires either explicit state estimation meaning some function that will estimate p of s_t given a history of observations or policies with memory.
+
+[p.48]
+
+So, let's say that we have a policy, π_θ(a|s,z), where z is some variable that encapsulates the information that the policy needs to solve the current task.
 Learning a task at this point amounts to inferring what z is.
-So, remember that.
-Winding back to contextual policies, z might represent something like, oh, it's time to do the laundry, it's time to do the dishes.
+So, rewinding back to contextual policies, z might represent something like, oh, it's time to do the laundry, it's time to do the dishes.
 If you can figure out what you're supposed to be doing, then you will be able to do it successfully, and figuring it out amounts to inferring z.
 And in meta-learning, you have to infer this from context.
 And context is a sequence of transitions.
-They experience you, that you've gathered in the new MDP-MI.
+They experience you, that you've gathered in the new MDP M_i.
 This is really just a partially observed Markov decision process.
-So, you have some kind of a process.
-You have some kind of z.
+So, you have some kin of z.
 You don't know what it is.
 You need to figure out what it is, and you need to figure it out from a sequence of observations.
 And once you've figured it out, then you can do the task.
 So, before you had an MDP with state s, actions a, and transition probability, and so on.
-And now you have a modified partially observed MDP, m tilde, with a modified state space s tilde, observation space o tilde, and transitions p tilde, where the modified state space consists of the original state and z.
+And now you have a modified partially observed MDP, ~{M}, with a modified state space ~{S}, observation space ~{O}, and transitions ~{P}, where the modified state space consists of the original state and s.
 So, knowing the state means knowing s and knowing z.
 But of course, you don't observe z.
 What you observe is just s, as well as the reward in general.
-So, the key idea is that solving this POMDP m tilde is equivalent to meta-learning.
+So, the key idea is that solving this POMDP ~{M} is equivalent to meta-learning.
 Because if you can get a very high reward in this partially observed Markov decision process, where the state is observed but the task isn't, then you will be able to solve a new task just from the observations of the state and the reward in general.
-By the way, the reason that I...
-omit that I kind of gloss over the fact that the reward is observed is because you can always concatenate the reward to the state.
-Now, typically this requires, as I said before, either explicit state estimation, meaning the ability to estimate P of s given a sequence of observations, or policies of memory.
+By the way, the reason that I omit that I kind of gloss over the fact that the reward is observed is because you can always concatenate the reward to the state.
+
+[p.49]
+
+Now, typically this requires, as I said before, either explicit state estimation, meaning the ability to estimate p of s_t given {a sequence of observations}, or policies with memory.
 Now, policies with memory, that is essentially the RNN meta-learners that we talked about before.
-So, those could be viewed just as well as...
-just as well as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-as...
-was...
-was...
-as...
-as...
-as...
-as...
-was...
-as...
-but let's talk about the other category of pump DP solvers, ones that perform explicit state estimation.
+So, those could be viewed just as well as just methods for solving POMDPs where the task is unknown and is supposed to be inferred from memory.
+But let's talk about the other category of POMDP solvers, ones that perform explicit state estimation.
 It turns out that this will also lead to a class of meta-learning algorithms with some interesting properties.
-So, these meta-learning algorithms will aim to directly estimate p(z)t given a history of states, a history of actions, and a history of rewards.
-Now, in reality, you don't know what Z is.
-Z is some kind of latent variable.
+So, these meta-learning algorithms will aim to directly estimate p of z_t given {a history of states, a history of actions, and a history of rewards}.
+Now, in reality, you don't know what z is.
+z is some kind of latent variable.
 so we're going to train in a similar way as we trained latent variable models from before, where we're going to use variational inference to acquire a learned representation of tasks.
 And then once we've acquired it, then we can explore via posterior sampling with this latent context.
 So if you remember the discussion of posterior sampling from the exploration lecture, it amounts to sampling from our posterior belief and then acting optimally under that belief.
 So the way that we'll sample is we will actually randomly select a z from our posterior, and then we'll act according to that z.
 And that makes a lot of sense because initially you don't know what the task is, so you'll start off by basically trying to do random tasks, and as you gather more information, you will zero in on the right task to do.
-So the procedure will be to sample z from your belief about z, given your history, and that will use some approximate posterior, trained with variational inference, then act according to π_θ a given s comma z to collect more data, basically act as though z was correct, and then repeat this process.
+So the procedure will be to sample z from your belief about z, given your history, and that will use some approximate posterior, trained with variational inference, then act according to π_θ(a|s,z) to collect more data, basically act as though z was correct, and then repeat this process.
 And meta-training will consist of training π_θ and training your variational approximation to the state estimator.
 Now, this is not an optimal procedure, meaning this is not the best you could do for exploration.
 Take a moment to think about why.
-If it's not an optimal procedure, it's not clear yet.
+If it's not clear yet.
 It might become more obvious once I give an example later.
 But it is pretty good, both in theory and in practice.
 So we know that posterior sampling is a good exploration strategy.
 It turns out that in meta-learning, it's not necessarily optimal, and I'll explain why shortly.
+
+[p.50]
+
 But first, let's talk about an example of such a method, and that will let us instantiate this a little bit more concretely.
 So there are a variety of techniques that have been proposed that build on this idea.
-The one I'm going to talk about today is called PERL, and PERL trains a policy that is conditioned on the state and z.
-So it's a policy that is conditioned on the state and z.
-And it's a policy that is conditioned on the state and z.
-And it's a policy that is conditioned on the state and z.
+The one I'm going to talk about today is called PEARL, and PEARL trains a policy that is conditioned on the state and z.
 And it trains an inference network that predicts z based on a history of states, actions, and rewards.
 The whole thing is trained with variational inference, very similar to the kind of variational inference that we talked about before.
 So basically, we maximize the expected value of the reward in expectation under the trajectory distribution and the distribution of 'z's inferred by the encoder.
-And we, of course, minimize the KL divergence between Q of z and the prior.
+And we, of course, minimize the KL divergence between q of z and the prior.
 So that just encourages the 'z's to contain minimal information, just like in a variational autoencoder.
 And the goal is to really maximize the post-update reward, meaning the reward after you've inferred the z.
 This is the same as standard meta-reinforcement learning, while at the same time staying close to the prior.
-So it's conceptually actually very similar to RNN-based meta-RL, in that you read in a history, you predict some kind of statistic, you give that statistic to your policy, and you maximize the reward.
-So that's part of the policy that has been given that statistic.
+So it's conceptually actually very similar to RNN-based meta-RL, in that you read in a history, you predict some kind of statistic, you give that statistic to your policy, and you maximize the reward of the policy that has been given that statistic.
 The difference is that your encoder now is stochastic, and it infers this latent z, and you can explore by sampling it from your encoder.
 So stochastic z enables exploration by a posterior sampling.
 So here's an illustration of this process, and this will also hopefully make it clear to you why it's a little bit suboptimal.
@@ -102,46 +81,62 @@ And you can see that the way that the agent explores is by going to random place
 So this works pretty well.
 But hopefully this also makes it clear why this is a little bit suboptimal, because of course, in reality, it might be more optimal for the agent to sweep along that circle in a single episode to find where the reward is, and then revisit the reward again and again.
 And that would of course work better.
+
+[p.51]
+
+Okay.
 So let's talk a little bit more about the procedure.
-One of the choices that we have to make to accentuate this is we have to actually choose a design for the encoder.
+One of the choices that we have to make to instantiate this is we have to actually choose a design for the encoder.
 This could be done with a recurrent neural network, but it turns out that a very simple encoder actually works really well here.
-So one really simple encoder simply takes all the transitions, the states, actions, next states, and rewards, featurizes them with some featurizer, and then actually just averages together the featurizer and the reward.
-So this is a very simple encoder.
-It's actually a very simple way to do this.
-So you average the features.
+So one really simple encoder simply takes all the transitions, the states, actions, next states, and rewards, featurizes them with some featurizer, and then actually just averages together the features.
 And it should be enough to do this, because the transitions can actually be treated as independent.
 If you think of something like a Q-learning algorithm, the Q-learning algorithm doesn't care about the ordering of the transitions, so it makes sense that your encoder here shouldn't care about it either.
 And that's actually a really simple way to do this.
-So you average together the features, and then you use that to produce the mean and the variance of the Z posterior.
-The meta-training here is done with a very similar method to the self-dactor critic algorithms, with a self-dactor critic, which goes pretty well with a variational inference procedure.
+So you average together the features, and then you use that to produce the mean and the variance of the z posterior.
+The meta-training here is done with an off policy actor critic algorithms, with a soft actor critic, which goes pretty well with a variational inference procedure.
 And the only difference is that every time you make an update, you have to also update the encoder, which you do by loading some transitions from the buffer, as well as their histories.
 And those histories are used to train the encoder.
 So in that sense, it is actually very similar to the RNN-based meta-learning.
+
+[p.52]
+
 Okay, if you want to learn more about this, here are a few papers that you could check out that take some version of this POMDP view on the meta-learning problem.
 And they would go into this in more detail if you want to get the technical specifics.
+
+[p.53]
+
 But one of the things I want to end on is to discuss how the three perspectives of meta-RL that we talked about all kind of fit together.
-So in all of the meta-RL methods we talked about, they can be represented as some kind of F θ that takes in an MDP-MI.
+So in all of the meta-RL methods we talked about, they can be represented as some kind of f_θ that takes in an MDP M_i.
 And in reality, what that means is that it takes in experience in this MDP.
 And it needs to be able to improve from that experience and be able to choose actions that explore effectively.
 The first perspective we talked about is just a black box model, like an RNN, that can read in the entirety of that experience.
 Then we talked about framing it as this gradient-based meta-learning procedure.
-And then we talked about how we could also frame it as an inference problem, as a problem of inferring some context Z that is sufficient to figure out the task.
+And then we talked about how we could also frame it as an inference problem, as a problem of inferring some context z that is sufficient to figure out the task.
+
+[p.54]
+
 These things are not that different.
 The RNN is conceptually very simple.
 It's relatively easy to apply.
-But it's very vulnerable to what is sometimes called meta-overfitting, meaning that if the task at test time is a little bit outside of the distribution of training tasks, the RNN might not produce a very good H, and there's sort of no recourse past that.
+But it's very vulnerable to what is sometimes called meta-overfitting, meaning that if the task at test time is a little bit outside of the distribution of training tasks, the RNN might not produce a very good h, and there's sort of no recourse past that.
 Like you run the RNN forward, it does what it does, and you can't improve it further on the test task.
 RNNs can also be challenging to optimize in practice, although more recent sequence models like transformers can make this a bit easier.
-The gradient-based approach has good extrapolation in the sense that you can just keep running it, keep running more gradient steps at test time, and eventually you'll get better.
+The gradient-based approach has good extrapolation in the sense that you can just keep running more gradient steps at test time, and eventually you'll get better.
 And it's conceptually elegant, but it can be complicated and can require many meta-training samples.
 It's also very difficult to extend these methods from policy gradients to things like actor-critic methods, because as we talked about before, temporal difference learning is not really gradient descent, so it's very hard to apply gradient-based meta-learning to.
 The inference approach is simple, and provides for effective exploration via posterior sampling, and has an elegant reduction to solving a special kind of POMDP, but like the RNN approach, it can be vulnerable to meta-overfitting.
 And it can be a bit challenging to optimize in practice.
+
+[p.55]
+
 But let's talk about how these things are actually similar to each other.
 The inference procedure is really just like the RNN procedure, but with stochastic variables.
 So ϕ is basically z.
 And the gradient-based approach can be instantiated as one of the other two, just with a particular choice of architecture.
 In fact, you can actually develop a stochastic version of model-agnostic meta-learning by adding noise to your gradients, and that will start looking a lot like the inference process.
+
+[p.56]
+
 So they're actually pretty similar.
 The last thing I want to leave you off with is a few points about interesting observations on meta-RL in the literature.
 So far I talked a lot about methodology, but the other thing that people have studied a lot is how meta-reinforcement learning can lead to interesting emergent phenomena.

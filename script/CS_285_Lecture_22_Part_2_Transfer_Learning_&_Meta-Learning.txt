@@ -1,38 +1,43 @@
+[p.23]
+
 In the next section of today's lecture, we're going to talk about meta-learning algorithms.
 Meta-learning is a kind of a logical extension of multitask learning, where instead of simply learning how to solve a variety of tasks, we're going to use many different tasks to learn how to learn new tasks more quickly.
 So I'll first give a general introduction to meta-learning in a kind of more conventional supervised learning setting, and then I'll discuss how these ideas can be instantiated in RL.
+
+[p.24]
+
 So what is meta-learning?
 If you've learned 100 tasks already, can you figure out how to learn new tasks more effectively?
 In this case, having multiple tasks becomes a huge advantage, because if you can generalize the learning process itself from multiple tasks, then you can drastically accelerate acquisition of a new task.
 So meta-learning essentially amounts to learning to learn.
 And in practice, it's very closely related to multitask learning.
 It has many different formulations.
-Although those formulations can be summarized.
+Although those formulations can be summarized under the same umbrella.
 So the many different formulations could involve things like learning an optimizer, learning an RNN that reads in a bunch of experience and then solves a new task, or even just learning a representation in such a way that it could be fine-tuned more quickly to a new task.
 So these might seem like very, very different things.
-This is a cartoon from a blog post by Kaoli that illustrates the learning an optimizer kind of idea.
-Even though these seem like very, very different things, they're not.
-They're not.
-They are not.
-They are not.
-They are not.
-They seem like very different things.
+This is a cartoon from a blog post by Ke Li that illustrates the learning an optimizer kind of idea.
+Even though these seem like very different things.
 They can actually be instantiated in the same framework.
 And many of the different techniques for solving meta-learning problems, once you kind of drill down into the details, actually end up looking a lot like simply different architectural choices for the same basic algorithmic scaffold.
+
+[p.25]
+
 OK.
 So why is meta-learning a good idea?
 Deep reinforcement learning, especially model-free learning, requires a huge number of samples.
-So if you can meta-learn a faster reinforcement learning, then you don't have to worry about the fact that you can do all of that.
-learner, then you can learn new tasks efficiently.
+So if you can meta-learn a faster reinforcement learner, then you can learn new tasks efficiently.
 So what might a meta-learner do differently?
 Well, a meta-learned RL method might explore more intelligently because something about solving those prior tasks tells it how to structure its exploration to acquire a new task quickly.
 It might avoid trying actions that it knows are useless.
 So maybe it doesn't know how to solve the new task precisely, but it knows that certain kinds of behaviors are just never good to do.
 It might also acquire the right features more quickly.
 So maybe it was trained in such a way that the network can change rapidly to modify its feature representations for the new task.
+
+[p.26]
+
 Let me describe a very basic recipe to set up meta-learning for a supervised learning problem.
 And this recipe will, I think, demystify a lot of the question marks that surround meta-learning.
-This is an image from a paper by Ravé and La Rochelle.
+This is an image from a paper by Ravi and Larochelle.
 It's from 2017.
 And it illustrates how meta-learning for image recognition could work.
 I realize that image recognition is pretty different from RL, but we'll see that very similar principles will actually work in RL as well.
@@ -44,55 +49,58 @@ So meta-training is basically source domain, meta-testing is target domain.
 Each of the training sets during meta-training contains some image classes and the test set contains test images of those classes.
 So in this example, let's say that we have five classes in every task.
 But those classes mean different things.
-So for that first task, class zero is bird, class one is mushroom, class two is dog, class three is person, class four is piano.
-And then class three is dog.
+So for that first task, class 0 is bird, class 1 is mushroom, class 2 is dog, class 3 is person, class 4 is piano.
 And then in the test set, there's a dog and a piano.
-And then in the second task, class zero is gymnast, class one is landscape, class two is tank, class three is barrel, etc.
+And then in the second task, class 0 is gymnast, class 1 is landscape, class 2 is tank, class 3 is barrel, etc.
 These assignments can be either done by hand or they can be randomized and arbitrary.
 In this case, this is random.
-And the idea is that you're going to look at those different training sets and then you're going to use their corresponding test sets to meta-train some sort of model that will be able to then take in the data set.
-And then you can then do well on this corresponding test set.
+And the idea is that you're going to look at those different training sets and then you're going to use their corresponding test sets to meta-train some sort of model that will be able to then take in the a new training set but for some new classes that you've never seen before and then do well on this corresponding test set.
+
+[p.27]
+
 So here's how we can look at this.
-Regular supervised learning takes in some input X and produces a prediction Y.
-So the input X might be, for example, an image and the output Y might be a label.
-Supervised meta-learning could be thought of as just a function that takes in an entire training set to train as well as a test set.
-So we can look at this test image X and produces the label for that test image Y.
+Regular supervised learning takes in some input x and produces a prediction y.
+So the input x might be, for example, an image and the output y might be a label.
+Supervised meta-learning could be thought of as just a function that takes in an entire training set D^{train} as well as a test image x and produces the label for that test image y.
 So it's not actually all that different.
 Some kind of function that will read in that training set and a test image and make a prediction on the test image.
 Of course, you have to resolve a few questions if you want to accentuate this.
 For example, how do you read in the training set?
 There are many options for this.
 Things like recurrent neural networks or transformers can work pretty well for this.
-So you could imagine a recurrent neural network that reads in X1Y1, X2Y2, X3Y3, which are the training image label tuples, then reads in the test image X test, and then predicts the test label Y test.
+So you could imagine a recurrent neural network that reads in (x_1,y_1), (x_2,y_2), (x_3,y_3), which are the training image label tuples, then reads in the test image x){test}, and then predicts the test label y_{test}.
 So you have this little few-shot training set, a test input, and a test label.
 We'll talk more about the specifics of this later.
+
+[p.28]
+
 But first, let's talk about what is it that's being learned.
 So if you're learning to learn, and then you take that and you deploy it on your target domain, what is learning?
-So meta-learning is training this F.
+So meta-learning is training this f.
 What is the learning part?
 Well, to try to understand this, let's imagine the following schematic picture for generic learning.
 Generic learning, you have some kind of parameter θ, and you're going to find the θ that minimizes some loss function on the training set.
-And let's call this process of finding this argument FLEARN.
-So FLEARN takes in a training set and outputs the argument of your policy, of your model parameters θ.
+And let's call this process of finding this argument f_{learn}.
+So f_{learn} takes in a training set and outputs the argument of your policy, of your model parameters θ.
 Generic meta-learning can be thought of as finding the argmin of the loss over your test set for some parameters ϕ, where these parameters ϕ are a function of your training set.
-So you have some function F θ, which is now a learned function, it's no longer a fixed learning algorithm.
-F θ takes in a training set, which is now a learned function, it's no longer a fixed learning algorithm.
-F θ takes in a training set, and it produces some parameters ϕ.
+So you have some function f_θ, which is now a learned function, it's no longer a fixed learning algorithm.
+f_θ takes in a training set, and it produces some parameters ϕ.
 And those parameters ϕ are everything you need to know about the training set to do well on the test set.
-And the way you do meta-learning is you train F θ so that the loss on the test sets of the meta-training tasks is minimized.
+And the way you do meta-learning is you train f_θ so that the loss on the test sets of the meta-training tasks is minimized.
 So it's kind of a second order thing.
-You're going to train F θ, which reads in D train, so that the output of F θ works well on D test.
-So F θ then becomes the learning procedure.
-So what is F θ for the RNN example?
-Well, F θ is the part of the RNN that reads in the training set.
-So you can think of the parameters of F θ, this θ star, as being the parameters of this RNN, and it's going to produce some sort of hidden activation.
-So once it reads in that training set, it has some hidden activation H i for the task i, and that hidden activation is then given to a little classifier that takes in the hidden activation, and a test image X, and produces Y.
-So this little bit at the end, that's your classifier, and its parameters ϕ are simply the combination of H, the hidden activations, and its own parameters θ p.
-So it has its own parameters, it's a little neural net, so that's θ p, and it takes in the hidden activations from the RNN encoder, and that's H i.
-So that is what is ϕ i for this RNN meta-learner.
-Now there are other parameters.
-Let's look at this.
-There are other kinds of meta-learners you could devise, and they will have different notions of ϕ i, but this is kind of the simplest.
+You're going to train f_θ, which reads in D^{train}, so that the output of f_θ works well on D^{test}.
+So f_θ then becomes the learning procedure.
+
+[p.29]
+
+So what is f_θ for the RNN example?
+Well, f_θ is the part of the RNN that reads in the training set.
+So you can think of the parameters of f_θ, this θ^{*}, as being the parameters of this RNN, and it's going to produce some sort of hidden activation.
+So once it reads in that training set, it has some hidden activation h_i for the task i, and that hidden activation is then given to a little classifier that takes in the hidden activation, and a test image x, and produces y.
+So this little bit at the end, that's your classifier, and its parameters ϕ are simply the combination of h, the hidden activations, and its own parameters θ_p.
+So it has its own parameters, it's a little neural net, so that's θ_p, and it takes in the hidden activations from the RNN encoder, and that's h_i.
+So that is what is ϕ_i for this RNN meta-learner.
+There are other kinds of meta-learners you could devise, and they will have different notions of ϕ_i, but this is kind of the simplest.
 That the parameters that you quote-unquote learn for a new task are simply the hidden state of this RNN, and the parameters of that top layer.
 So the process of learning a new task basically then amounts to just running the RNN forward, and getting the hidden state.
 So just to recap precisely how this works and how it's trained.
@@ -102,9 +110,8 @@ That hidden state goes to a little neural network that takes in a test image and
 The meta-training process trains the parameters of all of these networks.
 It trains the parameters of the RNN encoder, and it trains the parameters of that little thing at the end.
 When you go to the target task, which we call meta-test time, you get a training set for the target task.
-That training set is then encoded using that RNN encoder, which produces a new HI.
-That new HI is then concatenated with the parameters of the little classifier at the end, which is not adapted to the new task, and that's ϕ i.
-And then your prediction depends only on ϕ i.
+That training set is then encoded using that RNN encoder, which produces a new h_i.
+That new h_i is then concatenated with the parameters of the little classifier at the end, which is not adapted to the new task, and that's ϕ_i.
+And then your prediction depends only on ϕ_i.
 So in practice, this is a very long way of explaining something very simple, which is that in practice you just run this RNN forward and you get an answer.
-But this is the explanation of how it relates to metamor.
-Thank you.
+But this is the explanation of how it relates to meta-learning.

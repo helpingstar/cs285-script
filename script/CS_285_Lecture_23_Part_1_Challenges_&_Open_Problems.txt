@@ -21,7 +21,7 @@ Now, this doesn't have to be true.
 Now, this doesn't fully confirm the importance of the RL models.
 Now, this doesn't fully confirm the importance of the RL models.
 cover every single thing we discussed.
-We also discussed things like sequence models, pump DPs, etc.
+We also discussed things like sequence models, POMDPs, etc.
 But this hopefully gives you a rough overview of the particular parts of this course.
 But what I'd like to talk about today are some of the challenges with deep reinforcement learning methods, basically the things that are open problems that we have not yet addressed, and then also some perspectives about how deep reinforcement learning should be used.
 So let's start with the challenges.
@@ -166,7 +166,7 @@ They can actually learn in seconds.
 But they require using non-scalable models like Gaussian processes that might simply be impractical to apply to higher dimensional systems.
 Now, this is a very rough guide.
 And of course, an obvious question this might raise is if this is the hierarchy of sample complexity, why would we ever prefer the less efficient methods?
-Well, the reason is that actually things like policy grading methods are often more parallelizable, which means that if we can run multiple simulations in parallel, they can actually be faster in terms of wall clock time.
+Well, the reason is that actually things like policy gradient methods are often more parallelizable, which means that if we can run multiple simulations in parallel, they can actually be faster in terms of wall clock time.
 And the cost of samples is not the only cost that you pay.
 So if you have access to lots of simulation, and generating interaction with the environment is cheap, and the cost has more to do with the compute for training your models, then maybe you might prefer methods that are less efficient, but that require less compute.
 And in fact, model-based deep RL methods are often the most compute hungry, because you might take many grading updates on the model for every simulation.

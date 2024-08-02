@@ -1,78 +1,84 @@
+[p.30]
+
 Alright, now let's talk about how we can take these meta-learning ideas and apply them to RL.
-So the generic learning picture that we had before is that regular learning is when you take the argmin of some loss function on a training set and that corresponds to some kind of learning function flearn, which is typically something like gradient descent.
-Generic meta-learning can be viewed as minimizing a loss function on a test set where the parameters that go into the loss function are given by a learned function fθ applied to DTRAIN.
+
+[p.31]
+
+So the generic learning picture that we had before is that regular learning is when you take the argmin of some loss function on a training set and that corresponds to some kind of learning function f_{learn}, which is typically something like gradient descent.
+Generic meta-learning can be viewed as minimizing a loss function on a test set where the parameters that go into the loss function are given by a learned function f_θ applied to D^{train}.
 So we can, by analogy, apply the same idea to reinforcement learning.
-We can say that regular reinforcement learning is when you maximize the expected reward under some policy, π_θ, and that can be viewed as a learning function frl, but frl is not applied to a training set anymore.
-It's applied to an MDPM.
-So frl is a function of an MDP.
-Meta-reinforcement learning then can be viewed as maximizing the expected reward of a policy with some parameters ϕ i, where the parameters ϕ i are given by applying a learned function fθ to an MDPMI.
+We can say that regular reinforcement learning is when you maximize the expected reward under some policy, π_θ, and that can be viewed as a learning function f_{RL}, but f_{RL} is not applied to a training set anymore.
+It's applied to an MDP, M.
+So f_{RL} is a function of an MDP.
+Meta-reinforcement learning then can be viewed as maximizing the expected reward of a policy with some parameters ϕ_i, where the parameters ϕ_i are given by applying a learned function f_θ to an MDP M_i.
 So we just kind of transported the same definition into the RL setting.
-So meta-reinforcement learning, what this implies, meta-reinforcement learning will be a reinforcement learning procedure, but what it will train is this fθ, which itself reads in an MDP and outputs some kind of representational policy.
+So meta-reinforcement learning, what this implies, meta-reinforcement learning will be a reinforcement learning procedure, but what it will train is this f_θ, which itself reads in an MDP and outputs some kind of representational policy.
+
+[p.32]
+
 So let's try to instantiate this idea.
 So we have a set of MDPs, and these are called meta-training MDPs.
-And in order for this to work, we need to assume that these meta-training MDPs are drawn from some distribution p .
-And then at test time, we're going to have a new test MDP, mtest, that is drawn from that same distribution.
-And we're going to get the parameters for our policy by applying this learned function fθ to mtest.
+And in order for this to work, we need to assume that these meta-training MDPs are drawn from some distribution p(M).
+And then at test time, we're going to have a new test MDP, M_{test}, that is drawn from that same distribution.
+And we're going to get the parameters for our policy by applying this learned function f_θ to M_{test}.
 It's important to assume that they come from the same distribution because, just like in supervised learning, learning only works when the training and test are from the same distribution.
 In meta-learning, it also only works when the training and test are from the same distribution.
 So for example, the different MDPs might correspond to a robot doing different tasks.
-And then mtest would be the robot learning a new task.
+And then M_{test} would be the robot learning a new task.
 Or it might be something much simpler.
 Maybe it involves the half-cheetah robot from your homework running at different speeds forward and backward.
-And then mtest would be a new speed.
+And then M_{test} would be a new speed.
+
+[p.33]
+
 Meta-learning and contextual policies are very closely related.
 So you could imagine that one way to view meta-learning is as the problem of training a policy, π_θ, that is conditioned on all of your experience in the test MDP.
-So essentially what fθ does is it takes the experience in the test MDP, or in the meta-training MDP, whatever MDP it's being run on, and summarizes it into some summary statistic that is then used to determine what your policy will do.
+So essentially what f_θ does is it takes the experience in the test MDP, or in the meta-training MDP, whatever MDP it's being run on, and summarizes it into some summary statistic that is then used to determine what your policy will do.
 And that's basically the same as having a policy that is conditioned on all the history that you've experienced in this MDP.
-So that's the first step.
-And then the second step is to look at the test MDP.
-And then the third step is to look at the test MDP.
-So the relationship between this and contextual policies is that this is basically just a contextual policy, except now the context is all of the experience in the MDP-MI.
+So the relationship between this and contextual policies is that this is basically just a contextual policy, except now the context is all of the experience in the MDP M_i.
 Okay, this is not maybe the most obvious idea, so it would be a good idea to sort of pause and think about this a little bit.
 So let me repeat.
-The procedure on the left, where the parameters for the new task, ϕ i, are obtained by running some learning procedure f_θ on mi, is basically the same as deploying a policy that is conditioned on all of the experience in the test MDP.
+The procedure on the left, where the parameters for the new task, ϕ_i, are obtained by running some learning procedure f_θ on M_i, is basically the same as deploying a policy that is conditioned on all of the experience in the test MDP.
 Because that's what f_θ is really executed on.
-f θ is a function of an MDP, but it's really a function of the experience you gathered in that MDP.
+f_θ is a function of an MDP, but it's really a function of the experience you gathered in that MDP.
 So as long as you can feed all that experience into your policy, then you're doing meta-learning.
-So that is to say that the context, which we call z1, is the same as the experience in the test MDP.
-Okay.
-So the context, which is z2 or Ω or something like that, is the ϕ i that we have here.
-So ϕ i is basically the context in a contextual policy.
+So that is to say that the context, which we call z or Ω or something like that, is the ϕ_i that we have here.
+So ϕ_i is basically the context in a contextual policy.
 The main difference, of course, is that when we talked about multitask learning before, the context was provided for us.
 Someone would just say like, oh, your job is to do the laundry, your job is to do the dishes.
-Now the context is inferred from experience in MI.
+Now the context is inferred from experience in M_i.
 So in multitask RL, it was given.
 In meta-learning, it's inferred.
+
+[p.34]
+
 Okay.
 So let's try to make this a little more concrete.
 Let's try to actually instantiate this idea.
-And instantiating this idea basically amounts to implementing f_θ MI, implementing an encoder that will read in everything you've experienced in the MDP MI and inform your policy how to act.
-So what should f_θ MI do?
-Well, of course, it needs to improve the policy with experience from MI.
+And instantiating this idea basically amounts to implementing f_θ(M_i), implementing an encoder that will read in everything you've experienced in the MDP M_i and inform your policy how to act.
+So what should f_θ(M_i) do?
+Well, of course, it needs to improve the policy with experience from M_i.
 So it needs to read in that experience and help the policy do better.
 And it also needs to choose how to interact.
 And this is different from supervised learning.
 So in supervised meta-learning, we don't have to deal with this.
-But in meta-reinforcement learning, we have to also be smart about choosing how to explore in the MDP MI, how to actually choose the actions.
+But in meta-reinforcement learning, we have to also be smart about choosing how to explore in the MDP M_i, how to actually choose the actions.
 But let's leave that one for later.
-And let's talk about the first part.
-Okay.
-So the first part, which is going to work out in a very similar way as in supervised meta-learning, improved with experience.
+And let's talk about the first part, which is going to work out in a very similar way as in supervised meta-learning, improved with experience.
 So our experience consists of transitions, consists of state, action, next state, and reward.
-So we could apply directly the analogy from supervised meta-learning and simply set up some kind of model that can read in all of our experience in the MDP MI.
-The simplest version of this would simply be a recurrent neural network that reads in a sequence of transitions.
-So trazer down the rooms.
-But the сп2sp1, coils, pol axis, it's something that's always been this kind of thought.
-.
-How do they think they do that they lived that they did not see up now, because this method is basically about going across multiple episodes.
-So you don't just reply to the steps with the api, s1, r1, s2a, s3,fr thing.
-You actually feet in each step and say, oh, this is fine, but here's where you have this golgi.
-Just say win.
-state and the hidden vector and produces an action.
-So this is a very straightforward way to represent f that can read in all of the experience and use it to inform what the policy should do.
+So we could apply directly the analogy from supervised meta-learning and simply set up some kind of model that can read in all of our experience in the MDP M_i.
+The simplest version of this would simply be a recurrent neural network that reads in a sequence of transitions (s_1,a_1,s_2,r_1), (s_2,a_2,s_3,r_2), (s_3,a_3,s_4,r_3), etc, etc. every transition that we've experienced in this MDP.
+This is a little different in a subtle way from policies that depend on history.
+Because these transitions would go across episodes.
+So if you've experienced, you know, five different episodes you would encode all the episodes together.
+And then the RNN would represent this with some kind of hidden vector that hidden vector will be fed into a policy head that takes in a state and the hidden vector and produces an action.
+So this is a very straightforward way to represent f_θ that can read in all of the experience and use it to inform what the policy should do.
 And then of course the parameters θ are the parameters of this RNN encoder and the policy head at the end.
-So as before ϕ is just represented by the parameters of that little policy head and the hidden state of the RNN.
+So as before ϕ_i is just represented by the parameters of that little policy head and the hidden state of the RNN.
 And the hidden state of the RNN is the only thing that you're actually inferring at meta test time when you adapt to a new MDP.
+
+[p.35]
+
 Alright so that might seem a little simplistic right because we made a really big deal out of meta learning, we introduced a lot of formalism, but then it seems like all we end up with is we just have to train an RNN policy.
 Is that really all we have to do?
 Well the answer is basically yes and to convince ourselves that this is true let's walk through a little example of meta learning with this kind of history dependent policy.
@@ -81,16 +87,24 @@ So let's imagine that on the first time step the mouse goes right.
 So the first transition that we give to the RNN has the action going right and a reward of zero.
 Then the mouse goes left and we encode that then and then the episode ends.
 Let's say the episodes are only two time steps in length.
-Okay so now a new episode begins, the blue episode, but we don't stop the RNN.
-The RNN is still still reading in all this experience.
+Okay?
+So now a new episode begins, the blue episode, but we don't stop the RNN.
+The RNN is still reading in all this experience.
 Now the mouse goes up and it goes right and it got the cheese.
 Okay so that's what's been encoded so far.
 Now internally the RNN should be able to figure out that the cheese is in the top right.
 So then when a new episode begins, remember we don't reset the hidden state of the RNN so the RNN still has this context.
-It's going to encode the experience of going up, the experience of going right, and getting plus one.
+It's going to encode the experience of going up, the experience of going right, and getting +1.
 So here you could see that because the hidden state is not reset between episodes the RNN can actually figure out where the cheese is and it can also figure out how to explore because it'll explore in such a way as to get the largest reward.
-So let's look at how to know that.
-Excellent March destination Р Dios is therefore unlikely to want to explore hay logic each several throughout ini Court Manor of Ottermination Aquarius because some research suggests that this� blinking means женщecات you're gayitter з meta episode consists of a concatenation of different episodes.
+Given the experience that it's seen so far in that MDP.
+
+[p.36]
+
+So let's talk about exploration a little bit more.
+Why does this method learn to explore effectively.
+Well this is the sequence of actions that we that we see during adaptation and each color represents an episode, so between episodes we recept of the initial state.
+The full sequence is a kind of a meta episode.
+So a meta episode consists of a concatenation of different episodes.
 So because the RNN didn't see a reward on that first episode going right, then it should know if it was meta trained successfully that on the second episode it shouldn't go right again, it should go somewhere else.
 And if it is meta trained on a variety of MDPs, then these patterns will become apparent to it.
 So regular reinforcement learning will actually be able to recover these kinds of exploration strategies.
@@ -98,22 +112,17 @@ It's a little bit of a trick.
 Basically the trick is that once you give the policy this entire meta episode, then the problem of exploration really becomes the problem of solving this kind of higher level MDP.
 So then regular RL which just maximizes reward with this policy representation that reads an entire meta episode will actually solve the problem.
 So optimizing the total reward over the entire meta episode with an RNN policy actually ends up automatically learning to explore.
-And that's a very important idea.
-So that's the second step.
-And the third step is to optimize the total reward over the entire meta episode with an RNN policy actually ends up automatically learning to explore.
-And that's a very important idea.
-So that's the third step.
-And the fourth step is to optimize the total reward over the entire meta episode with an RNN policy actually ends up automatically learning to explore.
-And that's a very important idea.
-So that's the third step.
-And the fourth step is to optimize the total reward over the entire meta episode with an RNN policy actually ends up automatically learning to explore.
-And that's a very important idea.
+And that's a very important idea in meta RL.
+
+[p.37]
+
 Now people have instantiated this idea in various ways including with acta-critic methods, policy gradient methods and many others.
 More recently transformers have been used as representations for this.
 But the high level principle is the same.
 Somehow inform your policy about the entire history of your experience with that MDP and it will figure out how to both explore and adapt to new MDPs from the same distribution.
-There are of course a couple of things that we should consider when we're going to do this.
-First of all, we should consider how the policy gradient is going to be used and how the overall� form your policy about the entire history of your experience with that MDP and it will figure out how to both explore and adapt to new MDPs from the same distribution.
+
+[p.38]
+
 There are of course a variety of architectural choices.
 So a standard RNN architecture would just basically concatenate all the different episodes into one long history, into meta episodes.
 There have also been methods that have been proposed that use attention on temporal convolution as well as parallel encoders, I'll talk about those a little bit later, as well as transformers.
