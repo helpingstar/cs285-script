@@ -1,34 +1,40 @@
+[p.08]
+
 All right, let's talk about how we can actually solve this inference problem.
+
+[p.09]
+
 So as we discussed in the previous part, there are really three inference problems that we're interested in in this control-as-inference graphical model.
-The first is to compute backward messages, which are the probability of optimality from little t to capital T given s, d, and a, t.
+The first is to compute backward messages, which are the p(O_{t:T}|s_t,a_t).
 The second one is to compute a policy, the probability of an action given a state and given that the entire trajectory is optimal.
 And that's what we're interested in if we want to solve the forward RL problem.
 And we'll see how this can be recovered more or less directly from the backward messages.
-And then the third one is to compute the forward messages, the probability of s_t given optimality at 1 through t minus 1.
+And then the third one is to compute the forward messages, the p(s_t|O_{1:t-1}).
 And this will be important later for inverse RL.
+
+[p.10]
+
 So let's start with the backward messages.
 These are really the most important ones because if you can calculate these, then you can recover near optimal policies.
 And the way that we will derive the backward message is just with a bit of recursion and probability theory and a little bit of algebra.
 So first we can take this equation for the backward message and we can insert the next state s_{t+1} and integrate it out.
-So the backward message is equal to the integral over all values of s_{t+1} of p of o, t through big T, comma s_{t+1} given s, d, a, t.
-And now what we'll do is we'll factorize this distribution using the CPF.
-And we'll use this to determine the order of the vectorization.
-So we'll do that by taking some of the TPFs that we have in our model and our goal on doing this factorization is to recover a recursive expression where we can represent β t, s_t, a, t as some function of β t plus 1 s plus 1.
-So in order to factorize this expression the thing that we have to note is that future optimality variables, namely o, t plus 1 through capital T, are independent of every everything in the past when conditioned on sd plus one.
+So the backward message is equal to the integral over all values of s_{t+1} of p(O_{t:T},s_{t+1}|s_t,a_t).
+And now what we'll do is we'll factorize this distribution using the CPDs in our model and our goal on doing this factorization is to recover a recursive expression where we can represent β_t(s_t,a_t) as some function of β_{t+1}, s_{t+1}, a_{t+1}.
+So in order to factorize this expression the thing that we have to note is that future optimality variables, namely O_{t+1:T}, are independent of every everything in the past when conditioned on s_{t+1}.
 And we can see this just from inspection of the graphical model.
 And that means that we can factorize this expression into three parts.
-The first part is the probability of all of the optimality variables from t+1 until the end, given sd plus one.
-And we know that we don't have to condition this on s_t and at, because given s_{t+1}, all of the future optimality variables are independent of s_t and at.
-Then we have the probability of s_{t+1}, given s_t at.
+The first part is the probability of all of the optimality variables from t+1 until the end, given s_{t+1}.
+And we know that we don't have to condition this on s_t and a_t, because given s_{t+1}, all of the future optimality variables are independent of s_t and a_t.
+Then we have the probability of (s_{t+1}|s_t,a_t).
 That's just the transition probability that we already know.
-And then we have the probability of the remaining optimality variable o_t, given s_t at.
-And that just corresponds to the exponential rate of reward, because that's just one of the CBDs in our graphical model.
+And then we have the probability of the remaining optimality variable (O_t|s_t,a_t).
+And that just corresponds to the exponential rate of reward, because that's just one of the CPDs in our graphical model.
 So we know this thing.
 We know this thing, that's our transition probability.
 Although when we're doing RL, we might want to, compute backward messages without functional knowledge of this probability.
 For now, we'll assume that we know it.
 And that just leaves this remaining term.
-So the probability of optimality from t+1 to capital T given s_{t+1}, can itself be written as the probability of optimality from t+1 to capital T, given s_{t+1} and at plus one, times the probability of at plus one, given s_{t+1}.
+So the probability of (O_{t+1:T}|s_{t+1}), can itself be written as the probability of (O_{t+1:T}|s_{t+1},a_{t+1}), times the probability of (s_{t+1}|a_{t+1}).
 Now this part, is simply the backward message of time step t+1.
 So we've already gotten a little bit better.
 We've figured out something that's mostly a recursive expression, except it has this kind of weird term that we haven't defined yet.
@@ -36,50 +42,52 @@ What's the probability of an action given a state?
 Now, crucially, this is not a policy.
 This is saying which actions are likely a priori, meaning if you don't know whether you're optimal or not, how likely are you to take a particular action?
 In general, if you don't know whether you're being optimal or not, you probably wouldn't know anything about which actions are more likely or less likely.
-So we could define this term, we could define an action prior, a P of a given s, but we'll assume that it's uniform for now.
+So we could define this term, we could define an action prior, a p(a|s), but we'll assume that it's uniform for now.
 And this is a reasonable assumption for a couple of reasons.
 First, if you don't know anything about what the monkey is trying to do, then you probably can't say much about which action is more or less likely to perform.
 Second, and perhaps more mathematically, if you want to impose an action prior, it turns out that you can equivalently modify the reward function and keep a uniform action prior and get exactly the same solution.
 This result is a little more subtle, and I would leave it as an exercise to you guys to work this out on paper.
-But long story short, for now we'll assume that the action prior, P of a given s , is uniform.
-So we can say that the action prior, P of a given s, is uniform.
+But long story short, for now we'll assume that the action prior, p(a_{t+1}|s_{t+1}), is uniform.
 Which means that it's a constant, which means that we can disregard it.
-Now, this does not mean that that policy is uniform, because remember our policy is the posterior distribution, a given s , through capital T.
+Now, this does not mean that that policy is uniform, because remember our policy is the posterior distribution, (a_t|s_t,O_{1:T}).
 The action prior is just the probability of the action's a priori, before you know whether you're optimal or not.
-All right, so now that we've gotten rid of the action prior and we've expressed everything in terms of probabilities, we can now calculate the probability of optimality and the probability of optimality.
-So if we look at the probability of optimality in terms of transitions, probabilities of optimality, and recursively in terms of future backward messages, we can write down a recursive algorithm for computing the backward messages.
+All right, so now that we've gotten rid of the action prior and we've expressed everything in terms of probabilities of transitions, probabilities of optimality, and recursively in terms of future backward messages, we can write down a recursive algorithm for computing the backward messages.
 It's a for loop that starts at the end of the trajectory and steps backward until the beginning.
-And at every time step from the end until the beginning, we calculate the backward message at time step T, multiplied by the expected value over s , of a quantity that I'm going to call β s .
-Beta of s is a state backward message.
+And at every time step from the end until the beginning, we calculate the backward message at time step t, as the probability of p(O_t|s_t,a_t) multiplied by the expected value over s_{t+1}, of a quantity that I'm going to call β_{t+1}(s_{t+1}).
+β_{t+1}(s_{t+1}) is a state backward message.
 So that's this equation, basically.
 And the state backward message is just the expected value of the state action backward message in expectation over the actions, distributed according to the uniform action part.
 So that's just this thing.
 And if we alternate these two steps, then we can recursively calculate the backward message all the way from the end to the beginning.
-The very last backward message, β capital T, is just the last reward, because the probability of O capital T given s capital T comma a capital T is actually a CPD that is already present in your model.
+The very last backward message, β_T, is just the last reward, because the probability of (O_T|s_T,a_T) is actually a CPD that is already present in your model.
+
+[p.11]
+
 All right.
 Now let's take a closer look at this backward pass.
 So here's the recursive algorithm that I derived on the previous slide.
 And we're going to make some definitions with some very suggestive names that will help us understand this algorithm.
-First, we're going to define vt of s_t as the logarithm of β t s_t.
-And then we'll define qt of s_t a t as the logarithm of β t s_t a t.
+First, we're going to define V_t(s_t) as the log{β_t(s_t)}.
+And then we'll define Q_t(s_t,a_t) as the log{β_t(s_t,a_t)}.
 And now we can write these equations in log space.
-So if we write the equation for the state backward message in log space, then we get vt of s_t is equal to the logarithm of the integral of the exponentiated qt s_t a t.
+So if we write the equation for the state backward message in log space, then we get V_t(s_t) = log∫exp(Q_t(s_t,a_t))d{a_t}.
 So that's kind of interesting.
 What a funny equation.
-At first, it doesn't seem like it's doing something particularly intuitive, but imagine that the values of qt are quite large.
+At first, it doesn't seem like it's doing something particularly intuitive, but imagine that the values of Q_t are quite large.
 If you take the sum of the exponentials of a bunch of large values, then the largest of those values will dominate that sum, which means when you then take the logarithm, you will recover a number that is close to the largest among the values whose exponentials you summed up.
-In the extreme case, you could imagine that as the qt's become closer and closer to infinity, then the log of the sum of the exponentials becomes closer and closer to a max.
+In the extreme case, you could imagine that as the Q_t is become closer and closer to infinity, then the log of the sum of the exponentials becomes closer and closer to a max.
 So in fact, we can call this log of sum of exponentials a kind of a soft max.
 This is not the same as the soft max that we use as a loss function in deep learning.
 It is a soft relaxation of the max operator.
-So this expression for vt of s_t approaches the max over a of qt as qt gets bigger and bigger.
+So this expression for V_t(s_t) approaches the max over a of Q_t as Q_t gets bigger and bigger.
 So that's pretty interesting.
 We saw in reinforcement learning that the optimal value function is the max of the optimal Q function.
 Now we see that in the inference perspective, the value function is the soft max of the Q function, which kind of makes sense.
 We want to soften our notion of optimality so that slightly suboptimal things are still possible.
 Let's talk about the other expression.
 So if we write the other expression in log space, then we get the following equation.
-qt of s_t is equal to r of s_t plus the log of the expected value of the exponential of vt plus 1 at s_{t+1}.
+Q_t(s_t,a_t) = r(s_t,a_t) + log E[exp(V_{t+1}(s_{t+1}))].
+9:34
 So that looks a lot like a Bellman backup because it has a reward and an expectation term, except that now you have this log around the expectation.
 Okay, so let's try to understand this equation a little bit better.
 There is a particular special case where it is exactly the same as the Bellman equation.
@@ -98,11 +106,11 @@ But intuitively, the reason that this problem happens is because when we ask the
 We'll come back to this later and discuss the stochastic case in more detail on how to fix this problem.
 But for now, the thing I would note is that at least the deterministic case perfectly matches the classic notion of the stochastic case.
 So we can just use the same kind of value iteration we saw before, with the exception that we use a softmax instead of a hardmax.
-Alright, so just to summarize the backward pass, we have these backward messages β t of s_t, a, t, which are equal to the probability of O little t through capital T given s_t, a, t.
+Alright, so just to summarize the backward pass, we have these backward messages β_t of s_t, a, t, which are equal to the probability of O little t through capital T given s_t, a, t.
 That's the probability that we can be optimal at steps little t through capital T given that we take action a, t in state s_t.
 And we can calculate this via recursion by repeating these two steps, computing the state action backward message as the expected value of the next state message times p of O given s_t, a, t, and computing the state backward message as the expected value of the state action backward message under the action distribution, which is uniform.
-So the log of β t is kind of a Q-function-like object.
-And we can make this more apparent by setting vt to be log of β t, s_t, and Qt to be log of β t, s_t, a, t.
+So the log of β_t is kind of a Q-function-like object.
+And we can make this more apparent by setting vt to be log of β_t, s_t, and Qt to be log of β_t(s_t,a_t).
 Alright, let's discuss the action prior a little bit more, because I kind of brushed this under the rug a little bit, and this is something where I often get a lot of questions.
 So what if the action prior is not uniform?
 What if you believe the monkey is, maybe it's a lazy monkey, that even if it's not being optimal, it's more likely to take small actions than big actions?
@@ -217,7 +225,7 @@ And the way that we factorize the numerator is we're going to write it as p of o
 And the reason we can do that is because we know that o through capital T is conditionally independent of past o's given s_t.
 Now here, the first one, the first term in the numerator is just the state backward message of s_t.
 So we can write this expression as following.
-We can write it as being proportional, if we disregard the denominator, to β t s_t of p of s_t o one through t minus one times p of o one through t minus one.
+We can write it as being proportional, if we disregard the denominator, to β_t s_t of p of s_t o one through t minus one times p of o one through t minus one.
 The second term is just the forward message.
 And the last term doesn't depend on s_t.
 So if we're willing to accept it in an unknown normalizing constant, we can simply disregard that.

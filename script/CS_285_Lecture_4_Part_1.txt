@@ -160,7 +160,7 @@ So, so far I've defined the objective as an expected value under the trajectory 
 But remember that our distribution actually follows a Markov chain with this augmented space and this transition operator is the product of the MDP transitions and the policy.
 So we could also write the objective by linearity of expectation as the sum over time of the expected values under the state action of marginal in this Markov chain of the reward of that time step.
 So this is just using linearity of expectation to take the sum out of the expectation so that you have a sum over t of the expectation over τ of r(s_t,a_t).
-And then since the thing inside the expectation not only depends on (s_t, a_t), we can marginalize all the other variables out and we are left with a sum over the expectation under p_θ(s_t,a_t) of r(s_t,a_t).
+And then since the thing inside the expectation not only depends on (s_t,a_t), we can marginalize all the other variables out and we are left with a sum over the expectation under p_θ(s_t,a_t) of r(s_t,a_t).
 Now this might seem like kind of a useless little mathematical, you know, kind of rewriting of the original objective, but it turns out to be quite useful if we want to extend this to the infinite horizon case.
 So this marginal p_θ(s_t|a_t) in a finite time Markov chain can be obtained just by marginalizing out all the other time steps.
 

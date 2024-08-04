@@ -17,11 +17,11 @@ So the goals for today's lecture will be to understand how to build model-based 
 [p.03]
 
 So why should we learn the model?
-Well, if we had some estimate of the dynamics, for example a function f(s_t, a_t) that returns s_{t+1}, then we could simply use all those tools from last week to control our system instead of having to deal with model-free RL algorithms.
+Well, if we had some estimate of the dynamics, for example a function f(s_t,a_t) that returns s_{t+1}, then we could simply use all those tools from last week to control our system instead of having to deal with model-free RL algorithms.
 In the stochastic case we would learn a stochastic model of the form p(s_{t+1}|s_t, a_t).
-For most of the algorithms that I'll discuss in today's lecture, I'll present them as deterministic model algorithms of the form f(s_t, a_t) = s_{t+1}, but almost all of those ideas can just as well be used with probabilistic models that learn a distribution over the next state.
+For most of the algorithms that I'll discuss in today's lecture, I'll present them as deterministic model algorithms of the form f(s_t,a_t) = s_{t+1}, but almost all of those ideas can just as well be used with probabilistic models that learn a distribution over the next state.
 And when this distinction is salient, I'll make a explicit.
-So let's think about how we can learn f(s_t, a_t) from data and then plan through it to select our actions.
+So let's think about how we can learn f(s_t,a_t) from data and then plan through it to select our actions.
 We could imagine a very simple model-based RL algorithm prototype.
 I'm going to call it version 0.5.
 It's not quite version 1.0, it's not quite the thing you'd want to use, but it's perhaps the most obvious thing we can start thinking about.

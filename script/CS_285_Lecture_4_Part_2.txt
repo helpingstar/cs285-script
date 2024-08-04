@@ -43,7 +43,7 @@ Run your policy, get some trajectories, measure how good those trajectories are,
 
 You could also imagine doing a model-based RL procedure.
 You can kind of think of this as RL by backprop.
-So maybe in the green box, you learn a model, you learn some other neural network, f_ϕ, such that s_{t+1}, is approximately equal to f_ϕ(s_t, a_t), and you train f_ϕ on data generated in the orange box with supervised learning.
+So maybe in the green box, you learn a model, you learn some other neural network, f_ϕ, such that s_{t+1}, is approximately equal to f_ϕ(s_t,a_t), and you train f_ϕ on data generated in the orange box with supervised learning.
 So maybe you have a whole other neural network that goes from s_t, a_t to s_{t+1} .
 Now this green box is much more complex than the one we had on the previous slide.
 On the previous slide, we would just sum over the rewards in our trajectories.

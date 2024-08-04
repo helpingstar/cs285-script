@@ -72,12 +72,15 @@ So intuitively the reason the monkey might take an indirect route to the goal is
 So this is something that current reinforcement learning algorithms that we've discussed don't really account for they don't have a notion of being lazy and they don't have a notion of understanding that something matters less and therefore can be done less perfectly.
 So some mistakes matter more than others and it turns out that taking this into account appropriately is critical for developing models that explain intelligent behavior in humans and animals and also turns out to be a tool that will allow us to build better reinforcement learning algorithms and later on to build inverse reinforcement learning algorithms.
 Natural behavior in humans and animals is, you know, up to a first-order approximation, stochastic, meaning that faced with the same situation twice, the monkey won't do exactly the same thing.
-Now again, we might argue as to whether it's truly random or whether it's simply affected by a plethora of other external and internal factors that are not accounted for in the experiment, like for instance maybe the monkey is hungry, maybe its finger itches, maybe it's just a little more tired, maybe it's just a little more tired, maybe it's just a little more tired, maybe it's just a little more tired, maybe it got distracted and accidentally swerved the joystick a little to the left, but we could up to first-order approximation think of these effects as being random.
+Now again, we might argue as to whether it's truly random or whether it's simply affected by a plethora of other external and internal factors that are not accounted for in the experiment, like for instance maybe the monkey is hungry, maybe its finger itches, maybe it's just a little more tired, maybe it got distracted and accidentally swerved the joystick a little to the left, but we could up to first-order approximation think of these effects as being random.
 But good behavior is still the most likely, so while the monkey might accommodate some moderate mistakes, it'll still make sure it reaches the goal because that's what gets it that reward that it wants so much.
+
+[p.05]
+
 So if we believe that the behavior of natural rational decision makers is stochastic, then we need a probabilistic model of near optimal behavior.
 And the existing models that we've had don't really do this.
 They don't really tell us why we might choose to be random and not optimal.
-In fact, for both the deterministic and stochastic formulations of optimal control and reinforcement learning, we can actually prove that in all fully observed settings there exists deterministic and stochastic decision-making, policies that are optimal.
+In fact, for both the deterministic and stochastic formulations of optimal control and reinforcement learning, we can actually prove that in all fully observed settings there exists deterministic policies that are optimal.
 Indeed, this would be true for any objective that is linear in the state action marginals.
 So anything that can be expressed as an expected value under the state action distribution of some reward that doesn't depend on the policy will admit a deterministic policy as a solution.
 So clearly this framework cannot explain random behavior as rational.
@@ -85,8 +88,7 @@ So we need a kind of a different notion of rationality.
 When we want to represent stochastic events, a very powerful tool that we often turn to is the tool of probabilistic graphical models.
 So that's what we're going to do in today's lecture.
 We're actually going to draw a probabilistic graphical model such that inference in that model results in near-optimal behavior.
-And crucially this near-optimal behavior will not always be the same as the probabilistic behavior that we're going to use in the next lecture.
-So we're going to draw a solution from reinforcement learning and optimal control, but it will be quite similar.
+And crucially this near-optimal behavior will not always be the same as the solution from reinforcement learning and optimal control, but it will be quite similar.
 It will look very much like the suboptimal monkey behavior that we saw in the previous slide, where the agent will, all else being equal, attempt to accomplish the task, but for the aspects of the task that matter less, that affect the reward very little, the agent would prefer to do those largely at random.
 All right.
 So in thinking how to draw a graphical model for a decision making and control, we of course have to include the usual variables that we see in an MDP, namely the states and the actions.
@@ -94,8 +96,8 @@ And we already know how the states and actions relate to one another.
 For now, we'll stick to fully observed settings.
 So we could also add observations to this picture, but we won't bother with that for now just to avoid cluttering up the notation.
 What we do, however, need to add is some additional variables that represent the task, that represent why the agent may choose to take one action or another.
-And so far we have the transition probabilities, P of (s'|s,a).
-And our goal will be to model joint distributions over trajectories, so P of s_1 through t and a_1 through t.
+And so far we have the transition probabilities, p(s'|s,a).
+And our goal will be to model joint distributions over trajectories, so p(s_{1:T},a_{1:T}).
 That's our trajectory τ.
 So what can we set this probability to?
 Well, if all we have is the CPDs in the MDP, the transition probabilities and the initial state distribution, there's no assumption of optimal behavior.
@@ -104,18 +106,15 @@ And we'll call these optimality variables, and I'll denote them as script O.
 These optimality variables are observed.
 You know that the monkey is trying to perform the task.
 If you didn't know that, then you would make a different inference about its behavior.
-So we can use the same logic to make the same logic for the other two.
-So we have a very specific answer to the option, and the answer to that is an expression, and we can use that expression to get the optimal behavior.
 Now we're going to make a slightly weird modeling choice, but later on we'll see that that modeling choice actually leads to a very convenient and elegant mathematical formulation.
 The modeling choice we will make is that these variables are binary.
 You can think of them as basically true or false variables saying, is the monkey trying to be optimal at this point in time?
-and all of them are set to true.
+And if the monkey is always trying to be optimal then all of these variables are observed and all of them are set to true.
 So then the inference problem we need to solve is what is the probability of a trajectory given that all of the optimality variables from time 1 to capital T are true.
 Or we might want to make this inference condition on an initial state.
-So we could either do p(τ) given O1 through T or p(τ) given O1 through T comma s_1.
-And the particular form of the distribution that we will choose for p(o_t|s_t) comma AT is that we will set the probability that o_t is equal to true to be the exponential of the reward at s_t comma AT.
+So we could either do p(τ|O_{1:T}) or p(τ|O_{1:T},s_1).
+And the particular form of the distribution that we will choose for p(O_t|s_t,a_t) is that we will set the probability that O_t is equal to true to be the exponential of the reward at (s_t,a_t).
 Now this again is going to seem like a somewhat arbitrary decision and we will see later that the seemingly arbitrary decision actually leads to a very convenient and elegant mathematical framework.
-But for now, we will just go ahead and do the same thing over and over again.
 So we will just have to take it as a given.
 So let's just give this a shot, set this to be the probability and see where that leads us with the math.
 Now there is a technical condition we need in order to make this statement, which is that we need the rewards to all be negative.
@@ -136,16 +135,13 @@ So now we've defined a probabilistic graphical model.
 It has dynamics.
 It has rewards.
 It seems like we can do Bayes' rule-style crunching and get out some distribution and see if the equation for that distribution is actually reasonable.
-So I'll plug in the definition of conditional probability to write p(τ) given O1 through t as p(τ) comma O1 through t divided by p of O1 through t.
+So I'll plug in the definition of conditional probability to write p(τ|O_{1:T}) as p(τ,O_{1:T})/p(O_{1:T}).
 And then I can plug in all of the CPDs into this.
 I'll just ignore the denominator because I'm only interested in probability trajectory.
 So I'll write that this is proportional to.
-And what it's proportional to is the probability of the product.
-So I'll write that this is proportional to the product.
-And what it's proportional to is the product.
-So I'll write that this is proportional to the of all of our CPDs, which I'll write as the probability of τ, which just accounts for the dynamics and initial state, times the product of all of these Bernoulli random variable probabilities from time step 1 until t, which basically means we take the product of p and all of the exponential rewards over all the time steps.
+And what it's proportional to is the product of all of our CPDs, which I'll write as the probability of τ, which just accounts for the dynamics and initial state, times the product of all of these Bernoulli random variable probabilities from time step 1 until t, which basically means we take the product of p(τ) and all of the exponential rewards over all the time steps.
 Okay, that seems fairly sensible.
-Now we know that a product of exponentials is the exponential of the sum of the exponents, so we're going to equivalently write it in a way that is maybe a little bit more suggestive of what this thing is doing, as p(τ) times the exponential of the sum of rewards along that trajectory.
+Now we know that a product of exponentials is the exponential of the sum of the exponents, so we're going to equivalently write it in a way that is maybe a little bit more suggestive of what this thing is doing, as p(τ) times {the exponential of the sum of rewards along that trajectory}.
 Now this should immediately give us some fairly appealing intuition for what this framework is doing.
 For instance, imagine that the dynamics are deterministic, which means that p(τ) is basically just an indicator variable.
 It's 1 if τ is a physically consistent trajectory and 0 otherwise.
@@ -158,26 +154,24 @@ So the reason that it might deviate from the straight-line trajectory when reach
 Maybe it's a little bit lower because it takes longer, so because of its discount, it gets hungrier, but mostly it's about the same, whereas failing to reach the goal leads to a much, much worse reward, and therefore it's not going to do that.
 So this intuitively seems to explain the kind of behavior that we saw in the previous slide.
 We essentially construct a probabilistic model where the most optimal trajectory is the most likely, but suboptimal trajectories can also happen, just with probability that decreases exponentially as their reward decreases.
+
+[p.06]
+
 Alright, so why is all this interesting?
 I mean, you know, if we want to model monkeys, of course this is probably interesting to you.
 But what if you don't care about monkeys?
 Well, the ability to represent suboptimal behavior as being approximately optimal under some relaxed notion of optimality is generally very very important for understanding the behavior of suboptimal agents and also for imitation learning.
-If you want to figure out what reward function a huge number of monkeys usually contains, the most annoying thing to liquidate is the loss of and moderate reward.
-So if you turn off probability, these are the подумative clash Erfahrrol—whose organizational depth notion, the Leaving ant tuition mod yoga, and other functional expectations are simply unique and unconscious.
-a human is trying to demonstrate to you, you have to account for the fact that they're not going to do it perfectly.
+If you want to figure out what reward function a human is trying to demonstrate to you, you have to account for the fact that they're not going to do it perfectly.
 And that turns out to be very important for inverse reinforcement learning, as we'll discuss for Wednesday's lecture.
 You can also apply inference algorithms to solve control and planning problems based on this framework.
 So because we drew a probabilistic graphical model where inference corresponds to solving the control problem, it means that we can bring to bear a wide array of inference methods to actually solve control and planning problems.
 And that turns out to be a fairly powerful idea.
 And lastly, this provides an explanation for why stochastic behavior might be preferred, even if deterministic behavior is possible.
 And this turns out to be quite useful for things like exploration and transfer learning.
-The reason that this is useful for exploration and transfer learning is because it's a very useful tool for learning.
-And it's also a very useful tool for learning learning.
-And it's also a very useful tool for learning.
-And it's also a very useful tool for learning.
-And it's also a very useful tool for learning.
-And it's also a very useful tool for learning.
-is that if you perform a task in multiple different ways, then you're more likely to transfer to new settings where the task now needs to be performed a little bit differently.
+The reason that this is useful for exploration and transfer learning is that if you perform a task in multiple different ways, then you're more likely to transfer to new settings where the task now needs to be performed a little bit differently.
+
+[p.07]
+
 All right.
 So for the bulk of today's lecture, we're actually going to talk about how we can perform this inference problem.
 And we'll see that applying both exact and approximate inference to this graphical model leads to algorithms that bear a lot of resemblance to the reinforcement learning algorithms we've already learned about.
@@ -185,8 +179,7 @@ So how do we do inference in this model?
 Well, there are three operations that we need to know about.
 The first operation that we're going to need is how to compute backward messages.
 So if you've studied hidden Markov models, or common filters, or you've heard of variable elimination, then you probably already have some thoughts about how inference in this model needs to be done.
-It's a chain-structured dynamical Bayes net, and that means that it should be very useful for knowledge.
-And it's also very amenable to inference by message passing.
+It's a chain-structured dynamical Bayes net, and that means that it should be very amenable to inference by message passing.
 Message passing being, of course, a particular instance of variable elimination.
 So there are two kinds of messages that we want to compute in a graph like this, very much like you would in HMM or common filtering.
 The first message is a backward message.
@@ -197,6 +190,6 @@ So the policy is the probability of an action at time step t, given the state of
 This is the stochastic optimal policy in this graphical model, and it turns out that if you can calculate backward messages, you can calculate the policy.
 A third operation that turns out to be very useful, especially when we deal with inverse reinforcement learning, is to compute what are called forward messages.
 Forward messages are kind of the backward analog of backward messages.
-A forward message says, what's the probability of landing in a particular state s , if you are optimal through time step t minus 1?
+A forward message says, what's the probability of landing in a particular state s_t, if you are optimal through time step t-1?
 If we put together backward messages and forward messages, we can actually recover state occupancies, which are not technically necessary to recover the optimal policy, but they are necessary to do inverse reinforcement learning.
 So we'll learn how to calculate these three things in the next part of today's lecture.
