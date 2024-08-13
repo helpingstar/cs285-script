@@ -1,31 +1,36 @@
+[p.01]
+
 All right, welcome to the final lecture of CS285.
 Today we're going to talk about challenges and open problems.
+
+[p.02]
+
 So first, let's have a brief review of the material that we covered in the course.
 There was a lot of things that we covered and a lot of different methods, so I'm going to try to draw a map to try to illustrate the different principles and how they relate to one another.
+
+[p.03]
+
 So at the root of it we have learning-based control.
 So basically our aim was to cover learning-based control methods interpreted very broadly, and learning-based control methods include imitation learning methods, which are learning from demonstration supervision, and reinforcement learning methods, which are learning from rewards.
 Reinforcement learning methods include classic model-free RL algorithms, which are things like policy gradients, value-based methods.
-Value-based methods and policy gradients combined result in actor-critic methods, which are things like deep-Q learning, which is an example of a specific value-based method.
-We also cover deep-Q learning as an example of a specific value-based method, q-function actor-critic methods like SAC, and advanced policy gradient methods like TRPO and BPO.
+Value-based methods and policy gradients combined result in actor-critic methods, we covered deep-Q learning as an example of a specific value-based method, q-function actor-critic methods like SAC, and advanced policy gradient methods like TRPO and PPO.
 There's also model-based control, and model-based control does not have to be learning-based.
 So those planning and control methods we discussed, like LQR, don't by themselves necessarily have anything to do with learning, but they can be combined with learning to produce model-based RL methods.
 In their purest form, model-based RL methods that do not use a policy, that simply train a model and then plan through that model, don't actually make use of all these RL concepts we discussed in the model-free portion, but we can of course put them together and use learned models in combination with reinforcement learning algorithms like policy gradients or value-based methods to get more effective model-based RL algorithms.
-And then there are a bunch of other concepts that kind of apply longitudinally across the range of different RL methods that are sort of orthodox.
-So, for example, if you have a model-based RL algorithm, you can apply it to a model-based RL algorithm.
-And then there are a bunch of other concepts that kind of apply longitudinally across the range of different RL methods that are sort of orthodox.
-So, for example, if you have a model-based RL algorithm, you can apply it to a model-based RL algorithm.
-So, for example, if you have a model-based RL algorithm, you can apply it to a model-based RL algorithm.
-And this is orthogonal to a particular choice of algorithm like, for example, the choice of exploration strategy, use of unsupervised RL objectives like skill discovery and so on.
+And then there are a bunch of other concepts that kind of apply longitudinally across the range of different RL methods that are sort of orthogonal to a particular choice of algorithm like, for example, the choice of exploration strategy, use of unsupervised RL objectives like skill discovery and so on.
 There are also other tools that lie outside of the learning-based control framework but that are very useful, like for example the tools of probabilistic inference and variational inference which give us the control as inference perspective on RL and that together with imitation learning allow us to derive things like inverse RL methods.
-Now, this doesn't have to be true.
-Now, this doesn't fully confirm the importance of the RL models.
-Now, this doesn't fully confirm the importance of the RL models.
-cover every single thing we discussed.
+Now, this doesn't fully cover every single thing we discussed.
 We also discussed things like sequence models, POMDPs, etc.
 But this hopefully gives you a rough overview of the particular parts of this course.
+
+[p.04]
+
 But what I'd like to talk about today are some of the challenges with deep reinforcement learning methods, basically the things that are open problems that we have not yet addressed, and then also some perspectives about how deep reinforcement learning should be used.
 So let's start with the challenges.
 Now, some of you might already be familiar with quite a few of the challenges of the Deep RL from having, for example, done the homeworks in this course and experienced which things are easy and which things are hard in the homeworks.
+
+[p.05]
+
 But let's go over them a little bit.
 So some of the challenges in Deep RL are really challenges with the core algorithms.
 For example, stability.
@@ -42,26 +47,29 @@ After your algorithm converges, does it actually generalize to new problem setti
 And what does that actually mean in your domain?
 But there are also some challenges with RL methods that really have to do with the assumptions of RL.
 And these challenges become much more pronounced when we try to apply RL algorithms to real world settings.
-And we find that certain assumptions that RL algorithms make are a little difficult to satisfy.
-And so we try to apply RL algorithms to real world settings.
-And we find that certain assumptions that RL algorithms make are a little difficult to satisfy.
-And so we might actually scorpion the basic, valuable anatomy of an algorithm in to the learning process, but perhaps we feel that some of the things that we are trying to solve in theבre listening is Har corriška, perhaps we have really backwardточégə or we have a Circles of structure framework and Ça' é a surface and we might need to false it many, many times.
-We have to finalize.
-We have to make sure that our algorithm works.
-This comes from an other, or rather fast moving practice that we're trying to develop that's nuclear found.
-In fact, our environment should be through there as well.
-By now, let's say that you're12 1977, and you tell people in our home sequencer that you're going to have a causal engineering animal between your�usнять, the fallen<|ur|> and you both evolve through there as well.
-So that's the challenge.
-What wheel of strategy is this?
-like for example access to demonstrations.
-Some of the things you provide are a combination of both, for example providing a more well-shaped reward, a reward that is not sparse, might serve to both specify what you want and how you want the method to do it.
+And we find that certain assumptions that RL algorithms make are a little difficult to satisfy for some real world problems.
+So is RL actually the right problem formulation?
+Perhaps you'd like to solve a learning based control problem but some of the things that RL assumes don't fit very cleanly.
+For example maybe you don't have access to a ground truth reward function.
+What is the source of supervision for your real world problem.
+Essentially somewhere somebody needs to supervise the algorithm.
+Some forms of supervision have to do with telling the algorithm what you wanted to do like the reward.
+Some of it serve to make the learning process easier like for example access to demonstrations.
+Some of the things you provide are a combination of both.
+For example, providing a more well-shaped reward a reward, that is not sparse might serve to both specify what you want and how you want the method to do it.
+
+[p.06]
+
 So the assumptions often represent major challenges.
 So let's start with the challenges with core algorithms.
 One big one is stability and hyperparameter tuning.
 Reinforcement learning algorithms in a sense solve a significantly harder problem than supervised learning methods because they have to get their own data, they don't have to assume that the data is IID, they have to optimize an objective rather than being given ground truth optimal actions, and all of these additional challenges mean that these methods are more sensitive to the particular setting of parameters, parameters like exploration rates, learning rates, and so on.
-Now devising stable RL algorithms, stable in the sense that small changes on hyperparameters don't lead to a more stable algorithm, but they are more sensitive to the user 갈 stated among tool LIHEAP Standard RL Graphical strain child of De conocimientostein of de understanding form but the core theoretical issue is still there.
+Now devising stable RL algorithms, stable in the sense that small changes on hyperparameters don't lead large degradation and performance tends to be very hard.
+And this shows up in different ways for different classes of methods.
+So for example for q-learning or value based methods part of the problem is that fitted value methods with deep network function approximation are generally not contractions and hence in the most General case don't have guarantees of convergence.
+So we have a lot of tricks that we learned about that can make them converge in practice but the core theoretical issue is still there.
 And this theoretical issue shows up in a number of ways.
-First, it means that there are lots of parameters that you need to select carefully for stability, like the delay for the target network, the replay buffer size, if you're going to do gradient clipping, how you're going to choose your learning aid, etc.
+First, it means that there are lots of parameters that you need to select carefully for stability, like the delay for the target network, the replay buffer size, if you're going to do gradient clipping, how you're going to choose your learning rates, etc.
 And part of the intuition for why these choices are quite sensitive is that the core algorithmic framework in general might not be convergent.
 And we kind of put these things in as fixes to make it converge.
 Now, of course, there's quite a bit of research on trying to make these algorithms more stable and easier to use.
@@ -69,8 +77,7 @@ And one thing I will say here is that a lot of sort of bread and butter deep lea
 For example, using large networks tends to help if done right.
 Using the appropriate choice of normalization tends to help.
 Using data augmentation tends to help.
-For those of you that are interested in data augmentation, there's some very nice work in a paper called DRQ, which explains how...
-data augmentation can actually greatly facilitate stability of Q-learning.
+For those of you that are interested in data augmentation, there's some very nice work in a paper called DRQ, which explains how data augmentation can actually greatly facilitate stability of Q-learning.
 But there might also be some open problems here that are a bit more fundamental.
 For example, it's still a mystery to us why supervised deep learning works so well.
 Conventional machine learning theory would hold that supervised deep learning should lead to pretty catastrophic overfitting because you are using a model with many more parameters than you have data points.
@@ -79,31 +86,27 @@ So there's some kind of magic in a sense that makes deep learning work.
 And there's a lot of active research trying to understand that magic.
 Well, value-based methods are not gradient descent.
 They work on slightly different principles.
-And it's actually a very open question as to whether the same method of gradient descent is true or not.
-The same kind of magic that makes supervised deep learning work still applies to value-based methods.
+And it's actually a very open question as to whether the same kind of magic that makes supervised deep learning work still applies to value-based methods.
 Perhaps the regularizing effect of using large models with stochastic gradient descent doesn't work the same way in value-based methods.
 So this is very much kind of at the frontier of current research and is perhaps the deeper manifestation of some of these challenges.
 So I don't have an answer here.
 This is something that is an active area of research, but is a challenge to keep in mind.
-Okay, what about policy gradient methods, likelihood ratio, reinforced, TRPO, PPO, all that sort of stuff?
+Okay, what about policy gradient methods, likelihood ratio, REINFORCE, TRPO, PPO, all that sort of stuff?
 Well, arguably, these methods are somewhat better understood in the sense that we do have convergent policy gradient algorithms.
 In a sense, the story with policy gradient is that it trades off a lot of the nastiness in value-based methods and model-based RL for much higher variance.
 So the common theme is that all of the other RL methods have bias from function approximation.
 Policy gradient methods generally do not have bias, but they do have variance.
-Of course, once you start using value functions as critical factors, you start to see the difference.
-Critics, for advantage estimation, introduce the same bias right back in, but in their purest form, they have high variance, but no bias, which means that they are a bit easier to understand, but the variance is no picnic.
+Of course, once you start using value functions as a critics, for advantage estimation, introduce the same bias right back in, but in their purest form, they have high variance, but no bias, which means that they are a bit easier to understand, but the variance is no picnic.
 It's still a major challenge.
 And what that variance implies is that you might need lots of samples.
 And while this might at first seem like kind of a, maybe an esoteric problem, like, well, if you need lots of samples, just have a faster simulator, in practice, that increase in variance might be catastrophically large.
-It may be that you don't have enough variance.
-It may be that you don't have enough variance.
 It may be that you don't just need 10 times more samples.
 Maybe you need exponentially more samples.
 In the worst case, the increase is in fact exponential.
 Those worst cases are a bit pathological, and they can be avoided.
 But in the general case, it does seem like this can be a challenge.
 And in particular, it can be an unpredictable challenge in the sense that we might have a hard time predicting for a new problem, whether the catastrophically high variance of that problem might make policy gradients hard to use or not.
-So the kinds of parameters that we then end up being able to use, and that we end up being careful with to address the challenge, are things like batch size, learning rate, and the design of the baseline for policy gradients, which is a very crucial choice.
+So the kinds of parameters that we then end up being careful with to address the challenge, are things like batch size, learning rate, and the design of the baseline for policy gradients, which is a very crucial choice.
 Model-based RL algorithms are an interesting one.
 On the surface, model-based RL might seem like a particularly convenient and stable choice, because the model learning process, in the end, just boils down to supervised learning.
 And that is true.
@@ -125,6 +128,9 @@ In a sense, model-based RL is a very kind of adversarial process, and that prese
 So all these approaches have challenges.
 Those challenges fundamentally actually stem from the same core issues, the issues having to do with the fact that you have to discover optimal behaviors without ground truth supervision, often by collecting your own data.
 But the way that these issues manifest for each class of methods is a bit different.
+
+[p.07]
+
 Now, in regard to efficiency, we can create a kind of a hierarchy of different methods to try to gauge roughly how efficient they are.
 This slide is actually pretty old at this point.
 This was created maybe about five years ago.
@@ -138,8 +144,7 @@ Policy gradient methods like TRPO, which are batch-mode policy gradient methods,
 So the fully online methods basically don't store any trials.
 They just update as they collect data.
 Policy gradient methods collect a batch of data and make batch-wise updates.
-Then we have a big step up in efficiency with T-SYS.
-So we have methods that use replay buffers and off-policy learning.
+Then we have a big step up in efficiency with methods that use replay buffers and off-policy learning.
 So these are Q-learning methods, Q-function, actor-critic methods, and so on.
 These are all the methods that have replay buffers.
 Then we have model-based methods.
@@ -148,8 +153,7 @@ And interestingly enough, the step up in efficiency is about an order of magnitu
 So here's an example of a classic paper on gradient-free methods for RL using evolutionary strategies.
 And the reported results in that paper are about 10 times less efficient than fully online updates with an algorithm like A3C.
 So this is an example of a 2017 paper with A3C showing, for a half-cheetah style task, about 100 million time steps to learn the task to asymptotic performance, which is the equivalent of about 15 days of real time.
-If we use a method like TRPO or PPO, then we get something on the order of 10 million transitions, the equivalent of about 1.5 million.
-So that's about 1.5 days of real time.
+If we use a method like TRPO or PPO, then we get something on the order of 10 million transitions, the equivalent of about 1.5 days of real time.
 If we use off-policy algorithms with replay buffers, then we can learn tasks like this in about 1 million time steps, which is about 3 hours in real time.
 And these methods have gotten a lot more efficient in recent years.
 In recent years, there has been a 10 to 100x improvement, actually, in the speed of these methods.
@@ -169,8 +173,11 @@ And of course, an obvious question this might raise is if this is the hierarchy 
 Well, the reason is that actually things like policy gradient methods are often more parallelizable, which means that if we can run multiple simulations in parallel, they can actually be faster in terms of wall clock time.
 And the cost of samples is not the only cost that you pay.
 So if you have access to lots of simulation, and generating interaction with the environment is cheap, and the cost has more to do with the compute for training your models, then maybe you might prefer methods that are less efficient, but that require less compute.
-And in fact, model-based deep RL methods are often the most compute hungry, because you might take many grading updates on the model for every simulation.
+And in fact, model-based deep RL methods are often the most compute hungry, because you might take many grading updates on the model for every simulation step.
 So for this reason, you might actually prefer methods that are less efficient, but have other benefits like better parallelism, or requiring fewer grading updates on the policy or model.
+
+[p.08]
+
 Okay, so, but that said, why do we care about sample complexity?
 Well, an obvious one is that if you have bad sample complexity, you have to wait for a long time for your homework to finish.
 But the other thing is that if you actually want to use deep RL in the real world, poor sample complexity means that real world learning can become very difficult.
@@ -180,14 +187,12 @@ Maybe you'd like to use some sort of finite element analysis to simulate a reall
 So if your algorithm requires hundreds of millions of trials, that might simply not be feasible.
 And it generally limits applicability to real world problems.
 So developing more efficient RL methods is a major open problem.
-I do think that current deep RL methods have improved in efficiency for many reasons.
-One is that they have increased the level of training that you need to use in deep RL.
-And that's a major reason why deep RL is so important.
-And the other is that deep RL is a major reason why deep RL is so important.
-And that's a major reason why deep RL is so important.
-And that's a major reason why deep RL is so important.
-So, speaking of breadth and generalization, scaling up and generalization are major challenges in deep RL.
-When it comes to supervised learning, like training on ImageNet or training on Common Crawl or large NLP datasets, the state of the art and super-precise training in supervised deep learning is large-scale, emphasizes diversity, and it's evaluated on generalization.
+I do think that current deep RL methods have improved in efficiency tremendously to the point where real world training often is actually very feasible.
+But in many domains especially as you increase the breadth of the problem meaning that you want systems to generalize more broadly by training in a greater range of scenarios this becomes an even bigger issue.
+
+[p.09]
+
+So speaking of breadth in general generalization scaling up in generalization are major challenges in deep RL when it comes to supervised learning like training on IMAGENET or training on common crawl or large NLP data sets the state-of-the-art in supervised deep learning is large-scale, emphasizes diversity, and it's evaluated on generalization.
 So nobody cares how well your language model can memorize a particular piece of text it's trained on.
 Everyone cares how well your language model can generalize to some new prompt.
 Whereas in RL, we seem to be often evaluating our methods on small-scale tasks that emphasize mastery and are evaluated on performance, meaning that what we really measure is how well do we optimize a given objective function in the particular environment where it's optimized.
@@ -196,6 +201,9 @@ So if you're trying to improve the optimization performance of your method, that
 But besides optimization performance, in the real world, we also care about generalization performance, diversity, and breadth.
 And that starts implicating a lot of topics that go beyond the core questions in basic RL methods and have more to do with the ability to apply RL methods at larger scale to multitask problems and settings that require using large amounts of data, rather than just large amounts of simulation.
 So where is the generalization going to come from?
+
+[p.10]
+
 There are a number of issues with this.
 So first, we could say off the bat, well, what if we just scale up Deep RL?
 What if we just run massive simulation with lots and lots of different settings and try to get more generalizable and performant policies?
@@ -206,11 +214,16 @@ And then we run a learning algorithm on that data set for many epochs and get so
 And if we're not happy with that solution, we don't recollect the data, we just rerun the training after changing something about our method.
 In reinforcement learning, we typically learn through continuous interaction with the world.
 So that means that if we want to change something about our method, we would typically rerun the interactive learning process.
+
+[p.11]
+
 But the reality is that actual reinforcement learning has an outer loop, and that outer loop is you.
 If you are not happy with how well your method did, you would change something about your method and then rerun the training process again.
-And that's fine if your training process involves training the half-cheater to run faster, but if your training process involves sort of internet-scale training on a huge range of different settings to achieve real-world generalization, this outer loop quickly becomes impractical.
-So, what if we just run a training process?
-So, for this reason, it's very important to think about improvements to our old methods that don't just address the core challenges of optimization, but also address workflows that are more suitable for large-scale machine learning research.
+And that's fine if your training process involves training the half-cheetah to run faster, but if your training process involves sort of internet-scale training on a huge range of different settings to achieve real-world generalization, this outer loop quickly becomes impractical.
+So, for this reason, it's very important to think about improvements to RL methods that don't just address the core challenges of optimization, but also address workflows that are more suitable for large-scale machine learning research.
+
+[p.12]
+
 This problem is pretty bad, right?
 So, here's a video from TRPO plus GAE.
 This video is quite old at this point, but it's still, I think, pretty impressive.
@@ -232,6 +245,9 @@ And if you want a practical system that does a task like this in the real world,
 So, not just running, but climbing over things and so on.
 And an approach that people have taken with some success is to simply simulate a greater range of situations.
 But this does quickly start presenting major challenges.
+
+[p.13]
+
 Now, those challenges include the challenge of figuring out what all those scenarios are.
 So you might want real world data to figure out the range of scenarios you have to cover, and also actually devising the algorithms that can handle such a broad range of scenarios.
 So, in terms of utilizing data, perhaps off-policy or offline RL methods can be more effective.
@@ -240,6 +256,9 @@ And perhaps that we can use this data set with an offline RL procedure, where if
 And then if we have to tune something about the method, maybe we can do so without having to discard all of our data.
 Perhaps we could also approach this by building simulations and adapting those simulations to the real world, if that's the approach you want to take.
 And that's also something that, perhaps, merits more research.
+
+[p.14]
+
 The multitask setting also presents challenges that are often not at the core of reinforcement learning research, but I think are tremendously important.
 So, generalization comes from training in many different settings.
 We talked about a variety of ways to set up multitask learning problems.
@@ -253,6 +272,9 @@ If you have more MDPs, then you need more samples to train.
 So, the existing sample complexity challenges are exacerbated.
 It may be that we can make progress on this problem simply by addressing those four challenges, or it may be that we can devise better methods that target multitask learning in particular.
 This is an important thing to keep in mind.
+
+[p.15]
+
 But now, let's also talk about those assumptions.
 So, outside of the capabilities of the core method, the assumptions of RL, that we have access to a reward function, that we have interaction with an environment, these are all assumptions that can be problematic in the real world.
 Where does supervision come from for RL?
@@ -265,9 +287,12 @@ But let's say that you want to pour a glass of water.
 Now, this is something that any child could do, but if you want a robot to learn how to pour a glass of water, simply understanding whether the glass is full of water itself requires a complex perception system.
 This problem has actually come to the forefront recently, because with internet chatbots, like ChatGPT, it's actually a major challenge to figure out whether you are interacting with users in ways that make those users happy, in ways that satisfy those users.
 And traditional ways of specifying reward tend to fail in those cases.
-So, there's all sorts of other things that can be done.
+So, there's all sorts of other things that could be done.
 For example, we could learn objectives or rewards from demonstration, which is inverse reinforcement learning.
 We could generate objectives automatically with automated skill discovery to produce a wide variety of different tasks, so that we could then generalize to new tasks.
+
+[p.16]
+
 But we can also explore other sources of supervision.
 So, besides demonstrations, this is something that's, of course, been very widely used.
 We can think about methods that leverage language to figure out what the robot should be doing, and perhaps auxiliary supervision from models of combined language and perception that can offer reward signals through generalization from internet-scale training.
@@ -279,6 +304,9 @@ So, demonstrations provide both the what and the how.
 Reward functions, in principle, provide only the what, but if the reward functions are more well-shaped, then they're also providing some of the how.
 So, there's kind of a balance of these things, and we have to strike that balance carefully, because on the one hand, the strength of RL methods is that they can discover new and novel solutions, so we don't want to supervise them too closely, but at the same time, if the supervision is too high-level, like, for example, your supervision for your language model chatbot is, make my company lots of money, then it might be just a very difficult learning problem.
 So, we have to strike the right balance there.
+
+[p.17]
+
 And we might want to rethink the problem formulation in other ways, like, how do we define the control problem?
 What is the data?
 In some cases, it's easier to define a control problem with data that specifies what might happen in the world than to define it with a simulator or access to an interactive agent.
