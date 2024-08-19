@@ -13,7 +13,7 @@ There was a lot of things that we covered and a lot of different methods, so I'm
 So at the root of it we have learning-based control.
 So basically our aim was to cover learning-based control methods interpreted very broadly, and learning-based control methods include imitation learning methods, which are learning from demonstration supervision, and reinforcement learning methods, which are learning from rewards.
 Reinforcement learning methods include classic model-free RL algorithms, which are things like policy gradients, value-based methods.
-Value-based methods and policy gradients combined result in actor-critic methods, we covered deep-Q learning as an example of a specific value-based method, q-function actor-critic methods like SAC, and advanced policy gradient methods like TRPO and PPO.
+Value-based methods and policy gradients combined result in actor-critic methods, we covered deep-Q learning as an example of a specific value-based method, Q-function actor-critic methods like SAC, and advanced policy gradient methods like TRPO and PPO.
 There's also model-based control, and model-based control does not have to be learning-based.
 So those planning and control methods we discussed, like LQR, don't by themselves necessarily have anything to do with learning, but they can be combined with learning to produce model-based RL methods.
 In their purest form, model-based RL methods that do not use a policy, that simply train a model and then plan through that model, don't actually make use of all these RL concepts we discussed in the model-free portion, but we can of course put them together and use learned models in combination with reinforcement learning algorithms like policy gradients or value-based methods to get more effective model-based RL algorithms.
@@ -56,7 +56,8 @@ Essentially somewhere somebody needs to supervise the algorithm.
 Some forms of supervision have to do with telling the algorithm what you wanted to do like the reward.
 Some of it serve to make the learning process easier like for example access to demonstrations.
 Some of the things you provide are a combination of both.
-For example, providing a more well-shaped reward a reward, that is not sparse might serve to both specify what you want and how you want the method to do it.
+For example, providing a more well-shaped reward.
+A reward, that is not sparse might serve to both specify what you want and how you want the method to do it.
 
 [p.06]
 
@@ -66,7 +67,7 @@ One big one is stability and hyperparameter tuning.
 Reinforcement learning algorithms in a sense solve a significantly harder problem than supervised learning methods because they have to get their own data, they don't have to assume that the data is IID, they have to optimize an objective rather than being given ground truth optimal actions, and all of these additional challenges mean that these methods are more sensitive to the particular setting of parameters, parameters like exploration rates, learning rates, and so on.
 Now devising stable RL algorithms, stable in the sense that small changes on hyperparameters don't lead large degradation and performance tends to be very hard.
 And this shows up in different ways for different classes of methods.
-So for example for q-learning or value based methods part of the problem is that fitted value methods with deep network function approximation are generally not contractions and hence in the most General case don't have guarantees of convergence.
+So for example for Q-learning or value based methods part of the problem is that fitted value methods with deep network function approximation are generally not contractions and hence in the most general case don't have guarantees of convergence.
 So we have a lot of tricks that we learned about that can make them converge in practice but the core theoretical issue is still there.
 And this theoretical issue shows up in a number of ways.
 First, it means that there are lots of parameters that you need to select carefully for stability, like the delay for the target network, the replay buffer size, if you're going to do gradient clipping, how you're going to choose your learning rates, etc.

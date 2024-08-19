@@ -29,7 +29,7 @@ So the value in ^{r}(s,a) is just the sample average, 1 over the number of times
 And ^{P}, basically the same as before, is the number of times we've seen the transition (s,a,s') divided by the number of times we've seen (s,a).
 Now this might look like the same kind of idea that we had in the model-based analysis before, but note that these are not models.
 This is the effect of averaging together different transitions in the data.
-So what we would do in a real fitted q-iteration algorithm is we would have different losses for every single sample.
+So what we would do in a real fitted Q-iteration algorithm is we would have different losses for every single sample.
 So for every sample, we would have something like Q(s_i,a_i) - r_i + γ⋅max_{a'}{Q(s'_i, a'_i)} squared, or some other difference, maybe not squared, maybe absolute value.
 And we would average them all together.
 So what we're doing in this idealized model is we're basically saying that the effect of averaging together these different losses kind of looks like doing a backup under this empirical model.
