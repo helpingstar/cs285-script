@@ -454,7 +454,7 @@ I have my own beliefs about what's more likely.
 But I think the higher order bit that I want to get you all thinking about is that these questions actually matter.
 And if we are going to explore reinforcement learning as a powerful general purpose tool, then it helps to think about these possibilities.
 
-[p.52]
+[p.51]
 
 So how should we go about answering these questions?
 Well, we need to pick the right problems to work on.
