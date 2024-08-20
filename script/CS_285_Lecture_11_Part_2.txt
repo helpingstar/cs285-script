@@ -69,7 +69,7 @@ It forces it to take a sequence of actions that would be good in expectation, wh
 Now, an important implication of this statement is that the way that you model your uncertainty really needs to consider the possible worlds in which you could be in.
 So this is not really about the setting where the dynamics are noisy.
 This is about the setting where you don't know what the dynamics are.
-So there are many possible worlds that could be consistent with your data, and you'd like to take actions that are good in expectation under the distribution of those possible worlds given your data set.
+So there are many possible worlds that could be consistent with your data, and you'd like to take actions that are good in expectation under the distribution of those possible worlds given your dataset.
 This is a fairly special kind of uncertainty.
 So we would expect the reward under high variance predictions to be very low when we approach the edge of the cliff if we're modeling the uncertainty correctly, even if the mean is the same.
 

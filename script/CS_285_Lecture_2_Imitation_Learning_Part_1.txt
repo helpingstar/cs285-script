@@ -153,10 +153,10 @@ So our goal will be to learn policies, which are distributions over (a|o), and t
 So since getting data of people running away from tigers is not something that you can do very readily, I'm going to use a different running example throughout today's lecture, which is a kind of autonomous driving example.
 So our observations will be images from a dashboard mounted camera on a vehicle.
 And our actions will be steering commands, turning left or turning right.
-And you could imagine collecting data by having humans drive cars, record their steering wheel commands, and record images from their camera, and use this to create a data set.
+And you could imagine collecting data by having humans drive cars, record their steering wheel commands, and record images from their camera, and use this to create a dataset.
 So every single time step, your camera records an image, and you record the steering wheel angle, and you create a training tuple out of this, an input o and an output a.
 And you collect this into a training set, where a's are labels and o's are inputs.
-And now you can use this training set the same way that you use a labeled data set in, let's say, image classification, and just train a deep neural network to predict distributions over (a|o) using supervised learning.
+And now you can use this training set the same way that you use a labeled dataset in, let's say, image classification, and just train a deep neural network to predict distributions over (a|o) using supervised learning.
 That is the essence of the most basic kind of imitation learning method.
 We sometimes call this kind of algorithm behavioral cloning, because we're attempting to clone the behavior of the human demonstrator.
 So.

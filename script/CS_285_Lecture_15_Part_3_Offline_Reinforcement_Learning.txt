@@ -187,7 +187,7 @@ But this model-free formula has a few issues because it requires us to know P^π
 So what we're going to do next is we're going to replace this all with samples.
 Because once we replace it with samples, we'll get a fully model-free way to solve for the weights on the approximation to V^π without requiring knowledge of P^π or r.
 So our samples, just like before, consist of a bunch of transitions.
-So that's our offline data set of transitions, (s, a, r, s').
+So that's our offline dataset of transitions, (s, a, r, s').
 And what we're going to do is we're going to replace, notice how we just replaced the number of rows in our matrix ϕ by the number of samples.
 So before we had one row for every state.
 Now we have one row for every sample.
@@ -244,12 +244,12 @@ So you can still derive the same w_Q.
 Again, I won't go through the massive algebra to do this, but it's exactly the same as it was before.
 So you have the same LSTD equations, but now you use state action features for everything and state action rewards.
 And you can do the same sample based substitution.
-So you have your data set of state, actions, rewards, and next states.
+So you have your dataset of state, actions, rewards, and next states.
 You can compute the reward as a big vector for an entry for every sample.
 You can still compute ϕ'.
 But notice now there's a little subtlety.
-ϕ' is the next feature that you get from taking the action in the data set.
-But then because we're featurizing states and actions, we give it the next state in the data set, s'.
+ϕ' is the next feature that you get from taking the action in the dataset.
+But then because we're featurizing states and actions, we give it the next state in the dataset, s'.
 But the action that the policy would have taken at s'.
 Now we don't have to actually evaluate the following state.
 We don't have to know what the dynamics will do for π(s').
@@ -259,7 +259,7 @@ So we're going to featurize s' and π(s').
 And that will give us ϕ'.
 So a very important property here is that ϕ doesn't change as the policy changes.
 But ϕ' does change.
-For ϕ', we always featurize the same s', the one we have in the data set.
+For ϕ', we always featurize the same s', the one we have in the dataset.
 But a different action because that action depends on our policy π.
 So ϕ' is actually the only thing in here that depends on π.
 So you would encode the action π, not the action in the data.

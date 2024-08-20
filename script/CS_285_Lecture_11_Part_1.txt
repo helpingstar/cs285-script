@@ -26,11 +26,11 @@ We could imagine a very simple model-based RL algorithm prototype.
 I'm going to call it version 0.5.
 It's not quite version 1.0, it's not quite the thing you'd want to use, but it's perhaps the most obvious thing we can start thinking about.
 In this model-based RL version 0.5 algorithm, step one would be to run some basic exploration policies to collect some data, and this exploration policy could just be a completely random policy.
-It's not a neural network or anything like that, it just selects actions uniformally at random and collects a data set of transitions.
+It's not a neural network or anything like that, it just selects actions uniformally at random and collects a dataset of transitions.
 So here our transition is a tuple (s,a,s').
-We saw state s, we took action a, and we arrived at state s' and that got us our transition, and we'll have a data set of these transitions.
-We can use this data set to then train our model with supervised learning.
-So we'll learn a dynamics model f(s,a) that minimizes the average over all the points in our data set of the difference between f(s_i, a_i) and s'_i .
+We saw state s, we took action a, and we arrived at state s' and that got us our transition, and we'll have a dataset of these transitions.
+We can use this dataset to then train our model with supervised learning.
+So we'll learn a dynamics model f(s,a) that minimizes the average over all the points in our dataset of the difference between f(s_i, a_i) and s'_i .
 And if your states are discrete, then maybe you'd use some other cross-entropy loss.
 If your states are continuous, you could use something like a squared error loss.
 Most generally, you would use a negative log likelihood loss, of which squared error is a particular special case for our Gaussian likelihood.
@@ -115,9 +115,9 @@ The procedure goes like this.
 Number one, run your base policy to collect data, just like before.
 Number two, learn your dynamics model from data, just like before.
 Number three, plan through your dynamics model to choose actions.
-And number four, execute those actions and add the resulting data to your data set.
+And number four, execute those actions and add the resulting data to your dataset.
 And then go to step two again.
-So the main loop consists of training the dynamics model on all the data so far, planning through it to collect more data, appending that data to your data set, and retraining.
+So the main loop consists of training the dynamics model on all the data so far, planning through it to collect more data, appending that data to your dataset, and retraining.
 It's essentially just like Dagger, only for models.
 Although there's a little bit of...
 That statement is a little bit of an anachronism, because this procedure actually existed in the literature long before Dagger did, but we present it in the opposite order in this class.

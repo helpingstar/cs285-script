@@ -53,11 +53,11 @@ Now, let's get to sort of the first part, understanding what problems are easy a
 The setting that we consider here is the exploration problem.
 I think most of the class that you've gone through is about exploration algorithms.
 Think about the standard online setting, DQN, all these.
-And so in this setting, you have reinforcement learning agent that is starting with an empty data set, and there is an interaction for H steps until the end, for example, of a game.
+And so in this setting, you have reinforcement learning agent that is starting with an empty dataset, and there is an interaction for H steps until the end, for example, of a game.
 And this interaction is ongoing, and it continues for a number of episodes.
 And you would like to measure how quickly a reinforcement learning agent is learning.
 Now, intuitively, the reinforcement learning agent starts with a policy that might be suboptimal.
-If it is playing Atari, the first policy is going to be bad if you start with an empty data set.
+If it is playing Atari, the first policy is going to be bad if you start with an empty dataset.
 But then progressively, it is going to learn and play policies that are better and better.
 What we would like to do is to measure the performance, the performance of the algorithm, and the standard way to do it, let me try to move this thing on.
 The standard way to do it is to define a quantity that is called regret, which you might have seen in class.
@@ -203,16 +203,16 @@ Now, the observation that the full-cluar observation, if you want, that we have 
 They still need a lot of samples compared to supervised learning.
 And so we would like to ask a very basic question, whether reinforcement learning is, for example, fundamentally more difficult than, for example, than classical supervised learning?
 And in order to study this question, we consider a setting that is very similar to the offline reinforcement learning setting that you have seen in the second part of the class.
-In the offline reinforcement learning setting, you have some data set that is available.
+In the offline reinforcement learning setting, you have some dataset that is available.
 And it consists of state, actions, reward, and success of states.
 And we try to ask.
-Questions about, for example, policies that might be different from the one that generated the data set.
+Questions about, for example, policies that might be different from the one that generated the dataset.
 You may, for example, want to try to identify the optimal policy.
 Or you may try to do off policy evaluation.
 The specific setting that we consider is one in which we allow some sort of data collection with a static distribution before.
-And the reason to do that, to allow for something like this flexibility, is because if the data set is poor, intuitively we cannot do much.
+And the reason to do that, to allow for something like this flexibility, is because if the dataset is poor, intuitively we cannot do much.
 And that's not the algorithm pose.
-It's just the data set.
+It's just the dataset.
 Maybe I have just data on a single state.
 So we do consider a case in which you can do some form of data collection with a static policy beforehand.
 And then we try to understand whether we can successfully predict the value of a different policy, for example, or extract the value of the optimal policy.
@@ -238,7 +238,7 @@ But can we have any guarantee about, for example, the amount of samples that are
 And so we have to do some research to see if we can provide some sort of a more stable algorithm.
 And really, to understand what's happening, you need to compare supervised learning with reinforcement learning.
 And the key difference is whether you're trying to make predictions for one time step or for many time steps.
-This is because if you're trying to make predictions for one time step, and you start with a data set that you might be able to predict, well, if you're trying to just predict the first reward and you have the promise that the reward function is linear, then we know that linear regression solves this problem very, very quickly.
+This is because if you're trying to make predictions for one time step, and you start with a dataset that you might be able to predict, well, if you're trying to just predict the first reward and you have the promise that the reward function is linear, then we know that linear regression solves this problem very, very quickly.
 So we know an algorithm.
 And we know guarantees as well.
 And this is the most basic machine learning algorithm that you can think of.
@@ -318,30 +318,30 @@ Instead, I'm going to jump to some offline reinforcement learning.
 Offline reinforcement learning, you've seen it already in the class, but just to do a quick recap, there's already a lot of data out there, so we would like to leverage them.
 How can we do so without collecting further data?
 And the setting is the same as that you've seen in class.
-We have an historical data set, which is a little bit more complicated.
-So we have an historical data set.
+We have an historical dataset, which is a little bit more complicated.
+So we have an historical dataset.
 of state actions were rewarding success of states.
 And the task is, how do we find the policy with the highest value?
-What does it even mean to find the policy with the highest value given a data set?
+What does it even mean to find the policy with the highest value given a dataset?
 Well, the highest value, of course, is the policy that is the optimal policy.
-But your data set may contain no information about the optimal policy.
+But your dataset may contain no information about the optimal policy.
 And so we have to make some best effort in trying to identify a good policy and lower our expectation and perhaps not find the optimal policy.
-The main challenge, I think you have discussed this in class as well, is that of distribution shift, meaning that the data set.
-Well, the best case scenario, which never happened, is one in which your data set has uniform samples all over the state and actual space, in which case you could just try to evaluate policy by 1, by 2, and by 3 and pick up the best.
+The main challenge, I think you have discussed this in class as well, is that of distribution shift, meaning that the dataset.
+Well, the best case scenario, which never happened, is one in which your dataset has uniform samples all over the state and actual space, in which case you could just try to evaluate policy by 1, by 2, and by 3 and pick up the best.
 But normally, what you've given is projectors that they might be, for example, from humans.
 And so they're generally narrowly concentrated.
-And the best case scenario is that you have a data set that's not the best.
+And the best case scenario is that you have a dataset that's not the best.
 And that's what we call problem of partial coverage.
-And in the example here, the data set may have a lot of information about π 1, no information about π 2, and some information about π 3.
+And in the example here, the dataset may have a lot of information about π 1, no information about π 2, and some information about π 3.
 And somehow, you have to come up with and choose between the three and figure out which policy is the best.
-And the thing that they want to sort of highlight today is how do we even measure this coverage, how much information the data set contains to find a good policy.
+And the thing that they want to sort of highlight today is how do we even measure this coverage, how much information the dataset contains to find a good policy.
 And intuitively, the way to solve this problem is precisely what you've seen in class.
 Or actually, there are two ways, if you want.
-One is to try to stay close to the policies that generated the data set, some form of behavioral cloning.
+One is to try to stay close to the policies that generated the dataset, some form of behavioral cloning.
 Another way is to attempt to find the best policy.
 And the other way is to attempt to find the best policy.
 And the other way is to attempt to estimate the uncertainty about your predictions.
-Generally, your data set is generated by policies, certain policies that are sort of narrowly concentrated.
+Generally, your dataset is generated by policies, certain policies that are sort of narrowly concentrated.
 And they give you data about state actions, reward, and transitions.
 And you would try to sort of fit some form of model and try to use the model to make predictions about the value of other policies.
 Now, the model doesn't actually need to be a model.
@@ -376,7 +376,7 @@ And those are two distinct parameters.
 And you can design algorithms that, again, .
 And essentially, try to solve this offline reinforcement learning problem.
 And they will have some guarantees that are precisely of this form, where these coverage coefficient has a certain analytical expression.
-And the analytical expression highlights really the interplay between the information that is contained in the data set and the target policy that you're trying to estimate, in particular, the information contained in the data set is reflected in the covariance matrix, which is a somewhat familiar object from statistics.
+And the analytical expression highlights really the interplay between the information that is contained in the dataset and the target policy that you're trying to estimate, in particular, the information contained in the dataset is reflected in the covariance matrix, which is a somewhat familiar object from statistics.
 Linear regression, you compute some covariance matrix.
 The covariance contains the amount of information that you know about the problem.
 And these interact with a certain norm in its inverse with the expected feature over the target policy that you are considering for the optimization.
@@ -426,9 +426,9 @@ The same object appears.
 What do you mean by ϵ optimal ?
 This won't be optimal, right, because it's a fluid.
 It's a linear rel.
-So it really depends on your data set.
-The policy that you find may be very crappy if your data set doesn't have good information.
-Suppose your data set is just from a policy that is narrowly concentrated, and the behavioral policy is bad.
+So it really depends on your dataset.
+The policy that you find may be very crappy if your dataset doesn't have good information.
+Suppose your dataset is just from a policy that is narrowly concentrated, and the behavioral policy is bad.
 And this feature matrix is like rank one.
 It's so concentrated in one direction.
 Then that doesn't really tell you much.
@@ -451,8 +451,8 @@ But then this guy will become the value, the sort of optimal policy.
 And so this is your ϵ, right?
 This is ϵ suboptimal compared to the optimal policy.
 But ϵ can be huge.
-Basically, I'm telling you the value of ϵ, given the data set that we have.
-This is really a way to measure how much information are contained in the data set.
+Basically, I'm telling you the value of ϵ, given the dataset that we have.
+This is really a way to measure how much information are contained in the dataset.
 And as a result, what's the performance that you can expect?
 At the initial state, I would say.
 The value of the policy at the initial state.
@@ -472,14 +472,14 @@ Expecting this can be some of the world.
 Now, what you wish you knew is the actual value of the policies, right?
 The green line is the value of the policy.
 So if you know the actual MDP, you do value iteration, and you will find this guy, the optimal policy.
-Unfortunately, what you have is a data set.
-Now, how to use the data set is up to you.
+Unfortunately, what you have is a dataset.
+Now, how to use the dataset is up to you.
 Intuitively, if you're doing model-based RL, you can try to fit some model, and try to use that to make it.
 So you can do it.
 You can do it.
 And try to use that to make predictions.
 So your model may be good, it might be bad.
-It might generally be good to make predictions about value of policies that generated the data set.
+It might generally be good to make predictions about value of policies that generated the dataset.
 It might be very bad to predict value of different policies.
 You might not use a model-based version, and you may do something different.
 For example, you may adopt a model-free approach, like CQL.
@@ -491,12 +491,12 @@ Try to come up with an estimate.
 For the value of different policies.
 And try to measure also the uncertainty.
 The uncertainty is really sort of this band here.
-And this curve may move up and down, depending on the data set.
+And this curve may move up and down, depending on the dataset.
 But you would like to try to estimate the uncertainty about your predictions.
-Intuitively, the uncertainty will be smaller for policy evaluation, for the very policy that's generated the data set.
+Intuitively, the uncertainty will be smaller for policy evaluation, for the very policy that's generated the dataset.
 You have a bunch of data.
 Just take the average.
-And you can see that the data set is very, very different.
+And you can see that the dataset is very, very different.
 But it will be very bad for a policy that is very, very different.
 It visits completely different areas of the state and action space.
 Your data is narrowly concentrated.
@@ -520,14 +520,14 @@ It would look something like this, some trade-off between values.
 Of course, you want the highest value.
 But policies that have high value, you might be very uncertain about them.
 And so there's going to be some trade-off.
-And just to make it, if you want, more clear, for the policy, that have in the data set, generally have a lot of hope data, and so this CPI is going to be something, like, one.
+And just to make it, if you want, more clear, for the policy, that have in the dataset, generally have a lot of hope data, and so this CPI is going to be something, like, one.
 You have a lot of that.
 So n is bigger.
 But this quantity is smaller.
 And so with this expression tells you is that you should do better than the policies that generate in the dataset.
 If you design the algorithm correctly, this is sort of the minimum that you would expect.
 You want to do better than the behavior of clone.
-Right and and this expression says exactly that if I put π as Behavioral policy that generated the data set C.
+Right and and this expression says exactly that if I put π as Behavioral policy that generated the dataset C.
 Pi will be smaller It's gonna be one this expression will be smaller and this tells me I do better than Behavioral cloning which is what we would expect Okay Time to sum up We have seen sort of three things One is most problems in RL.
 They're not worst case.
 They belong to a much easier class of problems We have seen that as soon as we move to function approximation RL is much more difficult than standard supervised learning and then we have seen what type of guarantees we can obtain for offline reinforcement learning algorithms and to conclude I think After the presentation this is much more clear.

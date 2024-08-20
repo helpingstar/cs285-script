@@ -89,7 +89,7 @@ It's not a count, but it looks like a count and it acts like a count, so it coul
 
 So this is based on a paper called "Unifying Count-Based Exploration..." by Bellemare et al.
 The idea is this.
-We're going to fit a model, p_θ(s), to all the states that we've seen so far in our data set D.
+We're going to fit a model, p_θ(s), to all the states that we've seen so far in our dataset D.
 Then we will take a step i and observe the new state s_i.
 Then we will fit a new model, p_{θ'}(s) to D with the new state appended to it.
 And then we'll use p_θ(s_i) and p_{θ'}(s_i) to estimate a pseudocount, which I'm going to call ^{N}(s).

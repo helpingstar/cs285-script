@@ -28,7 +28,7 @@ Where N=1 and K=1.
 [p.16]
 
 But all of them are really just special cases of this more general view.
-So we have our data set of transitions, our replay buffer.
+So we have our dataset of transitions, our replay buffer.
 This is the basic object at the center of all of this.
 We periodically interact with the world.
 And when we interact with the world, what we typically do is we take our latest vector ϕ.

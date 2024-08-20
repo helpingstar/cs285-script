@@ -50,7 +50,7 @@ You may need to put some work into autonomous collection.
 So especially in robotics, you know, maybe you try a task that you need to try it again.
 So you need to reset between trials.
 You need to take care to design rewards.
-For offline RL, you can just label the rewards in the data set.
+For offline RL, you can just label the rewards in the dataset.
 You can, for example, crowdsource it.
 But for online RL, you really need an automated reward function, which means you need to write some code or train some model to do this.
 Then you would wait a long time for RL to run.
@@ -60,7 +60,7 @@ So the iteration is very slow.
 Because each time you change something, you have to rerun the whole process.
 And when you're done, you throw it all in the garbage to start over for the next task.
 So if you trained a robot to, you know, make a cup of coffee and now you want it to make a cup of tea, typically you would throw this all out and start all over.
-With offline RL, you would collect your initial data set, which would come from a wide range of different sources.
+With offline RL, you would collect your initial dataset, which would come from a wide range of different sources.
 It could be human data, scripted controllers.
 It could come from some baseline policy or even a combination of all of the above.
 You might still need to design a reward function, but you could also have humans just label the reward because you only need the reward on your training data.
@@ -68,15 +68,15 @@ Then you would train your policy with offline RL.
 And then you might change the algorithm in some small way.
 But if you change the algorithm, you don't need to recollect your data.
 So this process becomes a lot more lightweight.
-You might choose to collect more data and add it to a growing data set.
+You might choose to collect more data and add it to a growing dataset.
 But again, you don't need to recollect the data from scratch.
-So anything you collect, you add to your data set.
+So anything you collect, you add to your dataset.
 You append it.
 You aggregate it.
 And then you just keep reusing it.
 Now, for full disclosure, you will periodically need to run your policy online, mostly to see how well it's doing.
 But that's a lot less onerous than doing training online.
-And then if you have another project that you want to do in the future in a similar domain, you can keep your data set around and reuse it again.
+And then if you have another project that you want to do in the future in a similar domain, you can keep your dataset around and reuse it again.
 So if you really need to do real world RL training, if you don't have a simulator, the offline process can be a lot more practical.
 And I'll illustrate this with a few examples from some of my own research with colleagues at Google and also some folks at UC Berkeley.
 
@@ -117,7 +117,7 @@ So it's just an automated reward function for reaching the goal.
 The method is very similar to conservative Q learning, just adapted to goal reaching.
 And one fun thing you can do with this is you can actually use it as an unsupervised pre-training objective.
 So kind of in the same way that you might pre-train with a language model in NLP and then fine tune it to a task.
-You can pre-train this goal conditioned thing on a large data set and then fine tune it with a task reward.
+You can pre-train this goal conditioned thing on a large dataset and then fine tune it with a task reward.
 And that leads to some pretty substantial improvements.
 So that's kind of nice.
 You can verify a new hypothesis in this case about goal conditioned RL without collecting any new data.
@@ -126,11 +126,11 @@ You can verify a new hypothesis in this case about goal conditioned RL without c
 
 But you can test it directly in the real world.
 Here's another robotics example.
-So in 2020, Greg Kahn, who's a PhD student here at Berkeley at the time, collected a data set of about 40 hours of off-road navigation using a small ground robot in early 2020.
+So in 2020, Greg Kahn, who's a PhD student here at Berkeley at the time, collected a dataset of about 40 hours of off-road navigation using a small ground robot in early 2020.
 In late 2020, Dhruv Shah, another PhD student, used the same data to build a goal conditioned navigation system that could do things like deliver mail or deliver a pizza.
 And he didn't need to collect any new data to do this.
 He could reuse the same data with offline RL.
-And in early 2021, Dhruv could use the same data set to train a policy that would learn to search for particular goals in an environment.
+And in early 2021, Dhruv could use the same dataset to train a policy that would learn to search for particular goals in an environment.
 The techniques used in this work were a little different than the algorithms that I covered in this lecture.
 But the basic principle that offline RL could let you test out these hypotheses very quickly in the real world without additional real world data collection, in my opinion, kind of illustrates one of the benefits of using this for kind of rapidly testing out new algorithmic ideas while sticking to real data without having to rely entirely on simulation.
 
@@ -138,7 +138,7 @@ But the basic principle that offline RL could let you test out these hypotheses 
 
 All right.
 Now let me talk about some takeaways, some conclusions, and also maybe some future directions.
-So the dream in offline RL is you could collect a data set using any policy or mixture of policies, and then you could run offline RL on this data set to learn a policy and then just deploy directly in the real world for medical diagnosis, for algorithmic trading, for logistics, driving, what have you.
+So the dream in offline RL is you could collect a dataset using any policy or mixture of policies, and then you could run offline RL on this dataset to learn a policy and then just deploy directly in the real world for medical diagnosis, for algorithmic trading, for logistics, driving, what have you.
 And then there's current RL algorithms.
 And there's still a gap there.
 So here are a few things.

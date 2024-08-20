@@ -22,7 +22,7 @@ Then we would sample some noise from a zero mean unit variance distribution, and
 And then we can pass z through the decoder, p_θ(x|z), and that would produce the image.
 The training procedure trains this whole thing with the reparameterization trick.
 So it's trained to maximize the variational lower bound with respect to both the parameters of the decoder θ and the parameters of the encoder ϕ.
-So the objective just ends up being the average over the entire data set of the log probability of the image from the decoder, where the mean and standard deviation for the z comes from the encoder.
+So the objective just ends up being the average over the entire dataset of the log probability of the image from the decoder, where the mean and standard deviation for the z comes from the encoder.
 So we use the reparameterization trick to backpropagate the error of this first log probability term all the way from the decoder back into the encoder, and thus train both θ and ϕ.
 And of course, we also have to subtract off the KL divergence regularizer, which basically accounts for the prior.
 And the KL divergence here is between the encoder distribution, q_ϕ(z|x_i), and the prior p(z).
@@ -38,7 +38,7 @@ Well, we can use the variational autoencoder by training on a bunch of images an
 And we can sample from it by, for example, generating a sample from the prior p(z), and then decoding that sample using the decoder p(x|z).
 Now, why does this actually work intuitively?
 So the math is all the stuff from the previous sections.
-The intuition behind why this works is that the evidence lower bound, the variational lower bound, is going to try to make the images in the data set as likely as possible, given the 'z's that we obtained for those images from the encoder.
+The intuition behind why this works is that the evidence lower bound, the variational lower bound, is going to try to make the images in the dataset as likely as possible, given the 'z's that we obtained for those images from the encoder.
 But the encoder is also trained to stay close to the prior, which means that if the encoder produces 'z's that are too different from the kinds of 'z's that you would get by sampling from the zero mean unit variance prior distribution over 'z's, then the encoder would pay a very heavy price for it.
 So the encoder has a very strong incentive to produce 'z's that look like samples from the prior, because if it doesn't do that, then that KL divergence term will be very large, and that will incur a large penalty.
 Now, this explains why samples from the encoder will be within that unit variance prior.

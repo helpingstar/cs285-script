@@ -122,7 +122,7 @@ But for a neural network, it's in general not guaranteed to converge.
 All right.
 So just to put the pieces together, here's the full fitted Q iteration algorithm.
 And for each step of the algorithm, there are some free parameters that I'm going to mention.
-Step one, collect the data set consisting of tuples (s_i, a_i, s'_i, r_i) using some policy.
+Step one, collect the dataset consisting of tuples (s_i, a_i, s'_i, r_i) using some policy.
 The algorithm works for a wide range of different policies.
 Now, not all policy choices are equally good, but the principles will apply to any policy, and it certainly doesn't have to be the latest policy.
 And one of the parameters you have to choose is the number of such transitions you are to collect.

@@ -150,8 +150,8 @@ So this is very much the classic important sample policy gradient, or PPO style 
 But one big question with this loop is the reward.
 So notice that every time we generate a batch of completions from a language model policy, we have to evaluate the reward of each of those completions.
 Where do we get that?
-Because typically if we were to train on, let's say, question answering questions like "what is the capital of France?", we might have a ground truth data set of answers.
-But here the policy might generate answers that are not in that data set.
+Because typically if we were to train on, let's say, question answering questions like "what is the capital of France?", we might have a ground truth dataset of answers.
+But here the policy might generate answers that are not in that dataset.
 
 [p.20]
 
@@ -244,9 +244,9 @@ And this method was described in two papers, "Fine-Tuning Language Models from H
 These basically are the foundation of instructGPT, ChatGPT, and so on.
 The overall method is to first run supervised training or typically fine-tuning to get your initial policy π_θ.
 And that's just supervised training of a language model.
-And then for each question in your data set, for each s, you would sample K possible answers, a_k, from your policy and construct a data set consisting of tuples with a prompt s_i, and K possible answers, a_{i,1} through a_{i,K}, for that prompt.
+And then for each question in your dataset, for each s, you would sample K possible answers, a_k, from your policy and construct a dataset consisting of tuples with a prompt s_i, and K possible answers, a_{i,1} through a_{i,K}, for that prompt.
 Then you would get humans to label each of those points, each of those {s, a_1, ..., a_k} tuples to indicate which answer they prefer.
-And then you would use that labeled data set to train r_ψ.
+And then you would use that labeled dataset to train r_ψ.
 And then you would update π_θ using RL with r_ψ as the reward.
 And then you would repeat this process some number of times.
 Now, typically when you do this, in step 5, you would actually run many steps of policy optimization.

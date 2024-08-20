@@ -174,8 +174,8 @@ And of course, an obvious question this might raise is if this is the hierarchy 
 Well, the reason is that actually things like policy gradient methods are often more parallelizable, which means that if we can run multiple simulations in parallel, they can actually be faster in terms of wall clock time.
 And the cost of samples is not the only cost that you pay.
 So if you have access to lots of simulation, and generating interaction with the environment is cheap, and the cost has more to do with the compute for training your models, then maybe you might prefer methods that are less efficient, but that require less compute.
-And in fact, model-based deep RL methods are often the most compute hungry, because you might take many grading updates on the model for every simulation step.
-So for this reason, you might actually prefer methods that are less efficient, but have other benefits like better parallelism, or requiring fewer grading updates on the policy or model.
+And in fact, model-based deep RL methods are often the most compute hungry, because you might take many gradient updates on the model for every simulation step.
+So for this reason, you might actually prefer methods that are less efficient, but have other benefits like better parallelism, or requiring fewer gradient updates on the policy or model.
 
 [p.08]
 
@@ -193,7 +193,7 @@ But in many domains especially as you increase the breadth of the problem meanin
 
 [p.09]
 
-So speaking of breadth in general generalization scaling up in generalization are major challenges in deep RL when it comes to supervised learning like training on IMAGENET or training on common crawl or large NLP data sets the state-of-the-art in supervised deep learning is large-scale, emphasizes diversity, and it's evaluated on generalization.
+So speaking of breadth in general generalization scaling up in generalization are major challenges in deep RL when it comes to supervised learning like training on IMAGENET or training on common crawl or large NLP datasets the state-of-the-art in supervised deep learning is large-scale, emphasizes diversity, and it's evaluated on generalization.
 So nobody cares how well your language model can memorize a particular piece of text it's trained on.
 Everyone cares how well your language model can generalize to some new prompt.
 Whereas in RL, we seem to be often evaluating our methods on small-scale tasks that emphasize mastery and are evaluated on performance, meaning that what we really measure is how well do we optimize a given objective function in the particular environment where it's optimized.
@@ -209,9 +209,9 @@ There are a number of issues with this.
 So first, we could say off the bat, well, what if we just scale up Deep RL?
 What if we just run massive simulation with lots and lots of different settings and try to get more generalizable and performant policies?
 This was basically the path towards game-playing systems like AlphaGo, but it's quite challenging.
-So with supervised machine learning, what we do is we interact with the world and we collect the data set.
+So with supervised machine learning, what we do is we interact with the world and we collect the dataset.
 And this is typically done once for supervised learning systems.
-And then we run a learning algorithm on that data set for many epochs and get some solution.
+And then we run a learning algorithm on that dataset for many epochs and get some solution.
 And if we're not happy with that solution, we don't recollect the data, we just rerun the training after changing something about our method.
 In reinforcement learning, we typically learn through continuous interaction with the world.
 So that means that if we want to change something about our method, we would typically rerun the interactive learning process.
@@ -252,8 +252,8 @@ But this does quickly start presenting major challenges.
 Now, those challenges include the challenge of figuring out what all those scenarios are.
 So you might want real world data to figure out the range of scenarios you have to cover, and also actually devising the algorithms that can handle such a broad range of scenarios.
 So, in terms of utilizing data, perhaps off-policy or offline RL methods can be more effective.
-Maybe we could collect the big data set from past interactions to figure out that an effective, an effective robot needs to run on sand and in cities and all sorts of other situations.
-And perhaps that we can use this data set with an offline RL procedure, where if we're not happy with the solution, we could go out and get more data and simply add it to our data set, rather than repeating the process.
+Maybe we could collect the big dataset from past interactions to figure out that an effective, an effective robot needs to run on sand and in cities and all sorts of other situations.
+And perhaps that we can use this dataset with an offline RL procedure, where if we're not happy with the solution, we could go out and get more data and simply add it to our dataset, rather than repeating the process.
 And then if we have to tune something about the method, maybe we can do so without having to discard all of our data.
 Perhaps we could also approach this by building simulations and adapting those simulations to the real world, if that's the approach you want to take.
 And that's also something that, perhaps, merits more research.

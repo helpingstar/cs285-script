@@ -70,7 +70,7 @@ The intuition is that you first write down the equation for a base optimal class
 [p.32]
 
 As I mentioned before, aren't we just checking if s = s?
-Well, if there are copies of s present in the data set, then the optimal D_s(s) is not one, as I mentioned before.
+Well, if there are copies of s present in the dataset, then the optimal D_s(s) is not one, as I mentioned before.
 And in fact, the optimal classifier is given by 1 / (1+p(s)).
 And again, this is a bit of algebra that you can check.
 So if you rearrange this to solve it for p(s), you get the equation on the right.
@@ -105,7 +105,7 @@ So maybe it's this function.
 And we take our buffer of states and actions that we've seen, and we fit an estimate to f^{*}.
 So we fit some function ^{f}_θ.
 So ^{f}_θ is trying to match f^{*} on the data.
-So maybe our data set contains these points, ^{f}_θ might look like this.
+So maybe our dataset contains these points, ^{f}_θ might look like this.
 So it's going to be similar to those points, close to the data, but far from the data, it's going to make mistakes because it hasn't been trained in those regions.
 So now we can use the error between ^{f} and f^{*} as our bonus, because we expect this error to be large when we're very far away from states and actions that we've seen.
 So close to the data the two functions should match far from the data ^{f}_θ might make really big mistakes.

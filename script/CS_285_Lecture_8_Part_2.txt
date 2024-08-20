@@ -25,7 +25,7 @@ So intuitively, what we would like to resolve this issue is something that's a l
 
 So here's how we can do Q learning with a replay buffer and a target network.
 And this is going to look like a kind of mix between the online Q learning algorithm and the full-batch fitted Q learning algorithm.
-So we're going to collect our data set using some policy, and we add that policy to our buffer.
+So we're going to collect our dataset using some policy, and we add that policy to our buffer.
 This is now step 2.
 Step 1 will be revealed later.
 We're going to then, in an inner loop, sample a batch, (s_i, a_i, s'_i, r_i), from this buffer.

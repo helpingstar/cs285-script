@@ -26,12 +26,12 @@ How do we represent a distribution over functions?
 [p.37]
 
 Well, one of the things we could do is we could think back to the model-based RL lectures, where we learned how we can represent distributions by using bootstrap ensembles, and essentially try the same thing.
-So given a data set D, we resample that data set with replacement N times, to get N data sets D_1 through D_n, and then we train a separate model on each of those data sets, which basically means we train a separate Q function on each of those data sets.
+So given a dataset D, we resample that dataset with replacement N times, to get N datasets D_1 through D_n, and then we train a separate model on each of those datasets, which basically means we train a separate Q function on each of those datasets.
 And then to sample from the posterior, we simply choose one of those models at random, and then use that model.
 So, here's a little illustration that shows uncertainty intervals estimated by these bootstrap neural nets.
 Now, of course, training N big neural nets is expensive.
 How can we avoid it?
-Well, we use again the same trick that we used in the model-based RL lectures, which is to not do the resampling with replacement, just use the same data set.
+Well, we use again the same trick that we used in the model-based RL lectures, which is to not do the resampling with replacement, just use the same dataset.
 And furthermore, one of the things we could do, and this is described in this paper at the bottom called "Deep Exploration via Bootstrap DQN", is we can actually train one network with multiple heads.
 Now, that's not ideal, because now the outputs of those different heads will be correlated, but, in practice, they might be different enough to give us a little bit of variability for exploration.
 So this might not be a great way to estimate a very accurate posterior, but it might be good enough to ensure that each of those heads has slightly different behavior.

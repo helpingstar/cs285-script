@@ -7,9 +7,9 @@ So even though we learned that value-based methods in general are not guaranteed
 
 So first, to recap from last time, we discussed how we could derive a general class of value-based methods which we called fitted Q iteration algorithms, which do not require knowledge of the transition probabilities, and do not require us to explicitly represent a policy.
 So in this class of methods there are basically three steps.
-Step one, we collect a data set using some policy, and we learn that these are off-policy algorithms, which means that they can collect their data sets using a wide range of different policies.
+Step one, we collect a dataset using some policy, and we learn that these are off-policy algorithms, which means that they can collect their datasets using a wide range of different policies.
 They can aggregate data from previous iterations, and they can use various exploration rules like ϵ-greedy and Boltzmann exploration.
-Then in step two, for each transition in our data set, and when I say transition I mean s_i, a_i, s'_i, and r_i tuples, for each transition we calculate what we call the target, which I'm denoting as y_i, which is equal to {the current reward} plus {γ times the max over the actions of the next time step}.
+Then in step two, for each transition in our dataset, and when I say transition I mean s_i, a_i, s'_i, and r_i tuples, for each transition we calculate what we call the target, which I'm denoting as y_i, which is equal to {the current reward} plus {γ times the max over the actions of the next time step}.
 And we learned that this max is what allows us to make this algorithm off-policy so the max basically accounts for the fact that you are implicitly computing a greedy argmax policy using your current Q function Q_ϕ and then evaluating the value of that argmax policy by plugging it into Q_ϕ.
 So, of course the argmax is simply the max so that gets us our targets y_i and then in step three we update our function approximator for Q which is parameterized by ϕ, by finding the argmin parameters, the parameters that minimize the difference between the output of Q_ϕ and the target's y_i that we just computed.
 Step two and three can in general be repeated some number of times before we collect more data.
@@ -78,7 +78,7 @@ Replay buffers are a fairly old idea in reinforcement learning.
 They were introduced way back in the 1990s.
 And here's how they work.
 So let's think back to the full fitted Q-iteration algorithm.
-In the full fitted Q-iteration algorithm, we would collect a data set of transitions using whatever policy we wanted, and then we would make multiple updates on that data set of transitions.
+In the full fitted Q-iteration algorithm, we would collect a dataset of transitions using whatever policy we wanted, and then we would make multiple updates on that dataset of transitions.
 So we would label all of the transitions with target values.
 Then we might make a large number of gradient steps regressing onto those target values.
 And then we might even go back and compute new target values before we even collect more data.
@@ -120,7 +120,7 @@ And that will refresh our buffer with behavior that hopefully gets better covera
 
 All right.
 So putting it all together we can devise a full kind of Q learning recipe with replay buffers.
-Step one, collect a data set of transitions using some policy.
+Step one, collect a dataset of transitions using some policy.
 Maybe initially, it's just a random policy.
 Later on, it will be the argmax policy with ϵ-greedy exploration, and add this data to your buffer B.
 So that's this part.

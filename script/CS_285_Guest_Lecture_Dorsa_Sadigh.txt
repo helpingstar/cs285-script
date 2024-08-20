@@ -331,11 +331,11 @@ There are a bunch of objectives.
 That like I never said, that's part of the reward function.
 And there is no reason for Alice to optimize for this.
 Okay.
-There's also the other extreme, which is I could collect the data set and I could just do supervised learning.
+There's also the other extreme, which is I could collect the dataset and I could just do supervised learning.
 I could do imitation learn.
 And then there is actually like this kind of game is coming from a paper called Deal or No Deal.
-There's a data set that comes with the paper and you could actually train on that data set.
-And it turns out that for some reason, that data set is extremely nice.
+There's a dataset that comes with the paper and you could actually train on that dataset.
+And it turns out that for some reason, that dataset is extremely nice.
 So the supervisor.
 The learning agent is on the other end of the spectrum and is very agreeable.
 So, so your Alice ends up just agreeing with whatever Bob says.
@@ -557,9 +557,9 @@ The thing that was exciting was what would be the analog of that for robotics.
 And I think it's a very grand vision.
 It's a wonderful thing to try to shoot for.
 And under this take, the idea is that we're going to be able to do this.
-And the idea is that instead of tapping into preference queries or demonstrations, the question is, can we tap into large offline data sets?
-The thing, the promise of this is that there are large offline data sets out there.
-And from these data sets, we could try to train a model or pre-train a model and actually tap into that information and be able to use that in downstream settings.
+And the idea is that instead of tapping into preference queries or demonstrations, the question is, can we tap into large offline datasets?
+The thing, the promise of this is that there are large offline datasets out there.
+And from these datasets, we could try to train a model or pre-train a model and actually tap into that information and be able to use that in downstream settings.
 And that would be really wonderful.
 And if you think about the robotics foundation model, there's this question of what are the right ways of looking at it.
 So if you look at the foundation model paper, the idea is that you have many different data sources.
@@ -665,16 +665,16 @@ And you're calling the ResNet, you can call Waltron.
 Please use it.
 Let us know how it goes.
 But I think the main point of this section was that as we were training these large models, and the thing that we were training here was a visual representation.
-We were trying to tap into large offline data sets by training a visual representation.
+We were trying to tap into large offline datasets by training a visual representation.
 I think we could be careful about that pre-training objective.
 And we could try to shape that pre-training objective.
 So it is actually useful for downstream robotics tests that we are interested in.
 And in this case, we were looking at language and multi-frame conditioning really as the key differences for bringing syntax, semantics, and the dynamics of the task together so that these representations are useful for robotics.
 Building on top of that idea, I mentioned we don't have robot data.
 The reason that we looked at Waltron on human videos was we don't have robot data.
-And I'm pretty excited about all of these different efforts that are going on across multiple labs in terms of, you know, collecting large offline data sets, robot data sets that you could actually train these pre-trained models on.
+And I'm pretty excited about all of these different efforts that are going on across multiple labs in terms of, you know, collecting large offline datasets, robot datasets that you could actually train these pre-trained models on.
 So this is our TX effort that Sergey and folks at Berkeley, folks at Google, and a number of labs have been kind of contributing to.
-And the idea here is really trying to train across embodiment model trained on robots of many different embodiments, many different skills, many different data sets, and have a single model that could actually get all of these different diversity of robot data and then act as that foundation model.
+And the idea here is really trying to train across embodiment model trained on robots of many different embodiments, many different skills, many different datasets, and have a single model that could actually get all of these different diversity of robot data and then act as that foundation model.
 And then there's a question of, what should it output, right?
 Like what I showed in Waltron was a visual representation.
 It wasn't an action.
@@ -688,7 +688,7 @@ And kind of like building on top of that, there's also a number of efforts.
 This is the R2D2 effort.
 Again, it's an operation across multiple labs, Sergei's lab, Chelsea's lab, a number of labs outside of Stanford and Berkeley, where we are trying to collect data on kind of like a same platform, but like really diverse data in the wild, in the wild meaning the dorms of students.
 So this is one of the Stanford dorms.
-It's, I think, very common in the data set.
+It's, I think, very common in the dataset.
 But you could actually get the robot and teleoperate it kind of like in the wild and then try to train a model on this type of data that's being collected.
 And I think that is also really exciting when we are thinking about training these models.
 All right, so that was my first take.
@@ -702,7 +702,7 @@ I don't want to go and build a robotics foundation model.
 That sounds like really difficult.
 LLMs and VLMs exist.
 And there's a question of, can I use them in creative ways for robotics?
-So the idea is instead of tapping into preference queries and demonstrations, or instead of tapping the large offline data sets like the robotics foundation models try to do, can I tap into existing knowledge of large language models and vision language models?
+So the idea is instead of tapping into preference queries and demonstrations, or instead of tapping the large offline datasets like the robotics foundation models try to do, can I tap into existing knowledge of large language models and vision language models?
 And the reason I was not that excited about this initially was, it was like, OK, what can I do with an LLM?
 But the initial efforts were things like using a large language model as a task plan.
 If you look at works like SACAN, initially, I was like, what does SACAN do?

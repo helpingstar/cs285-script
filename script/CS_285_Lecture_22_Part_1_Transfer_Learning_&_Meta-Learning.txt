@@ -122,7 +122,7 @@ But keep in mind that these things really are at the frontier of research, and t
 
 Okay, so let's talk a little bit about pre-training and fine-tuning in RL.
 So outside of reinforcement learning, if you were to think about addressing just kind of general transfer learning problems.
-Let's say in computer vision a very popular approach is to train some kind of representational large data set like maybe you train a ConvNet on a large data set of images or you train a language model in a large data set of text like something like a BERT model.
+Let's say in computer vision a very popular approach is to train some kind of representational large dataset like maybe you train a ConvNet on a large dataset of images or you train a language model in a large dataset of text like something like a BERT model.
 And you use that to basically extract representations these could be representatives of images representations of text something like that.
 And then you would train a few additional layers on top of those maybe just a few fully connected layers or maybe you would fine-tune the entire network to solve a particular task that you want, for which you have a comparatively more limited amount of data.
 And this is a pretty standard workflow across a range of supervised learning domains.

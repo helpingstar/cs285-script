@@ -45,7 +45,7 @@ So we typically also add a reward node to this and learn a reward model.
 All right.
 So how should we train one of these things?
 Well, if we had a standard fully observed model, we would train it with maximum likelihood.
-We would basically take our data set of N different transitions.
+We would basically take our dataset of N different transitions.
 And for each transition, we would maximize the log probability of (s_{t+1,i}|s_{t,i},a_{t,i}).
 If we have a latent space model, now we have a p(o_t|s_t) and a p(s_{t+1}|s_t,a_t).
 So we have to maximize the log probabilities of both of those, and potentially also the reward model, if we want to add that in.
@@ -122,7 +122,7 @@ But for simplicity of exposition, if you think about this as a deterministic enc
 Okay.
 So how do we use this in an actual model-based RL algorithm?
 Well, it's actually fairly straightforward you can just substitute this directly into the model-based RL version 1.5 algorithm that I discussed before.
-You can run your base policy π_0 to collect the data set of transitions.
+You can run your base policy π_0 to collect the dataset of transitions.
 Now, these transitions consist of observation, action, and next observation tuples.
 Then you train your dynamics, reward model, observation model, and encoder together with backpropagation.
 Plan through the model to choose actions that maximize the reward.

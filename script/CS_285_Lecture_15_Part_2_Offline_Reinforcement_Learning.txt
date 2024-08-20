@@ -227,7 +227,7 @@ Because the weight is d^{π_θ} over d^{π_θ}.
 So what this is really describing is a condition that state action marginals need to obey.
 When it comes time to actually optimize this in practice, of course, we're going to subtract the right-hand side from the left-hand side, and as long as we get a multiplier of d^{π_β} in front of everything, then we can approximate it with samples.
 So in reality, we never actually estimate these d^{π_β} terms directly.
-We always use samples from our data set as samples from d^{π_β}.
+We always use samples from our dataset as samples from d^{π_β}.
 So the left-hand side of this is just the probability of seeing (s',a') under the policy π_θ.
 And the probability of seeing (s',a') is basically equal to the probability that you start in (s',a'), and that's what the first term captures.
 So it's the probability you start in s' times the probability that you take the action a' plus the probability that you transition into (s',a') from another state.
@@ -241,7 +241,7 @@ You never need to have a neural net that approximates d^{π_β} or d^{π_θ}.
 You only need a neural net that approximates w.
 So this is the basic idea of marginalized importance sampling.
 Write down a relationship between the 'w's at future states and current states.
-Turn that relationship into an error, and then estimate that error using only the samples in your data set.
+Turn that relationship into an error, and then estimate that error using only the samples in your dataset.
 And then typically you would represent the 'w's with some kind of neural net.
 
 [p.24]

@@ -10,14 +10,14 @@ And if the object is soft and deformable, then an entirely different set of stra
 Like pinching it.
 So anytime we have a situation that has so many special cases, exceptions, and little details, it makes it very appealing to use machine learning.
 So it would be really nice to try to set this up as a machine learning problem where instead of having to manually engineer all these little exceptions, you could just run some kind of general purpose machine learning procedure, maybe with convolutional neural networks, to extract suitable grasp locations from an image automatically.
-The trouble is that the standard tool we have in supervised learning don't make this very easy, because they require us to somehow obtain a data set consisting of pairs of images and suitable grasp locations.
+The trouble is that the standard tool we have in supervised learning don't make this very easy, because they require us to somehow obtain a dataset consisting of pairs of images and suitable grasp locations.
 But the problem is that even people can't necessarily determine grasp locations very well, because they're really a property of the physical interaction between the robot and its environment, not necessarily something that is very well informed by human intuition.
 To put it simply, we don't have a lot of experience picking things up with robot fingers.
 So can we somehow use machine learning but avoid the need to manually supervise this process?
 Well, what if we actually get the robots themselves to collect a lot of trials to attempt different grasps and see what works and what doesn't work?
 That in essence is the main idea behind reinforcement learning, and the methods that we'll discuss in this course will in some ways address different methods for tackling this type of problem.
 So in a reinforcement learning setting, we wouldn't try to manually specify, in this case, where the robots should grasp objects.
-Instead, the machines themselves will collect the data set that doesn't necessarily consist of good examples, but examples that are labeled with our outcome.
+Instead, the machines themselves will collect the dataset that doesn't necessarily consist of good examples, but examples that are labeled with our outcome.
 So it'll be images, what the robot did, and whether that led to a failure or success.
 More generally, we would refer to this as a reward function.
 The robot would be rewarded for success and not for failure.

@@ -10,7 +10,7 @@ Well we already know this, we train a model using our data, we would use that mo
 But if we don't collect more data then we have a little bit of a problem.
 It's a similar kind of problem as the one that we had with a Q function.
 So just like with the Q function, the model essentially is at is trying to answer what-if questions.
-What if we were to go back to one of those states in our data set and take different actions, what kind of states would we end up in and what would happen then?
+What if we were to go back to one of those states in our dataset and take different actions, what kind of states would we end up in and what would happen then?
 So if you remember back in our discussion of model-based RL, we talked about Dyna-style methods.
 Dyna-style methods are ones that use the states and actions collected in the real world as starting points for short model-based rollouts.
 And the first two model-based offline RL methods we'll discuss are basically Dyna-style methods adapted to the offline setting.
@@ -85,9 +85,9 @@ So the basic idea behind COMBO is just like CQL minimizes Q values of policy act
 So here's our dyna picture again, and we're going to have a loss function for our critic that looks very similar to the CQL loss from before, where we're minimizing Bellman error.
 But now we're going to be using data from the model to do this.
 So it's a dyna-style method.
-We're going to be maximizing the Q values in the data set, and then we'll be pushing down on state and action Q values from the model.
+We're going to be maximizing the Q values in the dataset, and then we'll be pushing down on state and action Q values from the model.
 So we're trying to make Q values.
-And the model be worse and Q values under the data set be better.
+And the model be worse and Q values under the dataset be better.
 And the intuition here is if the model produces something that looks clearly different from real data, it's very easy for the Q function to make that look bad.
 But if the model produces very realistic states and actions, the ones that are indistinguishable from the ones in the data, then these two terms should really balance out.
 So it's a somewhat GAM-like idea in a sense.
@@ -110,7 +110,7 @@ So the basic idea here is that we would train a joint state action model.
 So we're not just going to train a model that predicts future states, conditional current states and actions.
 We'll train a model over entire trajectories.
 So this model will provide us with probabilities of state action sequences.
-By just doing density estimation on the trajectories in the data set.
+By just doing density estimation on the trajectories in the dataset.
 And I'm going to use a subscript β to denote that this distribution, of course, depends on the behavior policy.
 And intuitively, what we're going to do with this distribution is we're going to optimize for a plan for a sequence of actions.
 That has high probability under this distribution, which means that we will avoid actions that are very unlikely in the data, which will avoid out-of-distribution actions.
@@ -142,8 +142,8 @@ You need a causal mask for the transformer so this would be something that we do
 If you're not too familiar with transformers don't worry about this too much.
 This is basically the main idea is that any kind of sequence model could be used.
 Now one nice thing about this is because you're modeling state and action probabilities you can make very accurate predictions out to much much longer horizons.
-So this problem of accumulating errors is a big problem if you're selecting new actions, different from those seen in the data set.
-But if you're restricting yourself to actions similar to those seen in the data set, then you can make very accurate predictions very far into the future.
+So this problem of accumulating errors is a big problem if you're selecting new actions, different from those seen in the dataset.
+But if you're restricting yourself to actions similar to those seen in the dataset, then you can make very accurate predictions very far into the future.
 So this animation is actually showing the trajectory transformer making predictions for the humanoid hundreds of steps into the future.
 So this is not a simulation this is actually just a prediction from the model.
 And then you can use this model to do planning.
@@ -158,7 +158,7 @@ Now of course you could use any other planning method.
 You could use MCTS with this, you could use even differentiable things, although you would have to be careful to turn your those discretizations into continuous values.
 The important thing is that you need to make sure that you're maximizing reward and also taking the probabilities into account.
 So the beam search approach takes probabilities into account because when it samples those K tokens they're sampled from p_β.
-So they're sampled from a distribution of tokens that have a high probability under the data set and then you select the best one among those, and that's okay.
+So they're sampled from a distribution of tokens that have a high probability under the dataset and then you select the best one among those, and that's okay.
 So why does this work?
 Well generating high probability trajectories avoids out of distribution states and actions because you're actually using p_β both to select the states and the actions.
 And using really big models works well for offline RL because you can use lots of compute and capture complex behavior policies.

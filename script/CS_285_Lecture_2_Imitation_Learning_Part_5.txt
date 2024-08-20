@@ -19,7 +19,7 @@ So that p_{data} better covers the states that the policy actually visits?
 
 Okay.
 How can we make p_{data} = p_{π_θ}?
-Well, of course, if we're changing our data set, we're introducing some additional assumptions.
+Well, of course, if we're changing our dataset, we're introducing some additional assumptions.
 So we're going to be actually collecting more data than just the initial demonstrations.
 And the question then is which data to collect.
 And that's what Dagger tries to answer.
@@ -32,18 +32,18 @@ Now, we're going to need labels for all those states.
 We're going to train our policy first on our training data, just on our demonstrations, to get it started.
 And then we'll run our policy and we'll record the observations that the policy sees.
 And then we'll ask a person to go through all of those observations and label them with the action that they would have taken.
-And now we have a labeled version of the policy data set.
+And now we have a labeled version of the policy dataset.
 And then we're going to aggregate.
-We're going to take the union of the original data set and this additional label data set that we just got.
+We're going to take the union of the original dataset and this additional label dataset that we just got.
 And then go back to step one, retrain the policy and repeat.
 So every time through this loop, we run our policy, we collect observations.
 We ask humans to label them with the correct actions for those observations.
 And then we aggregate.
-And it can actually be shown that eventually this algorithm will converge such that eventually the distribution of observations in this data set will approach the distribution of observations that the policy actually sees when it runs.
+And it can actually be shown that eventually this algorithm will converge such that eventually the distribution of observations in this dataset will approach the distribution of observations that the policy actually sees when it runs.
 The intuition for why that's true, of course, is that eventually, is that each time the policy runs, you collect its observations, but then you might label them with actions that are different from the actions it took.
 But that distribution is closer than the initial one.
 So as long as you get closer each step, eventually you'll get to a distribution where the policy can actually learn and then you'll stay there forever.
-So then as you collect from it more and more, eventually your data set becomes dominated by samples from the correct p_{π_θ} distribution.
+So then as you collect from it more and more, eventually your dataset becomes dominated by samples from the correct p_{π_θ} distribution.
 So that's the algorithm.
 It's a very simple algorithm to implement if you can get those labels.
 
@@ -103,7 +103,7 @@ When learning autonomously, in principle, machines can get unlimited data from t
 Now, in order to start thinking about that, we have to introduce some terminology and notation.
 We have to actually define what it is that we want.
 If our goal is no longer just to imitate, but we want to do something else, well, what is it that we want?
-And maybe instead of matching the actions in the expert data set, we want to bring about some desired outcome.
+And maybe instead of matching the actions in the expert dataset, we want to bring about some desired outcome.
 Maybe in the tiger example, we want to minimize the probability of being eaten by the tiger.
 So, we want to minimize the probability that we will land in a state, s', which is an eaten by tiger state.
 And we can write that down mathematically.

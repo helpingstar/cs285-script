@@ -289,7 +289,7 @@ Perhaps it's not just a way for us to learn to interact with the real world or t
 [p.37]
 
 So why does deep learning work at some very basic level, supervised deep learning?
-Well, at its most basic level, deep learning works because you can take a large model trained with lots of compute and lots of data that you spend lots of money on, combine it with a large data set, which is typically a label data set, and get something that solves interesting problems like being a good chat bot, recognizing speech, classifying images, and so on.
+Well, at its most basic level, deep learning works because you can take a large model trained with lots of compute and lots of data that you spend lots of money on, combine it with a large dataset, which is typically a label dataset, and get something that solves interesting problems like being a good chat bot, recognizing speech, classifying images, and so on.
 
 [p.38]
 
@@ -340,7 +340,7 @@ So the outputs of machine learning systems really are fundamentally decisions, e
 So if machine learning systems are really all about making decisions, perhaps reinforcement learning gives us a better way to use data to make better decisions.
 Because with reinforcement learning, we could say that this kind of garbage data that we scrape from all available sources is really telling us what could be done in the world rather than what should be done.
 And then a limited amount of supervision can specify the tasks that the agent should perform.
-So then our big data set from past interactions isn't necessarily something that we're going to learn to copy.
+So then our big dataset from past interactions isn't necessarily something that we're going to learn to copy.
 We're not going to learn p(x) the way the language model does, but instead we'll use it to understand the possibilities available to us.
 And then among those possibilities, we'll select the ones that are most optimal at accomplishing the tasks that we want to do.
 So this perspective is perhaps a little bit abstract.
@@ -393,7 +393,7 @@ Basically, treat the whole thing as a POMDP and optimize for a better policy wit
 So the way that we could approach this is we could actually prompt a language model to basically provide a bunch of dialogues, essentially act as a human simulator, generate data.
 And that data might not be very good.
 It might not actually teach humans optimally, but it might show the RL algorithm the kinds of responses that humans might produce.
-And that huge data set can then be used with RL to figure out more optimal behaviors that could actually produce a better teaching agent.
+And that huge dataset can then be used with RL to figure out more optimal behaviors that could actually produce a better teaching agent.
 So RL with language models is great for tasks that are easy for language models to simulate, but hard for them to perform optimally.
 So then with RL, instead of emulating humans, the language models can learn to achieve desired outcomes using their understanding of how humans might behave.
 So again, it's kind of using RL as inversion, but not inversion of simulator, instead it's inversion of a language model.

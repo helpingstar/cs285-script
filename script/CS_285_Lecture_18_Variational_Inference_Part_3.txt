@@ -1,12 +1,12 @@
 [p.19]
 
 All right.
-Now let's talk about how amortized variational inference can allow us to basically learn this q(z|x) and thereby make variational inference an applicable tool, even in settings where the data set size is extremely large.
+Now let's talk about how amortized variational inference can allow us to basically learn this q(z|x) and thereby make variational inference an applicable tool, even in settings where the dataset size is extremely large.
 
 [p.20]
 
 So to recap what we had before, our variational inference procedure for training the model parameters θ basically looks something like this.
-For every image x_i or data point x_i in our data set, or more generally for every mini-batch, you would estimate the gradient with respect to θ of your variational lower bound L_i(p,q).
+For every image x_i or data point x_i in our dataset, or more generally for every mini-batch, you would estimate the gradient with respect to θ of your variational lower bound L_i(p,q).
 And the way you would do this is by sampling a z from the approximate posterior q_i(z), then estimating the gradient, which would simply be the gradient with respect to θ of log{p_θ(x_i|z)}, which is the single sample estimator using the one sample that you just got from q_i.
 of the expectation.
 Then you take a gradient step using this estimated gradient ∇_θ L_i, and then you update q_i to maximize the bound L_i and thereby tighten it.

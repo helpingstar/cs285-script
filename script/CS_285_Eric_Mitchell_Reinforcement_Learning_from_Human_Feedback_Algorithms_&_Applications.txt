@@ -118,10 +118,10 @@ And so this is exactly how we're going to collect feedback from humans in order 
 So this feedback that we're going to get is going to come as preferences over model samples.
 So you remember we did that supervised fine tuning step.
 So our model will roughly do the sort of things that we care about.
-And what we do then is we have some data set of unlabeled prompts.
+And what we do then is we have some dataset of unlabeled prompts.
 We collect two model samples from each prompt, and then we put them in front of humans.
 And the human says that one's better.
-And then we end up with this data set of these triples, X, YW and YL, where the YW is sort of the preferred or the winning response and YL is the loser.
+And then we end up with this dataset of these triples, X, YW and YL, where the YW is sort of the preferred or the winning response and YL is the loser.
 And then the question is, okay, we have this data.
 It sort of feels like this is helpful for learning a reward, but how exactly do we do that?
 And this is where some older models from the economics literature, in particular with the one that's widely used is this Bradley-Terry model that relates some score function or utility function, maybe a reward function to preferences.
@@ -133,7 +133,7 @@ All right, so now we have a probabilistic model that relates discrete binary cho
 And we can just turn this into a loss function on a reward model.
 And do maximum likelihood, right?
 So we just replaced S here with R ϕ, which is our reward model that's got some parameters.
-And we're just going to do maximum likelihood here on our data set of preference data, and out pops a reward model that we can then optimize.
+And we're just going to do maximum likelihood here on our dataset of preference data, and out pops a reward model that we can then optimize.
 Okay, so this is sort of the human feedback part of the RLHF.
 Are we good?
 Okay.
@@ -198,8 +198,8 @@ And therefore that's the world that we live in.
 It's a PPO world out there.
 So that basically finishes out our pipeline for RLHF here.
 So we do unsupervised pre-training, we do SFT, we fit this reward model.
-And then finally, we take our data set of just unlabeled, unlabeled prompts.
-Again, we might have a new data set of unlabeled prompts and we do RL with this reward model.
+And then finally, we take our dataset of just unlabeled, unlabeled prompts.
+Again, we might have a new dataset of unlabeled prompts and we do RL with this reward model.
 And we ended up with a policy.
 And that's basically ChatGPT.
 Another view of this process, which I've included here, cause it's even more complicated than my figure.
@@ -328,7 +328,7 @@ And I'm gonna show you how.
 Okay, so we have this RLHF objective.
 We already talked about this.
 This isn't new.
-So we have our data set of prompts here, and then we have this expectation over responses from our model.
+So we have our dataset of prompts here, and then we have this expectation over responses from our model.
 We want high reward and we want low KL.
 And nothing new.
 And this is for any reward function.
@@ -457,7 +457,7 @@ In the last batch.
 Yeah.
 So I see that the expectation is over x, y, w, y, l.
 Yes.
-From the data set.
+From the dataset.
 It seems to mean that you are still doing...
 You're still training on supervised stuff.
 Does this get rid of the advantage of RL producing better than human responses from before?
@@ -469,7 +469,7 @@ So they're not necessarily going to be better than humans.
 But the idea is that you do get a little bit of exploration when you sample from that model, because you're...
 I mean, it's just random, right?
 You sample like a response, you're sampling token by token, there's noise.
-And so in your data set, there are going to be examples where you did worse than humans and some examples where you did a little bit better.
+And so in your dataset, there are going to be examples where you did worse than humans and some examples where you did a little bit better.
 And basically, by getting this, you're going to be able to do a lot better.
 So you're picking this preference data over those, you're picking out the ones that were, oh, that one was actually really good.
 And so you're sort of, you can do some sort of extrapolation in this like behavior space.
@@ -554,7 +554,7 @@ I'm so sorry.
 So, so the gradient looks like this.
 And that's, you know, there's a lot going on there, but it's actually not that complicated if we go step by step here.
 So, so really on the inside here.
-So again, we just have our expectation over our data set.
+So again, we just have our expectation over our dataset.
 That's not different.
 They're really just two things going on here, right?
 We have one term that is doing maximum likelihood on the chosen stuff.
@@ -585,7 +585,7 @@ If you have a particular budget of KL, how much reward can you get from that?
 And so that's what we're going to do in a relatively simple setting.
 We're going to do this kind of stupid task where we want to maximize the sentiment of our generative model.
 So we're going to get like the beginning of a movie review, and we just want to complete it in the most like positive way possible.
-So we're going to generate a synthetic data set.
+So we're going to generate a synthetic dataset.
 We generate pairs of movie reviews using GPT-2 prefixed with like the beginning of a movie review.
 So it generates the rest of one.
 We're going to use a ground truth reward.
@@ -739,7 +739,7 @@ And we can get a little bit of information out of this.
 Okay, so we've got a couple of questions.
 Humans are bad at this.
 Okay, this is a good opportunity for all with AI feedback.
-We're really running out of time here but the point is that we can basically do some truthfulness scoring automatically by using existing language models and using some reference like Wikipedia, and we can get this preference data set where we have an input, and then two responses one is more factual than the other.
+We're really running out of time here but the point is that we can basically do some truthfulness scoring automatically by using existing language models and using some reference like Wikipedia, and we can get this preference dataset where we have an input, and then two responses one is more factual than the other.
 We can train this with DPO we can evaluate it we evaluated on bio generation and medical question answering.
 And it turns out this works.
 So if we compare to the SFT model right here, doing this factuality tuning significantly reduces the number of incorrect facts per response on average, and it increases the number of correct facts per response.

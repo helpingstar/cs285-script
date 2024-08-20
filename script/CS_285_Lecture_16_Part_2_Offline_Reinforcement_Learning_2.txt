@@ -17,18 +17,18 @@ Now we can actually work out a better objective than this the problem with this 
 
 [p.13]
 
-So what we can do instead is we can have this term that always pushes down the Q values, and we can add an additional term that pushes up on Q values in the data set.
-Now this might at first seem like a really strange thing because we're combating overestimation, and somehow we're doing this by actually maximizing Q values in the data set.
+So what we can do instead is we can have this term that always pushes down the Q values, and we can add an additional term that pushes up on Q values in the dataset.
+Now this might at first seem like a really strange thing because we're combating overestimation, and somehow we're doing this by actually maximizing Q values in the dataset.
 But let's imagine what this procedure will do in practice.
-If all of the large Q values are for actions that are in the data set, then these two terms should more or less balance out because μ will select actions in the data set to minimize their value, and then the second term will maximize their value, and the two will basically balance out and have very little net effect.
-If, however, the large Q values are for actions that are very different from the actions in the data set, the first term will push them down, and the second term will instead push up on the actions in the data set, which means that the next time around μ is going to select actions closer to the data set.
+If all of the large Q values are for actions that are in the dataset, then these two terms should more or less balance out because μ will select actions in the dataset to minimize their value, and then the second term will maximize their value, and the two will basically balance out and have very little net effect.
+If, however, the large Q values are for actions that are very different from the actions in the dataset, the first term will push them down, and the second term will instead push up on the actions in the dataset, which means that the next time around μ is going to select actions closer to the dataset.
 So in a sense you can think of it as a kind of a feedback process where the more we end up with large Q values out of distribution, the more these two terms together push them back into the distribution, and once they're pushed all the way back then the two terms more or less cancel out.
 With this more nuanced version of the objective, it's no longer guaranteed the learned Q function is a lower bound on the true Q function for all states and actions but it turns out that it's still guaranteed in expectation over the policy for all states, which is all we really want because ultimately what we care about is not overestimating the value of the current policy so this combined objective here i'm going to refer to as L_{CQL} and what i'll discuss next is how to actually implement this in practice.
 
 [p.14]
 
 So the general structure of an algorithm using this idea will be something like this.
-Update your approximate Q function using L_{CQL} and using your data set and then step two is update your policy in the usual way to maximize the expected value and if the actions are discrete the policy is just the argmax policy so that's basically exactly the same as in Q learning.
+Update your approximate Q function using L_{CQL} and using your dataset and then step two is update your policy in the usual way to maximize the expected value and if the actions are discrete the policy is just the argmax policy so that's basically exactly the same as in Q learning.
 In practice when you code the sub you wouldn't even have the explicit policy computation of step two you would just plug in the max.
 But if the actions are continuous then you could have a separate explicit actor π_θ and update that actor in the usual way.
 So in the discrete action cases this really does look like Q learning with two additional terms in the continuous action case typically you would do this as a Q function actor critic algorithm.

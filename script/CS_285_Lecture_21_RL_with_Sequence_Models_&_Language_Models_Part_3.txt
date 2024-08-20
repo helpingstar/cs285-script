@@ -154,12 +154,12 @@ And we have a number for every possible token at this time step.
 Except instead of that number corresponding to the probability of that token being the next token, the number is actually its Q value.
 So the number associated with the token for facing is the Q value you would get if your history is the entire previous history of a conversation and then you select the token facing as the next action.
 So your loss would take in the token facing at the next step.
-Maximize over the possible tokens at the next time step if the agent chooses that token, or simply take the data set token if it's chosen by the environment.
+Maximize over the possible tokens at the next time step if the agent chooses that token, or simply take the dataset token if it's chosen by the environment.
 Add the reward to that, and then use that as the target value in the loss.
 So this essentially implements per token Q-learning.
 So to explain that again, at the token for they, the output is the Q value of every possible token being chosen at the next time step.
 And to compute the target for that Q value, we would actually input that token at the next time step, see all of our possible next token values, and take a max over them if the agent gets to choose the next one.
-Or take the value of the data set token if it's chosen by the environment, add the reward, and then treat that as our target.
+Or take the value of the dataset token if it's chosen by the environment, add the reward, and then treat that as our target.
 So in some ways, it's simpler.
 But remember that our horizon gets to be a lot longer.
 So we have simple discrete action.

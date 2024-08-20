@@ -30,7 +30,7 @@ Probably there is something that is learned through play, through undirected exp
 There's some notion of goals being set, some notion of goals being accomplished, and some presumably very useful body of knowledge that is that is distilled the brain through this activity.
 So, why might we want to learn without any reward function at all well perhaps we could acquire a variety of different skills without any explicit reward supervision create a repertoire of those skills and then use them to accomplish new goals when those goals are given to us.
 Maybe we can use some sub skills that we can use with perhaps a hierarchical reinforcement learning scheme.
-And perhaps we can explore the space of possible behaviors to build up a large data set a large buffer that can then be used to acquire other tasks.
+And perhaps we can explore the space of possible behaviors to build up a large dataset a large buffer that can then be used to acquire other tasks.
 So, this is a pretty different way of thinking about exploration conventional exploration is thought of as this problem where you just have to seek out the states that have reward here we're thinking about instead as the problem of acquiring skills that could then be repurposed later.
 
 [p.04]

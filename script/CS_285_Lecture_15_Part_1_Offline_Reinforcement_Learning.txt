@@ -53,15 +53,15 @@ It's called π_β.
 By the way, it's very important to distinguish the behavior policy from the expert policy that we had in imitation learning.
 So in offline reinforcement learning, we don't assume that π_β is any sort of expert.
 π_β could even be fully random.
-It's just a mechanism that was used to collect a data set.
-And then that data set will be used during a training phase to train up the best policy we can get.
+It's just a mechanism that was used to collect a dataset.
+And then that dataset will be used during a training phase to train up the best policy we can get.
 And then that policy is deployed, but once it's deployed, there's no more training.
-So in a sense, this is just like every other machine learning discipline, where you're given a data set, you train the best model you can on that data set, and then you go and use that model.
+So in a sense, this is just like every other machine learning discipline, where you're given a dataset, you train the best model you can on that dataset, and then you go and use that model.
 And there's no active or online phase.
 There's no exploration.
 And we could imagine different ways that such offline RL methods could actually be utilized in reality.
 For example, you might imagine that you have a robot that is tasked with doing a wide variety of chores around the house and repairing electronics and sweeping the floor and cooking.
-And maybe over the course of its lifetime, it gathers a large and very diverse data set of everything that has done before.
+And maybe over the course of its lifetime, it gathers a large and very diverse dataset of everything that has done before.
 And then when you wanted to learn a new skill, maybe you will load up all of that past data, use it to train up the best skill you can get.
 And that's your offline training phase.
 And that already gives you a good initialization.
@@ -87,17 +87,17 @@ There are a lot of applications where we would like to use learning based contro
 Okay, so let's get into more of the details.
 What does the term offline RL really mean?
 Well, so these are the pictures we had on the previous slide.
-But formally, we're going to say that we have a data set D.
-And just like in our discussion of Q learning from before, the data set is really a data set of transitions, state, action, next state and reward.
+But formally, we're going to say that we have a dataset D.
+And just like in our discussion of Q learning from before, the dataset is really a dataset of transitions, state, action, next state and reward.
 Now, these transitions are likely to be arranged into trajectories, meaning that, you know, for the first transition, the s' is actually the s for the second transition.
 So very likely it's, it's arranged into trajectories.
 But the algorithms that we're going to discuss, usually don't assume that with the exception of important sample policy gradients.
-But most dynamic programming algorithms, most algorithms that are based on Q functions, just assume that your data set is arranged into transitions, we will have states and we will often refer to stick distributions.
+But most dynamic programming algorithms, most algorithms that are based on Q functions, just assume that your dataset is arranged into transitions, we will have states and we will often refer to stick distributions.
 We've used different notation in this class at different points, mostly because I want to make sure that you guys are familiar with all of the notation that's used in the literature.
 But we will use the symbol d with a superscript corresponding to a policy to denote a state marginal, a state distribution induced by that policy.
-We will use π_β to denote the unknown policy that collected our data set.
+We will use π_β to denote the unknown policy that collected our dataset.
 So in reality, you usually don't know what π_β is.
-So someone gave you a data set, maybe you're doing autonomous driving, and your data set consists of all sorts of human driving, good drivers, bad drivers, mediocre drivers.
+So someone gave you a dataset, maybe you're doing autonomous driving, and your dataset consists of all sorts of human driving, good drivers, bad drivers, mediocre drivers.
 You don't actually know what their policy is, but for the purpose of mathematical analysis, you can assume that there exists some policy π_β, you just don't necessarily know it.
 There's some kind of transition function, there's some kind of reward that's just like before, and as I said, the behavior policy is generally not known.
 The RL objective is just like before, is to maximize the expected sum of discounted rewards, so nothing really changed there.
@@ -109,14 +109,14 @@ One sort of auxiliary problem, which is not the full offline RL problem, but it'
 And we'll discuss this a little bit.
 The main focus of the lecture is on off-policy RL, but we'll discuss off-policy evaluation a little because it forms kind of a common building block.
 And off-policy evaluation basically refers to this problem.
-Given a data set D, estimate the return of some policy.
+Given a dataset D, estimate the return of some policy.
 Now it could be the behavior policy, that's actually very easy.
 But there's a little typo on the slide that should actually be J of π.
-So it's estimate the return of some policy that you're given using a data set D.
+So it's estimate the return of some policy that you're given using a dataset D.
 Estimating J of π_β is actually pretty easy.
-But you could use the same data set to estimate the value of some other policy that was not the one that collected the data.
+But you could use the same dataset to estimate the value of some other policy that was not the one that collected the data.
 And that's a lot harder, and that's called off-policy evaluation.
-Offline reinforcement learning, which is also sometimes called batch RL and sometimes fully off-policy RL, is given the data set D learn the best possible policy now as we saw in previous lectures, oftentimes learning a policy requires evaluating a policy, right?
+Offline reinforcement learning, which is also sometimes called batch RL and sometimes fully off-policy RL, is given the dataset D learn the best possible policy now as we saw in previous lectures, oftentimes learning a policy requires evaluating a policy, right?
 So in actor-critic methods, for example, we would evaluate our current actor, and then we would improve it.
 So some sort of off-policy evaluation is often in the inner loop of an offline RL method.
 But I will discuss a little bit later how, in some sense, the general off-policy evaluation problem, the problem of evaluating any policy can actually be a little bit harder than learning the best possible policy.
@@ -124,41 +124,41 @@ The intuition for why is that when you're learning the best possible policy, you
 Now, there's a subtlety with this statement, and I intentionally wrote it in kind of a slightly cryptic way.
 Given D, learn the best possible policy π_θ.
 That is not necessarily the best possible policy in the MDP.
-It's the best possible policy that you can learn using your data set.
-And it's, I think, pretty easy to see why, given certain data sets, the optimal policy may simply never be learnable.
+It's the best possible policy that you can learn using your dataset.
+And it's, I think, pretty easy to see why, given certain datasets, the optimal policy may simply never be learnable.
 So, for example, if you have a very large MDP with some really good states, like maybe Montezuma's Revenge, when you win the game, there's a really high reward, but all of your data is in the first room of Montezuma's Revenge.
 Well, there's no way you could possibly use that data to learn the true optimal policy, because large parts of your MDP are just never seen in the data.
 So we have to be a little bit careful with what best possible policy means, and the formal statement is not here on the slide, it's actually pretty complicated, but the informal intuition is you want to learn the best policy that is supported by your data.
-The best possible policy for which the evidence that it is good is present in your data set.
+The best possible policy for which the evidence that it is good is present in your dataset.
 
 [p.07]
 
 Okay, so now one question that some of you might ask is, how is this even possible?
-Like, can we even hope to learn good policies by using only data sets without ever interacting with the world?
+Like, can we even hope to learn good policies by using only datasets without ever interacting with the world?
 Some of you might be wondering the opposite, it's like, why is this difficult?
 And actually, both of those questions are a little bit non-trivial.
 So there are a few different perspectives on what we should expect offline reinforcement learning algorithms to do.
-One perspective is we should expect them to find the good stuff in a data set full of good and bad behaviors.
+One perspective is we should expect them to find the good stuff in a dataset full of good and bad behaviors.
 And they can definitely do that, although that is a fairly naive view of what good offline RL methods should do.
-So, by finding the good stuff what I mean is, if I give you a data set of human drivers driving a vehicle, and some of them are good and some of them are mediocre and some of them are bad, if you were to run imitation learning on that, you would kind of get the average human driver if your imitation learning algorithm succeeds.
-If your imitation algorithm fails, you might just get this accumulating errors that we talked about in the beginning of the course, but assuming that doesn't happen, you know, what imitation learning is trying to do is give you the average driver in the data set.
+So, by finding the good stuff what I mean is, if I give you a dataset of human drivers driving a vehicle, and some of them are good and some of them are mediocre and some of them are bad, if you were to run imitation learning on that, you would kind of get the average human driver if your imitation learning algorithm succeeds.
+If your imitation algorithm fails, you might just get this accumulating errors that we talked about in the beginning of the course, but assuming that doesn't happen, you know, what imitation learning is trying to do is give you the average driver in the dataset.
 But if you run offline RL, in principle, it should get you the behavior of the best driver.
 It should be better.
-But this, of course, begs the question, is offline RL always going to be only as good as the best behavior in the data set?
+But this, of course, begs the question, is offline RL always going to be only as good as the best behavior in the dataset?
 And the answer is, in general, no.
-In general, it is possible to do better than the best behavior in the data set.
+In general, it is possible to do better than the best behavior in the dataset.
 And this might be a little non-obvious, but hopefully the intuition that will come next to convince you of this.
 So the basic idea is that you're going to have generalization, which means that good behavior in one place may suggest good behavior in another place.
 So if, for example, you have some human drivers, and one of them really knows how to do a really fast merge onto a highway, and another one really knows how to transit through an intersection very efficiently, but neither of them is good at both, well, you can sort of just sell the best parts of each of them.
 And you can even generalize to a degree to situations where you haven't seen them acting.
-You can imagine such algorithms as combining good behaviors in different places to attain behaviors that were never actually seen in the data set.
+You can imagine such algorithms as combining good behaviors in different places to attain behaviors that were never actually seen in the dataset.
 So one really simple example of this is the stitching example.
-So if in your data set, you've seen some transitions that go from A to B, and you've seen other transitions that go from B to C, then you can figure out that it's possible to go from A to C.
+So if in your dataset, you've seen some transitions that go from A to B, and you've seen other transitions that go from B to C, then you can figure out that it's possible to go from A to C.
 And figuring this out requires reinforcement learning.
 But it actually goes a little bit further than that.
 So of course, you could take the stitching intuition and you could scale it up massively.
 You could imagine that you have a maze navigation task where you see transitions between different pairs of starting goal states in a maze, and from that you can figure out how to get between any two points in the maze, even pairs of points between which you've never seen a transition.
-And you can of course stitch these together to get transitions through the maze that are much, much longer than any of the ones that were seen in the data set.
+And you can of course stitch these together to get transitions through the maze that are much, much longer than any of the ones that were seen in the dataset.
 
 [p.08]
 
@@ -167,9 +167,9 @@ So the kind of the bad intuition, in my opinion, the bad intuition for what offl
 So you have some data, it goes between a start and a goal, and you're going to basically imitate that data.
 It can be shown that offline RL is theoretically actually better than imitation learning, even in this setting, but this is not really the main point.
 A better intuition is that an offline RL method can kind of get order from chaos.
-So let's say that your data set consists of these trajectories.
+So let's say that your dataset consists of these trajectories.
 Now clearly they are very suboptimal, and most of them don't go anywhere near the goal.
-But if you take kind of the best bits of both with a little bit of generalization thrown in, you can get a much better behavior than any of the behavior you saw on in the data set.
+But if you take kind of the best bits of both with a little bit of generalization thrown in, you can get a much better behavior than any of the behavior you saw on in the dataset.
 And the stitching that we discussed on the previous slide is of course one instance of this, but it's merely the clearest example of a more general trend.
 So you could imagine sort of microscopic level stitching, where you have many trajectories that are all kind of a little bit suboptimal in every place.
 But if you have enough of them, and you recombine the best parts of all of them, you can get a highly optimal behavior.
@@ -186,7 +186,7 @@ And now, maybe at test time, the drawer is closed, right?
 So generally, if your RL policy is trained with an open drawer, it's not going to have any way to know what to do when the drawer is closed at test time.
 So what if, in addition to the drawer grasping, you also have a bunch of experience of picking up and moving objects, opening drawers, closing drawers, basically all sorts of other skills that you could do in this environment, but they're all separate from the skill of picking up the object from the open drawer.
 So all this prior data contains a variety of skills, but none of it contains the picking up from the open drawer.
-Well, if you just take all this prior data, and you put it into the same data set as the object grasping skill with the open drawer, then this same stitching property that I discussed before, will actually allow you to acquire a policy that can pick up the object in different situations.
+Well, if you just take all this prior data, and you put it into the same dataset as the object grasping skill with the open drawer, then this same stitching property that I discussed before, will actually allow you to acquire a policy that can pick up the object in different situations.
 So of course, you can pick up the object when the drawer is open, but you could also handle a situation where the drawer starts out closed, because you've seen prior data that involves opening drawers, and via dynamic programming, via techniques like Q-learning, you can actually connect it up to the skill of picking up the object from the open drawer.
 So in this case, none of the prior data has that full sequence.
 It has the robot opening the drawer and picking up the ball, but it has some opening and it has some picking, and the RL algorithm can figure out how to put them together.
@@ -246,7 +246,7 @@ And it was trained with basically a classic actor-critic algorithm with Q functi
 And the different curves here show different dataset sizes, ranging from one thousand to one million transitions.
 And you can see that all of them do very badly.
 So, the dataset average here is several thousand.
-So, if you were to just imitate the data set, you would get a reward of several thousand.
+So, if you were to just imitate the dataset, you would get a reward of several thousand.
 If you just run off-policy actor-critic on it, the rewards are generally in the range of negative 750 to negative 250.
 And they're not getting better.
 In fact, they actually get worse right from the start.
@@ -270,12 +270,12 @@ They might occasionally go into the opposing lane or something, or they might oc
 So, their coverage of possible behaviors is incomplete.
 There are some things that they just don't do.
 During training, when we're updating the policy, what we're really doing is we're asking, for all the actions available to us in the state that we've seen before, which action is best?
-And that implicitly requires comparing the action that was taken in the data set to the other actions that were available.
+And that implicitly requires comparing the action that was taken in the dataset to the other actions that were available.
 So, it requires asking, is this other action that I didn't take, is it good or is it bad?
 How can we know that if we didn't see it in the data?
 Well, for some actions, we might know if they're good or bad because of generalization.
 So, we might have seen similar actions in other similar states.
-But because our data set doesn't have perfect coverage, there are certain behaviors that are unlike anything that we've seen but that are available to us.
+But because our dataset doesn't have perfect coverage, there are certain behaviors that are unlike anything that we've seen but that are available to us.
 Online RL algorithms don't have to worry about this because they can simply try that action and see what happens.
 So, a regular online algorithm, even if it's an off-policy algorithm, it might decide erroneously that the action of swerving off the road is a good one, and it might go and try it, and then it might learn that it's bad and not do it again.
 That's actually exactly why we don't want to deploy these algorithms in the real world in safety-critical settings.

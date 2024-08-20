@@ -59,7 +59,7 @@ So this is basically the setting where the model is certain about the data, but 
 In order to not be certain about the model, we need to represent a distribution over models.
 So before we have one neural net that outputted a distribution over s_{t+1}, and it has some parameters θ.
 So being uncertain about the model really means being uncertain about θ.
-So usually we would estimate θ as the argmax of the log probability of θ given our data set, which when we're doing maximum likelihood estimation, we take to also be the argmax of the log probability of the data given θ.
+So usually we would estimate θ as the argmax of the log probability of θ given our dataset, which when we're doing maximum likelihood estimation, we take to also be the argmax of the log probability of the data given θ.
 And that presumes having a uniform prior.
 But can we instead estimate the full distribution p(θ|D)?
 So instead of just finding the most likely θ, what if we actually try to estimate the full distribution (θ|D), and then use that to get our uncertainty?
@@ -125,21 +125,21 @@ So when you implement this in homework 4, don't just average together the next s
 Actually treat it as a mixture of Gaussians.
 Okay, how can we train this bootstrap ensemble to actually get it to represent this parameter posterior?
 Well, one mathematical tool we can use is something called the bootstrap.
-The main idea in the bootstrap is that we take our single training set, and we generate multiple independent data sets from the single training set to get independent models.
-So each model needs to be trained on a data set that is independent from the data set for every other model, but still comes from the same distribution.
+The main idea in the bootstrap is that we take our single training set, and we generate multiple independent datasets from the single training set to get independent models.
+So each model needs to be trained on a dataset that is independent from the dataset for every other model, but still comes from the same distribution.
 Now, if we had a very large amount of data, one very simple way we could do this is we could take our training set and just chop it up into N non-overlapping pieces, and train a different model on each piece.
-But that's very wasteful, because we're essentially decimating our data set, and therefore we can't have too many bootstraps, we can't have too many models.
+But that's very wasteful, because we're essentially decimating our dataset, and therefore we can't have too many bootstraps, we can't have too many models.
 So in the bootstrap ensemble, each of these models is called a bootstrap.
 So there's a cool trick that we can do, which is going to maintain our data efficiency and give us as many models as we want.
-The idea is to train each θ_i on a data set D_i, which is sampled with replacement from D.
+The idea is to train each θ_i on a dataset D_i, which is sampled with replacement from D.
 So if D contains N data points, D_i will also contain N data points, but they will be resampled from D with replacement.
 Which means that for every entry in D_i, let's say you have N data points in D, you select an integer uniformly at random between 1 and D, and pick the corresponding element from D.
 So you select a random entry from 1 to N, pick the element from D, write that into the first entry of D_i.
 For the second entry in D_i, pick a random integer between 1 and D, grab it from D, put it in entry 2.
 For entry 3, random integer from 1 to N, take it from D, put it in entry 3, and so on and so on and so on.
-In expectation, you get a data set that comes from the same distribution as D, but every individual D_i is going to look a little bit different.
+In expectation, you get a dataset that comes from the same distribution as D, but every individual D_i is going to look a little bit different.
 Intuitively, you can think of this as putting integer counts on every data point, and those counts can range from 0 to N, although N is very unlikely.
-So every model trained on every D_i is going to see a slightly different data set, although statistically the data sets will be similar.
+So every model trained on every D_i is going to see a slightly different dataset, although statistically the datasets will be similar.
 And it turns out this is enough to give you a parameter posterior.
 
 [p.22]
@@ -152,7 +152,7 @@ So if the cost of training one neural net is 3 hours and we have to train 10 of 
 Now you can parallelize it, but it's still expensive.
 So usually we'd use a smaller number of models, typically less than 10.
 So our uncertainty will be a fairly crude approximation to the true parameter posterior.
-Conveniently though, it appears experimentally that if you're training deep neural network models, resampling with replacement is actually usually unnecessary because just the fact that you train your model with stochastic gradient descent and random initialization usually makes the model sufficiently independent even if they are trained on exactly the same data set.
+Conveniently though, it appears experimentally that if you're training deep neural network models, resampling with replacement is actually usually unnecessary because just the fact that you train your model with stochastic gradient descent and random initialization usually makes the model sufficiently independent even if they are trained on exactly the same dataset.
 So when implementing this in practice, we can usually actually forego the resampling with replacement.
 So that makes things a little easier.
 It's important for theoretical results, but practically you can skip it.

@@ -8,12 +8,12 @@ So first, to briefly recap from Monday, on policy reinforcement learning algorit
 Off-policy RL algorithms, which we learned about before, are essentially a buffered version of this, where all the data that is collected so far is stored in a replay buffer and is used for each update.
 So you might load all the transitions to augment the amount of data available for each update for something like a Q function, but you still iteratively collect additional data with the latest policy that you have.
 Offline reinforcement learning dispenses with active data collection entirely.
-In offline reinforcement learning, we assume that we are given a data set, and that that data set was collected by some unknown behavior policy, which we denote with π_β.
-So the definitions are D is our data set, which we can think of as just an unordered set of state, action, next state, and reward tuples.
+In offline reinforcement learning, we assume that we are given a dataset, and that that dataset was collected by some unknown behavior policy, which we denote with π_β.
+So the definitions are D is our dataset, which we can think of as just an unordered set of state, action, next state, and reward tuples.
 In practice, those tuples are typically arranged into trajectories, but value-based methods of the sort that we will describe in today's lecture generally do not make use of this.
 So they just assume that you're given transitions.
 We will use a d^{π_β} to denote a state distribution, or d^{π_θ} for the current policy state distribution.
-π_β represents the behavior policy, the policy that collected the data set.
+π_β represents the behavior policy, the policy that collected the dataset.
 In general, we don't know what this is.
 We have our transition probabilities, our rewards, and the behavior policy.
 You know, it could really be anything.
@@ -92,7 +92,7 @@ And I'm visualizing it here.
 You can imagine this in a single state.
 So for different actions, it has different probabilities.
 And you can see that it has fairly good coverage of these actions in the middle.
-And let's say that these orange dots represent samples in our data set.
+And let's say that these orange dots represent samples in our dataset.
 And the y-axis here, for the orange dots corresponds to their Q value.
 So just from looking at these dots, you can see that that really tall dot, the second one from the left, that must correspond to a pretty good action.
 So if we're just seeing this, we probably want to take the action corresponding to that second dot from the left, because it's so much better than all the others.
@@ -137,7 +137,7 @@ But first let's talk about some explicit approaches.
 I will say right away these are generally not the methods that work well, but it's good to be aware of how they work to better contextualize some of the other things I'll cover.
 So a very simple way to do this is to directly modify the actor objective.
 So in a conventional actor-critic algorithm with a Q function, our actor objective would basically be this.
-Maximize the expected value under the policy of the Q values where the states are sampled from the data set.
+Maximize the expected value under the policy of the Q values where the states are sampled from the dataset.
 Now let's write down the form of the KL divergence between π and π_β.
 I know I said before the KL divergence is not a great choice, but it is simple, so it's much easier to discuss this first.
 The KL divergence between π and π_β is just the expected value under π of log π - log π_β, which we can also write as the negative of the expected value of log π_β minus the entropy of π.
@@ -189,15 +189,15 @@ Because anytime that you want some quantity which is given by the product of a d
 So you can approximate the solution via weighted max likelihood.
 So to train π_{new}, what you can do is you can sample from π_β, so that gives you the π_β term, π^{*}, multiply that sample by a weight corresponding to all the other terms in the equation, put that weight on the sample, and then maximize the likelihood on that sample with that weight.
 So the loss function you're seeing here is basically the behavior cloning loss, that's why the log π shows up in there, except the samples are weighted by all the other terms in the equation above, which is 1/Z ⋅ exp(1/λ ⋅ A^{π_{old}}(s,a)).
-So in practice, what you would do is you would generate samples from the data set, so these are basically the data set you're given, use the critic to get the advantage, and that gives you a weight, and then you would put that weight on every sample from the data set, and then just do a weighted max likelihood, essentially weighted behavioral cloning, where the weights are given by the advantage function, and the advantage function comes from your critic.
+So in practice, what you would do is you would generate samples from the dataset, so these are basically the dataset you're given, use the critic to get the advantage, and that gives you a weight, and then you would put that weight on every sample from the dataset, and then just do a weighted max likelihood, essentially weighted behavioral cloning, where the weights are given by the advantage function, and the advantage function comes from your critic.
 This has some interesting implications, because one of the things that this suggests is that a constrained critic, is a constrained actor update, really just corresponds to a kind of weighted behavior cloning, where the weights depend on how good the actions are.
-So what this algorithm is really doing is it's imitating the actions in your data set, but it's imitating the good actions more than the bad actions.
+So what this algorithm is really doing is it's imitating the actions in your dataset, but it's imitating the good actions more than the bad actions.
 And the math shows that that actually corresponds to solving this constrained actor objective.
 
 [p.08]
 
 So if you want to implement this in practice, you would create a critic loss, which is just the regular Q function critic that we had in the actor critic discussion, and you would have an actor loss, which is this weighted maximum likelihood, and then you would alternate between taking gradient steps on the critic loss, and taking gradient steps on the actor loss.
-So this essentially implements the constrained actor critic framework that I showed before, using this implicit constraint trick, meaning that it doesn't actually require you to know the functional form of π_β, it only requires you to have samples from it, which is what you have in your data set.
+So this essentially implements the constrained actor critic framework that I showed before, using this implicit constraint trick, meaning that it doesn't actually require you to know the functional form of π_β, it only requires you to have samples from it, which is what you have in your dataset.
 So this algorithm, with a Q function estimation goes under the name of advantage-weighted actor critic, or AWAC.
 If you use Monte Carlo returns, which is also possible, you get an algorithm called advantage-weighted regression.
 And the citations, if you want to read more about this, are shown at the bottom of this slide.
@@ -220,14 +220,14 @@ Okay?
 So that's the value, ideally the value for π_{new}.
 But let's just say it's just another neural network.
 Well, we can train this neural network with some loss function.
-So we could take, for example, all the sampled state-action tuples in our data set and regress V(s_i) onto Q(s_i,a_i) using some loss function, like for example a mean squared error loss.
-Now that won't really work, because when you do this, V(s_i) is going to match Q(s_i,a_i), but a_i in the data set comes from π_β, not from π_{new}.
+So we could take, for example, all the sampled state-action tuples in our dataset and regress V(s_i) onto Q(s_i,a_i) using some loss function, like for example a mean squared error loss.
+Now that won't really work, because when you do this, V(s_i) is going to match Q(s_i,a_i), but a_i in the dataset comes from π_β, not from π_{new}.
 So you're actually estimating the value of π_β, not of π_{new}.
 So this is not really going to work.
 It's going to give you the Q function of the behavior policy, not of your latest policy.
 Because the action comes from π_β.
 But now here's a funny thought.
-If you consider all the trajectories that you have in the data set, and you look at one of the states along those trajectories, well, in that state, there's probably only one action that you ever saw.
+If you consider all the trajectories that you have in the dataset, and you look at one of the states along those trajectories, well, in that state, there's probably only one action that you ever saw.
 The state was probably only visited once, if you have a continuous value state or a very large state space.
 But there may be other states nearby that are similar where a different action was taken.
 So because of that, in reality, when you're regressing onto Q(s_i,a_i) at a state s_i, the target for this value function consists of a distribution.
@@ -255,16 +255,16 @@ If we choose a large value of τ like 0.9, for example, then we're penalizing sm
 And this gives us something on the upper end of this distribution.
 Now at this point you might be thinking, hang on, our problem all along was that our Q values were turning out to be much larger than they should be.
 And now we're going to penalize large values a lot less than small values, so isn't that going to exacerbate the problem?
-But it actually won't because remember here, we're only using the states and actions in the data set.
-So we're never going to query Q with any action that was not in the data set, meaning we'll never query Q with any action that was not trained on.
+But it actually won't because remember here, we're only using the states and actions in the dataset.
+So we're never going to query Q with any action that was not in the dataset, meaning we'll never query Q with any action that was not trained on.
 So that already eliminates the overestimation problem completely.
 In fact, we actually get underestimation because we're not using actions from our learned policy.
 So by tilting our loss to penalize positive errors a lot less, we actually recover something that is closer to the correct optimal Q function.
 Formally, it's actually possible to show that what this expectile loss is doing is that it's training the value function to be the maximum of the Q function over all the actions that are within the support of the behavior policy.
 And the reason that it's doing this for support is that any action that is out of support won't appear in the training set and therefore won't participate in the loss.
 So essentially we're regressing to the best action we've seen it at states similar to the state.
-But this is not just as simple as copying the best behavior in the data set, because we're doing this at every state separately.
-So we're really combining the best things in all the states together, which could result in a final policy that is much better than the very best trajectory that we saw in the data set.
+But this is not just as simple as copying the best behavior in the dataset, because we're doing this at every state separately.
+So we're really combining the best things in all the states together, which could result in a final policy that is much better than the very best trajectory that we saw in the dataset.
 And this is true if you use the expectile loss with a large enough value of τ.
 
 [p.10]
@@ -276,11 +276,11 @@ So the principle is that we're going to use this expectile loss.
 The theory behind it is that it sets the values to be the maximum over the actions for all in-support actions.
 And practically, this basically corresponds to doing Bellman backups with an implicit policy, which is the argmax policy, but only over those actions that are in-support.
 So now we can actually do value function updates.
-We get Q functions that are going to be approximating these optimal in-support Q functions, but we never have to actually feed in an action into our Q function that it was not trained on, because both losses only ever use states and actions that are in the data set.
+We get Q functions that are going to be approximating these optimal in-support Q functions, but we never have to actually feed in an action into our Q function that it was not trained on, because both losses only ever use states and actions that are in the dataset.
 I'll talk about how well this works later, but before that, I'm going to talk about an alternative design, and that's actually in the next part of the lecture.
 But before I get into that, just to briefly summarize the practical implementation of this approach, essentially, you're going to be alternating between updates to a Q function and updates to a value function.
 The Q function is updated with mean squared error using the value function as the target, so that's the top left equation.
-The value function is updated by regressing onto the Q function, not all the states and actions in the data set, but using this expectile loss.
+The value function is updated by regressing onto the Q function, not all the states and actions in the dataset, but using this expectile loss.
 And that's it.
 That's how you train the Q function.
 Now, once you're done with this process, you do need to actually recover a policy from this.

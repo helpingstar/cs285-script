@@ -43,7 +43,7 @@ And it illustrates how meta-learning for image recognition could work.
 I realize that image recognition is pretty different from RL, but we'll see that very similar principles will actually work in RL as well.
 So in regular supervised learning, you would have a training set and a test set.
 In meta-learning, what we're going to have is actually a set of training sets and a set of test sets.
-Meta-training refers to the set of data sets that we'll use for the meta-learning process.
+Meta-training refers to the set of datasets that we'll use for the meta-learning process.
 Meta-testing is referring to what we're going to see when we get the new task.
 So meta-training is basically source domain, meta-testing is target domain.
 Each of the training sets during meta-training contains some image classes and the test set contains test images of those classes.

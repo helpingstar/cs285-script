@@ -52,19 +52,19 @@ So it's important not to confuse reinforcement learning the problem from reinfor
 Okay, how is this different from other machine learning topics?
 Well, the kind of machine learning that most of you are probably familiar with is supervised learning.
 Supervised learning is fairly straightforward to define.
-You have a data set of inputs and outputs.
+You have a dataset of inputs and outputs.
 We refer to them typically as x and y.
 And you want to learn to predict y from x.
-So you want to learn some kind of function, f(x), which outputs values y that are close to the y labels in the data set.
+So you want to learn some kind of function, f(x), which outputs values y that are close to the y labels in the dataset.
 So, for example, f might be represented by a deep neural network that you would train via classification or regression to match the labels y.
 And while the basic formulation of supervised machine learning is very straightforward, supervised machine learning methods make a number of assumptions that we often don't even think about because they're so natural, but that are important to bring up if we're going to discuss how this differs from reinforcement learning.
 Supervised learning typically assumes what is called independent and identically distributed data.
 This is such an obvious assumption in some ways, especially for someone who has studied machine learning, that we often don't make it explicit.
-But what it means is that all of these x, y pairs in your data set are independent of one another.
+But what it means is that all of these x, y pairs in your dataset are independent of one another.
 In the sense that the label for one x doesn't influence the label for another x.
 And they're distributed identically in the sense that the true function that produced the label y from x is the same for all the samples.
 It's almost an obvious statement, but it's something that is important to keep in mind.
-Supervised learning also assumes that our data set is labeled in the sense that every x we've seen in D also has an accompanying y, and that y is the true label for that x.
+Supervised learning also assumes that our dataset is labeled in the sense that every x we've seen in D also has an accompanying y, and that y is the true label for that x.
 This is very natural if you're doing things like image classification with labels obtained from humans.
 But remember how we discussed in the grasping example, this can actually be pretty unnatural.
 If you want a robot to learn how to grasp objects, it's actually a very strong assumption to assume that you're given a set of images with ground truth optimal grasp locations.
@@ -85,7 +85,7 @@ The reward might only happen later.
 So we need to take this data, which is not labeled with ground truth optimal outputs, and might involve these delayed rewards, run reinforcement learning on it, and hopefully get a behavior that is better than the behavior we saw before.
 So that's really the challenge in reinforcement learning.
 So let's try to make this a little bit more precise.
-In supervised learning, you have an input x and you have an output y, and you have a data set that consists of x-y pairs.
+In supervised learning, you have an input x and you have an output y, and you have a dataset that consists of x-y pairs.
 The goal is to learn a function that takes an x and approximates y.
 And typically this function has some parameters which are referred to as θ.
 These might be, for example, the weights in a neural network.
@@ -98,7 +98,7 @@ The output is at at each time step.
 The data, which is collected by the agent itself classically, consists of sequences of states, actions, and variables.
 Rewards are numbers, scalar values.
 And whereas in supervised learning, the data is given to you, you don't have to worry about who gave you the data, it's just provided to you as a set of x, y tuples, in reinforcement learning, you have to pick your own actions and collect your own data.
-So not only do you have to worry about the fact that the actions in your data set might not be the optimal actions, you have to also actually decide how that data will be collected.
+So not only do you have to worry about the fact that the actions in your dataset might not be the optimal actions, you have to also actually decide how that data will be collected.
 And your goal is to learn a policy, π_θ, which maps states s to actions a.
 And just like f, π has parameters θ, so those might again be the weights in a neural network.
 And a good policy is one that maximizes the cumulative total reward.

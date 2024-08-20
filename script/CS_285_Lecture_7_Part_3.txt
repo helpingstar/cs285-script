@@ -28,7 +28,7 @@ Right?
 If s_i and a_i are fixed, no matter how much we change π, s'_i is not going to change, because π only influences a_i, and here a_i is fixed.
 So one way that you can think of Fitted Q iteration kind of structurally is that you have this big bucket of different transitions, and what you'll do is you'll back up the values along each of those transitions, and each of those backups will improve your Q value.
 But you don't actually really care so much about which specific transitions they are, so long as they kind of cover the space of all possible transitions quiet well.
-So you can imagine that you have this data set of transitions, and you're just plugging away on this data set, running Fitted Q iteration, improving your Q function each time you go around the loop.
+So you can imagine that you have this dataset of transitions, and you're just plugging away on this dataset, running Fitted Q iteration, improving your Q function each time you go around the loop.
 
 [p.16]
 
@@ -53,7 +53,7 @@ If your error is not 0, then most guarantees are lost when we leave the tabular 
 All right.
 Now let's discuss a few special cases of Fitted Q iteration, which correspond to very popular algorithms in the literature.
 So, so far, the generic form of Fitted Q learning that we talked about has these three steps.
-Collect the data set, evaluate your target values, train your neural network parameters to fit those target values, and then alternate these two steps K times.
+Collect the dataset, evaluate your target values, train your neural network parameters to fit those target values, and then alternate these two steps K times.
 And then after K times, go out and collect more data.
 You can instantiate a special case of this algorithm with particular choices for those hyperparameters, which actually corresponds to an online algorithm.
 So in the online algorithm, in step one, you take exactly one action, a_i, and observe one transition, (s_i, a_i, s'_i, r_i).

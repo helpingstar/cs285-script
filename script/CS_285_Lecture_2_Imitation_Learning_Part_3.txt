@@ -16,7 +16,7 @@ The one method that you will implement in homework is Dagger, and I'll go throug
 
 Okay, so what makes behavioral cloning easy and what makes it hard?
 As I mentioned in the previous part of the lecture, if you have very perfect data, then these accumulating errors are a big problem, because as soon as you make even a small mistake, you're outside of that distribution of perfect data.
-But if you actually already have a bunch of mistakes in your data set, and corrections for those mistakes, then when you make a small mistake, you'll be in a state that is somewhat similar to other mistakes that you've seen in the data set, and the labels in that portion of the data set will tell you how to correct that mistake.
+But if you actually already have a bunch of mistakes in your dataset, and corrections for those mistakes, then when you make a small mistake, you'll be in a state that is somewhat similar to other mistakes that you've seen in the dataset, and the labels in that portion of the dataset will tell you how to correct that mistake.
 So there are a few ways that you could leverage this insight.
 You could actually intentionally add mistakes and corrections during data collection.
 That's not actually an entirely crazy idea.
@@ -373,7 +373,7 @@ So it's a wheeled robot, so it can move the base and it can actually move the ar
 And all of those dimensions are discretized.
 And that makes the entire control problem kind of a sequence to sequence problem.
 So it's a sequence of images and text, converted into a sequence of per-dimension actions.
-And because it's language condition, it can actually learn to perform a wide variety of different tasks when provided with a suitably large data set.
+And because it's language condition, it can actually learn to perform a wide variety of different tasks when provided with a suitably large dataset.
 And when it's language condition, you can actually do fun things like connect it up to a large language model that will then parse complex instructions like bring me the rice chips from the drawer.
 And then say, well, to do that, you have to first go to the drawer and then things like open the drawer.
 And that's then commanded to this RT-1 model, which then selects the per-dimension actions using that action discretization trick.

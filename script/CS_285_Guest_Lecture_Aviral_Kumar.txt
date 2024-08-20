@@ -74,17 +74,17 @@ But it is something better than what existed out at the time that we were doing 
 So.
 So before I go into this, I want to say that I'm going to talk about the data.
 So before I go into the technical content, I'll just quickly set up some notation and then we'll discuss the technical content.
-So remember that here we are dealing with this offline data set of this interaction data that already exists.
+So remember that here we are dealing with this offline dataset of this interaction data that already exists.
 We assume that the data consists of two groups of four elements.
 So here the four elements are the observation, the state that is visible to your learning algorithm.
 AI, which is an action that was taken by the behavior policy.
 So the data collection policy in your learning algorithm.
-So the data collection policy in your data set.
+So the data collection policy in your dataset.
 RFXAI is your instantaneous reward value.
-So this is the reward value in your data set for this particular transition.
+So this is the reward value in your dataset for this particular transition.
 And x_i plus one is the next observation or the next state, which was obtained when you executed this action at that particular state in x_i.
 So this is just a transition that exists in typical replay buffers and off policy Q learning style algorithms.
-So we have access to a data set that is organized in the form of these transition tools.
+So we have access to a dataset that is organized in the form of these transition tools.
 And x_i, AI, R, and x_i plus one.
 Okay.
 So back to scaling up.
@@ -101,7 +101,7 @@ And we made the problem harder by now, instead of training one single policy on 
 This is just a simple, like, you know, baby step instantiation of scaling up the problem by simply trying to play in one policy to play multiple games together.
 Now, just this last step.
 Now, just this sensation actually gives you quite a bit of complexity.
-So you now need a method that can deal with or that can train on about 2 billion data points because you can concatenate all these data sets that exist for each game and you'll get 2 billion data points easily.
+So you now need a method that can deal with or that can train on about 2 billion data points because you can concatenate all these datasets that exist for each game and you'll get 2 billion data points easily.
 And all this data is quite suboptimal.
 So you want to be able to take this data and produce a good and a better policy, hopefully, than anything that you've seen in this data.
 So it's a challenging problem.
@@ -310,7 +310,7 @@ You can do task ID conditioning.
 So you can define for each particular transition what task it comes from as a one-hot vector and run offline NARL on it.
 Once you have this, you'll have a general network, potentially, general policy such that now when you are given some amount of data for a target domain, for a target task that you care about.
 So these are probably not tasks that you care about.
-These are tasks that just exist in your data set.
+These are tasks that just exist in your dataset.
 When you have some limited amount of data for your task that you care about, you can now mix some batches from pre-training and this new data and simply fine-tune this model.
 So this is a very simple offline NARL-based recipe for pre-training robot policies.
 Take some broad robot data, pre-trained by offline NARL on that data, and simply keep running the same offline NARL algorithm or input.
@@ -323,7 +323,7 @@ It has data which shows you rewards.
 It's organized in the form of projectors.
 But for this part, what we want to do is we want to take these recipes and extend it to use human videos.
 Why do we want to use human videos?
-Well, if you think about all the data that exists out there, even if you include multitask robot data or data from other robots, it's much, it's very tiny compared to human video data that exists out there on YouTube or in well-curated data sets such as .
+Well, if you think about all the data that exists out there, even if you include multitask robot data or data from other robots, it's much, it's very tiny compared to human video data that exists out there on YouTube or in well-curated datasets such as .
 So it makes sense to utilize human video data because it shows how humans interact with the real world, and that would be useful for robots .
 But the challenge that comes up now is most of the video data that exists out there has no actions in it.
 And more so, humans are not robots.
@@ -418,8 +418,8 @@ And now you're ready to take that initialization, find it on your target task on
 OK.
 So yeah.
 So before I go into some robot videos and quantitative evaluations, it turns out that this scheme actually gives you useful features.
-So if you were to plot, if you were to take trajectories in your data set and trajectories which are out of distribution on your data set.
-If you have a robot data set, you can take some trajectories from it and take some trajectories that are not in it.
+So if you were to plot, if you were to take trajectories in your dataset and trajectories which are out of distribution on your dataset.
+If you have a robot dataset, you can take some trajectories from it and take some trajectories that are not in it.
 And if you plot the values that you learn as a function of the time step of particular state of your in the trajectory.
 So think of this as essentially the time step at which a particular state appears in your rollout in your data, in your robot data.
 And the y-axis is plotting the value function for that state or the Q function for that state.
@@ -495,7 +495,7 @@ And I'm plotting two algorithms, IQL, implicit Q-learning, CQL, conservative Q-l
 I think both of these algorithms have been covered here.
 And these algorithms are simply being run as you start collecting online data.
 And the online data is put into the replay buffer of the offline algorithm.
-So it's a predictor of the data set that you're training.
+So it's a predictor of the dataset that you're training.
 So what you can see clearly is that there's two sort of things happening here.
 First, with CQL or conservative Q-learning, you see there's a big dip in performance right when fine-graining is written.
 Your model initially was getting 0.5 roughly.
@@ -516,7 +516,7 @@ We tried to understand why this performance dip happens right in the middle.
 And for that, we plotted a bunch of metrics, which includes many, many metrics.
 Not all of them are plotted here.
 But one metric that we found quite correlated with performance dip was the average Q value.
-So if you take your data set, which includes the offline and online data now, you plot the average Q value of the Q network on that data.
+So if you take your dataset, which includes the offline and online data now, you plot the average Q value of the Q network on that data.
 You find that this Q value has the sharp correction phase, where it changes in magnitude, precisely at the same time when the return has this dip and the return .
 So this was sort of an initial signal that something about this unlearning is related to, and it shifts in magnitudes of these two values .
 This is precise.
@@ -534,8 +534,8 @@ The TD term in this case is a relative loss.
 All it says is your Q values must fit the target Q values.
 .
 And this is a very simple example of this.
-So if you look at the data set, you can see that the Q values are coming from a previous snapshot of the same function.
-Whereas this and this particular expectation is computed only over your data set.
+So if you look at the dataset, you can see that the Q values are coming from a previous snapshot of the same function.
+Whereas this and this particular expectation is computed only over your dataset.
 It's not computed over all possible state action pairs such that minimizing that loss will give you the unique, clean optimal Q function.
 It's only computed over a limited set of samples.
 So if you were to plot, let's say, the Q value at a particular state as a function of actions, assume 1D actions for now, and assume 1D actions for now, and assume 1D actions for now, then you're seeing that many different Q functions, many different learned Q functions shown in red, can attain the same .
@@ -548,7 +548,7 @@ So the high-level takeaway here is the reason why these Q values are super low i
 So it's the smallest one here.
 When you have this smallest possible Q value now, and you, let's say, do online data collection, so you're going to, let's say, query a new action and run this action in the real world, you're going to, now when you collect data, you're going to see the actual reward for this particular action.
 And when you update your Q function on this data, what will happen is you'll end up inducing erroneous peaks, which look super high under your Q function.
-And this is because this, when you execute this action during expiration, you see its actual ground truth reward value that you hadn't seen in your offline data set because your offline data set did not show you any of that action.
+And this is because this, when you execute this action during expiration, you see its actual ground truth reward value that you hadn't seen in your offline dataset because your offline dataset did not show you any of that action.
 So with that Q function.
 in mind now, your bad action supposedly appears very good under your Q function, such that now if you were to run your policy optimization, find a peak in this Q function, you're going to find a wrong action, a bad action, which is actually not super good and degrades your policy.
 So earlier, your policy was finding the peak in this red curve, which is the peak in this blue curve, which is the ground truth Q function.

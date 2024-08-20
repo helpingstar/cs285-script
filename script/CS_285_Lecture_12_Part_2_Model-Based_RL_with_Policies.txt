@@ -42,9 +42,9 @@ If you want to learn more about the numerical stability issues specifically in r
 
 Now from this we could write down you know what again I might call them I might make up a name for the name I'm going to make up is model-based RL version 2.5.
 Model-based RL version 2.5 is going to be very similar to 2.0 except instead of using backpropagation it's going to use the policy gradient.
-So step 1 run some policy to collect the data set, step 2 learn a dynamics model, step 3 use that dynamics model to sample a whole lot of trajectories with your current policy, step 4 use those trajectories to improve the policy by a policy gradient and you can of course use all the actor critic tricks all that stuff here and then repeat step 3 a few more times.
+So step 1 run some policy to collect the dataset, step 2 learn a dynamics model, step 3 use that dynamics model to sample a whole lot of trajectories with your current policy, step 4 use those trajectories to improve the policy by a policy gradient and you can of course use all the actor critic tricks all that stuff here and then repeat step 3 a few more times.
 So you can take many policy gradient steps, resampling trajectories each time but not generating any more real data nor retraining your model.
-And once you've improved your policy enough that you're happy with it then you would run your policy to collect more data, append those to your data set and use that larger data set to now train a better model.
+And once you've improved your policy enough that you're happy with it then you would run your policy to collect more data, append those to your dataset and use that larger dataset to now train a better model.
 So this algorithm would get rid of the issue with backpropagation that we discussed before but it still has some problems.
 And in the end, this is not actually the model-based RL method that most people would want to use.
 So what might be the problem with this procedure?
@@ -106,7 +106,7 @@ Although it is possible and people have devised policy gradient based strategies
 [p.15]
 
 So model-based RL with short rollouts is something that we could call model-based RL version 3.0 and this is actually getting much closer to the kinds of methods that people actually use in practice.
-So the way these methods work is just like before they would collect some data, use that data to train a model, then they would pick some states from the data set they collected in the real world and then use them all to make short rollouts from those states.
+So the way these methods work is just like before they would collect some data, use that data to train a model, then they would pick some states from the dataset they collected in the real world and then use them all to make short rollouts from those states.
 And these can be very short.
 They can be as short as one time step.
 In practical algorithms even when they're longer they're on the order of ten time steps.
@@ -115,6 +115,6 @@ And then typically these methods would use both real data and the model-based da
 So this might involve Q learning or it might involve actor critic methods.
 And what I have written here is that they improve the policy but in reality they typically have both a policy and a Q function.
 And typically they would generate a lot more data from the model than they would have from the real MDP.
-So they would do this a few times and then they would run the policy in the real MDP to collect more data to append it to the data set and then retrain the model and repeat the process.
+So they would do this a few times and then they would run the policy in the real MDP to collect more data to append it to the dataset and then retrain the model and repeat the process.
 And there's often a lot of delicate design decisions that go into these methods in terms of how much they improve the policy in between data collection, how much data they collect, how much data they collect from the model, and so on.
 So in the next portion of the lecture we will talk about specific designs for these algorithms and get a sense for the overall system architecture for these kinds of methods.

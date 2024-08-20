@@ -11,12 +11,12 @@ So where does that leave us?
 Well, we've got these data-driven AI systems that learn about the real world from data, potentially huge amounts of data, but they don't really try to be better than the data in any meaningful sense.
 And we've got these reinforcement learning systems, and they can optimize a goal with emerging behavior, and that seems like something that should address one of the major shortcomings of these data-driven AI methods.
 But of course, we need to figure out how to use these reinforcement learning methods at scale.
-We need to combine them with the kinds of huge models and huge data sets that have been so successful.
+We need to combine them with the kinds of huge models and huge datasets that have been so successful.
 And that's really where the deep part in deep reinforcement learning comes in.
 So data-driven AI is all about using data, reinforcement learning is all about optimization.
 Deep reinforcement learning is about this kind of optimization at scale.
 And data without optimization basically doesn't allow us to solve new problems in new ways.
-It might allow us to be very good at indexing into large data sets to figure out solutions that are human-like, but not necessarily solutions that are superhuman.
+It might allow us to be very good at indexing into large datasets to figure out solutions that are human-like, but not necessarily solutions that are superhuman.
 Something that I often like to bring up in the context of this discussion is an article written by Richard Sutton.
 So Richard Sutton is actually one of the pioneers of reinforcement learning.
 He was basically the person who popularized reinforcement learning in computer science, whereas previous to that it was really a subject of study primarily in psychology.
@@ -40,7 +40,7 @@ Data plus lots of machines, lots of computers, and not worry about how the probl
 But that's not actually what the essay says.
 Notice how it says learning and search.
 It doesn't say learning and GPUs.
-It doesn't say learning and big data sets.
+It doesn't say learning and big datasets.
 It says learning and search.
 And there's a very important reason for that.
 Learning is about extracting patterns from data.
@@ -104,7 +104,7 @@ I think deep reinforcement learning forms a significant part of that.
 And I think if we study it now, we might put ourselves on the path to eventually answer some pretty fundamental questions.
 So, why should we study deep reinforcement learning today?
 Well, part of the answer is that big end-to-end trained models seem to work quite well.
-If we use large data sets and large models like transformers, we can solve some pretty impressive problems.
+If we use large datasets and large models like transformers, we can solve some pretty impressive problems.
 And at the same time, we have RL algorithms that we can feasibly combine with deep neural networks.
 We've figured out a lot about how to implement RL algorithms so they can be used to train these kind of big end-to-end models.
 And yet, learning-based control in truly open world settings remains a major open challenge.
@@ -272,7 +272,7 @@ And if there is one algorithm, what does this one algorithm need to be able to d
 Well, it needs to interpret rich sensory inputs, and it needs to choose complex actions.
 And to do both of those things, we need large high-capacity models, because that's the only way we know how to deal with rich sensory inputs, and we need reinforcement learning, because that's the mathematical formulas we use to take actions.
 So, why deep reinforcement learning?
-Well, the deep part provides us with scalable learning from large complex data sets, and the reinforcement learning gives us the optimization, the ability to take actions.
+Well, the deep part provides us with scalable learning from large complex datasets, and the reinforcement learning gives us the optimization, the ability to take actions.
 The combination of learning and search.
 Deep is great for learning.
 Reinforced learning is the way that we do the search.

@@ -69,7 +69,7 @@ Okay, but there's a little bit of a problem with this recipe because the generat
 So it's going to generate data that looks very much like the data that you've seen, which means that if your agent figures out how to do one very specific thing, maybe it figures out how to pick up a mug, now it has lots of data of picking up that mug, and when it generates additional images, additional goals, it'll generate lots more data of picking up that same mug and might not bother with other things.
 So this is where we can bring in some ideas related to what we covered in the lecture on Monday, some of these exploration ideas.
 Let's imagine that we have this 2D navigation scenario, so the little circles represent states that you visited.
-Intuitively, what you would like to do is you would like to take this data set and modify it skew it some way to up-weight the rarely seen states, very much like the novelty seeking exploration that we discussed on Monday.
+Intuitively, what you would like to do is you would like to take this dataset and modify it skew it some way to up-weight the rarely seen states, very much like the novelty seeking exploration that we discussed on Monday.
 And if you can do this, if you can up-weight the rarely seen states before fitting your generative model, then when you fit your generative model, it should assign higher probability to the tails of this distribution so that when you propose new goals, it'll sort of broaden it out and visit more states there on the fringes and hopefully expand its repertoire of states that it can reach.
 So this is the intuition behind what we want to make such an algorithm really work.
 
